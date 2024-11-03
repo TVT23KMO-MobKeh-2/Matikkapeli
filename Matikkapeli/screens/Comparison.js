@@ -5,7 +5,7 @@ export default function Comparison({ onBack }) {
   const [comparisonXp, setComparisonXp] = useState(0) //tilamuuttuja tämän tehtävän pisteille
   const [randomNumber1, setRandomNumber1] = useState(0) // tilamuuttuja 1. satunnaisluku
   const [randomNumber2, setRandomNumber2] = useState(0) // tilamuuttuja 2. satunnaisluku
-  const [lookingForBigger, setlookingForBigger] = useState(false) // tilamuuttuja, etsitäänkö isompaa vai pienempää numeroa
+  const [lookingForBigger, setLookingForBigger] = useState(false) // tilamuuttuja, etsitäänkö isompaa vai pienempää numeroa
 
   const drawRandomNumber = (min, max) => { // funktio satunnaisluvun arvontaan, palauttaa satunnaisluvun annetulta väliltä
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -48,12 +48,12 @@ export default function Comparison({ onBack }) {
     setRandomNumber2(drawRandomNumber(0, comparisonXp * 0.2 + 1)) //arvotaan uusi 2. satunnaisluku
 
     if (drawRandomNumber(0, 1) === 1) { // arvotaan haetaanko seuraavaksi isompaa vai pienempää
-      setlookingForBigger(true) //haetaan isompaa
+      setLookingForBigger(true) //haetaan isompaa
       /*if (speech) {
         speak("Valitse yhtäsuuri tai suurempi.") //toistetaan tehtävänanto puheena
       }*/
     } else {
-      setlookingForBigger(false) //haetaan pienempää
+      setLookingForBigger(false) //haetaan pienempää
       /*if (speech) {
         speak("Valitse yhtäsuuri tai pienempi.") //toistetaan tehtävänanto puheena
       }*/
