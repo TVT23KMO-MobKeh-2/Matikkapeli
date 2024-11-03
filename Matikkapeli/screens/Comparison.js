@@ -32,7 +32,7 @@ export default function Comparison({ onBack }) {
       } else { //Muutoin vähennetään
         resultOfEquation1 = equation1Operand1 - equation1Operand2
       }
-      console.log("resultOfEquation1: ", resultOfEquation1)
+      //console.log("resultOfEquation1: ", resultOfEquation1)
     }
     if (isComparable2Equation){ //jos toinen vertailtava on yhtälö lasketaan sen arvo
       if (isEquation2Addition) { // yhteenlaskussa lasketaan yhteen
@@ -40,7 +40,7 @@ export default function Comparison({ onBack }) {
       }else { // Muutoin vähennetään
         resultOfEquation2 = equation2Operand1 - equation2Operand2
       }
-      console.log("resultOfEquation2: ", resultOfEquation2)
+      //console.log("resultOfEquation2: ", resultOfEquation2)
     }
 
     //logiikka oikeille vastauksille.
