@@ -20,9 +20,9 @@ export default function Comparison({ onBack }) {
   }
 
   const calculateEquation = (operand1, operand2, isAddition) => { //funktio yhtälön arvon laskemista varten
-    if (isAddition) {//jos yhteenslasku, palautetaan 
+    if (isAddition) {//jos yhteenslasku, palautetaan summa
       return operand1+operand2
-    } else {
+    } else { //muutoin erotus
       return operand1-operand2
     }
   }
