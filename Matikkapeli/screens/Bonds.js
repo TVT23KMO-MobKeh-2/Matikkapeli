@@ -14,6 +14,21 @@ export default function Bonds({ onBack }) {
   const [witchBox, setwitchBox] = useState(random(0, 1))
   const [inputValue1, setInputValue1] = useState('');
   const [inputValue2, setInputValue2] = useState('');
+  const [correctAnswer, setCorrectAnswer] = useState()
+
+  const checkAnswer = async () => { 
+      if (witchBox === 0){
+        setCorrectAnswer(leftBox)
+        if (correctAnswer===inputValue1){
+          <Text>Oikein</Text>
+        } else {
+          <Text>Väärin</Text>
+        }
+    } else {
+        setCorrectAnswer(rightBox)
+    }
+
+  }
 
   return (
     <View style={styles.container}>
@@ -62,6 +77,7 @@ export default function Bonds({ onBack }) {
           }
         </View>
       </View>
+      <Button title='Tarkista'></Button>
     </View>
   );
 }
