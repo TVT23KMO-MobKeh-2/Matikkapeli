@@ -17,7 +17,6 @@ export default function Bonds({ onBack }) {
   const [inputValue2, setInputValue2] = useState('');
   const [sound, setSound] = useState();
   const [doneTasks, setDoneTasks] = useState(0);
-  
 
   const correctSound = require('../assets/success.mp3');
   const wrongSound = require('../assets/fail.mp3');
@@ -62,17 +61,16 @@ export default function Bonds({ onBack }) {
       await playSound(false);
     }
 
-    if(doneTasks < 4) {
-      setDoneTasks(doneTasks +1)
+    if (doneTasks < 4) {
+      setDoneTasks(doneTasks + 1)
       setTimeout(() => {
         generateNewLevel()
-      }, 2000) 
+      }, 2000)
     } else {
       setTimeout(() => {
         onBack()
-      }, 3000) 
+      }, 3000)
     }
-    
   };
 
   return (
@@ -84,7 +82,7 @@ export default function Bonds({ onBack }) {
         <View style={styles.taskbox}>
           <Text style={styles.title}>Hajonta</Text>
           <View style={styles.buttonContainer}>
-            <Button title="Palaa takaisin" onPress={onBack} />
+            {/*<Button title="Palaa takaisin" onPress={onBack} />*/}
           </View>
         </View>
         <View style={styles.circle}>
@@ -140,7 +138,7 @@ const styles = StyleSheet.create({
   },
   background: {
     height: '100%',
-    width:'100%',
+    width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
   },
