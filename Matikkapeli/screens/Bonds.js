@@ -3,39 +3,44 @@ import React, { useState, useEffect } from 'react'
 import Svg, { Line } from 'react-native-svg';
 import { Audio } from 'expo-av';
 
+
 function random(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
 export default function Bonds({ onBack }) {
 
-  const levelData = 7;
-  const [leftBox, setLeftBox] = useState(0);
-  const [rightBox, setRightBox] = useState(0);
-  const [witchBox, setWitchBox] = useState(random(0, 1));
-  const [inputValue1, setInputValue1] = useState('');
-  const [inputValue2, setInputValue2] = useState('');
-  const [sound, setSound] = useState();
-  const [doneTasks, setDoneTasks] = useState(0);
+  const levelData = 7;  
+  const [leftBox, setLeftBox] = useState(0);  
+  const [rightBox, setRightBox] = useState(0);  
+  const [witchBox, setWitchBox] = useState(random(0, 1));  
+  const [inputValue1, setInputValue1] = useState(''); 
+  const [inputValue2, setInputValue2] = useState('');  
+  const [sound, setSound] = useState();  
+  const [doneTasks, setDoneTasks] = useState(0); 
 
+  
   const correctSound = require('../assets/success.mp3');
   const wrongSound = require('../assets/fail.mp3');
-  const imagaBG = require('../assets/view6.png')
+  const imagaBG = require('../assets/view6.png')  
 
+  // Funktio, joka generoi uuden pelitason
   const generateNewLevel = () => {
-    const newLeftBox = random(0, levelData);
-    const newRightBox = levelData - newLeftBox;
+    const newLeftBox = random(0, levelData);  
+    const newRightBox = levelData - newLeftBox;  
     setLeftBox(newLeftBox);
     setRightBox(newRightBox);
-    setWitchBox(random(0, 1));
-    setInputValue1('');
+    setWitchBox(random(0, 1));  
+    setInputValue1('');  
     setInputValue2('');
   };
 
+  // Efekti, joka generoi uuden tason aina, kun pelitaso muuttuu
   useEffect(() => {
     generateNewLevel();
   }, [levelData]);
 
+  // Efekti, joka purkaa äänen
   useEffect(() => {
     return sound
       ? () => {
@@ -44,6 +49,7 @@ export default function Bonds({ onBack }) {
       : undefined;
   }, [sound]);
 
+  // Funktio, joka toistaa äänen sen mukaan, onko vastaus oikein vai väärin
   const playSound = async (isCorrect) => {
     const soundToPlay = isCorrect ? correctSound : wrongSound;
     const { sound } = await Audio.Sound.createAsync(soundToPlay);
@@ -51,24 +57,27 @@ export default function Bonds({ onBack }) {
     await sound.playAsync();
   };
 
+  // Funktio, joka tarkistaa käyttäjän vastauksen
   const checkAnswer = async () => {
-    const correctAnswer = witchBox === 0 ? leftBox : rightBox;
-    const userAnswer = witchBox === 0 ? parseInt(inputValue1) : parseInt(inputValue2);
+    const correctAnswer = witchBox === 0 ? leftBox : rightBox;  // Oikea vastaus
+    const userAnswer = witchBox === 0 ? parseInt(inputValue1) : parseInt(inputValue2);  // Käyttäjän syöte
 
     if (userAnswer === correctAnswer) {
-      await playSound(true);
+      await playSound(true);  
     } else {
-      await playSound(false);
+      await playSound(false);  
     }
 
+    // Jos ei ole vielä 4 tehtävää suoritettu, luodaan uusi taso
     if (doneTasks < 4) {
       setDoneTasks(doneTasks + 1)
       setTimeout(() => {
-        generateNewLevel()
+        generateNewLevel()  
       }, 2000)
     } else {
+      
       setTimeout(() => {
-        onBack()
+        onBack()  
       }, 3000)
     }
   };
