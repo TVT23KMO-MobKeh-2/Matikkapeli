@@ -54,4 +54,8 @@ export default StyleSheet.create({
     color: 'white',
     fontSize: 16,
   },
+  buttonContainer: {
+        marginVertical: 10, // space between buttons
+        width: '80%', // set button width
+  },
 });
