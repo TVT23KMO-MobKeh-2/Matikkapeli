@@ -1,8 +1,9 @@
 import { View, Text, Button, StyleSheet } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import ModalComponent from '../components/ModalComponent'
+import * as Speech from 'expo-speech';
 
-export default function Comparison({ onBack, /*level, hyphens jne asetukset*/ }) {
+export default function Comparison({ onBack, /*level, hyphens jne aset*/ }) {
   const [level, setLevel] = useState(5) // väliaikainen // Määrittää, levelin, joka on aina toinen vertailtava
   const [hyphens, setHyphens] = useState(false) // väliaikainen // Määrittää, onko tavutus käytössä (true) vai ei (false)
   const [points, setPoints] = useState(0)//Pisteet (0-5) etenemistä varten
@@ -21,13 +22,14 @@ export default function Comparison({ onBack, /*level, hyphens jne asetukset*/ })
   //Koukku jolla tarkistetaan joko kierros päättyy.
   useEffect(() => {
     if(questionsAnswered===5){
-      //incrementXp()
+      //incrementXp(points,"comparsion")
       setModalVisible(true)
     }
   }, [questionsAnswered])
   
   // Käsittelee takaisinpaluun
   const handleBack = () => {
+    Speech.stop()
     setModalVisible(false);
     setQuestionsAnswered(0);
     setPoints(0);
@@ -111,8 +113,6 @@ export default function Comparison({ onBack, /*level, hyphens jne asetukset*/ })
     let correctAnswer = false //Muuttuja vastauksen oikeellisuuden tarkistamiseen ja lopputoimien määrittämiseen
 
     //Asetetaan vastauksen ja vertailtavan arvot annettua vastausta vastaavasti
-    console.log("haetaanko suurempaa: ", lookingForBigger)
-    console.log("Vastaus: ", answer)
     switch (answer) {
       case "leveli": //Jos vastaus on "leveli", vastauksen arvoksi asetetaan level, vertailtava arvo on joko yhtälön arvo tai satunnaisluku
         valueOfAnswer = level
@@ -154,10 +154,6 @@ export default function Comparison({ onBack, /*level, hyphens jne asetukset*/ })
         correctAnswer = true
       }
     }
-    console.log("Vastauksen arvo: ", valueOfAnswer)
-    console.log("Vertailtavan arvo: ", valueOfComparable)
-    console.log("Menikö oikein: ", correctAnswer)
-    console.log("")
     
     // Lopputoimet tarkistuksen jälkeen
     if (correctAnswer) {
