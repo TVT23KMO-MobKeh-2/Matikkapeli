@@ -12,6 +12,9 @@ export default function IconCountGame({ onBack }) {
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [roundsCompleted, setRoundsCompleted] = useState(0);
   const [isReadingLevel, setIsReadingLevel] = useState(false);
+  const [answered, setAnswered] = useState(false);
+  const [isRoundCompleteMessagePlaying, setIsRoundCompleteMessagePlaying] = useState(false);
+  const [isQuestionPlaying, setIsQuestionPlaying] = useState(false);
 
   const generateQuestions = (level) => {
     const questions = [];
@@ -50,11 +53,18 @@ export default function IconCountGame({ onBack }) {
   useEffect(() => {
     if (!isReadingLevel && questionIndex < questions.length) {
       const currentQuestion = questions[questionIndex];
-      Speech.speak(currentQuestion.question);
+      setIsQuestionPlaying(true); //Blocking the answer until the question has been read
+      Speech.speak(currentQuestion.question, {
+        onDone: () => setIsQuestionPlaying(false), //An answer is allowed after the question has been read
+      });
+      setAnswered(false); //Reset the answer status when a new question starts
     }
   }, [questionIndex, questions, isReadingLevel]);
 
   const handleAnswer = async (selectedAnswer) => {
+    if (answered || isRoundCompleteMessagePlaying || isQuestionPlaying) return; //The answer is blocked if it has already been answered or the message is in progress or the question is not finished
+    setAnswered(true);
+
     const currentQuestion = questions[questionIndex];
     const isCorrect = selectedAnswer === currentQuestion.iconCount;
 
@@ -68,14 +78,20 @@ export default function IconCountGame({ onBack }) {
     setTimeout(() => {
       if (isCorrect) {
         setCorrectAnswers(correctAnswers + 1);
-        
-        //Check if the round is complete
+
+        //Check if the round is ready
         if (correctAnswers + 1 === 5) {
           if (roundsCompleted < 3) {
             const newRoundsCompleted = Math.min(roundsCompleted + 1, 3);
             setRoundsCompleted(newRoundsCompleted);
             setCorrectAnswers(0);
-            Speech.speak(`Kierros ${newRoundsCompleted}/3 suoritettu`);
+            setIsRoundCompleteMessagePlaying(true); //Prevent reply during message
+
+            Speech.speak(`Kierros ${newRoundsCompleted}/3 suoritettu`, {
+              onDone: () => {
+                setIsRoundCompleteMessagePlaying(false); //Allow reply after message
+              }
+            });
           }
 
           //Next level if all three rounds are completed
@@ -131,6 +147,7 @@ export default function IconCountGame({ onBack }) {
             <TouchableOpacity
               onPress={() => handleAnswer(option)}
               style={styles.optionButton}
+              disabled={isRoundCompleteMessagePlaying || isQuestionPlaying} //Prevents pressing during a message or question
             >
               <Text style={styles.optionText}>{option}</Text>
             </TouchableOpacity>
