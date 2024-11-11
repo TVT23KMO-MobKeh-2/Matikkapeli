@@ -1,9 +1,13 @@
 import { View, Text, Button, StyleSheet } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import ModalComponent from '../components/ModalComponent'
 
-export default function Comparison({ onBack, /*level, hyphens*/ }) {
+export default function Comparison({ onBack, /*level, hyphens jne asetukset*/ }) {
   const [level, setLevel] = useState(5) // väliaikainen // Määrittää, levelin, joka on aina toinen vertailtava
   const [hyphens, setHyphens] = useState(false) // väliaikainen // Määrittää, onko tavutus käytössä (true) vai ei (false)
+  const [points, setPoints] = useState(0)//Pisteet (0-5) etenemistä varten
+  const [questionsAnswered, setQuestionsAnswered] = useState(0)//Vastatut kysymykset (0-5) kierroksen pituutta varten 
+  const [modalVisible, setModalVisible] = useState(false)//Määrittää näytetäänkö Modal
 
   const [isLevelNumberFirstComparable, setIsLevelNumberFirstComparable] = useState(true) // Määrittää, esitetäänkö tason mukainen numero vertailussa ensimmäisenä (true) vai toisena (false)
   const [comparisonXp, setComparisonXp] = useState(0) // Tämänhetkiset pisteet oikeasta vastauksesta. Kasvaa jokaisesta oikeasta vastauksesta ja vähenee väärästä.
@@ -13,6 +17,22 @@ export default function Comparison({ onBack, /*level, hyphens*/ }) {
   const [equationOperand1, setEquationOperand1] = useState(0) // Yhtälön ensimmäinen operandin arvo, käytetään laskutoimituksissa
   const [equationOperand2, setEquationOperand2] = useState(0) // Yhtälön toinen operandin arvo, käytetään laskutoimituksissa
   const [isEquationAddition, setIsEquationAddition] = useState(false) // Määrittää, onko laskutoimitus yhteenlasku (true) vai ei (false)
+
+  //Koukku jolla tarkistetaan joko kierros päättyy.
+  useEffect(() => {
+    if(questionsAnswered===5){
+      //incrementXp()
+      setModalVisible(true)
+    }
+  }, [questionsAnswered])
+  
+  // Käsittelee takaisinpaluun
+  const handleBack = () => {
+    setModalVisible(false);
+    setQuestionsAnswered(0);
+    setPoints(0);
+    onBack();
+  }
 
   // Arpoo satunnaisluvun annetulta väliltä (mukaan lukien minimi ja maksimi) ja palauttaa sen
   const drawRandomNumber = (min, max) => {
@@ -142,14 +162,16 @@ export default function Comparison({ onBack, /*level, hyphens*/ }) {
     // Lopputoimet tarkistuksen jälkeen
     if (correctAnswer) {
       setComparisonXp(prevComparisonXp => prevComparisonXp + 1) //Lisätään piste
+      setPoints(prevPoints => prevPoints + 1)
       //playSound(correct) //Toistetaan oikein-merkkiääni
     } else {
-      if (comparisonXp > 0) {
+/*       if (comparisonXp > 0) {
         setComparisonXp(prevComparisonXp => prevComparisonXp - 1) //Vähennetään piste, jos mahdollista
-       }
+       } */
       //playSound(incorrect) //Toistetaan väärin-merkkiääni
     }
-
+    // Lisätään vastattu kysymys
+    setQuestionsAnswered(prevQuestionsAnswered => prevQuestionsAnswered+1)
     // Arvotaan uudet numerot seuraavaa tehtävää varten
     drawNewNumbers()
   }
@@ -209,6 +231,11 @@ export default function Comparison({ onBack, /*level, hyphens*/ }) {
       <Text onPress={() => checkAnswer("equali")} style={styles.options} >=</Text>
       {renderComparable(2)}
       <Button title="Palaa takaisin" onPress={onBack} />
+      <ModalComponent 
+        isVisible={modalVisible}
+        taskScore={points}
+        onBack={handleBack}
+      />
     </View>
   );
 }
