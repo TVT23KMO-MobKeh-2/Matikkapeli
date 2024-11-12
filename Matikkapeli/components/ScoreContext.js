@@ -32,16 +32,16 @@ export const ScoreProvider = ({ children }) => {
 
     // Määritetään incrementXp-funktiota varten, kuinka paljon xp voi olla milläkin tasolla.
     const maxXpByLevel = {
-        1: { imageToNumber: 5, soundToNumber: 5, comparison: 0, bonds: 0 },
-        2: { imageToNumber: 10, soundToNumber: 10, comparison: 5, bonds: 0 },
-        3: { imageToNumber: 15, soundToNumber: 15, comparison: 10, bonds: 5 },
-        4: { imageToNumber: 20, soundToNumber: 20, comparison: 15, bonds: 10 },
-        5: { imageToNumber: 25, soundToNumber: 25, comparison: 20, bonds: 15 },
-        6: { imageToNumber: 30, soundToNumber: 30, comparison: 25, bonds: 20 },
-        7: { imageToNumber: 35, soundToNumber: 35, comparison: 30, bonds: 25 },
-        8: { imageToNumber: 40, soundToNumber: 40, comparison: 35, bonds: 30 },
-        9: { imageToNumber: 45, soundToNumber: 45, comparison: 40, bonds: 35 },
-        10: { imageToNumber: 50, soundToNumber: 50, comparison: 45, bonds: 40 },
+        1: { imageToNumber: 5, soundToNumber: 5, comparison: 5, bonds: 0 },
+        2: { imageToNumber: 10, soundToNumber: 10, comparison: 10, bonds: 0 },
+        3: { imageToNumber: 15, soundToNumber: 15, comparison: 15, bonds: 5 },
+        4: { imageToNumber: 20, soundToNumber: 20, comparison: 20, bonds: 10 },
+        5: { imageToNumber: 25, soundToNumber: 25, comparison: 25, bonds: 15 },
+        6: { imageToNumber: 30, soundToNumber: 30, comparison: 30, bonds: 20 },
+        7: { imageToNumber: 35, soundToNumber: 35, comparison: 35, bonds: 25 },
+        8: { imageToNumber: 40, soundToNumber: 40, comparison: 40, bonds: 30 },
+        9: { imageToNumber: 45, soundToNumber: 45, comparison: 45, bonds: 35 },
+        10: { imageToNumber: 50, soundToNumber: 50, comparison: 50, bonds: 40 },
     };
 
     // Määritetään incrementXp-funktiota varten kullekin tehtävälle xp:t ja niiden setterit
