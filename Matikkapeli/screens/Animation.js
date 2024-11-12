@@ -16,14 +16,14 @@ export default function Animation({ onBack, setSelectedTask }) {
     const [modalVisible, setModalVisible] = useState(false)
 
     const handlePress = () => {
-        setIsMoving(true); // Start moving when button is pressed
-        setIsGifVisible(true); // Make GIF visible
+        setIsMoving(true); 
+        setIsGifVisible(true); 
     };
 
     const handleReset = () => {
-        translateX.value = 750; // Reset the translateX value to 750
-        setIsMoving(false); // Stop moving
-        setIsGifVisible(false); // Hide GIF again
+        translateX.value = 750; 
+        setIsMoving(false); 
+        setIsGifVisible(false); 
         setModalVisible(false);
     };
 
@@ -77,7 +77,7 @@ export default function Animation({ onBack, setSelectedTask }) {
             {modalVisible && <TaskWindow
                 modalVisible={modalVisible}
                 setModalVisible={setModalVisible}
-                onNavigate={setSelectedTask}  // Pass `setSelectedTask` here
+                onNavigate={setSelectedTask} 
             />}
 
             <View style={styles.buttonContainer1}>

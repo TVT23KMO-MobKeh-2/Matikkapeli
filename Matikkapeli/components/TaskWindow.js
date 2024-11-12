@@ -24,7 +24,7 @@ export default function TaskWindow({ modalVisible, setModalVisible, onNavigate }
                             style={styles.taskContainer}
                             onPress={() => { 
                                 onNavigate('ImageToNumbers'); 
-                                setModalVisible(false); // Close modal after selecting task
+                                setModalVisible(false); 
                             }}>
                             <Image source={apple} style={styles.taskImage} />
                         </Pressable>
@@ -32,7 +32,7 @@ export default function TaskWindow({ modalVisible, setModalVisible, onNavigate }
                             style={styles.taskContainer}
                             onPress={() => { 
                                 onNavigate('SoundToNumbers'); 
-                                setModalVisible(false); // Close modal after selecting task
+                                setModalVisible(false); 
                             }}>
                             <Image source={note} style={styles.taskImage} />
                         </Pressable>
@@ -40,7 +40,7 @@ export default function TaskWindow({ modalVisible, setModalVisible, onNavigate }
                             style={styles.taskContainer}
                             onPress={() => { 
                                 onNavigate('ComparisonOperators'); 
-                                setModalVisible(false); // Close modal after selecting task
+                                setModalVisible(false); 
                             }}>
                             <Image source={conv} style={styles.taskImage} />
                         </Pressable>
@@ -48,7 +48,7 @@ export default function TaskWindow({ modalVisible, setModalVisible, onNavigate }
                             style={styles.taskContainer}
                             onPress={() => { 
                                 onNavigate('NumberBonds'); 
-                                setModalVisible(false); // Close modal after selecting task
+                                setModalVisible(false);
                             }}>
                             <Image source={bond} style={styles.taskImage} />
                         </Pressable>
