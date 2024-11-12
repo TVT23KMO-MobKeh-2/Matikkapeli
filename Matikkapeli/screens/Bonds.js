@@ -2,6 +2,7 @@ import { View, Text, Button, StyleSheet, TextInput, ImageBackground } from 'reac
 import React, { useState, useEffect } from 'react'
 import Svg, { Line } from 'react-native-svg';
 import { Audio } from 'expo-av';
+import styles from '../styles';
 
 
 function random(min, max) {
@@ -137,75 +138,3 @@ export default function Bonds({ onBack }) {
     </ImageBackground>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  background: {
-    height: '100%',
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  lineContainer: {
-    position: 'absolute',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1,
-  },
-  taskbox: {
-    zIndex: 4,
-  },
-  title: {
-    fontSize: 24,
-    margin: 20,
-  },
-  circle: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: '#36BA98',
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: 20,
-    zIndex: 2,
-  },
-  circletext: {
-    fontSize: 40,
-    borderColor: 'black',
-    color: 'white',
-  },
-  numbers: {
-    flexDirection: 'row',
-    margin: 20,
-    zIndex: 3,
-  },
-  number1: {
-    width: 100,
-    height: 100,
-    backgroundColor: '#E9C46A',
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: 20,
-    borderRadius: 20,
-  },
-  number2: {
-    width: 100,
-    height: 100,
-    backgroundColor: '#F4A261',
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: 20,
-    borderRadius: 20,
-  },
-  numbertext: {
-    fontSize: 40,
-  },
-  input: {
-    fontSize: 40,
-  },
-});
