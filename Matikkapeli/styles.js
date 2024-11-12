@@ -236,5 +236,48 @@ foxImage: {
     width: 150, // Adjust size as needed
     height: 250, // Adjust size as needed
 },
+backgroundImage: {
+  flex: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+  margin: 20,
+},
+content: {
+  padding: 0,
+},
+headerText: {
+  fontSize: 18,
+  fontWeight: 'bold',
+  marginBottom: 10,
+  color: 'white'
+},
+taskText: {
+  fontSize: 14,
+  marginBottom: 8,
+  color: 'white'
+},
+closeText: {
+  fontSize: 16,
+  color: 'red',
+  marginTop: 20,
+},
+grid: {
+  flexDirection: 'row',
+  flexWrap: 'wrap', // Allows items to wrap in the container
+  justifyContent: 'center', // Center items
+  alignItems: 'center', // Center items vertically
+  width: '100%', // You can adjust the width as needed
+  marginTop: 30
+},
+taskContainer: {
+  width: '45%', // Each item takes almost half the width for 2 items in a row
+  justifyContent: 'center',
+  alignItems: 'center',
+  marginBottom: 10, 
+},
+taskImage: {
+  width: 60, // Adjust size as needed
+  height: 60, // Adjust size as needed
+},
 
 });
