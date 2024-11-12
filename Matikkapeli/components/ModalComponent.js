@@ -1,21 +1,17 @@
 import { View, Text, Modal, Button } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styles from '../styles';
 import * as Speech from 'expo-speech';
+import { ScoreContext } from './ScoreContext';
 
-export default function ModalComponent({ onBack, taskScore, isVisible }) {
+export default function ModalComponent({ onBack, isVisible }) {
     const [voiceFeedbackMsg, setVoiceFeedbackMsg] = useState("Tässä tämän hetkiset pisteesi")
     const [hyphens, setHyphens] = useState(false)//tilapäinen kunnes asetukset saatu Tavutus
     const [isSpeak, setIsSpeak] = useState(true)//tilapäinen  kunnes asetukset saatu Puhe
-    const playerLevel = 3 //tilapäinen kunnes saadaan pisteet johonkin
-    const totalXp = 19 //tilapäinen kunnes saadaan pisteet johonkin
-    const imageToNumberXp = 25 //tilapäinen kunnes saadaan pisteet johonkin
-    const soundToNumberXp = 25 //tilapäinen kunnes saadaan pisteet johonkin
-    const comparisonXp = 25 //tilapäinen kunnes saadaan pisteet johonkin
-    const bondsXp = 15 //tilapäinen kunnes saadaan pisteet johonkin
+    const {playerLevel,points,imageToNumberXp,soundToNumberXp,comparisonXp,bondsXp, totalXp} = useContext(ScoreContext)
 
     const feedbackMsg = (() => {
-        switch (taskScore) {
+        switch (points) {
             case 0:
                 return (!hyphens) ? "0/5 Hyvä, että yritit! Matikka on välillä tosi haastavaa. Harjoitellaan yhdessä lisää, niin ensi kerralla voi mennä paremmin!"
                     : "0/5 HY-VÄ ET-TÄ Y-RI-TIT! MA-TIK-KA ON VÄ-LIL-LÄ TO-SI HAAS-TA-VAA. HAR-JOI-TEL-LAAN YH-DES-SÄ LI-SÄÄ, NIIN EN-SI KER-RAL-LA VOI MEN-NÄ PA-REM-MIN";
@@ -41,32 +37,16 @@ export default function ModalComponent({ onBack, taskScore, isVisible }) {
     })();
 
     useEffect(() => {
-        switch (taskScore) {
-            case 0:
-                setVoiceFeedbackMsg("nolla kautta viisi! Matikka on välillä tosi haastavaa. Harjoitellaan yhdessä lisää, niin ensi kerralla voi mennä paremmin!")
-                break;
-            case 1:
-                setVoiceFeedbackMsg("yksi kautta viisi! Hyvä, sait yhden oikein! Tämä on hyvä alku, ja joka kerta opit vähän lisää. Kokeillaan yhdessä uudelleen!")
-                break;
-            case 2:
-                setVoiceFeedbackMsg("kaksi kautta viisi! Hienoa, sait jo kaksi oikein! Olet oppimassa. Jatketaan harjoittelua, niin ensi kerralla osaat vielä enemmän!")
-                break;
-            case 3:
-                setVoiceFeedbackMsg("kolme kautta viisi! Mahtavaa, sait yli puolet oikein! Olet jo tosi lähellä. Harjoitellaan vielä vähän, niin pääset vieläkin pidemmälle!")
-                break;
-            case 4:
-                setVoiceFeedbackMsg("neljä kautta viisi! Tosi hienoa! Melkein kaikki meni oikein. Vielä vähän harjoittelua, niin voit saada kaikki oikein ensi kerralla!")
-                break;
-            case 5:
-                setVoiceFeedbackMsg("viisi kautta viisi! VAU! ihan huippua! Sait kaikki oikein! Jatka samaan malliin, olet tosi taitava!")
-                break;
-            default:
-                setVoiceFeedbackMsg("Tässä tämän hetkiset pisteesi")
-                break;
-        }
-
-
-    }, [taskScore])
+        const voiceFeedback = [
+            "nolla kautta viisi! Matikka on välillä tosi haastavaa. Harjoitellaan yhdessä lisää, niin ensi kerralla voi mennä paremmin!",
+            "yksi kautta viisi! Hyvä, sait yhden oikein! Tämä on hyvä alku, ja joka kerta opit vähän lisää. Kokeillaan yhdessä uudelleen!",
+            "kaksi kautta viisi! Hienoa, sait jo kaksi oikein! Olet oppimassa. Jatketaan harjoittelua, niin ensi kerralla osaat vielä enemmän!",
+            "kolme kautta viisi! Mahtavaa, sait yli puolet oikein! Olet jo tosi lähellä. Harjoitellaan vielä vähän, niin pääset vieläkin pidemmälle!",
+            "neljä kautta viisi! Tosi hienoa! Melkein kaikki meni oikein. Vielä vähän harjoittelua, niin voit saada kaikki oikein ensi kerralla!",
+            "viisi kautta viisi! VAU! ihan huippua! Sait kaikki oikein! Jatka samaan malliin, olet tosi taitava!",
+        ];
+        setVoiceFeedbackMsg(voiceFeedback[points] || "Tässä tämän hetkiset pisteesi");
+    }, [points]);
 
 
     useEffect(() => {

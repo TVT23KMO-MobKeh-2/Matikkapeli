@@ -1,15 +1,15 @@
 import { View, Text, Button, StyleSheet } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import ModalComponent from '../components/ModalComponent'
 import * as Speech from 'expo-speech';
+import { ScoreContext } from '../components/ScoreContext';
 
-export default function Comparison({ onBack, /*level, hyphens jne aset*/ }) {
-  const [level, setLevel] = useState(5) // väliaikainen // Määrittää, levelin, joka on aina toinen vertailtava
-  const [hyphens, setHyphens] = useState(false) // väliaikainen // Määrittää, onko tavutus käytössä (true) vai ei (false)
-  const [points, setPoints] = useState(0)//Pisteet (0-5) etenemistä varten
-  const [questionsAnswered, setQuestionsAnswered] = useState(0)//Vastatut kysymykset (0-5) kierroksen pituutta varten 
+export default function Comparison({ onBack }) {
+  const [hyphens, setHyphens] = useState(false)//tilapäinen kunnes asetukset saatu Tavutus  
+  const [isSpeak, setIsSpeak] = useState(true)//tilapäinen  kunnes asetukset saatu Puhe
+  
+  const {playerLevel,points,setPoints,questionsAnswered,setQuestionsAnswered,incrementXp} = useContext(ScoreContext)
   const [modalVisible, setModalVisible] = useState(false)//Määrittää näytetäänkö Modal
-
   const [isLevelNumberFirstComparable, setIsLevelNumberFirstComparable] = useState(true) // Määrittää, esitetäänkö tason mukainen numero vertailussa ensimmäisenä (true) vai toisena (false)
   const [comparisonXp, setComparisonXp] = useState(0) // Tämänhetkiset pisteet oikeasta vastauksesta. Kasvaa jokaisesta oikeasta vastauksesta ja vähenee väärästä.
   const [isComparableEquation, setIsComparableEquation] = useState(false) // Määrittää, onko vertailtavana yhtälö vai satunnaisluku (true = yhtälö, false = satunnaisluku)
@@ -22,12 +22,11 @@ export default function Comparison({ onBack, /*level, hyphens jne aset*/ }) {
   //Koukku jolla tarkistetaan joko kierros päättyy.
   useEffect(() => {
     if(questionsAnswered===5){
-      //incrementXp(points,"comparsion")
+      incrementXp(points,"comparison")
       setModalVisible(true)
     }
   }, [questionsAnswered])
   
-  // Käsittelee takaisinpaluun
   const handleBack = () => {
     Speech.stop()
     setModalVisible(false);
@@ -114,53 +113,57 @@ export default function Comparison({ onBack, /*level, hyphens jne aset*/ }) {
 
     //Asetetaan vastauksen ja vertailtavan arvot annettua vastausta vastaavasti
     switch (answer) {
-      case "leveli": //Jos vastaus on "leveli", vastauksen arvoksi asetetaan level, vertailtava arvo on joko yhtälön arvo tai satunnaisluku
-        valueOfAnswer = level
+      case "leveli": //Jos vastaus on "leveli", vastauksen arvoksi asetetaan playerLevel, vertailtava arvo on joko yhtälön arvo tai satunnaisluku
+        valueOfAnswer = playerLevel
         valueOfComparable = isComparableEquation ? calculateEquation(equationOperand1, equationOperand2, isEquationAddition) : randomNumber
         break;
-      case "equationi"://Jos vastaus on "equationi", vastauksen arvoksi asetetaan yhtälön arvo ja vertailtavaksi arvoksi level
+      case "equationi"://Jos vastaus on "equationi", vastauksen arvoksi asetetaan yhtälön arvo ja vertailtavaksi arvoksi playerLevel
         valueOfAnswer = calculateEquation(equationOperand1, equationOperand2, isEquationAddition)
-        valueOfComparable = level
+        valueOfComparable = playerLevel
         break;
-      case "equali": //Jos vastaus on "equali", vastauksen arvoksi asetetaan level ja vertailtavaksi arvoksi yhtälön arvo tai satunnaisluku
+      case "equali": //Jos vastaus on "equali", vastauksen arvoksi asetetaan playerLevel ja vertailtavaksi arvoksi yhtälön arvo tai satunnaisluku
+        console.log("Yhtäsuuret")
         if (isComparableEquation) {
           valueOfComparable = calculateEquation(equationOperand1, equationOperand2, isEquationAddition)
-          valueOfAnswer = level
+          valueOfAnswer = playerLevel
         } else {
           valueOfComparable = randomNumber
-          valueOfAnswer = level
+          valueOfAnswer = playerLevel
         } //Tarkistetaan, ovatko arvot yhtäsuuret
+        console.log("Vertailtava1:",valueOfComparable)
+        console.log("Vertailtava2:",valueOfAnswer)
         if (valueOfAnswer === valueOfComparable) {
           correctAnswer = true
+          console.log("Oikein")
         }
         break;
-      case "randomnumberi":  //Jos vastaus on "randomnumberi", vastauksen arvoksi asetetaan satunnaisluku ja vertailtavaksi arvoksi level
+      case "randomnumberi":  //Jos vastaus on "randomnumberi", vastauksen arvoksi asetetaan satunnaisluku ja vertailtavaksi arvoksi playerLevel
         valueOfAnswer = randomNumber
-        valueOfComparable = level
+        valueOfComparable = playerLevel
         break;
       default:
         break;
     }
 
     //Tarkistetaan, onko vertailu oikein
-    if (lookingForBigger) {  
+    if ((lookingForBigger)&&(answer!="equali")) {  
       //Jos haetaan suurempaa, tarkistetaan, onko vastaus suurempi kuin vertailtava arvo
       if (valueOfAnswer > valueOfComparable) {
         correctAnswer = true
       }
-    } else {
+    } else if((!lookingForBigger)&&(answer!="equali")){
        //Muussa tapauksessa tarkistetaan, onko vastaus pienempi kuin vertailtava arvo
       if (valueOfAnswer < valueOfComparable) {
         correctAnswer = true
       }
     }
-    
+    console.log("correctAnswer: ",correctAnswer)
     // Lopputoimet tarkistuksen jälkeen
-    if (correctAnswer) {
+    if (correctAnswer) { //oikein
       setComparisonXp(prevComparisonXp => prevComparisonXp + 1) //Lisätään piste
       setPoints(prevPoints => prevPoints + 1)
       //playSound(correct) //Toistetaan oikein-merkkiääni
-    } else {
+    } else { // väärin
 /*       if (comparisonXp > 0) {
         setComparisonXp(prevComparisonXp => prevComparisonXp - 1) //Vähennetään piste, jos mahdollista
        } */
@@ -194,11 +197,11 @@ export default function Comparison({ onBack, /*level, hyphens jne aset*/ }) {
   const renderComparable = (comparableNumber) => {
     //Tarkistetaan, onko kyseessä tasonmukainen numero
     //Jos vertailtava numero on 1 ja isLevelNumberFirstComparable on true, tai vertailtava numero on 2 ja isLevelNumberFirstComparable on false,
-    //palautetaan tason mukainen numero (level) tekstinä
+    //palautetaan tason mukainen numero (playerLevel) tekstinä
     if ((comparableNumber === 1 && isLevelNumberFirstComparable) || (comparableNumber === 2 && !isLevelNumberFirstComparable)) {
       return (
         <Text onPress={() => checkAnswer("leveli")} style={styles.options}>
-          {level}
+          {playerLevel}
         </Text>
       );
     }
@@ -229,7 +232,6 @@ export default function Comparison({ onBack, /*level, hyphens jne aset*/ }) {
       <Button title="Palaa takaisin" onPress={onBack} />
       <ModalComponent 
         isVisible={modalVisible}
-        taskScore={points}
         onBack={handleBack}
       />
     </View>

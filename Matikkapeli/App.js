@@ -1,11 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
+import { useState } from 'react';
 import StartScreen from './screens/StartScreen';
 import ImageToNumber from './screens/ImageToNumber';
 import SoundToNumber from './screens/SoundToNumber';
 import Bonds from './screens/Bonds';
 import Comparison from './screens/Comparison';
-import { useState } from 'react';
+import { ScoreProvider } from './components/ScoreContext';
+
 
 
 export default function App() {
@@ -27,10 +29,12 @@ export default function App() {
   };
 
   return (
-    <View style={styles.container}>
-      {renderTask()} 
-      <StatusBar style="auto" />
-    </View>
+    <ScoreProvider>
+      <View style={styles.container}>
+        {renderTask()}
+        <StatusBar style="auto" />
+      </View>
+    </ScoreProvider>
   );
 }
 
