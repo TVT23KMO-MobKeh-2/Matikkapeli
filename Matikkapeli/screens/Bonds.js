@@ -91,18 +91,17 @@ export default function Bonds({ onBack }) {
       <View style={styles.container}>
         <View style={styles.taskbox}>
           <Text style={styles.title}>Hajonta</Text>
-          <View style={styles.buttonContainer}>
-            {/*<Button title="Palaa takaisin" onPress={onBack} />*/}
-          </View>
-        </View>
-        <View style={styles.circle}>
-          <Text style={styles.circletext}>{levelData}</Text>
+
         </View>
 
         <Svg height="300" width="300" style={styles.lineContainer}>
-          <Line x1="150" y1="130" x2="70" y2="230" stroke="black" strokeWidth="5" />
-          <Line x1="150" y1="130" x2="230" y2="230" stroke="black" strokeWidth="5" />
+          <Line x1="150" y1="100" x2="70" y2="230" stroke="black" strokeWidth="5" />
+          <Line x1="150" y1="100" x2="230" y2="230" stroke="black" strokeWidth="5" />
         </Svg>
+
+        <View style={styles.circle}>
+          <Text style={styles.circletext}>{levelData}</Text>
+        </View>
 
         <View style={styles.numbers}>
           <View style={styles.number1}>
@@ -133,8 +132,12 @@ export default function Bonds({ onBack }) {
           </View>
         </View>
         <Button title="Tarkista" onPress={checkAnswer}></Button>
+        <View style={styles.buttonContainer}>
+            <Button title="Palaa takaisin" onPress={onBack} />
+        </View>
 
       </View>
     </ImageBackground>
   );
 }
+

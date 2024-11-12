@@ -1,10 +1,10 @@
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
-import { View, Text, ImageBackground, Image, StyleSheet, Button } from 'react-native'
+import { View, Text, ImageBackground, Image, Button } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import styles from '../styles'
 import TaskWindow from '../components/TaskWindow'
+import styles from '../styles'
 
-export default function Animation({ onBack, setSelectedTask,onNavigate }) {
+export default function Animation({ onBack, setSelectedTask }) {
     const backgroundImageBack = require('../assets/Pixel-art-back_full.png')
     const backgroundImageFront = require('../assets/Pixel-art-front-sign_full.png')
     const translateX = useSharedValue(750)
@@ -48,7 +48,7 @@ export default function Animation({ onBack, setSelectedTask,onNavigate }) {
             <Animated.View style={[animatedStyles]}>
                 <ImageBackground
                     source={backgroundImageBack}
-                    style={[styles.background, { width: imageWidth }]}
+                    style={[styles.backgroundAnimation, { width: imageWidth }]}
                     resizeMode='cover'
                 />
             </Animated.View>

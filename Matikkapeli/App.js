@@ -26,7 +26,7 @@ export default function App() {
       case 'ComparisonOperators':
         return <Comparison onBack={() => setSelectedTask(null)} />;
       case 'Animation':
-        return <Animation onBack={() => setSelectedTask(null)} />
+        return <Animation onBack={() => setSelectedTask(null)}  setSelectedTask={setSelectedTask}/>
       default:
         return <StartScreen onNavigate={setSelectedTask} />;
     }

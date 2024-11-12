@@ -138,40 +138,103 @@ export default StyleSheet.create({
   },
   background: {
     height: '100%',
+    width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  foxContainer: {
+  lineContainer: {
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1,
+  },
+  taskbox: {
+    zIndex: 4,
+  },
+  title: {
+    fontSize: 24,
+    margin: 20,
+  },
+  circle: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: '#36BA98',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 20,
+    zIndex: 2,
+  },
+  circletext: {
+    fontSize: 40,
+    borderColor: 'black',
+    color: 'white',
+  },
+  numbers: {
+    flexDirection: 'row',
+    margin: 20,
+    zIndex: 3,
+  },
+  number1: {
+    width: 100,
+    height: 100,
+    backgroundColor: '#E9C46A',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 20,
+    borderRadius: 20,
+  },
+  number2: {
+    width: 100,
+    height: 100,
+    backgroundColor: '#F4A261',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 20,
+    borderRadius: 20,
+  },
+  numbertext: {
+    fontSize: 40,
+  },
+  input: {
+    fontSize: 40,
+  },
+  backgroundAnimation: {
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+},
+foxContainer: {
     position: 'absolute',
     bottom: 25, // Position the fox a little above the bottom
     left: -150, // Start from the left side
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 3, // Position between background (zIndex: 1) and overlay (zIndex: 3)
-  },
-  overlayContainer: {
+},
+overlayContainer: {
     position: 'absolute',
     width: 2250,
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 4, // Ensure overlay is on top
-  },
-  overlayImage: {
+    zIndex: 2, // Ensure overlay is on top
+},
+overlayImage: {
     width: '100%', // Adjust as necessary to make the image visible
     height: '100%', // Ensure this height allows it to fit properly
-  },
-  buttonContainer1: {
+},
+buttonContainer1: {
     flexDirection: 'row',
     position: 'absolute',
     bottom: 50,
     justifyContent: 'space-between',
     width: '90%',
-    zIndex: 4,
-  },
-  foxImage: {
+    zIndex: 2,
+},
+foxImage: {
     width: 150, // Adjust size as needed
     height: 250, // Adjust size as needed
-  },
+},
 
 });
