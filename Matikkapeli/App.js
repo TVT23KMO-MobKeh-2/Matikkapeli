@@ -6,7 +6,9 @@ import ImageToNumber from './screens/ImageToNumber';
 import SoundToNumber from './screens/SoundToNumber';
 import Bonds from './screens/Bonds';
 import Comparison from './screens/Comparison';
+import Animation from './screens/Animation';
 import { ScoreProvider } from './components/ScoreContext';
+import styles from './styles';
 
 
 
@@ -23,6 +25,8 @@ export default function App() {
         return <Bonds onBack={() => setSelectedTask(null)} />;
       case 'ComparisonOperators':
         return <Comparison onBack={() => setSelectedTask(null)} />;
+      case 'Animation':
+        return <Animation onBack={() => setSelectedTask(null)}  setSelectedTask={setSelectedTask}/>
       default:
         return <StartScreen onNavigate={setSelectedTask} />;
     }
@@ -37,12 +41,3 @@ export default function App() {
     </ScoreProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
