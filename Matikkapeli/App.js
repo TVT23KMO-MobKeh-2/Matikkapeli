@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { View, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
-import { ThemeProvider } from './components/ThemeContext';  // Täällä ThemeProvider
+import { ThemeProvider } from './components/ThemeContext';
 import StartScreen from './screens/StartScreen';
 import ImageToNumber from './screens/ImageToNumber';
 import SoundToNumber from './screens/SoundToNumber';
@@ -38,7 +38,7 @@ export default function App() {
         <View style={styles.container}>
           {renderTask()}
 
-          {/* Takaisin-ikoni */}
+          {/* Takaisin-ikoni, näkyy aina asetussivulla ja muilla sivuilla */}
           {selectedTask && (
             <TouchableOpacity
               style={styles.backIcon}
@@ -48,13 +48,15 @@ export default function App() {
             </TouchableOpacity>
           )}
 
-          {/* Asetusikoni */}
-          <TouchableOpacity
-            style={styles.settingsIcon}
-            onPress={() => setSelectedTask('Settings')}
-          >
-            <Ionicons name="settings-outline" size={32} color="black" />
-          </TouchableOpacity>
+          {/* Asetusikoni, piilotetaan jos ollaan asetukset sivulla */}
+          {selectedTask !== 'Settings' && (
+            <TouchableOpacity
+              style={styles.settingsIcon}
+              onPress={() => setSelectedTask('Settings')}
+            >
+              <Ionicons name="settings-outline" size={32} color="black" />
+            </TouchableOpacity>
+          )}
 
           <StatusBar style="auto" />
         </View>
