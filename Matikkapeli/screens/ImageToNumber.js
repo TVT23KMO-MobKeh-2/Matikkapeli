@@ -1,11 +1,13 @@
-import { View, Text, Button, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from 'react';
+import { View, Text, Button, TouchableOpacity } from 'react-native';
 import { Audio } from 'expo-av';
 import * as Speech from 'expo-speech';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useTheme } from '../components/ThemeContext'; //Käytetään ThemeContextia
 import styles from '../styles';
 
-export default function IconCountGame({ onBack }) {
+export default function ImageToNumber({ onBack }) {
+  const { isDarkTheme } = useTheme(); //Haetaan teema kontekstista
   const [sound, setSound] = useState();
   const [level, setLevel] = useState(1);
   const [questionIndex, setQuestionIndex] = useState(0);
@@ -70,7 +72,7 @@ export default function IconCountGame({ onBack }) {
 
     await playSound(isCorrect);
     const responseMessage = isCorrect ? "Oikein!" : "Yritetään uudelleen!";
-    
+
     setTimeout(() => {
       Speech.speak(responseMessage);
     }, 2000);
@@ -158,10 +160,10 @@ export default function IconCountGame({ onBack }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tehtävä {questionIndex + 1}</Text>
-      <Text style={styles.level}>Taso: {level} | Kierros: {Math.min(roundsCompleted + 1, 3)}/3</Text>
-      <Text style={styles.question}>{questions[questionIndex].question}</Text>
+    <View style={[styles.container, { backgroundColor: isDarkTheme ? '#333' : '#fff' }]}>
+      <Text style={[styles.title, { color: isDarkTheme ? '#fff' : '#000' }]}>Tehtävä {questionIndex + 1}</Text>
+      <Text style={[styles.level, { color: isDarkTheme ? '#fff' : '#000' }]}>Taso: {level} | Kierros: {Math.min(roundsCompleted + 1, 3)}/3</Text>
+      <Text style={[styles.question, { color: isDarkTheme ? '#fff' : '#000' }]}>{questions[questionIndex].question}</Text>
       <View style={styles.iconContainer}>
         {renderIcons()}
       </View>
