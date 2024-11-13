@@ -1,39 +1,48 @@
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, Button, TouchableOpacity } from 'react-native';
-import React, { useState, useEffect } from 'react';
 import { Audio } from 'expo-av';
-import * as Speech from 'expo-speech';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import * as Speech from 'expo-speech';
 import styles from '../styles';
+import ModalComponent from '../components/ModalComponent';
+import { ScoreContext } from '../components/ScoreContext';
 
-export default function IconCountGame({ onBack }) {
+//A function that generates a random number between min and ma
+function random(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+export default function ImageToNumber({ onBack }) {
+  const { playerLevel, points, setPoints, questionsAnswered, setQuestionsAnswered, incrementXp } = useContext(ScoreContext);
+
   const [sound, setSound] = useState();
-  const [level, setLevel] = useState(1);
   const [questionIndex, setQuestionIndex] = useState(0);
-  const [correctAnswers, setCorrectAnswers] = useState(0);
-  const [roundsCompleted, setRoundsCompleted] = useState(0);
-  const [isReadingLevel, setIsReadingLevel] = useState(false);
   const [answered, setAnswered] = useState(false);
-  const [isRoundCompleteMessagePlaying, setIsRoundCompleteMessagePlaying] = useState(false);
-  const [isQuestionPlaying, setIsQuestionPlaying] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [gameEnded, setGameEnded] = useState(false);
+  const [isSpeechFinished, setIsSpeechFinished] = useState(false); //Follow the completion of the speech
 
-  const generateQuestions = (level) => {
+  //Create the questions
+  const generateQuestions = () => {
     const questions = [];
     for (let i = 0; i < 5; i++) {
-      const iconCount = Math.floor(Math.random() * (level + 1));
+      const iconCount = random(0, 5); //A random number of icons between 0 and 5
       questions.push({
         question: `Montako vasaraa näet näytöllä?`,
         iconCount,
-        options: Array.from({ length: level + 1 }, (_, i) => i),
+        options: Array.from({ length: 6 }, (_, i) => i), //Options 0-5
       });
     }
     return questions;
   };
 
-  const [questions, setQuestions] = useState(generateQuestions(level));
+  const [questions] = useState(generateQuestions());
 
+  //A function that plays a sound (correct/incorrect)
   async function playSound(isCorrect) {
-    const soundUri = isCorrect 
-      ? require('../assets/sounds/mixkit-game-level-completed.wav') 
+    if (gameEnded) return; //No sound is played after the game ends
+    const soundUri = isCorrect
+      ? require('../assets/sounds/mixkit-game-level-completed.wav')
       : require('../assets/sounds/mixkit-arcade-retro-game-over.wav');
 
     const { sound } = await Audio.Sound.createAsync(soundUri);
@@ -50,83 +59,60 @@ export default function IconCountGame({ onBack }) {
     return sound ? () => sound.unloadAsync() : undefined;
   }, [sound]);
 
+  //a hook that checks if the game ends
   useEffect(() => {
-    if (!isReadingLevel && questionIndex < questions.length) {
-      const currentQuestion = questions[questionIndex];
-      setIsQuestionPlaying(true); //Blocking the answer until the question has been read
-      Speech.speak(currentQuestion.question, {
-        onDone: () => setIsQuestionPlaying(false), //An answer is allowed after the question has been read
-      });
-      setAnswered(false); //Reset the answer status when a new question starts
+    if (questionsAnswered === 5) {
+      incrementXp(points, "imageToNumber");
+      setGameEnded(true);
+      setModalVisible(true); //Showing a modal when the game ends
     }
-  }, [questionIndex, questions, isReadingLevel]);
+  }, [questionsAnswered]);
 
+  //Process the answer
   const handleAnswer = async (selectedAnswer) => {
-    if (answered || isRoundCompleteMessagePlaying || isQuestionPlaying) return; //The answer is blocked if it has already been answered or the message is in progress or the question is not finished
-    setAnswered(true);
+    if (answered || gameEnded || !isSpeechFinished) return; //Make sure that the answer is only processed after the speech
 
+    setAnswered(true);
     const currentQuestion = questions[questionIndex];
     const isCorrect = selectedAnswer === currentQuestion.iconCount;
 
     await playSound(isCorrect);
-    const responseMessage = isCorrect ? "Oikein!" : "Yritetään uudelleen!";
-    
+
+    //Move on to the next question with a 3 second delay
     setTimeout(() => {
-      Speech.speak(responseMessage);
-    }, 2000);
-
-    setTimeout(() => {
-      if (isCorrect) {
-        setCorrectAnswers(correctAnswers + 1);
-
-        //Check if the round is ready
-        if (correctAnswers + 1 === 5) {
-          if (roundsCompleted < 3) {
-            const newRoundsCompleted = Math.min(roundsCompleted + 1, 3);
-            setRoundsCompleted(newRoundsCompleted);
-            setCorrectAnswers(0);
-            setIsRoundCompleteMessagePlaying(true); //Prevent reply during message
-
-            Speech.speak(`Kierros ${newRoundsCompleted}/3 suoritettu`, {
-              onDone: () => {
-                setIsRoundCompleteMessagePlaying(false); //Allow reply after message
-              }
-            });
-          }
-
-          //Next level if all three rounds are completed
-          if (roundsCompleted + 1 === 3) {
-            if (level < 10) {
-              setIsReadingLevel(true);
-              const nextLevelMessage = `Siirryt tasolle ${level + 1}!`;
-              Speech.speak(nextLevelMessage, {
-                onDone: () => {
-                  setLevel(level + 1);
-                  setRoundsCompleted(0);
-                  setQuestions(generateQuestions(level + 1));
-                  setQuestionIndex(0);
-                  setIsReadingLevel(false);
-                }
-              });
-            } else {
-              Speech.speak("Onneksi olkoon! Olet suorittanut ensimmäisen pelin!");
-              setTimeout(() => {
-                onBack();
-              }, 3000);
-            }
-          } else {
-            setQuestionIndex(0);
-          }
-        } else {
-          setQuestionIndex(questionIndex + 1);
-        }
-      } else {
-        setCorrectAnswers(0);
-        setQuestionIndex(0);
-      }
+      setQuestionIndex((prevIndex) => (prevIndex + 1) % questions.length);
     }, 3000);
+
+    //Points will be added for the correct answer
+    if (isCorrect) {
+      setPoints((prevPoints) => prevPoints + 1);
+    }
+
+    setQuestionsAnswered((prev) => prev + 1);
   };
 
+  const handleBack = () => {
+    Speech.stop();
+    setModalVisible(false);
+    setQuestionsAnswered(0);
+    setPoints(0);
+    setGameEnded(false);
+    onBack();
+  };
+
+  //Speech processing
+  useEffect(() => {
+    if (gameEnded) return; //No more questions if the game is over
+    const currentQuestion = questions[questionIndex];
+    setAnswered(false);
+    setIsSpeechFinished(false); //Reset the talk ready status before start
+
+    Speech.speak(currentQuestion.question, {
+      onDone: () => setIsSpeechFinished(true), //Set the ready state to true when the speech is finished
+    });
+  }, [questionIndex, questions, gameEnded]);
+
+  //Icons for question
   const renderIcons = () => {
     return Array.from({ length: questions[questionIndex].iconCount }).map((_, index) => (
       <MaterialCommunityIcons
@@ -139,6 +125,7 @@ export default function IconCountGame({ onBack }) {
     ));
   };
 
+  //Rendering options
   const renderOptions = () => {
     return (
       <View style={styles.optionsContainer}>
@@ -147,7 +134,6 @@ export default function IconCountGame({ onBack }) {
             <TouchableOpacity
               onPress={() => handleAnswer(option)}
               style={styles.optionButton}
-              disabled={isRoundCompleteMessagePlaying || isQuestionPlaying} //Prevents pressing during a message or question
             >
               <Text style={styles.optionText}>{option}</Text>
             </TouchableOpacity>
@@ -159,14 +145,20 @@ export default function IconCountGame({ onBack }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tehtävä {questionIndex + 1}</Text>
-      <Text style={styles.level}>Taso: {level} | Kierros: {Math.min(roundsCompleted + 1, 3)}/3</Text>
-      <Text style={styles.question}>{questions[questionIndex].question}</Text>
+      {/*Only show the question if the game is not over*/}
+      {!gameEnded && <Text style={styles.question}>{questions[questionIndex].question}</Text>}
+      
       <View style={styles.iconContainer}>
         {renderIcons()}
       </View>
       {renderOptions()}
-      <Button title="Palaa takaisin" onPress={onBack} />
+      <Button title="Palaa takaisin" onPress={handleBack} />
+      
+      {/*A ModalComponent that will appear when the game ends*/}
+      <ModalComponent
+        isVisible={modalVisible}
+        onBack={handleBack}
+      />
     </View>
   );
 }

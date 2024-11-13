@@ -1,8 +1,11 @@
 import { View, Text, Button, StyleSheet, TextInput, ImageBackground } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import Svg, { Line } from 'react-native-svg';
 import { Audio } from 'expo-av';
 import styles from '../styles';
+import * as Speech from 'expo-speech';
+import ModalComponent from '../components/ModalComponent';
+import { ScoreContext } from '../components/ScoreContext';
 
 
 function random(min, max) {
@@ -11,28 +14,29 @@ function random(min, max) {
 
 export default function Bonds({ onBack }) {
 
-  const levelData = 7;  
-  const [leftBox, setLeftBox] = useState(0);  
-  const [rightBox, setRightBox] = useState(0);  
-  const [witchBox, setWitchBox] = useState(random(0, 1));  
-  const [inputValue1, setInputValue1] = useState(''); 
-  const [inputValue2, setInputValue2] = useState('');  
-  const [sound, setSound] = useState();  
-  const [doneTasks, setDoneTasks] = useState(0); 
+  const levelData = 7;
+  const [leftBox, setLeftBox] = useState(0);
+  const [rightBox, setRightBox] = useState(0);
+  const [witchBox, setWitchBox] = useState(random(0, 1));
+  const [inputValue1, setInputValue1] = useState('');
+  const [inputValue2, setInputValue2] = useState('');
+  const [sound, setSound] = useState();
+  const [doneTasks, setDoneTasks] = useState(0);
+  const { playerLevel, points, setPoints, questionsAnswered, setQuestionsAnswered, incrementXp } = useContext(ScoreContext)
+  const [modalVisible, setModalVisible] = useState(false)
 
-  
   const correctSound = require('../assets/success.mp3');
   const wrongSound = require('../assets/fail.mp3');
-  const imagaBG = require('../assets/view6.png')  
+  const imagaBG = require('../assets/view6.png')
 
   // Funktio, joka generoi uuden pelitason
   const generateNewLevel = () => {
-    const newLeftBox = random(0, levelData);  
-    const newRightBox = levelData - newLeftBox;  
+    const newLeftBox = random(0, levelData);
+    const newRightBox = levelData - newLeftBox;
     setLeftBox(newLeftBox);
     setRightBox(newRightBox);
-    setWitchBox(random(0, 1));  
-    setInputValue1('');  
+    setWitchBox(random(0, 1));
+    setInputValue1('');
     setInputValue2('');
   };
 
@@ -59,29 +63,44 @@ export default function Bonds({ onBack }) {
   };
 
   // Funktio, joka tarkistaa käyttäjän vastauksen
+  useEffect(() => {
+    if (questionsAnswered === 5) {
+      setModalVisible(true);
+      incrementXp(points, "bonds");
+    }
+  }, [questionsAnswered]);
+
   const checkAnswer = async () => {
-    const correctAnswer = witchBox === 0 ? leftBox : rightBox;  // Oikea vastaus
-    const userAnswer = witchBox === 0 ? parseInt(inputValue1) : parseInt(inputValue2);  // Käyttäjän syöte
+    const correctAnswer = witchBox === 0 ? leftBox : rightBox;
+    const userAnswer = witchBox === 0 ? parseInt(inputValue1) : parseInt(inputValue2);
 
     if (userAnswer === correctAnswer) {
-      await playSound(true);  
+      await playSound(true);
+      setPoints((prevPoints) => prevPoints + 1);
     } else {
-      await playSound(false);  
+      await playSound(false);
     }
 
-    // Jos ei ole vielä 4 tehtävää suoritettu, luodaan uusi taso
-    if (doneTasks < 4) {
-      setDoneTasks(doneTasks + 1)
+    setQuestionsAnswered((prev) => prev + 1);
+
+    if (questionsAnswered + 1 < 5) {
       setTimeout(() => {
-        generateNewLevel()  
-      }, 2000)
-    } else {
-      
-      setTimeout(() => {
-        onBack()  
-      }, 3000)
+        generateNewLevel();
+      }, 2000);
     }
   };
+
+  const handleBack = () => {
+    Speech.stop();
+    setModalVisible(false);
+    setTimeout(() => {
+      setQuestionsAnswered(0);
+      setPoints(0);
+      onBack();
+    }, 500);
+  };
+
+
 
   return (
     <ImageBackground
@@ -112,6 +131,7 @@ export default function Bonds({ onBack }) {
                 onChangeText={setInputValue1}
                 keyboardType="numeric"
                 autoFocus={true}
+                maxLength={2}
               />
             ) : (
               <Text style={styles.numbertext}>{leftBox}</Text>
@@ -125,6 +145,7 @@ export default function Bonds({ onBack }) {
                 onChangeText={setInputValue2}
                 keyboardType="numeric"
                 autoFocus={true}
+                maxLength={2}
               />
             ) : (
               <Text style={styles.numbertext}>{rightBox}</Text>
@@ -137,7 +158,12 @@ export default function Bonds({ onBack }) {
         </View>
 
       </View>
+      <ModalComponent
+        isVisible={modalVisible}
+        onBack={handleBack}
+      />
     </ImageBackground>
+
   );
 }
 
