@@ -5,10 +5,11 @@ import * as Speech from 'expo-speech';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from '../components/ThemeContext'; //Käytetään ThemeContextia
 import { useSoundSettings } from '../components/SoundSettingsContext'; //Haetaan ääniasetukset
+import { useTaskReading } from '../components/TaskReadingContext'; //Ääneen luku käyttöön tai pois
 import styles from '../styles';
 
 export default function ImageToNumber({ onBack }) {
-  const { isDarkTheme } = useTheme(); //Haetaan teema kontekstista
+  const { isDarkTheme } = useTheme();
   const [sound, setSound] = useState();
   const [level, setLevel] = useState(1);
   const [questionIndex, setQuestionIndex] = useState(0);
@@ -18,7 +19,8 @@ export default function ImageToNumber({ onBack }) {
   const [answered, setAnswered] = useState(false);
   const [isRoundCompleteMessagePlaying, setIsRoundCompleteMessagePlaying] = useState(false);
   const [isQuestionPlaying, setIsQuestionPlaying] = useState(false);
-  const { gameSounds } = useSoundSettings(); //Haetaan gameSounds-arvo kontekstista
+  const { gameSounds } = useSoundSettings(); //Ääniasetukset
+  const { taskReading } = useTaskReading(); //Ääneen luku käyttöön tai pois
 
   const generateQuestions = (level) => {
     const questions = [];
@@ -56,18 +58,21 @@ export default function ImageToNumber({ onBack }) {
   }, [sound]);
 
   useEffect(() => {
-    if (!isReadingLevel && questionIndex < questions.length) {
-      const currentQuestion = questions[questionIndex];
-      setIsQuestionPlaying(true); //Blocking the answer until the question has been read
+    const currentQuestion = questions[questionIndex];
+    if (taskReading && !isReadingLevel && questionIndex < questions.length) {
+      setIsQuestionPlaying(true); //Estää vastaamisen ennen kysymyksen loppua
       Speech.speak(currentQuestion.question, {
-        onDone: () => setIsQuestionPlaying(false), //An answer is allowed after the question has been read
+        onDone: () => setIsQuestionPlaying(false), //Salli vastaus kun kysymys on luettu
       });
-      setAnswered(false); //Reset the answer status when a new question starts
+    } else {
+      setIsQuestionPlaying(false); //Jos taskReading on pois päältä, jatka suoraan
     }
-  }, [questionIndex, questions, isReadingLevel]);
+
+    setAnswered(false); //Resetoi vastauksen tila uuden kysymyksen alkaessa
+  }, [questionIndex, questions, isReadingLevel, taskReading]);
 
   const handleAnswer = async (selectedAnswer) => {
-    if (answered || isRoundCompleteMessagePlaying || isQuestionPlaying) return; //The answer is blocked if it has already been answered or the message is in progress or the question is not finished
+    if (answered || isRoundCompleteMessagePlaying || isQuestionPlaying) return; //Estää vastaamisen jos jo vastattu tai viesti on kesken
     setAnswered(true);
 
     const currentQuestion = questions[questionIndex];
@@ -76,45 +81,57 @@ export default function ImageToNumber({ onBack }) {
     await playSound(isCorrect);
     const responseMessage = isCorrect ? "Oikein!" : "Yritetään uudelleen!";
 
-    setTimeout(() => {
-      Speech.speak(responseMessage);
-    }, 2000);
+    if (taskReading) {
+      setTimeout(() => {
+        Speech.speak(responseMessage);
+      }, 2000);
+    }
 
     setTimeout(() => {
       if (isCorrect) {
         setCorrectAnswers(correctAnswers + 1);
 
-        //Check if the round is ready
         if (correctAnswers + 1 === 5) {
           if (roundsCompleted < 3) {
             const newRoundsCompleted = Math.min(roundsCompleted + 1, 3);
             setRoundsCompleted(newRoundsCompleted);
             setCorrectAnswers(0);
-            setIsRoundCompleteMessagePlaying(true); //Prevent reply during message
+            setIsRoundCompleteMessagePlaying(true); //Estää vastaamisen viestin aikana
 
-            Speech.speak(`Kierros ${newRoundsCompleted}/3 suoritettu`, {
-              onDone: () => {
-                setIsRoundCompleteMessagePlaying(false); //Allow reply after message
-              }
-            });
+            if (taskReading) {
+              Speech.speak(`Kierros ${newRoundsCompleted}/3 suoritettu`, {
+                onDone: () => setIsRoundCompleteMessagePlaying(false), //Salli vastaus viestin jälkeen
+              });
+            } else {
+              setIsRoundCompleteMessagePlaying(false);
+            }
           }
 
-          //Next level if all three rounds are completed
           if (roundsCompleted + 1 === 3) {
             if (level < 10) {
               setIsReadingLevel(true);
-              const nextLevelMessage = `Siirryt tasolle ${level + 1}!`;
-              Speech.speak(nextLevelMessage, {
-                onDone: () => {
-                  setLevel(level + 1);
-                  setRoundsCompleted(0);
-                  setQuestions(generateQuestions(level + 1));
-                  setQuestionIndex(0);
-                  setIsReadingLevel(false);
-                }
-              });
+              if (taskReading) {
+                const nextLevelMessage = `Siirryt tasolle ${level + 1}!`;
+                Speech.speak(nextLevelMessage, {
+                  onDone: () => {
+                    setLevel(level + 1);
+                    setRoundsCompleted(0);
+                    setQuestions(generateQuestions(level + 1));
+                    setQuestionIndex(0);
+                    setIsReadingLevel(false);
+                  }
+                });
+              } else {
+                setLevel(level + 1);
+                setRoundsCompleted(0);
+                setQuestions(generateQuestions(level + 1));
+                setQuestionIndex(0);
+                setIsReadingLevel(false);
+              }
             } else {
-              Speech.speak("Onneksi olkoon! Olet suorittanut ensimmäisen pelin!");
+              if (taskReading) {
+                Speech.speak("Onneksi olkoon! Olet suorittanut ensimmäisen pelin!");
+              }
               setTimeout(() => {
                 onBack();
               }, 3000);
@@ -152,7 +169,7 @@ export default function ImageToNumber({ onBack }) {
             <TouchableOpacity
               onPress={() => handleAnswer(option)}
               style={styles.optionButton}
-              disabled={isRoundCompleteMessagePlaying || isQuestionPlaying} //Prevents pressing during a message or question
+              disabled={isRoundCompleteMessagePlaying || isQuestionPlaying} //Estää painamisen viestin tai kysymyksen aikana
             >
               <Text style={styles.optionText}>{option}</Text>
             </TouchableOpacity>

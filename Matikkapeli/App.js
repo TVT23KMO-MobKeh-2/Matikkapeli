@@ -10,6 +10,7 @@ import Comparison from './screens/Comparison';
 import Settings from './screens/Settings';
 import { ScoreProvider } from './components/ScoreContext';
 import { SoundSettingsProvider } from './components/SoundSettingsContext';
+import { TaskReadingProvider } from './components/TaskReadingContext';
 import { Ionicons } from '@expo/vector-icons';
 import styles from './styles';
 
@@ -37,6 +38,7 @@ export default function App() {
     <ThemeProvider>
       <ScoreProvider>
         <SoundSettingsProvider>
+          <TaskReadingProvider>
           <View style={styles.container}>
             {renderTask()}
 
@@ -62,6 +64,7 @@ export default function App() {
 
             <StatusBar style="auto" />
           </View>
+          </TaskReadingProvider>
         </SoundSettingsProvider>
       </ScoreProvider>
     </ThemeProvider>

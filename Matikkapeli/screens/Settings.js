@@ -4,14 +4,15 @@ import { useTheme } from '../components/ThemeContext';
 import SliderComponent from '@react-native-community/slider';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSoundSettings } from '../components/SoundSettingsContext'; //Peliäänet on/off toimintoa varten
+import { useTaskReading } from '../components/TaskReadingContext'; //Ääneen lukua varten
 import styles from '../styles';
 
 export default function Settings() {
   const { isDarkTheme, toggleTheme } = useTheme(); //Teemaa kontekstista
   const [isToggled, setIsToggled] = useState(false);
-  const [taskReading, setTaskReading] = useState(true);
+  const { taskReading, setTaskReading } = useTaskReading(); // Import task reading context
   const [musicVolume, setMusicVolume] = useState(0.5);
-  const { gameSounds, setGameSounds } = useSoundSettings(); // Ääniasetukset kontekstista
+  const { gameSounds, setGameSounds } = useSoundSettings(); //Ääniasetukset kontekstista
 
   const handleCloseApp = () => {
     //Sulkee sovelluksen Android-laitteilla
