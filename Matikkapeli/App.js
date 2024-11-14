@@ -9,6 +9,7 @@ import Bonds from './screens/Bonds';
 import Comparison from './screens/Comparison';
 import Settings from './screens/Settings';
 import { ScoreProvider } from './components/ScoreContext';
+import { SoundSettingsProvider } from './components/SoundSettingsContext';
 import { Ionicons } from '@expo/vector-icons';
 import styles from './styles';
 
@@ -33,33 +34,35 @@ export default function App() {
   };
 
   return (
-    <ThemeProvider> 
+    <ThemeProvider>
       <ScoreProvider>
-        <View style={styles.container}>
-          {renderTask()}
+        <SoundSettingsProvider>
+          <View style={styles.container}>
+            {renderTask()}
 
-          {/* Takaisin-ikoni, näkyy aina asetussivulla ja muilla sivuilla */}
-          {selectedTask && (
-            <TouchableOpacity
-              style={styles.backIcon}
-              onPress={() => setSelectedTask(null)}
-            >
-              <Ionicons name="arrow-back" size={32} color="black" />
-            </TouchableOpacity>
-          )}
+            {/* Back icon, shown on all pages except the StartScreen */}
+            {selectedTask && (
+              <TouchableOpacity
+                style={styles.backIcon}
+                onPress={() => setSelectedTask(null)}
+              >
+                <Ionicons name="arrow-back" size={32} color="black" />
+              </TouchableOpacity>
+            )}
 
-          {/* Asetusikoni, piilotetaan jos ollaan asetukset sivulla */}
-          {selectedTask !== 'Settings' && (
-            <TouchableOpacity
-              style={styles.settingsIcon}
-              onPress={() => setSelectedTask('Settings')}
-            >
-              <Ionicons name="settings-outline" size={32} color="black" />
-            </TouchableOpacity>
-          )}
+            {/* Settings icon, hidden on the Settings page */}
+            {selectedTask !== 'Settings' && (
+              <TouchableOpacity
+                style={styles.settingsIcon}
+                onPress={() => setSelectedTask('Settings')}
+              >
+                <Ionicons name="settings-outline" size={32} color="black" />
+              </TouchableOpacity>
+            )}
 
-          <StatusBar style="auto" />
-        </View>
+            <StatusBar style="auto" />
+          </View>
+        </SoundSettingsProvider>
       </ScoreProvider>
     </ThemeProvider>
   );

@@ -4,6 +4,7 @@ import { Audio } from 'expo-av';
 import * as Speech from 'expo-speech';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from '../components/ThemeContext'; //Käytetään ThemeContextia
+import { useSoundSettings } from '../components/SoundSettingsContext'; //Haetaan ääniasetukset
 import styles from '../styles';
 
 export default function ImageToNumber({ onBack }) {
@@ -17,6 +18,7 @@ export default function ImageToNumber({ onBack }) {
   const [answered, setAnswered] = useState(false);
   const [isRoundCompleteMessagePlaying, setIsRoundCompleteMessagePlaying] = useState(false);
   const [isQuestionPlaying, setIsQuestionPlaying] = useState(false);
+  const { gameSounds } = useSoundSettings(); //Haetaan gameSounds-arvo kontekstista
 
   const generateQuestions = (level) => {
     const questions = [];
@@ -34,6 +36,7 @@ export default function ImageToNumber({ onBack }) {
   const [questions, setQuestions] = useState(generateQuestions(level));
 
   async function playSound(isCorrect) {
+    if (!gameSounds) return; //Ääni pois päältä, jos gameSounds on false
     const soundUri = isCorrect 
       ? require('../assets/sounds/mixkit-game-level-completed.wav') 
       : require('../assets/sounds/mixkit-arcade-retro-game-over.wav');

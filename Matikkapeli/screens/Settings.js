@@ -3,6 +3,7 @@ import { View, Text, Button, Switch, StatusBar, BackHandler } from 'react-native
 import { useTheme } from '../components/ThemeContext';
 import SliderComponent from '@react-native-community/slider';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSoundSettings } from '../components/SoundSettingsContext'; //Peliäänet on/off toimintoa varten
 import styles from '../styles';
 
 export default function Settings() {
@@ -10,7 +11,7 @@ export default function Settings() {
   const [isToggled, setIsToggled] = useState(false);
   const [taskReading, setTaskReading] = useState(true);
   const [musicVolume, setMusicVolume] = useState(0.5);
-  const [gameSounds, setGameSounds] = useState(true);
+  const { gameSounds, setGameSounds } = useSoundSettings(); // Ääniasetukset kontekstista
 
   const handleCloseApp = () => {
     //Sulkee sovelluksen Android-laitteilla
