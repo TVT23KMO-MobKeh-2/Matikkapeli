@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Button, Switch, StatusBar, BackHandler } from 'react-native';
 import { useTheme } from '../components/ThemeContext';
 import SliderComponent from '@react-native-community/slider';
@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSoundSettings } from '../components/SoundSettingsContext'; //Peliäänet on/off
 import { useTaskReading } from '../components/TaskReadingContext'; //Tehtävien lukeminen
 import { useTaskSyllabification } from '../components/TaskSyllabificationContext'; //Tavutus
+import { useBackgroundMusic } from '../components/BackgroundMusicContext'; //Taustamusiikki
 import styles from '../styles';
 
 export default function Settings() {
@@ -13,7 +14,7 @@ export default function Settings() {
   const { taskReading, setTaskReading } = useTaskReading();
   const { taskSyllabification, setTaskSyllabification } = useTaskSyllabification(); //Käytä tavutuksen kontekstia
   const { gameSounds, setGameSounds } = useSoundSettings();
-  const [musicVolume, setMusicVolume] = useState(0.5);
+  const { isMusicPlaying, setIsMusicPlaying, setMusicVolume, musicVolume } = useBackgroundMusic(); //Taustamusiikki
 
   const handleCloseApp = () => {
     BackHandler.exitApp(); //Sulkee sovelluksen Android-laitteilla
@@ -47,6 +48,12 @@ export default function Settings() {
         <View style={styles.settingItem}>
           <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Tehtävien lukeminen</Text>
           <Switch value={taskReading} onValueChange={() => setTaskReading(!taskReading)} />
+        </View>
+
+        {/* Taustamusiikin päälle/pois */}
+        <View style={styles.settingItem}>
+          <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Taustamusiikki</Text>
+          <Switch value={isMusicPlaying} onValueChange={setIsMusicPlaying} />
         </View>
 
         {/* Taustamusiikin voimakkuus */}

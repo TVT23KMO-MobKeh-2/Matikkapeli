@@ -12,6 +12,7 @@ import { ScoreProvider } from './components/ScoreContext';
 import { SoundSettingsProvider } from './components/SoundSettingsContext';
 import { TaskReadingProvider } from './components/TaskReadingContext';
 import { TaskSyllabificationProvider } from './components/TaskSyllabificationContext';
+import { BackgroundMusicProvider } from './components/BackgroundMusicContext';
 import { Ionicons } from '@expo/vector-icons';
 import styles from './styles';
 
@@ -36,6 +37,7 @@ export default function App() {
   };
 
   return (
+<BackgroundMusicProvider>   
   <TaskSyllabificationProvider> 
     <ThemeProvider>
       <ScoreProvider>
@@ -71,5 +73,6 @@ export default function App() {
       </ScoreProvider>
     </ThemeProvider>
   </TaskSyllabificationProvider>
+</BackgroundMusicProvider>
   );
 }

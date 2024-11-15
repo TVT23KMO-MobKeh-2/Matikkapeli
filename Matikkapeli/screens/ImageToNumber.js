@@ -1,35 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Button, TouchableOpacity } from 'react-native';
-import { Audio } from 'expo-av';
 import * as Speech from 'expo-speech';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useTheme } from '../components/ThemeContext'; //Käytetään ThemeContextia
-import { useSoundSettings } from '../components/SoundSettingsContext'; //Haetaan ääniasetukset
-import { useTaskReading } from '../components/TaskReadingContext'; //Ääneen luku käyttöön tai pois
-import { useTaskSyllabification } from '../components/TaskSyllabificationContext'; // avutus
+import { useTheme } from '../components/ThemeContext';
+import { useSoundSettings } from '../components/SoundSettingsContext';
+import { useTaskReading } from '../components/TaskReadingContext';
+import { useTaskSyllabification } from '../components/TaskSyllabificationContext';
+import { Audio } from 'expo-av'; //expo-av äänten toistamiseen
 import styles from '../styles';
 
 export default function ImageToNumber({ onBack }) {
   const { isDarkTheme } = useTheme();
-  const [sound, setSound] = useState();
   const [level, setLevel] = useState(1);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [roundsCompleted, setRoundsCompleted] = useState(0);
-  const [isReadingLevel, setIsReadingLevel] = useState(false);
   const [answered, setAnswered] = useState(false);
-  const [isRoundCompleteMessagePlaying, setIsRoundCompleteMessagePlaying] = useState(false);
-  const [isQuestionPlaying, setIsQuestionPlaying] = useState(false);
-  const { gameSounds } = useSoundSettings(); //Ääniasetukset
-  const { taskReading } = useTaskReading(); //Ääneen luku käyttöön tai pois
-  const { syllabify, taskSyllabification } = useTaskSyllabification(); //Tavutus käytettävissä
+  const { gameSounds } = useSoundSettings();
+  const { taskReading } = useTaskReading();
+  const { syllabify, taskSyllabification } = useTaskSyllabification();
 
+  //Generoi kysymykset tason mukaan
   const generateQuestions = (level) => {
     const questions = [];
     for (let i = 0; i < 5; i++) {
       const iconCount = Math.floor(Math.random() * (level + 1));
       questions.push({
-        question: `Montako vasaraa näet näytöllä?`,
+        question: `Montako vasaraa näet näytöllä?`, //Kysymys
         iconCount,
         options: Array.from({ length: level + 1 }, (_, i) => i),
       });
@@ -39,120 +36,73 @@ export default function ImageToNumber({ onBack }) {
 
   const [questions, setQuestions] = useState(generateQuestions(level));
 
-  async function playSound(isCorrect) {
+  useEffect(() => {
+    setQuestions(generateQuestions(level));
+    setQuestionIndex(0); //Resetoi kysymysindeksi, kun taso muuttuu
+  }, [level]);
+
+  //Pelin äänten toistaminen
+  const playSound = async (isCorrect) => {
     if (!gameSounds) return; //Ääni pois päältä, jos gameSounds on false
-    const soundUri = isCorrect 
-      ? require('../assets/sounds/mixkit-game-level-completed.wav') 
-      : require('../assets/sounds/mixkit-arcade-retro-game-over.wav');
 
-    const { sound } = await Audio.Sound.createAsync(soundUri);
-    setSound(sound);
-    await sound.playAsync();
-    await sound.setOnPlaybackStatusUpdate((status) => {
-      if (status.didJustFinish) {
-        sound.unloadAsync();
-      }
-    });
-  }
+    try {
+      const sound = new Audio.Sound();
+      const soundUri = isCorrect
+        ? require('../assets/sounds/mixkit-game-level-completed.wav') //Oikein ääni
+        : require('../assets/sounds/mixkit-arcade-retro-game-over.wav'); //Väärin ääni
 
-  useEffect(() => {
-    return sound ? () => sound.unloadAsync() : undefined;
-  }, [sound]);
-
-  useEffect(() => {
-    const currentQuestion = questions[questionIndex];
-    if (taskReading && !isReadingLevel && questionIndex < questions.length) {
-      setIsQuestionPlaying(true); //Estää vastaamisen ennen kysymyksen loppua
-      Speech.speak(currentQuestion.question, {
-        onDone: () => setIsQuestionPlaying(false), //Salli vastaus kun kysymys on luettu
-      });
-    } else {
-      setIsQuestionPlaying(false); //Jos taskReading on pois päältä, jatka suoraan
+      await sound.loadAsync(soundUri);
+      await sound.playAsync(); //Soita ääni
+    } catch (error) {
+      console.error("Äänen toistaminen epäonnistui", error);
     }
+  };
 
-    setAnswered(false); //Resetoi vastauksen tila uuden kysymyksen alkaessa
-  }, [questionIndex, questions, isReadingLevel, taskReading]);
+  //Lue kysymys ääneen, kun se vaihtuu
+  useEffect(() => {
+    const currentQuestion = questions[questionIndex]?.question;
+    if (taskReading && currentQuestion && !answered) {
+      Speech.speak(currentQuestion); //Lue kysymys ääneen
+    }
+  }, [questionIndex, taskReading, answered]); //Hook aktivoituu, kun 'questionIndex' muuttuu
 
   const handleAnswer = async (selectedAnswer) => {
-    if (answered || isRoundCompleteMessagePlaying || isQuestionPlaying) return; //Estää vastaamisen jos jo vastattu tai viesti on kesken
+    if (answered) return; //Estää vastaamisen, jos jo vastattu
     setAnswered(true);
 
     const currentQuestion = questions[questionIndex];
     const isCorrect = selectedAnswer === currentQuestion.iconCount;
 
-    await playSound(isCorrect);
     const responseMessage = isCorrect ? "Oikein!" : "Yritetään uudelleen!";
 
     if (taskReading) {
-      setTimeout(() => {
-        Speech.speak(responseMessage);
-      }, 2000);
+      Speech.speak(responseMessage); //Puhuu heti, kun vastaus on annettu
     }
+
+    //Soita ääni oikein/väärin
+    playSound(isCorrect);
 
     setTimeout(() => {
       if (isCorrect) {
         setCorrectAnswers(correctAnswers + 1);
-
         if (correctAnswers + 1 === 5) {
           if (roundsCompleted < 3) {
             const newRoundsCompleted = Math.min(roundsCompleted + 1, 3);
             setRoundsCompleted(newRoundsCompleted);
             setCorrectAnswers(0);
-            setIsRoundCompleteMessagePlaying(true); //Estää vastaamisen viestin aikana
-
-            if (taskReading) {
-              Speech.speak(`Kierros ${newRoundsCompleted}/3 suoritettu`, {
-                onDone: () => setIsRoundCompleteMessagePlaying(false), //Salli vastaus viestin jälkeen
-              });
-            } else {
-              setIsRoundCompleteMessagePlaying(false);
-            }
           }
-
-          if (roundsCompleted + 1 === 3) {
-            if (level < 10) {
-              setIsReadingLevel(true);
-              if (taskReading) {
-                const nextLevelMessage = `Siirryt tasolle ${level + 1}!`;
-                Speech.speak(nextLevelMessage, {
-                  onDone: () => {
-                    setLevel(level + 1);
-                    setRoundsCompleted(0);
-                    setQuestions(generateQuestions(level + 1));
-                    setQuestionIndex(0);
-                    setIsReadingLevel(false);
-                  }
-                });
-              } else {
-                setLevel(level + 1);
-                setRoundsCompleted(0);
-                setQuestions(generateQuestions(level + 1));
-                setQuestionIndex(0);
-                setIsReadingLevel(false);
-              }
-            } else {
-              if (taskReading) {
-                Speech.speak("Onneksi olkoon! Olet suorittanut ensimmäisen pelin!");
-              }
-              setTimeout(() => {
-                onBack();
-              }, 3000);
-            }
-          } else {
-            setQuestionIndex(0);
-          }
-        } else {
-          setQuestionIndex(questionIndex + 1);
         }
+        setQuestionIndex(questionIndex + 1);
       } else {
         setCorrectAnswers(0);
         setQuestionIndex(0);
       }
+      setAnswered(false);
     }, 3000);
   };
 
   const renderIcons = () => {
-    return Array.from({ length: questions[questionIndex].iconCount }).map((_, index) => (
+    return Array.from({ length: questions[questionIndex]?.iconCount || 0 }).map((_, index) => (
       <MaterialCommunityIcons
         key={index}
         name="hammer"
@@ -166,12 +116,11 @@ export default function ImageToNumber({ onBack }) {
   const renderOptions = () => {
     return (
       <View style={styles.optionsContainer}>
-        {questions[questionIndex].options.map((option, index) => (
+        {questions[questionIndex]?.options.map((option, index) => (
           <View key={index} style={styles.optionWrapper}>
             <TouchableOpacity
               onPress={() => handleAnswer(option)}
               style={styles.optionButton}
-              disabled={isRoundCompleteMessagePlaying || isQuestionPlaying} //Estää painamisen viestin tai kysymyksen aikana
             >
               <Text style={styles.optionText}>{option}</Text>
             </TouchableOpacity>
@@ -181,10 +130,9 @@ export default function ImageToNumber({ onBack }) {
     );
   };
 
-  //Käytetään tavutusta, jos se on päällä
   const renderQuestionText = () => {
     const currentQuestion = questions[questionIndex];
-    const text = currentQuestion.question;
+    const text = currentQuestion?.question;
     return taskSyllabification ? syllabify(text) : text;
   };
 
