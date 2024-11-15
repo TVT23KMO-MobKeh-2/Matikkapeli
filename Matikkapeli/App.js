@@ -11,6 +11,7 @@ import Settings from './screens/Settings';
 import { ScoreProvider } from './components/ScoreContext';
 import { SoundSettingsProvider } from './components/SoundSettingsContext';
 import { TaskReadingProvider } from './components/TaskReadingContext';
+import { TaskSyllabificationProvider } from './components/TaskSyllabificationContext';
 import { Ionicons } from '@expo/vector-icons';
 import styles from './styles';
 
@@ -35,6 +36,7 @@ export default function App() {
   };
 
   return (
+  <TaskSyllabificationProvider> 
     <ThemeProvider>
       <ScoreProvider>
         <SoundSettingsProvider>
@@ -68,5 +70,6 @@ export default function App() {
         </SoundSettingsProvider>
       </ScoreProvider>
     </ThemeProvider>
+  </TaskSyllabificationProvider>
   );
 }

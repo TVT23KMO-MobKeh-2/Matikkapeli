@@ -6,6 +6,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from '../components/ThemeContext'; //Käytetään ThemeContextia
 import { useSoundSettings } from '../components/SoundSettingsContext'; //Haetaan ääniasetukset
 import { useTaskReading } from '../components/TaskReadingContext'; //Ääneen luku käyttöön tai pois
+import { useTaskSyllabification } from '../components/TaskSyllabificationContext'; // avutus
 import styles from '../styles';
 
 export default function ImageToNumber({ onBack }) {
@@ -21,6 +22,7 @@ export default function ImageToNumber({ onBack }) {
   const [isQuestionPlaying, setIsQuestionPlaying] = useState(false);
   const { gameSounds } = useSoundSettings(); //Ääniasetukset
   const { taskReading } = useTaskReading(); //Ääneen luku käyttöön tai pois
+  const { syllabify, taskSyllabification } = useTaskSyllabification(); //Tavutus käytettävissä
 
   const generateQuestions = (level) => {
     const questions = [];
@@ -179,11 +181,18 @@ export default function ImageToNumber({ onBack }) {
     );
   };
 
+  //Käytetään tavutusta, jos se on päällä
+  const renderQuestionText = () => {
+    const currentQuestion = questions[questionIndex];
+    const text = currentQuestion.question;
+    return taskSyllabification ? syllabify(text) : text;
+  };
+
   return (
     <View style={[styles.container, { backgroundColor: isDarkTheme ? '#333' : '#fff' }]}>
       <Text style={[styles.title, { color: isDarkTheme ? '#fff' : '#000' }]}>Tehtävä {questionIndex + 1}</Text>
       <Text style={[styles.level, { color: isDarkTheme ? '#fff' : '#000' }]}>Taso: {level} | Kierros: {Math.min(roundsCompleted + 1, 3)}/3</Text>
-      <Text style={[styles.question, { color: isDarkTheme ? '#fff' : '#000' }]}>{questions[questionIndex].question}</Text>
+      <Text style={[styles.question, { color: isDarkTheme ? '#fff' : '#000' }]}>{renderQuestionText()}</Text>
       <View style={styles.iconContainer}>
         {renderIcons()}
       </View>

@@ -3,20 +3,20 @@ import { View, Text, Button, Switch, StatusBar, BackHandler } from 'react-native
 import { useTheme } from '../components/ThemeContext';
 import SliderComponent from '@react-native-community/slider';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useSoundSettings } from '../components/SoundSettingsContext'; //Peliäänet on/off toimintoa varten
-import { useTaskReading } from '../components/TaskReadingContext'; //Ääneen lukua varten
+import { useSoundSettings } from '../components/SoundSettingsContext'; //Peliäänet on/off
+import { useTaskReading } from '../components/TaskReadingContext'; //Tehtävien lukeminen
+import { useTaskSyllabification } from '../components/TaskSyllabificationContext'; //Tavutus
 import styles from '../styles';
 
 export default function Settings() {
-  const { isDarkTheme, toggleTheme } = useTheme(); //Teemaa kontekstista
-  const [isToggled, setIsToggled] = useState(false);
-  const { taskReading, setTaskReading } = useTaskReading(); // Import task reading context
+  const { isDarkTheme, toggleTheme } = useTheme();
+  const { taskReading, setTaskReading } = useTaskReading();
+  const { taskSyllabification, setTaskSyllabification } = useTaskSyllabification(); //Käytä tavutuksen kontekstia
+  const { gameSounds, setGameSounds } = useSoundSettings();
   const [musicVolume, setMusicVolume] = useState(0.5);
-  const { gameSounds, setGameSounds } = useSoundSettings(); //Ääniasetukset kontekstista
 
   const handleCloseApp = () => {
-    //Sulkee sovelluksen Android-laitteilla
-    BackHandler.exitApp();
+    BackHandler.exitApp(); //Sulkee sovelluksen Android-laitteilla
   };
 
   return (
@@ -37,7 +37,10 @@ export default function Settings() {
         {/* Tavutuksen valinta */}
         <View style={styles.settingItem}>
           <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Tavutus</Text>
-          <Switch value={isToggled} onValueChange={() => setIsToggled(!isToggled)} />
+          <Switch
+            value={taskSyllabification} //Kontekstin tila
+            onValueChange={() => setTaskSyllabification(!taskSyllabification)} //Päivitä tila
+          />
         </View>
 
         {/* Tehtävien lukeminen */}
