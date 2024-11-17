@@ -1,56 +1,49 @@
-import React from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import React, { useContext } from "react";
+import { View, Text, Image, TouchableOpacity } from "react-native";
+import { ScoreContext } from "./ScoreContext"; 
+import styles from "../styles";
+//import { Settings } from "../screens/Settings"; 
+//import { UserContext } from "./UserContext"; // Esimerkki käyttäjänimen ja profiilikuvan hakemisesta
 
-const TopBarComponent = ({ profileImage, username, levelAndPoints, customStyle }) => {
+const TopBarComponent = ({ customStyle }) => {
+  const { playerLevel, points, totalXp } = useContext(ScoreContext); // Gettaa pelaajan levelin, pisteet ja kokonais Xp:n
+  //const { profileImage, username } = useContext(UserContext);  esimerkki käyttäjän profiilikuvan ja käyttäjänimen hakemisesta
+  //Kovakoodattu profiilikuvan ja käyttäjänimen esimerkki
+  const TemporaryProfileImage = require('../assets/favicon.png'); 
+  const TemporaryUsername = "Testi";
+  const TemporarySettings = require('../assets/icon.png');
+
+  const handleSettingsPress = () => {
+    console.log('Settings button pressed');
+  };
+
+  const handlePfpPress = () => {
+    console.log('Profile image pressed');
+  }; 
+
   return (
-    <View style={[styles.container, customStyle]}>
+    <View style={[styles.topBarContainer, customStyle]}>
       {/* Profile Image */}
-      <Image
-        source={profileImage}
-        style={styles.profileImage}
-        resizeMode="cover"
-      />
-
+      <TouchableOpacity onPress={handlePfpPress}>
+        <Image
+          source={TemporaryProfileImage}
+          style={styles.topBarPfp}
+          resizeMode="cover"
+        />
+      </TouchableOpacity>
       {/* User Info */}
-      <View style={styles.infoContainer}>
-        <Text style={styles.username}>{username}</Text>
-        <Text style={styles.levelAndPoints}>{levelAndPoints}</Text>
+      <View style={styles.topBarInfoContainer}>
+        <Text style={styles.topBarUsername}> {TemporaryUsername} </Text> 
+        <Text style={styles.topBarLevelAndPoints}>
+          Taso {playerLevel} | {totalXp} Kokonaispisteet
+        </Text>
       </View>
+     {/* Settings Button */}
+      <TouchableOpacity onPress={handleSettingsPress} style={styles.settingsButton}>
+        <Image source={TemporarySettings} style={styles.settingsIcon} />
+      </TouchableOpacity>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#f8f8f8",
-    padding: 10,
-    elevation: 4, // Shadow for Android
-    shadowColor: "#000", // Shadow for iOS
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  profileImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: "#ddd",
-  },
-  infoContainer: {
-    marginLeft: 10,
-    flex: 1,
-  },
-  username: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#333",
-  },
-  levelAndPoints: {
-    fontSize: 14,
-    color: "#666",
-  },
-});
 
 export default TopBarComponent;

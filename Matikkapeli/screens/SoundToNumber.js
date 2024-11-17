@@ -6,7 +6,6 @@ import { ScoreContext } from '../components/ScoreContext';
 import styles from '../styles';
 import { Audio } from 'expo-av';
 
-
 export default function SoundToNumber({ onBack }) {
   const [number, setNumber] = useState(generateRandomNumber());
   const [options, setOptions] = useState(generateOptions(number));
