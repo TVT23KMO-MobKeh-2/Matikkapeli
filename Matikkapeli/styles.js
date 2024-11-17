@@ -279,5 +279,33 @@ taskImage: {
   width: 60, // Adjust size as needed
   height: 60, // Adjust size as needed
 },
+comparisonContainer: {
+  flex: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+  backgroundColor: '#fff',
+  width: "100%"
+},
+comparisonGuideBigger: {
+  fontSize: 24,
+  textAlign: 'center',
+  marginBottom: 16,
+  backgroundColor: '#FFDE21'
+},
+comparisonGuideSmaller: {
+  fontSize: 24,
+  textAlign: 'center',
+  marginBottom: 16,
+  backgroundColor: '#00FFFF'
+},
+comparisonOptions: {
+  width: "80%",
+  height: "7%",
+  fontSize: 32,
+  textAlign: 'center',
+  textAlignVertical: 'center',
+  marginBottom: 16,
+  backgroundColor: '#3bb143'
+},
 
 });
