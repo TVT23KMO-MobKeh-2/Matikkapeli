@@ -1,10 +1,11 @@
-import { View, Text, StyleSheet, Button, TouchableOpacity } from 'react-native';
+import { View, Text, Button, TouchableOpacity } from 'react-native';
 import React, { useState, useContext, useEffect } from 'react';
 import * as Speech from 'expo-speech';
 import ModalComponent from '../components/ModalComponent'
 import { ScoreContext } from '../components/ScoreContext';
 import styles from '../styles';
 import { Audio } from 'expo-av';
+
 
 export default function SoundToNumber({ onBack }) {
   const [number, setNumber] = useState(generateRandomNumber());
