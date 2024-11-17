@@ -46,7 +46,7 @@ const TopBarComponent = ({ customStyle }) => {
           resizeMode="cover"
         />
       </TouchableOpacity>
-      
+
       {/* Käyttäjäinfo */}
       <View style={styles.topBarInfoContainer}>
         <Text style={styles.topBarUsername}> {TemporaryUsername} </Text> 
