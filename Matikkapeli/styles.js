@@ -352,4 +352,9 @@ settingsIcon: {
   height: 30,
   tintColor: "#333", 
 },
+timerText: {
+  fontSize: 24,
+  fontWeight: 'bold',
+  marginTop: 20,
+},
 });
