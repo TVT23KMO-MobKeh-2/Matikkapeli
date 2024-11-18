@@ -15,6 +15,9 @@ import { TaskSyllabificationProvider } from './components/TaskSyllabificationCon
 import { BackgroundMusicProvider } from './components/BackgroundMusicContext';
 import { Ionicons } from '@expo/vector-icons';
 import styles from './styles';
+import Animation from './screens/Animation';
+import { ScoreProvider } from './components/ScoreContext';
+import TopBarComponent from './components/TopBarComponent';
 
 export default function App() {
   const [selectedTask, setSelectedTask] = useState(null);
@@ -31,6 +34,8 @@ export default function App() {
         return <Comparison onBack={() => setSelectedTask(null)} />;
       case 'Settings':
         return <Settings onBack={() => setSelectedTask(null)} />;
+      case 'Animation':
+        return <Animation onBack={() => setSelectedTask(null)}  setSelectedTask={setSelectedTask}/>
       default:
         return <StartScreen onNavigate={setSelectedTask} />;
     }
@@ -43,8 +48,12 @@ export default function App() {
       <ScoreProvider>
         <SoundSettingsProvider>
           <TaskReadingProvider>
+            <ScoreProvider>
+             {/* Top Bar */}
+              <TopBarComponent />
           <View style={styles.container}>
             {renderTask()}
+            <StatusBar style="auto" />
 
             {/* Back icon, shown on all pages except the StartScreen */}
             {selectedTask && (
@@ -68,6 +77,7 @@ export default function App() {
 
             <StatusBar style="auto" />
           </View>
+            </ScoreProvider>
           </TaskReadingProvider>
         </SoundSettingsProvider>
       </ScoreProvider>
