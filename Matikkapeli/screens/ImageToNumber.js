@@ -1,8 +1,12 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { View, Text, Button, TouchableOpacity } from 'react-native';
-import { Audio } from 'expo-av';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Speech from 'expo-speech';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useTheme } from '../components/ThemeContext';
+import { useSoundSettings } from '../components/SoundSettingsContext';
+import { useTaskReading } from '../components/TaskReadingContext';
+import { useTaskSyllabification } from '../components/TaskSyllabificationContext';
+import { Audio } from 'expo-av'; //expo-av äänten toistamiseen
 import styles from '../styles';
 import ModalComponent from '../components/ModalComponent';
 import { ScoreContext } from '../components/ScoreContext';
@@ -14,21 +18,27 @@ function random(min, max) {
 
 export default function ImageToNumber({ onBack }) {
   const { playerLevel, points, setPoints, questionsAnswered, setQuestionsAnswered, incrementXp } = useContext(ScoreContext);
-
-  const [sound, setSound] = useState();
+  const { isDarkTheme } = useTheme();
+  const [level, setLevel] = useState(1);
   const [questionIndex, setQuestionIndex] = useState(0);
+  const [correctAnswers, setCorrectAnswers] = useState(0);
+  const [roundsCompleted, setRoundsCompleted] = useState(0);
   const [answered, setAnswered] = useState(false);
+  const { gameSounds } = useSoundSettings();
+  const { taskReading } = useTaskReading();
+  const { syllabify, taskSyllabification } = useTaskSyllabification();
   const [modalVisible, setModalVisible] = useState(false);
   const [gameEnded, setGameEnded] = useState(false);
-  const [isSpeechFinished, setIsSpeechFinished] = useState(false); //Follow the completion of the speech
+  const [isSpeechFinished, setIsSpeechFinished] = useState(false);
 
-  //Create the questions
+  //Generoi kysymykset
   const generateQuestions = () => {
+
     const questions = [];
     for (let i = 0; i < 5; i++) {
       const iconCount = random(0, 5); //A random number of icons between 0 and 5
       questions.push({
-        question: `Montako vasaraa näet näytöllä?`,
+        question: `Montako vasaraa näet näytöllä?`, //Kysymys
         iconCount,
         options: Array.from({ length: 6 }, (_, i) => i), //Options 0-5
       });
@@ -38,50 +48,74 @@ export default function ImageToNumber({ onBack }) {
 
   const [questions] = useState(generateQuestions());
 
-  //A function that plays a sound (correct/incorrect)
-  async function playSound(isCorrect) {
-    if (gameEnded) return; //No sound is played after the game ends
+const playSound = async (isCorrect) => {
+  if (!gameSounds || gameEnded) return;
+
+  try {
     const soundUri = isCorrect
       ? require('../assets/sounds/mixkit-game-level-completed.wav')
       : require('../assets/sounds/mixkit-arcade-retro-game-over.wav');
 
     const { sound } = await Audio.Sound.createAsync(soundUri);
-    setSound(sound);
     await sound.playAsync();
-    await sound.setOnPlaybackStatusUpdate((status) => {
-      if (status.didJustFinish) {
-        sound.unloadAsync();
-      }
+    sound.setOnPlaybackStatusUpdate((status) => {
+      if (status.didJustFinish) sound.unloadAsync();
+    });
+  } catch (error) {
+    console.error("Error playing sound", error);
+  }
+};
+
+
+const [isSpeechFinished, setIsSpeechFinished] = useState(false);
+
+useEffect(() => {
+  if (gameEnded) return;
+
+  const currentQuestion = questions[questionIndex];
+  setAnswered(false);
+  setIsSpeechFinished(false);
+
+  if (taskReading && currentQuestion) {
+    Speech.speak(currentQuestion.question, {
+      onDone: () => setIsSpeechFinished(true),
     });
   }
+}, [questionIndex, questions, taskReading, gameEnded]);
 
-  useEffect(() => {
-    return sound ? () => sound.unloadAsync() : undefined;
-  }, [sound]);
 
-  //a hook that checks if the game ends
-  useEffect(() => {
-    if (questionsAnswered === 5) {
-      incrementXp(points, "imageToNumber");
-      setGameEnded(true);
-      setModalVisible(true); //Showing a modal when the game ends
-    }
-  }, [questionsAnswered]);
-
-  //Process the answer
   const handleAnswer = async (selectedAnswer) => {
-    if (answered || gameEnded || !isSpeechFinished) return; //Make sure that the answer is only processed after the speech
+  if (answered || gameEnded || !isSpeechFinished) return;
 
-    setAnswered(true);
-    const currentQuestion = questions[questionIndex];
-    const isCorrect = selectedAnswer === currentQuestion.iconCount;
+  setAnswered(true);
+  const currentQuestion = questions[questionIndex];
+  const isCorrect = selectedAnswer === currentQuestion.iconCount;
 
-    await playSound(isCorrect);
+  if (taskReading) {
+    Speech.speak(isCorrect ? "Oikein!" : "Yritetään uudelleen!");
+  }
 
-    //Move on to the next question with a 3 second delay
-    setTimeout(() => {
-      setQuestionIndex((prevIndex) => (prevIndex + 1) % questions.length);
-    }, 3000);
+  await playSound(isCorrect);
+
+  // Päivitä tilat oikean vastauksen perusteella
+  if (isCorrect) {
+    setPoints((prevPoints) => prevPoints + 1);
+    setCorrectAnswers((prev) => prev + 1);
+    if (correctAnswers + 1 === 5) {
+      setRoundsCompleted((prev) => Math.min(prev + 1, 3));
+      setCorrectAnswers(0);
+    }
+  }
+
+  // Päivitä seuraava kysymys
+  setTimeout(() => {
+    setQuestionIndex((prevIndex) => (prevIndex + 1) % questions.length);
+    setAnswered(false);
+  }, 3000);
+
+  setQuestionsAnswered((prev) => prev + 1);
+};
+
 
     //Points will be added for the correct answer
     if (isCorrect) {
@@ -100,6 +134,15 @@ export default function ImageToNumber({ onBack }) {
     onBack();
   };
 
+// Pelin päättymistä tarkkaileva useEffect
+useEffect(() => {
+  if (questionsAnswered >= questions.length) {
+    setGameEnded(true);
+    setModalVisible(true);
+    incrementXp(points, "imageToNumber");
+  }
+}, [questionsAnswered]);
+
   //Speech processing
   useEffect(() => {
     if (gameEnded) return; //No more questions if the game is over
@@ -114,7 +157,7 @@ export default function ImageToNumber({ onBack }) {
 
   //Icons for question
   const renderIcons = () => {
-    return Array.from({ length: questions[questionIndex].iconCount }).map((_, index) => (
+    return Array.from({ length: questions[questionIndex]?.iconCount || 0 }).map((_, index) => (
       <MaterialCommunityIcons
         key={index}
         name="hammer"
@@ -129,7 +172,7 @@ export default function ImageToNumber({ onBack }) {
   const renderOptions = () => {
     return (
       <View style={styles.optionsContainer}>
-        {questions[questionIndex].options.map((option, index) => (
+        {questions[questionIndex]?.options.map((option, index) => (
           <View key={index} style={styles.optionWrapper}>
             <TouchableOpacity
               onPress={() => handleAnswer(option)}
@@ -143,22 +186,33 @@ export default function ImageToNumber({ onBack }) {
     );
   };
 
+  const renderQuestionText = () => {
+    const currentQuestion = questions[questionIndex];
+    const text = currentQuestion?.question;
+    return taskSyllabification ? syllabify(text) : text;
+  };
+
   return (
-    <View style={styles.container}>
-      {/*Only show the question if the game is not over*/}
-      {!gameEnded && <Text style={styles.question}>{questions[questionIndex].question}</Text>}
-      
-      <View style={styles.iconContainer}>
-        {renderIcons()}
-      </View>
-      {renderOptions()}
-      <Button title="Palaa takaisin" onPress={handleBack} />
-      
-      {/*A ModalComponent that will appear when the game ends*/}
-      <ModalComponent
-        isVisible={modalVisible}
-        onBack={handleBack}
-      />
-    </View>
-  );
+  <View style={[styles.container, { backgroundColor: isDarkTheme ? '#333' : '#fff' }]}>
+    {!gameEnded ? (
+      <>
+        <Text style={[styles.title, { color: isDarkTheme ? '#fff' : '#000' }]}>
+          Tehtävä {questionIndex + 1}/{questions.length}
+        </Text>
+        <Text style={[styles.level, { color: isDarkTheme ? '#fff' : '#000' }]}>
+          Taso: {level} | Kierros: {roundsCompleted}/3
+        </Text>
+        <Text style={[styles.question, { color: isDarkTheme ? '#fff' : '#000' }]}>
+          {renderQuestionText()}
+        </Text>
+        <View style={styles.iconContainer}>{renderIcons()}</View>
+        {renderOptions()}
+      </>
+    ) : (
+      <Text style={styles.title}>Peli päättyi!</Text>
+    )}
+    //<Button title="Palaa takaisin" onPress={handleBack} />
+    <ModalComponent isVisible={modalVisible} onBack={handleBack} />
+  </View>
+);
 }
