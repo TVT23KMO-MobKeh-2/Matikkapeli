@@ -357,4 +357,16 @@ timerText: {
   fontWeight: 'bold',
   marginTop: 20,
 },
+profilebox:{
+  flexDirection: 'row',
+  justifyContent: 'space-between'
+},
+profileImage: {
+  width: 100, // Adjust size as needed
+  height: 100, // Adjust size as needed
+  backgroundColor: '#F4A261',
+  margin: 20,
+  borderRadius: 20,
+ 
+},
 });

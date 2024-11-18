@@ -10,6 +10,7 @@ import Animation from './screens/Animation';
 import { ScoreProvider } from './components/ScoreContext';
 import styles from './styles';
 import TopBarComponent from './components/TopBarComponent';
+import ProfileScreen from './screens/ProfileScreen';
 
 
 
@@ -28,6 +29,8 @@ export default function App() {
         return <Comparison onBack={() => setSelectedTask(null)} />;
       case 'Animation':
         return <Animation onBack={() => setSelectedTask(null)}  setSelectedTask={setSelectedTask}/>
+      case 'Profile':
+        return <ProfileScreen onBack={() => setSelectedTask(null)} />;
       default:
         return <StartScreen onNavigate={setSelectedTask} />;
     }
