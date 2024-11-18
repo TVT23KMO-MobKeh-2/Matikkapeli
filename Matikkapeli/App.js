@@ -9,6 +9,7 @@ import Comparison from './screens/Comparison';
 import Animation from './screens/Animation';
 import { ScoreProvider } from './components/ScoreContext';
 import styles from './styles';
+import TopBarComponent from './components/TopBarComponent';
 
 
 
@@ -34,6 +35,8 @@ export default function App() {
 
   return (
     <ScoreProvider>
+      {/* Top Bar */}
+      <TopBarComponent />
       <View style={styles.container}>
         {renderTask()}
         <StatusBar style="auto" />
