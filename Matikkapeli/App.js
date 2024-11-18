@@ -16,7 +16,6 @@ import { BackgroundMusicProvider } from './components/BackgroundMusicContext';
 import { Ionicons } from '@expo/vector-icons';
 import styles from './styles';
 import Animation from './screens/Animation';
-import { ScoreProvider } from './components/ScoreContext';
 import TopBarComponent from './components/TopBarComponent';
 
 export default function App() {
