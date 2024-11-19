@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, addDoc, getDocs, where, query } from "firebase/firestore";
+import { getFirestore, collection, addDoc, getDocs, updateDoc, where, query } from "firebase/firestore";
 import ENV from "../env";
 
 const firebaseConfig = {
@@ -24,5 +24,6 @@ const firebaseConfig = {
     PLAYERSTATS,
     where,
     query,
-    getDocs
+    getDocs,
+    updateDoc
   }
