@@ -56,8 +56,8 @@ export default function ImageToNumber({ onBack }) {
   async function playSound(isCorrect) {
     if (!gameSounds || gameEnded) return; //Ääntä ei toisteta, jos peli on päättynyt tai äänet ovat pois päältä
     const soundUri = isCorrect
-      ? require('../assets/sounds/mixkit-game-level-completed.wav') //Oikein ääni
-      : require('../assets/sounds/mixkit-arcade-retro-game-over.wav'); //Väärin ääni
+      ? require('../assets/sounds/mixkit-achievement-bell.wav') //Oikein ääni
+      : require('../assets/sounds/mixkit-losing-bleeps.wav'); //Väärin ääni
 
     const { sound } = await Audio.Sound.createAsync(soundUri);
     setSound(sound);
