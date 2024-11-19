@@ -41,8 +41,8 @@ export default function SoundToNumber({ onBack }) {
   const playSound = async (isCorrect) => {
     setLoading(true); //napit pois käytöstä
     const soundUri = isCorrect
-      ? require('../assets/sounds/mixkit-game-level-completed.wav')
-      : require('../assets/sounds/mixkit-arcade-retro-game-over.wav');
+      ? require('../assets/sounds/mixkit-achievement-bell.wav')
+      : require('../assets/sounds/mixkit-losing-bleeps.wav');
  
     const { sound } = await Audio.Sound.createAsync(soundUri);
     setSound(sound);
