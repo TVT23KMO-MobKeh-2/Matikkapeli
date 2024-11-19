@@ -1,11 +1,11 @@
 import { createContext, useState, useEffect } from 'react';
-import { addDoc, collection, firestore, PLAYERSTATS } from '../firebase/Config';
+import { addDoc, collection, firestore, PLAYERSTATS, where, query, getDocs } from '../firebase/Config';
 
 // Luodaan konteksti, joka tarjoaa pelin tilan ja toiminnot lapsikomponenteille
 export const ScoreContext = createContext();
 
 export const ScoreProvider = ({ children }) => {
-    const [email, setEmail] = useState("isi@gmail.com")
+    const [email, setEmail] = useState("isi@gmail.com") //Tunnisteena, jos monta samannimistä Kallea
     const [playerName, setPlayerName] = useState("Irja")
     // Pelaajan taso
     const [playerLevel, setPlayerLevel] = useState(1);
@@ -14,11 +14,42 @@ export const ScoreProvider = ({ children }) => {
     const [soundToNumberXp, setSoundToNumberXp] = useState(0);
     const [comparisonXp, setComparisonXp] = useState(0);
     const [bondsXp, setBondsXp] = useState(0);
+    // KokonaisXp
+    const [totalXp, setTotalXp] = useState(comparisonXp + bondsXp + soundToNumberXp + imageToNumberXp);
+    // Kulloisestakin tehtävästä saadut pisteet ja vastattujen kysymysten määrä, joiden perusteella annetaan palaute ja päätetään tehtävä
+    const [points, setPoints] = useState(0);
+    const [questionsAnswered, setQuestionsAnswered] = useState(0);
+    // Seurataan onko taso noustu tai peli läpäisty
+    const [xpMilestone, setXpMilestone] = useState(false);
+    const [gameAchieved, setGameAchieved] = useState(false);
+    //Taulukko tasojen nousua varten
+    const xpForLevelUp = [15, 30, 50, 70, 90, 110, 130, 150, 170];
 
+    // Koukku pelaajatietojen hakuun tietokannasta
     useEffect(() => {
         recievePlayerStatsFromDatabase();
     }, [])
-    
+
+    // Koukku jolla lasketaan totalXp, kun joku XP muuttuu
+    useEffect(() => {
+        setTotalXp(comparisonXp + bondsXp + soundToNumberXp + imageToNumberXp);
+    }, [comparisonXp, bondsXp, soundToNumberXp, imageToNumberXp]);
+
+
+    //Koukku, joka tarkistaa tason nousun tai koko pelin läpäisyn ja heittää niistä alertin
+    useEffect(() => {
+        if (xpMilestone) {
+            setTimeout(() => {
+                Alert.alert('Taso noustiin!', 'Hienoa, päästään seuraavalle tasolle', [{ text: 'OK' }]);
+            }, 2000);
+        } else if (gameAchieved) {
+            setTimeout(() => {
+                Alert.alert('Peli läpäisty', 'Hienoa, pääsit pelin läpi', [{ text: 'OK' }]);
+            }, 2000);
+        }
+    }, [xpMilestone, gameAchieved]);
+
+    // Funktio pelaajatietojen tallennukseen tietokantaan
     const savePlayerStatsToDatabase = async () => {
         try {
             const docRef = await addDoc(collection(firestore, PLAYERSTATS), {
@@ -36,18 +67,21 @@ export const ScoreProvider = ({ children }) => {
         }
     }
 
+    // Funktio pelaajatietojen hakuun tietokannasta
     const recievePlayerStatsFromDatabase = async () => {
         try {
+            console.log("Haetaan tietoja sähköpostilla:", email, "ja nimellä:", playerName);
             const q = query(
-                collection(firestore, "PLAYERSTATS"),
-                where("playerName", "==", playerName), 
-                where("email", "==", email)
+                collection(firestore, PLAYERSTATS),
+                where("email", "==", email),
+                where("playerName", "==", playerName)
             );
-            const querySnapshot = await getDocs(q);
-            if (!querySnapshot.empty) {
-                const data = querySnapshot.docs[0].data();
 
-                // Päivitetään state
+            const querySnapshotWithFilters = await getDocs(q);
+            if (!querySnapshotWithFilters.empty) {
+                const data = querySnapshotWithFilters.docs[0].data();
+                console.log("Löydetyt tiedot:", data);
+
                 setImageToNumberXp(data.imageToNumberXp);
                 setSoundToNumberXp(data.soundToNumberXp);
                 setComparisonXp(data.comparisonXp);
@@ -59,23 +93,7 @@ export const ScoreProvider = ({ children }) => {
         } catch (error) {
             console.error("Virhe noudettaessa pelaajan tietoja:", error);
         }
-    }
-
-    // KokonaisXp
-    const [totalXp, setTotalXp] = useState(comparisonXp + bondsXp + soundToNumberXp + imageToNumberXp);
-    // Kulloisestakin tehtävästä saadut pisteet ja vastattujen kysymysten määrä, joiden perusteella annetaan palaute ja päätetään tehtävä
-    const [points, setPoints] = useState(0);
-    const [questionsAnswered, setQuestionsAnswered] = useState(0);
-    // Seurataan onko taso noustu tai peli läpäisty
-    const [xpMilestone, setXpMilestone] = useState(false);
-    const [gameAchieved, setGameAchieved] = useState(false);
-    //Taulukko tasojen nousua varten
-    const xpForLevelUp = [15, 30, 50, 70, 90, 110, 130, 150, 170];
-
-    // Lasketaan totalXp, kun joku XP muuttuu
-    useEffect(() => {
-        setTotalXp(comparisonXp + bondsXp + soundToNumberXp + imageToNumberXp);
-    }, [comparisonXp, bondsXp, soundToNumberXp, imageToNumberXp]);
+    };
 
     // Määritetään incrementXp-funktiota varten, kuinka paljon xp voi olla milläkin tasolla.
     const maxXpByLevel = {
@@ -107,7 +125,7 @@ export const ScoreProvider = ({ children }) => {
         // Lisätään pisteet, eli joko xp+pisteet tai tasonmukainen Xp:n maximi arvo, riippuen kumpi on pienempi
         setter(Math.min(value + points, maxXp));
 
-        // Tarkistetaan, onko päästäänkö seuraavalle tasolle tai onko koko peli läpi?
+        // Tarkistetaan, päästäänkö seuraavalle tasolle tai onko koko peli läpi?
         if (xpForLevelUp.includes(totalXp)) {
             setXpMilestone(true);
         } else if (totalXp >= 190) {
@@ -115,27 +133,17 @@ export const ScoreProvider = ({ children }) => {
         }
     };
 
-    //Efekti, joka tarkistaa tason nousun tai koko pelin läpäisyn ja heittää niistä alertin
-    useEffect(() => {
-        if (xpMilestone) {
-            setTimeout(() => {
-                Alert.alert('Taso noustiin!', 'Hienoa, päästään seuraavalle tasolle', [{ text: 'OK' }]);
-            }, 2000);
-        } else if (gameAchieved) {
-            setTimeout(() => {
-                Alert.alert('Peli läpäisty', 'Hienoa, pääsit pelin läpi', [{ text: 'OK' }]);
-            }, 2000);
-        }
-    }, [xpMilestone, gameAchieved]);
-
     return (
         <ScoreContext.Provider
             value={{
                 // Pelaajan perustiedot
+                email,
+                setEmail,
+                playerName,
+                setPlayerName,
                 playerLevel,
                 totalXp,
                 savePlayerStatsToDatabase,
-                recievePlayerStatsFromDatabase,
 
                 // Tehtäväpisteet
                 imageToNumberXp,
