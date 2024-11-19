@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from 'react';
-import { addDoc, collection, firestore, PLAYERSTATS, where, query, getDocs } from '../firebase/Config';
+import { addDoc, collection, firestore, PLAYERSTATS, where, query, getDocs, updateDoc } from '../firebase/Config';
 
 // Luodaan konteksti, joka tarjoaa pelin tilan ja toiminnot lapsikomponenteille
 export const ScoreContext = createContext();
@@ -7,6 +7,7 @@ export const ScoreContext = createContext();
 export const ScoreProvider = ({ children }) => {
     const [email, setEmail] = useState("isi@gmail.com") //Tunnisteena, jos monta samannimistä Kallea
     const [playerName, setPlayerName] = useState("Irja")
+    const [docId, setDocId] = useState("")
     // Pelaajan taso
     const [playerLevel, setPlayerLevel] = useState(1);
     // Eri tehtävien Xp:t
@@ -49,7 +50,7 @@ export const ScoreProvider = ({ children }) => {
         }
     }, [xpMilestone, gameAchieved]);
 
-    // Funktio pelaajatietojen tallennukseen tietokantaan
+    // Funktio pelaajatietojen tallennukseen tietokantaan pelin alussa
     const savePlayerStatsToDatabase = async () => {
         try {
             const docRef = await addDoc(collection(firestore, PLAYERSTATS), {
@@ -67,33 +68,60 @@ export const ScoreProvider = ({ children }) => {
         }
     }
 
-    // Funktio pelaajatietojen hakuun tietokannasta
-    const recievePlayerStatsFromDatabase = async () => {
+    const updatePlayerStatsToDatabase = async () => {
         try {
-            console.log("Haetaan tietoja sähköpostilla:", email, "ja nimellä:", playerName);
-            const q = query(
-                collection(firestore, PLAYERSTATS),
-                where("email", "==", email),
-                where("playerName", "==", playerName)
-            );
-
-            const querySnapshotWithFilters = await getDocs(q);
-            if (!querySnapshotWithFilters.empty) {
-                const data = querySnapshotWithFilters.docs[0].data();
-                console.log("Löydetyt tiedot:", data);
-
-                setImageToNumberXp(data.imageToNumberXp);
-                setSoundToNumberXp(data.soundToNumberXp);
-                setComparisonXp(data.comparisonXp);
-                setBondsXp(data.bondsXp);
-                setPlayerLevel(data.playerLevel);
-            } else {
-                console.log("Pelaajan tietoja ei löytynyt.");
-            }
+            const docRef = doc(firestore, "PLAYERSTATS", docId);
+    
+            await updateDoc(docRef, {
+                email: email,
+                playerName: playerName,
+                playerLevel: playerLevel,
+                imageToNumberXp: imageToNumberXp,
+                soundToNumberXp: soundToNumberXp,
+                comparisonXp: comparisonXp,
+                bondsXp: bondsXp
+            });
+    
+            console.log("Pelaajan tiedot päivitetty tietokantaan");
         } catch (error) {
-            console.error("Virhe noudettaessa pelaajan tietoja:", error);
+            console.error("Virhe päivittäessä tietokantaan pelaajan tietoja:", error);
         }
-    };
+    }
+    
+    // Funktio pelaajatietojen hakuun tietokannasta
+const recievePlayerStatsFromDatabase = async () => {
+    try {
+        console.log("Haetaan tietoja sähköpostilla:", email, "ja nimellä:", playerName);
+        
+        const q = query(
+            collection(firestore, PLAYERSTATS),
+            where("email", "==", email),
+            where("playerName", "==", playerName)
+        );
+
+        const querySnapshotWithFilters = await getDocs(q);
+        
+        if (!querySnapshotWithFilters.empty) {
+            const doc = querySnapshotWithFilters.docs[0];
+            const data = doc.data(); // Haetaan datasisältö
+            console.log("Löydetyt tiedot:", data);
+
+            // Päivitetään tiedot
+            setImageToNumberXp(data.imageToNumberXp);
+            setSoundToNumberXp(data.soundToNumberXp);
+            setComparisonXp(data.comparisonXp);
+            setBondsXp(data.bondsXp);
+            setPlayerLevel(data.playerLevel);
+            setDocId(doc.id);
+        } else {
+            console.log("Pelaajan tietoja ei löytynyt.");
+        }
+    } catch (error) {
+        console.error("Virhe noudettaessa pelaajan tietoja:", error);
+    }
+};
+
+    
 
     // Määritetään incrementXp-funktiota varten, kuinka paljon xp voi olla milläkin tasolla.
     const maxXpByLevel = {
