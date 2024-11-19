@@ -32,7 +32,7 @@ export default StyleSheet.create({
     marginRight: 10,
     marginBottom: 5, //Tilaa liukusäätimen ja otsikon väliin
   },
-  slider: { 
+  slider: {
     width: '80%', //Asetetaan liukusäätimen leveys keskitetysti
   },
   level: {
@@ -99,22 +99,14 @@ export default StyleSheet.create({
     marginBottom: 20,
     color: '#000', //Muuttuu tummalla teemalla
   },
-  settingsIcon: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    backgroundColor: '#f0f0f0', //Muuttuu tummalla teemalla
-    borderRadius: 50,
-    padding: 10,
-  },
-  backIcon: { 
+  backIcon: {
     position: 'absolute',
     bottom: 20, // Siirtää ikonia alaspäin 20 pikseliä
     left: 20,
     backgroundColor: '#f0f0f0', // Muuttuu tummalla teemalla
     borderRadius: 50,
     padding: 10,
-},
+  },
   background: {
     height: '100%',
     width: '100%',
@@ -128,6 +120,7 @@ export default StyleSheet.create({
     zIndex: 1,
   },
   taskbox: {
+    marginTop: 10,
     zIndex: 4,
   },
   title: {
@@ -212,207 +205,215 @@ export default StyleSheet.create({
     borderColor: 'black',
     color: 'white',
   },
-  numbers: {
-    flexDirection: 'row',
-    margin: 20,
-    zIndex: 3,
-  },
-  number1: {
-    width: 100,
-    height: 100,
-    backgroundColor: '#E9C46A',
+  overlayInstruction: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 20,
-    borderRadius: 20,
+    zIndex: 4,
   },
-  number2: {
-    width: 100,
-    height: 100,
-    backgroundColor: '#F4A261',
+
+  instructionWindow: {
+    width: 300,
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 20,
-    borderRadius: 20,
   },
-  numbertext: {
-    fontSize: 40,
+  checkButton: {
+    backgroundColor: 'brown',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
+    borderRadius: 10,
   },
-  input: {
-    fontSize: 40,
+  checkButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
+
   backgroundAnimation: {
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-},
-foxContainer: {
+  },
+  foxContainer: {
     position: 'absolute',
     bottom: 25, // Position the fox a little above the bottom
     left: -150, // Start from the left side
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 2, // Position between background (zIndex: 1) and overlay (zIndex: 3)
-},
-overlayContainer: {
+  },
+  overlayContainer: {
     position: 'absolute',
     width: 2250,
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 3, // Ensure overlay is on top
-},
-overlayImage: {
+  },
+  overlayImage: {
     width: '100%', // Adjust as necessary to make the image visible
     height: '100%', // Ensure this height allows it to fit properly
-},
-buttonContainer1: {
+  },
+  buttonContainer1: {
     flexDirection: 'row',
     position: 'absolute',
     bottom: 50,
     justifyContent: 'space-between',
     width: '90%',
     zIndex: 4,
-},
-foxImage: {
+  },
+  foxImage: {
     width: 150, // Adjust size as needed
     height: 250, // Adjust size as needed
-},
-backgroundImage: {
-  flex: 1,
-  justifyContent: 'center',
-  alignItems: 'center',
-  margin: 20,
-},
-content: {
-  padding: 0,
-  zIndex: 5,
-},
-headerText: {
-  fontSize: 18,
-  fontWeight: 'bold',
-  marginBottom: 10,
-  color: 'white'
-},
-taskText: {
-  fontSize: 14,
-  marginBottom: 8,
-  color: 'white'
-},
-closeText: {
-  fontSize: 16,
-  color: 'red',
-  marginTop: 20,
-},
-grid: {
-  flexDirection: 'row',
-  flexWrap: 'wrap', // Allows items to wrap in the container
-  justifyContent: 'center', // Center items
-  alignItems: 'center', // Center items vertically
-  width: '100%', // You can adjust the width as needed
-  marginTop: 30
-},
-taskContainer: {
-  width: '45%', // Each item takes almost half the width for 2 items in a row
-  justifyContent: 'center',
-  alignItems: 'center',
-  marginBottom: 10, 
-},
-taskImage: {
-  width: 60, // Adjust size as needed
-  height: 60, // Adjust size as needed
-},
-comparisonContainer: {
-  flex: 1,
-  justifyContent: 'center',
-  alignItems: 'center',
-  backgroundColor: '#fff',
-  width: "100%"
-},
-comparisonGuideBigger: {
-  fontSize: 24,
-  textAlign: 'center',
-  marginBottom: 16,
-  backgroundColor: '#FFDE21'
-},
-comparisonGuideSmaller: {
-  fontSize: 24,
-  textAlign: 'center',
-  marginBottom: 16,
-  backgroundColor: '#00FFFF'
-},
-comparisonOptions: {
-  width: "80%",
-  height: "7%",
-  fontSize: 32,
-  textAlign: 'center',
-  textAlignVertical: 'center',
-  marginBottom: 16,
-  backgroundColor: '#3bb143'
-},
-//!!!!! Top Bar Styles !!!!!!!
-topBarContainer: {
-  position: 'absolute',
-  top: 40,
-  left: 0,
-  right: 0,
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  backgroundColor: 'rgba(248, 248, 248, 0.7)',
-  padding: 10,
-  elevation: 4, // Shadow for Android
-  shadowColor: '#000', // Shadow for iOS
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.1,
-  shadowRadius: 4,
-  zIndex: 10,
-},
-topBarPfp: {
-  width: 50,
-  height: 50,
-  borderRadius: 25,
-  backgroundColor: '#ddd',
-},
-topBarInfoContainer: {
-  marginLeft: 10,
-  flex: 1,
-},
-topBarUsername: {
-  fontSize: 16,
-  fontWeight: 'bold',
-  color: '#333',
-},
-topBarLevelAndPoints: {
-  fontSize: 14,
-  color: '#666',
-},
-settingsButton: {
-  padding: 5, 
-},
-settingsIcon: {
-  position: 'absolute',
-  bottom: 20,
-  right: 20,
-  backgroundColor: '#f0f0f0', // Tämä muuttuu tummalla teemalla
-  borderRadius: 50,
-  padding: 10,
-},
-timerText: {
-  fontSize: 24,
-  fontWeight: 'bold',
-  marginTop: 20,
-},
-profilebox:{
-  flexDirection: 'row',
-  justifyContent: 'space-between'
-},
-profileImage: {
-  width: 100, // Adjust size as needed
-  height: 100, // Adjust size as needed
-  backgroundColor: '#F4A261',
-  margin: 20,
-  borderRadius: 20,
- 
-},
+  },
+  backgroundImage: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 20,
+  },
+  content: {
+    padding: 0,
+    zIndex: 5,
+  },
+  headerText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: 'white'
+  },
+  taskText: {
+    fontSize: 14,
+    marginBottom: 8,
+    color: 'white'
+  },
+  closeText: {
+    fontSize: 16,
+    color: 'red',
+    marginTop: 20,
+  },
+  grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap', // Allows items to wrap in the container
+    justifyContent: 'center', // Center items
+    alignItems: 'center', // Center items vertically
+    width: '100%', // You can adjust the width as needed
+    marginTop: 30
+  },
+  taskContainer: {
+    width: '45%', // Each item takes almost half the width for 2 items in a row
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  taskImage: {
+    width: 60, // Adjust size as needed
+    height: 60, // Adjust size as needed
+  },
+  comparisonContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    width: "100%"
+  },
+  comparisonGuideBigger: {
+    fontSize: 24,
+    textAlign: 'center',
+    marginBottom: 16,
+    backgroundColor: '#FFDE21'
+  },
+  comparisonGuideSmaller: {
+    fontSize: 24,
+    textAlign: 'center',
+    marginBottom: 16,
+    backgroundColor: '#00FFFF'
+  },
+  comparisonOptions: {
+    width: "80%",
+    height: "7%",
+    fontSize: 32,
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    marginBottom: 16,
+    backgroundColor: '#3bb143'
+  },
+  //!!!!! Top Bar Styles !!!!!!!
+  topBarContainer: {
+    position: 'absolute',
+    top: 40,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: 'rgba(248, 248, 248, 0.7)',
+    padding: 10,
+    elevation: 4, // Shadow for Android
+    shadowColor: '#000', // Shadow for iOS
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    zIndex: 10,
+  },
+  topBarPfp: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#ddd',
+  },
+  topBarInfoContainer: {
+    marginLeft: 10,
+    flex: 1,
+  },
+  topBarUsername: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  topBarLevelAndPoints: {
+    fontSize: 14,
+    color: '#666',
+  },
+  settingsButton: {
+    padding: 5,
+  },
+  settingsIcon: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: '#f0f0f0', // Tämä muuttuu tummalla teemalla
+    borderRadius: 50,
+    padding: 10,
+    width: 50,
+    height: 50
+  },
+  timerText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginTop: 20,
+  },
+  profilebox: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  profileImage: {
+    width: 100, // Adjust size as needed
+    height: 100, // Adjust size as needed
+    backgroundColor: '#F4A261',
+    margin: 20,
+    borderRadius: 20,
+
+  },
 });
