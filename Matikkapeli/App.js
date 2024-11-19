@@ -17,7 +17,9 @@ import { Ionicons } from '@expo/vector-icons';
 import styles from './styles';
 import Animation from './screens/Animation';
 import TopBarComponent from './components/TopBarComponent';
+import ProfileScreen from './screens/ProfileScreen';
 import { firestore } from './firebase/Config';
+
 
 export default function App() {
   const [selectedTask, setSelectedTask] = useState(null);
@@ -35,7 +37,9 @@ export default function App() {
       case 'Settings':
         return <Settings onBack={() => setSelectedTask(null)} />;
       case 'Animation':
-        return <Animation onBack={() => setSelectedTask(null)} setSelectedTask={setSelectedTask} />
+        return <Animation onBack={() => setSelectedTask(null)} setSelectedTask={setSelectedTask}/>
+      case 'Profile':
+        return <ProfileScreen onBack={() => setSelectedTask(null)} />;
       default:
         return <StartScreen onNavigate={setSelectedTask} />;
     }
