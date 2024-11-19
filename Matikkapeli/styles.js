@@ -107,14 +107,14 @@ export default StyleSheet.create({
     borderRadius: 50,
     padding: 10,
   },
-  backIcon: {
+  backIcon: { 
     position: 'absolute',
-    top: 60,
+    bottom: 20, // Siirtää ikonia alaspäin 20 pikseliä
     left: 20,
-    backgroundColor: '#f0f0f0', //Muuttuu tummalla teemalla
+    backgroundColor: '#f0f0f0', // Muuttuu tummalla teemalla
     borderRadius: 50,
     padding: 10,
-  },
+},
   background: {
     height: '100%',
     width: '100%',
@@ -252,7 +252,7 @@ foxContainer: {
     left: -150, // Start from the left side
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 3, // Position between background (zIndex: 1) and overlay (zIndex: 3)
+    zIndex: 2, // Position between background (zIndex: 1) and overlay (zIndex: 3)
 },
 overlayContainer: {
     position: 'absolute',
@@ -260,7 +260,7 @@ overlayContainer: {
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 2, // Ensure overlay is on top
+    zIndex: 3, // Ensure overlay is on top
 },
 overlayImage: {
     width: '100%', // Adjust as necessary to make the image visible
@@ -272,7 +272,7 @@ buttonContainer1: {
     bottom: 50,
     justifyContent: 'space-between',
     width: '90%',
-    zIndex: 2,
+    zIndex: 4,
 },
 foxImage: {
     width: 150, // Adjust size as needed
@@ -286,6 +286,7 @@ backgroundImage: {
 },
 content: {
   padding: 0,
+  zIndex: 5,
 },
 headerText: {
   fontSize: 18,
@@ -390,13 +391,28 @@ settingsButton: {
   padding: 5, 
 },
 settingsIcon: {
-  width: 30,
-  height: 30,
-  tintColor: "#333", 
+  position: 'absolute',
+  bottom: 20,
+  right: 20,
+  backgroundColor: '#f0f0f0', // Tämä muuttuu tummalla teemalla
+  borderRadius: 50,
+  padding: 10,
 },
 timerText: {
   fontSize: 24,
   fontWeight: 'bold',
   marginTop: 20,
+},
+profilebox:{
+  flexDirection: 'row',
+  justifyContent: 'space-between'
+},
+profileImage: {
+  width: 100, // Adjust size as needed
+  height: 100, // Adjust size as needed
+  backgroundColor: '#F4A261',
+  margin: 20,
+  borderRadius: 20,
+ 
 },
 });

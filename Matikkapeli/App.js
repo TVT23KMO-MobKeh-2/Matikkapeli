@@ -17,7 +17,9 @@ import { Ionicons } from '@expo/vector-icons';
 import styles from './styles';
 import Animation from './screens/Animation';
 import TopBarComponent from './components/TopBarComponent';
+import ProfileScreen from './screens/ProfileScreen';
 import { firestore } from './firebase/Config';
+
 
 export default function App() {
   const [selectedTask, setSelectedTask] = useState(null);
@@ -35,54 +37,54 @@ export default function App() {
       case 'Settings':
         return <Settings onBack={() => setSelectedTask(null)} />;
       case 'Animation':
-        return <Animation onBack={() => setSelectedTask(null)}  setSelectedTask={setSelectedTask}/>
+        return <Animation onBack={() => setSelectedTask(null)} setSelectedTask={setSelectedTask}/>
+      case 'Profile':
+        return <ProfileScreen onBack={() => setSelectedTask(null)} />;
       default:
         return <StartScreen onNavigate={setSelectedTask} />;
     }
   };
 
   return (
-<BackgroundMusicProvider>   
-  <TaskSyllabificationProvider> 
-    <ThemeProvider>
-      <ScoreProvider>
-        <SoundSettingsProvider>
-          <TaskReadingProvider>
-            <ScoreProvider>
-             {/* Top Bar */}
-              <TopBarComponent />
-          <View style={styles.container}>
-            {renderTask()}
-            <StatusBar style="auto" />
+    <BackgroundMusicProvider>   
+      <TaskSyllabificationProvider> 
+        <ThemeProvider>
+          <ScoreProvider>
+            <SoundSettingsProvider>
+              <TaskReadingProvider>
+                {/* Top Bar */}
+                <TopBarComponent />
+                <View style={styles.container}>
+                  {renderTask()}
+                  <StatusBar style="auto" />
 
-            {/* Back icon, shown on all pages except the StartScreen */}
-            {selectedTask && (
-              <TouchableOpacity
-                style={styles.backIcon}
-                onPress={() => setSelectedTask(null)}
-              >
-                <Ionicons name="arrow-back" size={32} color="black" />
-              </TouchableOpacity>
-            )}
+                  {/* Back icon, shown on all pages except the StartScreen */}
+                  {selectedTask && (
+                    <TouchableOpacity
+                      style={styles.backIcon}
+                      onPress={() => setSelectedTask(null)}
+                    >
+                      <Ionicons name="arrow-back" size={32} color="black" />
+                    </TouchableOpacity>
+                  )}
 
-            {/* Settings icon, hidden on the Settings page */}
-            {selectedTask !== 'Settings' && (
-              <TouchableOpacity
-                style={styles.settingsIcon}
-                onPress={() => setSelectedTask('Settings')}
-              >
-                <Ionicons name="settings-outline" size={32} color="black" />
-              </TouchableOpacity>
-            )}
+                  {/* Settings icon, hidden on the Settings page */}
+                  {selectedTask !== 'Settings' && (
+                    <TouchableOpacity
+                      style={styles.settingsIcon}
+                      onPress={() => setSelectedTask('Settings')}
+                    >
+                      <Ionicons name="settings-outline" size={32} color="black" />
+                    </TouchableOpacity>
+                  )}
 
-            <StatusBar style="auto" />
-          </View>
-            </ScoreProvider>
-          </TaskReadingProvider>
-        </SoundSettingsProvider>
-      </ScoreProvider>
-    </ThemeProvider>
-  </TaskSyllabificationProvider>
-</BackgroundMusicProvider>
+                  <StatusBar style="auto" />
+                </View>
+              </TaskReadingProvider>
+            </SoundSettingsProvider>
+          </ScoreProvider>
+        </ThemeProvider>
+      </TaskSyllabificationProvider>
+    </BackgroundMusicProvider>
   );
 }
