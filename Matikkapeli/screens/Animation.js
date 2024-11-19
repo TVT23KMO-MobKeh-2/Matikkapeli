@@ -1,8 +1,9 @@
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
-import { View, Text, ImageBackground, Image, Button } from 'react-native'
+import { View, Text, ImageBackground, Button } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import TaskWindow from '../components/TaskWindow'
 import styles from '../styles'
+import { Image } from 'expo-image';
 
 export default function Animation({ onBack, setSelectedTask }) {
     const backgroundImageBack = require('../assets/Pixel-art-back_full.png')
