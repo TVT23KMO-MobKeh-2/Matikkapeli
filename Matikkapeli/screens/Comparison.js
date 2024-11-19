@@ -1,4 +1,4 @@
-import { View, Text, Button, StyleSheet } from 'react-native'
+import { View, Text, Button } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import ModalComponent from '../components/ModalComponent'
 import * as Speech from 'expo-speech';
@@ -28,12 +28,13 @@ export default function Comparison({ onBack }) {
 
   //Koukku jolla tarkistetaan joko kierros päättyy.
   useEffect(() => {
-    if(questionsAnswered===5){
-      incrementXp(points,"comparison")
+    if (questionsAnswered === 5) {
+      incrementXp(points, "comparison")
       setModalVisible(true)
     }
   }, [questionsAnswered])
-  
+
+  //Backin handleri
   const handleBack = () => {
     Speech.stop()
     setModalVisible(false);
@@ -42,6 +43,11 @@ export default function Comparison({ onBack }) {
     onBack();
   }
 
+  // Tämä koukku suoritetaan kerran, kun komponentti on renderöity
+  useEffect(() => {
+    drawNewNumbers(); // Arvotaan ensimmäiset luvut ja asetetaan tehtävä
+  }, []);
+
   // Arpoo satunnaisluvun annetulta väliltä (mukaan lukien minimi ja maksimi) ja palauttaa sen
   const drawRandomNumber = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -49,8 +55,10 @@ export default function Comparison({ onBack }) {
 
   // Funktio uusien lukujen arpomista varten
   const drawNewNumbers = () => {
+    // Keskeytetään mahdollinen edellinen puhe
+    Speech.stop()
     // Arvotaan uusi satunnaisluku, jonka maksimiarvo riippuu comparisonXp:n arvosta
-    setRandomNumber(drawRandomNumber(0, playerLevel))
+    setRandomNumber(drawRandomNumber(0, playerLevel ))
     // Arvotaan, onko tason mukainen numero 1. vai 2. vertailtava
     setIsLevelNumberFirstComparable(drawRandomNumber(0, 1) === 1)
 
@@ -93,12 +101,12 @@ export default function Comparison({ onBack }) {
     const first = drawRandomNumber(0, comparisonXp * 0.1 + 1)
     const second = drawRandomNumber(0, comparisonXp * 0.1 + 1)
 
-    if (drawRandomNumber(0, 1) === 1) { 
+    if (drawRandomNumber(0, 1) === 1) {
       // Jos arvottu luku on 1, asetetaan yhteenlasku, arvotut luvut ja true
       setIsAddition(true)
       setOperand1(first)
       setOperand2(second)
-    } else { 
+    } else {
       // Muussa tapauksessa asetetaan vähennyslasku (false)
       // ja varmistetaan, että Operand1 on suurempi, jolloin lopputulos ei ole negatiivinen
       setIsAddition(false)
@@ -137,8 +145,8 @@ export default function Comparison({ onBack }) {
           valueOfComparable = randomNumber
           valueOfAnswer = playerLevel
         } //Tarkistetaan, ovatko arvot yhtäsuuret
-        console.log("Vertailtava1:",valueOfComparable)
-        console.log("Vertailtava2:",valueOfAnswer)
+        console.log("Vertailtava1:", valueOfComparable)
+        console.log("Vertailtava2:", valueOfAnswer)
         if (valueOfAnswer === valueOfComparable) {
           correctAnswer = true
           console.log("Oikein")
@@ -153,31 +161,31 @@ export default function Comparison({ onBack }) {
     }
 
     //Tarkistetaan, onko vertailu oikein
-    if ((lookingForBigger)&&(answer!="equali")) {  
+    if ((lookingForBigger) && (answer != "equali")) {
       //Jos haetaan suurempaa, tarkistetaan, onko vastaus suurempi kuin vertailtava arvo
       if (valueOfAnswer > valueOfComparable) {
         correctAnswer = true
       }
-    } else if((!lookingForBigger)&&(answer!="equali")){
-       //Muussa tapauksessa tarkistetaan, onko vastaus pienempi kuin vertailtava arvo
+    } else if ((!lookingForBigger) && (answer != "equali")) {
+      //Muussa tapauksessa tarkistetaan, onko vastaus pienempi kuin vertailtava arvo
       if (valueOfAnswer < valueOfComparable) {
         correctAnswer = true
       }
     }
-    console.log("correctAnswer: ",correctAnswer)
+    console.log("correctAnswer: ", correctAnswer)
     // Lopputoimet tarkistuksen jälkeen
     if (correctAnswer) { //oikein
       setComparisonXp(prevComparisonXp => prevComparisonXp + 1) //Lisätään piste
       setPoints(prevPoints => prevPoints + 1)
       //playSound(correct) //Toistetaan oikein-merkkiääni
     } else { // väärin
-/*       if (comparisonXp > 0) {
-        setComparisonXp(prevComparisonXp => prevComparisonXp - 1) //Vähennetään piste, jos mahdollista
-       } */
+      /*       if (comparisonXp > 0) {
+              setComparisonXp(prevComparisonXp => prevComparisonXp - 1) //Vähennetään piste, jos mahdollista
+             } */
       //playSound(incorrect) //Toistetaan väärin-merkkiääni
     }
     // Lisätään vastattu kysymys
-    setQuestionsAnswered(prevQuestionsAnswered => prevQuestionsAnswered+1)
+    setQuestionsAnswered(prevQuestionsAnswered => prevQuestionsAnswered + 1)
     // Arvotaan uudet numerot seuraavaa tehtävää varten
     drawNewNumbers()
   }
@@ -194,7 +202,7 @@ export default function Comparison({ onBack }) {
         : 'Valitse yhtäsuuri tai pienempi';
 
     //Määritellään tyyli sen perusteella, etsitäänkö suurempaa vai pienempää
-    const style = lookingForBigger ? styles.guideBigger : styles.guideSmaller;
+    const style = lookingForBigger ? styles.comparisonGuideBigger : styles.comparisonGuideSmaller;
 
     //Palautetaan ohjeteksti oikealla tyylillä.
     return <Text style={style}>{text}</Text>
@@ -207,7 +215,7 @@ export default function Comparison({ onBack }) {
     //palautetaan tason mukainen numero (playerLevel) tekstinä
     if ((comparableNumber === 1 && isLevelNumberFirstComparable) || (comparableNumber === 2 && !isLevelNumberFirstComparable)) {
       return (
-        <Text onPress={() => checkAnswer("leveli")} style={styles.options}>
+        <Text onPress={() => checkAnswer("leveli")} style={styles.comparisonOptions}>
           {playerLevel}
         </Text>
       );
@@ -215,13 +223,13 @@ export default function Comparison({ onBack }) {
 
     if (isComparableEquation) {  // Jos vertailtava on yhtälö, palautetaan yhtälön osat ja plus- tai miinusmerkki
       return (
-        <Text onPress={() => checkAnswer("equationi")} style={styles.options}>
+        <Text onPress={() => checkAnswer("equationi")} style={styles.comparisonOptions}>
           {equationOperand1} <Text>{isEquationAddition ? '+' : '-'}</Text> {equationOperand2}
         </Text>
       );
     } else { // Jos vertailtava ei ole yhtälöä, palautetaan satunnaisluku
       return (
-        <Text onPress={() => checkAnswer("randomnumberi")} style={styles.options}>
+        <Text onPress={() => checkAnswer("randomnumberi")} style={styles.comparisonOptions}>
           {randomNumber}
         </Text>
       );
@@ -229,15 +237,15 @@ export default function Comparison({ onBack }) {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={styles.comparisonContainer}>
       <Text style={styles.title}>Vertailu</Text>
       <Text>comparisonXp: {comparisonXp}</Text>
       {renderGuide()}
       {renderComparable(1)}
-      <Text onPress={() => checkAnswer("equali")} style={styles.options} >=</Text>
+      <Text onPress={() => checkAnswer("equali")} style={styles.comparisonOptions} >=</Text>
       {renderComparable(2)}
       <Button title="Palaa takaisin" onPress={onBack} />
-      <ModalComponent 
+      <ModalComponent
         isVisible={modalVisible}
         onBack={handleBack}
       />

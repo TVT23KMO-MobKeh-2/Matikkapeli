@@ -1,116 +1,160 @@
-import { View, Text, Button, TouchableOpacity } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { Audio } from 'expo-av';
-import * as Speech from 'expo-speech';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import * as Speech from 'expo-speech';
 import styles from '../styles';
+import ModalComponent from '../components/ModalComponent';
+import { ScoreContext } from '../components/ScoreContext';
+import { useTheme } from '../components/ThemeContext';
+import { useSoundSettings } from '../components/SoundSettingsContext';
+import { useTaskReading } from '../components/TaskReadingContext';
+import { useTaskSyllabification } from '../components/TaskSyllabificationContext';
 
-export default function IconCountGame({ onBack }) {
+//Funktio, joka generoi satunnaisen luvun väliltä min ja max
+function random(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+export default function ImageToNumber({ onBack }) {
+
+  const { points, setPoints, questionsAnswered, setQuestionsAnswered, incrementXp } = useContext(ScoreContext);
+  const { isDarkTheme } = useTheme(); //Käytetään teemakontekstia (tumma tila)
+  const { gameSounds, volume } = useSoundSettings(); //Käytetään ääniasetuksia
+  const { taskReading } = useTaskReading(); //Käytetään tehtävänlukukontekstia
+  const { syllabify, taskSyllabification } = useTaskSyllabification(); //Käytetään tavutuskontekstia
+  
   const [sound, setSound] = useState();
-  const [level, setLevel] = useState(1);
-  const [questionIndex, setQuestionIndex] = useState(0);
-  const [correctAnswers, setCorrectAnswers] = useState(0);
-  const [roundsCompleted, setRoundsCompleted] = useState(0);
-  const [isReadingLevel, setIsReadingLevel] = useState(false);
+  const [questionIndex, setQuestionIndex] = useState(0); //Nykyinen kysymyksen indeksi
+  const [answered, setAnswered] = useState(false); //Onko kysymykseen vastattu
+  const [modalVisible, setModalVisible] = useState(false); //Näytetäänkö modaalikomponentti
+  const [gameEnded, setGameEnded] = useState(false); //Onko peli päättynyt
+  const [isSpeechFinished, setIsSpeechFinished] = useState(false); //Seurataan puheen valmistumista
 
-  const generateQuestions = (level) => {
+
+  //Generoi kysymyksiä pelille
+
+  const generateQuestions = () => {
     const questions = [];
     for (let i = 0; i < 5; i++) {
-      const iconCount = Math.floor(Math.random() * (level + 1));
+      const iconCount = random(0, 10); //Satunnainen määrä vasaroita
       questions.push({
-        question: `Montako vasaraa näet näytöllä?`,
+
+        question: `Montako vasaraa näet näytöllä?`, //Kysymyksen teksti
+
         iconCount,
-        options: Array.from({ length: level + 1 }, (_, i) => i),
+        options: Array.from({ length: 11 }, (_, i) => i), //Vaihtoehdot
       });
     }
     return questions;
   };
 
-  const [questions, setQuestions] = useState(generateQuestions(level));
+  const [questions, setQuestions] = useState(generateQuestions());
 
+  //Alustetaan kysymykset ja nollataan kysymysindeksi
+  useEffect(() => {
+    setQuestions(generateQuestions());
+    setQuestionIndex(0); //Nollaa kysymysindeksi, kun peli alkaa
+  }, []);
+
+
+  // Funktio, joka toistaa oikea/väärä äänen
   async function playSound(isCorrect) {
-    const soundUri = isCorrect 
-      ? require('../assets/sounds/mixkit-game-level-completed.wav') 
-      : require('../assets/sounds/mixkit-arcade-retro-game-over.wav');
+    if (!gameSounds || gameEnded) return; //Ääntä ei toisteta, jos peli on päättynyt tai äänet ovat pois päältä
+
+    const soundUri = isCorrect
+
+      ? require('../assets/sounds/mixkit-achievement-bell.wav') //Oikein ääni
+      : require('../assets/sounds/mixkit-losing-bleeps.wav'); //Väärin ääni
 
     const { sound } = await Audio.Sound.createAsync(soundUri);
     setSound(sound);
     await sound.playAsync();
-    await sound.setOnPlaybackStatusUpdate((status) => {
+
+    await sound.setVolumeAsync(volume); //Säädä äänenvoimakkuus
+
+    //Ladataan ääni pois muistin säästämiseksi, kun se on toistettu
+    sound.setOnPlaybackStatusUpdate((status) => {
+
       if (status.didJustFinish) {
         sound.unloadAsync();
       }
     });
   }
 
+  //Tyhjennetään ääni, kun komponentti poistetaan
   useEffect(() => {
     return sound ? () => sound.unloadAsync() : undefined;
   }, [sound]);
 
+  //Tarkistetaan, onko peli päättynyt (5 kysymystä vastattu)
   useEffect(() => {
-    if (!isReadingLevel && questionIndex < questions.length) {
-      const currentQuestion = questions[questionIndex];
-      Speech.speak(currentQuestion.question);
+    if (questionsAnswered === 5) {
+      incrementXp(points, "imageToNumber"); //Päivitetään XP
+      setGameEnded(true);
+      setModalVisible(true); //Näytetään modal pelin lopussa
     }
-  }, [questionIndex, questions, isReadingLevel]);
+  }, [questionsAnswered]);
 
+  //Käyttäjän vastauksen käsittely
   const handleAnswer = async (selectedAnswer) => {
+    if (answered || gameEnded || !isSpeechFinished) return; //Estä useat vastaukset tai ei-valmiit vastaukset
+
+    setAnswered(true); //Lukitse vastaukset, kun ensimmäinen valinta tehty
     const currentQuestion = questions[questionIndex];
     const isCorrect = selectedAnswer === currentQuestion.iconCount;
 
-    await playSound(isCorrect);
+    //Palaute puheena
     const responseMessage = isCorrect ? "Oikein!" : "Yritetään uudelleen!";
-    
-    setTimeout(() => {
+    if (taskReading) {
       Speech.speak(responseMessage);
-    }, 2000);
+    }
 
+    //Toista oikein/väärin ääni
+    await playSound(isCorrect);
+
+    //Siirry seuraavaan kysymykseen viiveellä
     setTimeout(() => {
-      if (isCorrect) {
-        setCorrectAnswers(correctAnswers + 1);
-        
-        //Check if the round is complete
-        if (correctAnswers + 1 === 5) {
-          if (roundsCompleted < 3) {
-            const newRoundsCompleted = Math.min(roundsCompleted + 1, 3);
-            setRoundsCompleted(newRoundsCompleted);
-            setCorrectAnswers(0);
-            Speech.speak(`Kierros ${newRoundsCompleted}/3 suoritettu`);
-          }
-
-          //Next level if all three rounds are completed
-          if (roundsCompleted + 1 === 3) {
-            if (level < 10) {
-              setIsReadingLevel(true);
-              const nextLevelMessage = `Siirryt tasolle ${level + 1}!`;
-              Speech.speak(nextLevelMessage, {
-                onDone: () => {
-                  setLevel(level + 1);
-                  setRoundsCompleted(0);
-                  setQuestions(generateQuestions(level + 1));
-                  setQuestionIndex(0);
-                  setIsReadingLevel(false);
-                }
-              });
-            } else {
-              Speech.speak("Onneksi olkoon! Olet suorittanut ensimmäisen pelin!");
-              setTimeout(() => {
-                onBack();
-              }, 3000);
-            }
-          } else {
-            setQuestionIndex(0);
-          }
-        } else {
-          setQuestionIndex(questionIndex + 1);
-        }
-      } else {
-        setCorrectAnswers(0);
-        setQuestionIndex(0);
-      }
+      setQuestionIndex((prevIndex) => (prevIndex + 1) % questions.length);
+      setAnswered(false); //Nollaa vastauksen tila seuraavaa kysymystä varten
     }, 3000);
+
+    //Päivitä pisteet ja vastattujen kysymysten määrä
+    if (isCorrect) {
+      setPoints((prevPoints) => prevPoints + 1);
+    }
+    setQuestionsAnswered((prev) => prev + 1);
   };
 
+  
+  const handleBack = () => {
+    Speech.stop(); //Lopeta mahdollinen puhe
+    setModalVisible(false);
+    setQuestionsAnswered(0); 
+    setPoints(0); 
+    setGameEnded(false); 
+    onBack(); 
+  };
+
+  //Puheen hallinta ja valmistuminen
+  useEffect(() => {
+    if (gameEnded) return; //Ei uusia kysymyksiä, jos peli on ohi
+
+    const currentQuestion = questions[questionIndex];
+    setAnswered(false);
+    setIsSpeechFinished(false); //Resetoi puhevalmiuden tila
+
+    if (taskReading) {
+      Speech.stop(); //Lopeta mahdollinen edellinen puhe
+      Speech.speak(currentQuestion.question, {
+        onDone: () => setIsSpeechFinished(true), //Merkitään puhe valmiiksi
+      });
+    } else {
+      setIsSpeechFinished(true); //Jos puhe ei ole käytössä, aseta heti valmiiksi
+    }
+  }, [questionIndex, questions, gameEnded, taskReading]);
+
+  //Renderöi nykyisen kysymyksen ikonit
   const renderIcons = () => {
     return Array.from({ length: questions[questionIndex].iconCount }).map((_, index) => (
       <MaterialCommunityIcons
@@ -123,6 +167,7 @@ export default function IconCountGame({ onBack }) {
     ));
   };
 
+  //Renderöi vastausvaihtoehdot nykyiseen kysymykseen
   const renderOptions = () => {
     return (
       <View style={styles.optionsContainer}>
@@ -130,7 +175,8 @@ export default function IconCountGame({ onBack }) {
           <View key={index} style={styles.optionWrapper}>
             <TouchableOpacity
               onPress={() => handleAnswer(option)}
-              style={styles.optionButton}
+              style={[styles.optionButton, answered && styles.disabledButton]} //Estä painallus, jos on jo vastattu
+              disabled={answered} //Estä painallus, jos on jo vastattu
             >
               <Text style={styles.optionText}>{option}</Text>
             </TouchableOpacity>
@@ -140,16 +186,26 @@ export default function IconCountGame({ onBack }) {
     );
   };
 
+  //Renderöi kysymyksen teksti tavutuksella, jos se on käytössä
+  const renderQuestionText = () => {
+    const currentQuestion = questions[questionIndex];
+    const text = currentQuestion?.question;
+    return taskSyllabification ? syllabify(text) : text;
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tehtävä {questionIndex + 1}</Text>
-      <Text style={styles.level}>Taso: {level} | Kierros: {Math.min(roundsCompleted + 1, 3)}/3</Text>
-      <Text style={styles.question}>{questions[questionIndex].question}</Text>
+    <View style={[styles.container, { backgroundColor: isDarkTheme ? '#333' : '#fff' }]}>
+      <Text style={[styles.title, { color: isDarkTheme ? '#fff' : '#000' }]}>Tehtävä {questionIndex + 1}</Text>
+      <Text style={[styles.question, { color: isDarkTheme ? '#fff' : '#000' }]}>{renderQuestionText()}</Text>
       <View style={styles.iconContainer}>
         {renderIcons()}
       </View>
       {renderOptions()}
-      <Button title="Palaa takaisin" onPress={onBack} />
+      <ModalComponent
+        isVisible={modalVisible}
+        onBack={handleBack}
+      />
     </View>
   );
 }
+

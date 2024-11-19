@@ -1,46 +1,68 @@
-import { View, Text, Button, StyleSheet, TextInput, ImageBackground } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import { View, Text, Button, StyleSheet, TextInput, ImageBackground, TouchableWithoutFeedback, Touchable, Pressable } from 'react-native'
+import React, { useState, useEffect, useContext } from 'react'
 import Svg, { Line } from 'react-native-svg';
 import { Audio } from 'expo-av';
+import styles from '../styles';
+import * as Speech from 'expo-speech';
+import ModalComponent from '../components/ModalComponent';
+import { ScoreContext } from '../components/ScoreContext';
+import { useTheme } from '../components/ThemeContext';
+import { useSoundSettings } from '../components/SoundSettingsContext';
+import { useTaskReading } from '../components/TaskReadingContext';
+import { useTaskSyllabification } from '../components/TaskSyllabificationContext';
 
-
+// Satunnaisen arvon generointi annetulla alueella
 function random(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
 export default function Bonds({ onBack }) {
 
-  const levelData = 7;  
-  const [leftBox, setLeftBox] = useState(0);  
-  const [rightBox, setRightBox] = useState(0);  
-  const [witchBox, setWitchBox] = useState(random(0, 1));  
-  const [inputValue1, setInputValue1] = useState(''); 
-  const [inputValue2, setInputValue2] = useState('');  
-  const [sound, setSound] = useState();  
-  const [doneTasks, setDoneTasks] = useState(0); 
+  // Pelin aloitustaso ja muut tilamuuttujat
+  const levelData = 7;
+  const [leftBox, setLeftBox] = useState(0);  // Vasemman laatikon arvo
+  const [rightBox, setRightBox] = useState(0);  // Oikean laatikon arvo
+  const [witchBox, setWitchBox] = useState(random(0, 1));  // Tieto siitä, kummassa laatikossa on puuttuva luku
+  const [inputValue1, setInputValue1] = useState('');  // Käyttäjän syöte vasempaan laatikkoon
+  const [inputValue2, setInputValue2] = useState('');  // Käyttäjän syöte oikeaan laatikkoon
+  const [sound, setSound] = useState();  // Äänet, joita toistetaan vastauksen perusteella
+  const [doneTasks, setDoneTasks] = useState(0);  // Tavoitteena on vastata oikein 5 kysymykseen
+  const { playerLevel, points, setPoints, questionsAnswered, setQuestionsAnswered, incrementXp } = useContext(ScoreContext);  // Pelin pistetilanne ja XP:n käsittely
+  const [instructionVisibility, setInstructionVisibility] = useState(true);  // Näytetäänkö ohjeet pelin alussa
+  const [modalVisible, setModalVisible] = useState(false);  // Modal-ikkuna näkyvissä vai ei
+  const { isDarkTheme } = useTheme();  // Teeman väri (tumma vai vaalea)
+  const { gameSounds } = useSoundSettings();  // Pelin ääniasetukset
+  const { taskReading } = useTaskReading();  // Käytetäänkö tehtävän lukemista ääneen
+  const { syllabify, taskSyllabification } = useTaskSyllabification();  // Käytetäänkö tavutusta
+  const [isTaskChanging, setIsTaskChanging] = useState(false)
+  const [isButtonClicked, setIsButtonClicked] = useState(false)
 
-  
-  const correctSound = require('../assets/success.mp3');
-  const wrongSound = require('../assets/fail.mp3');
-  const imagaBG = require('../assets/view6.png')  
+  // Äänitiedostot oikein ja väärin vastauksille
+  const correctSound = require('../assets/sounds/mixkit-achievement-bell.wav');  // Oikea vastausääni
+  const wrongSound = require('../assets/sounds/mixkit-losing-bleeps.wav');  // Väärä vastausääni
+  const imagaBG = require('../assets/view6.png')  // Taustakuva
 
-  // Funktio, joka generoi uuden pelitason
+  // Funktio, joka generoi uuden pelitason (arvot vasemmalle ja oikealle laatikolle)
   const generateNewLevel = () => {
-    const newLeftBox = random(0, levelData);  
-    const newRightBox = levelData - newLeftBox;  
+    setIsTaskChanging(true)
+    const newLeftBox = random(0, levelData);  // Arvotaan vasemman laatikon arvo
+    const newRightBox = levelData - newLeftBox;  // Lasketaan oikean laatikon arvo
     setLeftBox(newLeftBox);
     setRightBox(newRightBox);
-    setWitchBox(random(0, 1));  
-    setInputValue1('');  
-    setInputValue2('');
+    setWitchBox(random(0, 1));  // Arvotaan, kummassa laatikossa on puuttuva luku
+    setInputValue1('');  // Tyhjennetään syötekenttä
+    setInputValue2('');  // Tyhjennetään syötekenttä
+    setTimeout(() => {
+      setIsTaskChanging(false)
+    }, 2000)
   };
 
-  // Efekti, joka generoi uuden tason aina, kun pelitaso muuttuu
+  // Efekti, joka käynnistää tason generoinnin heti, kun pelin taso muuttuu
   useEffect(() => {
     generateNewLevel();
   }, [levelData]);
 
-  // Efekti, joka purkaa äänen
+  // Efekti, joka purkaa äänitiedoston, kun komponentti poistetaan
   useEffect(() => {
     return sound
       ? () => {
@@ -51,36 +73,62 @@ export default function Bonds({ onBack }) {
 
   // Funktio, joka toistaa äänen sen mukaan, onko vastaus oikein vai väärin
   const playSound = async (isCorrect) => {
-    const soundToPlay = isCorrect ? correctSound : wrongSound;
+    const soundToPlay = isCorrect ? correctSound : wrongSound;  // Valitaan oikea ääni
     const { sound } = await Audio.Sound.createAsync(soundToPlay);
-    setSound(sound);
-    await sound.playAsync();
+    setSound(sound);  // Asetetaan äänitiedosto soittokelpoiseksi
+    await sound.playAsync();  // Soitetaan ääni
   };
+
+  // Tehtävän tarkistus (tarkistaa onko käyttäjän vastaus oikein)
+  useEffect(() => {
+    if (questionsAnswered === 5) {
+      setModalVisible(true);  // Näytetään modal-ikkuna, kun 5 kysymystä on vastattu
+      incrementXp(points, "bonds");  // Lisätään XP-pisteet
+    }
+  }, [questionsAnswered]);
 
   // Funktio, joka tarkistaa käyttäjän vastauksen
   const checkAnswer = async () => {
-    const correctAnswer = witchBox === 0 ? leftBox : rightBox;  // Oikea vastaus
-    const userAnswer = witchBox === 0 ? parseInt(inputValue1) : parseInt(inputValue2);  // Käyttäjän syöte
+    if (isButtonClicked) return
 
-    if (userAnswer === correctAnswer) {
-      await playSound(true);  
-    } else {
-      await playSound(false);  
+    setIsButtonClicked(true)
+    const correctAnswer = witchBox === 0 ? leftBox : rightBox;  // Oikea vastaus riippuu siitä, kummassa laatikossa on puuttuva luku
+    const userAnswer = witchBox === 0 ? parseInt(inputValue1) : parseInt(inputValue2);  // Käyttäjän syöte (luku)
+
+    if (userAnswer === correctAnswer) {  // Jos vastaus on oikein
+      await playSound(true);  // Soitetaan oikea ääni
+      setPoints((prevPoints) => prevPoints + 1);  // Lisätään pisteet
+    } else {  // Jos vastaus on väärin
+      await playSound(false);  // Soitetaan väärä ääni
     }
 
-    // Jos ei ole vielä 4 tehtävää suoritettu, luodaan uusi taso
-    if (doneTasks < 4) {
-      setDoneTasks(doneTasks + 1)
+    setQuestionsAnswered((prev) => prev + 1);  // Lisätään vastattujen kysymysten määrä
+
+    if (questionsAnswered + 1 < 5) {  // Jos kysymyksiä on vähemmän kuin 5, luodaan uusi taso
       setTimeout(() => {
-        generateNewLevel()  
-      }, 2000)
+        generateNewLevel();
+        setIsButtonClicked(false)
+      }, 1000);
     } else {
-      
-      setTimeout(() => {
-        onBack()  
-      }, 3000)
+      setIsButtonClicked(false)
     }
   };
+
+  // Takaisin-napin toiminnallisuus
+  const handleBack = () => {
+    Speech.stop();  // Pysäytetään mahdollinen puhe
+    setModalVisible(false);  // Piilotetaan modal-ikkuna
+    setTimeout(() => {
+      setQuestionsAnswered(0);  // Nollataan kysymykset
+      setPoints(0);  // Nollataan pisteet
+      onBack();  // Palataan edelliseen näkymään
+    }, 500);
+  };
+
+  const isButtonDisabled = 
+  (witchBox === 0 && inputValue1 === '') || 
+  (witchBox === 1 && inputValue2 === '') ||
+  isTaskChanging
 
   return (
     <ImageBackground
@@ -88,20 +136,32 @@ export default function Bonds({ onBack }) {
       style={styles.background}
       resizeMode='cover'>
       <View style={styles.container}>
+        {instructionVisibility && (
+          <TouchableWithoutFeedback>
+            <View style={styles.overlayInstruction}>
+              <View style={styles.instructionWindow}>
+                <Text style={styles.title}>Hajonta</Text>
+                <Text>Täydennä puuttuva luku niin, että laatikoiden luvut ovat yhteensä yhtä paljon kuin pallon luku.</Text>
+                <View style={styles.buttonContainer}>
+                <Button title='Aloita' onPress={() => setInstructionVisibility(false)}></Button>
+                </View>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        )}
         <View style={styles.taskbox}>
-          <Text style={styles.title}>Hajonta</Text>
-          <View style={styles.buttonContainer}>
-            {/*<Button title="Palaa takaisin" onPress={onBack} />*/}
-          </View>
-        </View>
-        <View style={styles.circle}>
-          <Text style={styles.circletext}>{levelData}</Text>
+          <Text style={styles.title}> Täydennä puuttuva luku.</Text>
+
         </View>
 
         <Svg height="300" width="300" style={styles.lineContainer}>
-          <Line x1="150" y1="130" x2="70" y2="230" stroke="black" strokeWidth="5" />
-          <Line x1="150" y1="130" x2="230" y2="230" stroke="black" strokeWidth="5" />
+          <Line x1="150" y1="100" x2="70" y2="230" stroke="black" strokeWidth="5" />
+          <Line x1="150" y1="100" x2="230" y2="230" stroke="black" strokeWidth="5" />
         </Svg>
+
+        <View style={styles.circle}>
+          <Text style={styles.circletext}>{levelData}</Text>
+        </View>
 
         <View style={styles.numbers}>
           <View style={styles.number1}>
@@ -112,6 +172,7 @@ export default function Bonds({ onBack }) {
                 onChangeText={setInputValue1}
                 keyboardType="numeric"
                 autoFocus={true}
+                maxLength={2}
               />
             ) : (
               <Text style={styles.numbertext}>{leftBox}</Text>
@@ -125,87 +186,27 @@ export default function Bonds({ onBack }) {
                 onChangeText={setInputValue2}
                 keyboardType="numeric"
                 autoFocus={true}
+                maxLength={2}
               />
             ) : (
               <Text style={styles.numbertext}>{rightBox}</Text>
             )}
           </View>
         </View>
-        <Button title="Tarkista" onPress={checkAnswer}></Button>
+        <Pressable
+          onPress={checkAnswer}
+          style={[styles.checkButton, isButtonDisabled ? styles.disabledButton : null]}
+          disabled={isButtonDisabled}>
+          <Text style={styles.checkButtonText}>Tarkista</Text>
+        </Pressable>
 
       </View>
+      <ModalComponent
+        isVisible={modalVisible}
+        onBack={handleBack}
+      />
     </ImageBackground>
+
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  background: {
-    height: '100%',
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  lineContainer: {
-    position: 'absolute',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1,
-  },
-  taskbox: {
-    zIndex: 4,
-  },
-  title: {
-    fontSize: 24,
-    margin: 20,
-  },
-  circle: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: '#36BA98',
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: 20,
-    zIndex: 2,
-  },
-  circletext: {
-    fontSize: 40,
-    borderColor: 'black',
-    color: 'white',
-  },
-  numbers: {
-    flexDirection: 'row',
-    margin: 20,
-    zIndex: 3,
-  },
-  number1: {
-    width: 100,
-    height: 100,
-    backgroundColor: '#E9C46A',
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: 20,
-    borderRadius: 20,
-  },
-  number2: {
-    width: 100,
-    height: 100,
-    backgroundColor: '#F4A261',
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: 20,
-    borderRadius: 20,
-  },
-  numbertext: {
-    fontSize: 40,
-  },
-  input: {
-    fontSize: 40,
-  },
-});
