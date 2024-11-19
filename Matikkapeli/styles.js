@@ -107,14 +107,14 @@ export default StyleSheet.create({
     borderRadius: 50,
     padding: 10,
   },
-  backIcon: {
+  backIcon: { 
     position: 'absolute',
-    top: 60,
+    bottom: 20, // Siirtää ikonia alaspäin 20 pikseliä
     left: 20,
-    backgroundColor: '#f0f0f0', //Muuttuu tummalla teemalla
+    backgroundColor: '#f0f0f0', // Muuttuu tummalla teemalla
     borderRadius: 50,
     padding: 10,
-  },
+},
   background: {
     height: '100%',
     width: '100%',
@@ -390,9 +390,12 @@ settingsButton: {
   padding: 5, 
 },
 settingsIcon: {
-  width: 30,
-  height: 30,
-  tintColor: "#333", 
+  position: 'absolute',
+  bottom: 20,
+  right: 20,
+  backgroundColor: '#f0f0f0', // Tämä muuttuu tummalla teemalla
+  borderRadius: 50,
+  padding: 10,
 },
 timerText: {
   fontSize: 24,
