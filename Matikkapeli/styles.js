@@ -404,4 +404,141 @@ export default StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 20,
   },
+backgroundImage: {
+  flex: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+  margin: 20,
+},
+content: {
+  padding: 0,
+  zIndex: 5,
+},
+headerText: {
+  fontSize: 18,
+  fontWeight: 'bold',
+  marginBottom: 10,
+  color: 'white'
+},
+taskText: {
+  fontSize: 14,
+  marginBottom: 8,
+  color: 'white'
+},
+closeText: {
+  fontSize: 16,
+  color: 'red',
+  marginTop: 20,
+},
+grid: {
+  flexDirection: 'row',
+  flexWrap: 'wrap', // Allows items to wrap in the container
+  justifyContent: 'center', // Center items
+  alignItems: 'center', // Center items vertically
+  width: '100%', // You can adjust the width as needed
+  marginTop: 30
+},
+taskContainer: {
+  width: '45%', // Each item takes almost half the width for 2 items in a row
+  justifyContent: 'center',
+  alignItems: 'center',
+  marginBottom: 10, 
+},
+taskImage: {
+  width: 60, // Adjust size as needed
+  height: 60, // Adjust size as needed
+},
+comparisonContainer: {
+  flex: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+  backgroundColor: '#fff',
+  width: "100%"
+},
+comparisonGuideBigger: {
+  fontSize: 24,
+  textAlign: 'center',
+  marginBottom: 16,
+  backgroundColor: '#FFDE21'
+},
+comparisonGuideSmaller: {
+  fontSize: 24,
+  textAlign: 'center',
+  marginBottom: 16,
+  backgroundColor: '#00FFFF'
+},
+comparisonOptions: {
+  width: "80%",
+  height: "7%",
+  fontSize: 32,
+  textAlign: 'center',
+  textAlignVertical: 'center',
+  marginBottom: 16,
+  backgroundColor: '#3bb143'
+},
+//!!!!! Top Bar Styles !!!!!!!
+topBarContainer: {
+  position: 'absolute',
+  top: 40,
+  left: 0,
+  right: 0,
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  backgroundColor: 'rgba(248, 248, 248, 0.7)',
+  padding: 10,
+  elevation: 4, // Shadow for Android
+  shadowColor: '#000', // Shadow for iOS
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.1,
+  shadowRadius: 4,
+  zIndex: 10,
+},
+topBarPfp: {
+  width: 50,
+  height: 50,
+  borderRadius: 25,
+  backgroundColor: '#ddd',
+},
+topBarInfoContainer: {
+  marginLeft: 10,
+  flex: 1,
+},
+topBarUsername: {
+  fontSize: 16,
+  fontWeight: 'bold',
+  color: '#333',
+},
+topBarLevelAndPoints: {
+  fontSize: 14,
+  color: '#666',
+},
+settingsButton: {
+  padding: 5, 
+},
+settingsIcon: {
+  position: 'absolute',
+  bottom: 20,
+  right: 20,
+  backgroundColor: '#f0f0f0', // Tämä muuttuu tummalla teemalla
+  borderRadius: 50,
+  padding: 10,
+},
+timerText: {
+  fontSize: 24,
+  fontWeight: 'bold',
+  marginTop: 20,
+},
+profilebox:{
+  flexDirection: 'row',
+  justifyContent: 'space-between'
+},
+profileImage: {
+  width: 100, // Adjust size as needed
+  height: 100, // Adjust size as needed
+  backgroundColor: '#F4A261',
+  margin: 20,
+  borderRadius: 20,
+ 
+},
 });
