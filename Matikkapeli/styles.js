@@ -252,7 +252,7 @@ foxContainer: {
     left: -150, // Start from the left side
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 3, // Position between background (zIndex: 1) and overlay (zIndex: 3)
+    zIndex: 2, // Position between background (zIndex: 1) and overlay (zIndex: 3)
 },
 overlayContainer: {
     position: 'absolute',
@@ -260,7 +260,7 @@ overlayContainer: {
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 2, // Ensure overlay is on top
+    zIndex: 3, // Ensure overlay is on top
 },
 overlayImage: {
     width: '100%', // Adjust as necessary to make the image visible
@@ -272,7 +272,7 @@ buttonContainer1: {
     bottom: 50,
     justifyContent: 'space-between',
     width: '90%',
-    zIndex: 2,
+    zIndex: 4,
 },
 foxImage: {
     width: 150, // Adjust size as needed
@@ -286,6 +286,7 @@ backgroundImage: {
 },
 content: {
   padding: 0,
+  zIndex: 5,
 },
 headerText: {
   fontSize: 18,

@@ -13,7 +13,7 @@ export default function TaskWindow({ modalVisible, setModalVisible, onNavigate }
     if (!modalVisible) return null;
 
     return (
-        <View style={[styles.container, { position: 'absolute' }]}>
+        <View style={[styles.container, { position: 'absolute', zIndex: 5 }]}>
             <ImageBackground 
                 source={backgroundImage} 
                 style={styles.backgroundImage} 
