@@ -5,6 +5,7 @@ import { addDoc, collection, firestore, PLAYERSTATS } from '../firebase/Config';
 export const ScoreContext = createContext();
 
 export const ScoreProvider = ({ children }) => {
+    const [email, setEmail] = useState("isi@gmail.com")
     const [playerName, setPlayerName] = useState("Irja")
     // Pelaajan taso
     const [playerLevel, setPlayerLevel] = useState(1);
@@ -14,9 +15,14 @@ export const ScoreProvider = ({ children }) => {
     const [comparisonXp, setComparisonXp] = useState(0);
     const [bondsXp, setBondsXp] = useState(0);
 
+    useEffect(() => {
+        recievePlayerStatsFromDatabase();
+    }, [])
+    
     const savePlayerStatsToDatabase = async () => {
         try {
             const docRef = await addDoc(collection(firestore, PLAYERSTATS), {
+                email: email,
                 playerName: playerName,
                 playerLevel: playerLevel,
                 imageToNumberXp: imageToNumberXp,
@@ -31,12 +37,28 @@ export const ScoreProvider = ({ children }) => {
     }
 
     const recievePlayerStatsFromDatabase = async () => {
-        const q = query(collection(firestore, PLAYERSTATS), where(playerName === playerName))
-        setImageToNumberXp(q.imageToNumberXp)
-        setSoundToNumberXp(q.soundToNumberXp)
-        setComparisonXp(q.comparisonXp)
-        setBondsXp(q.bondsXp)
-        setPlayerLevel(q.playerLevel)
+        try {
+            const q = query(
+                collection(firestore, "PLAYERSTATS"),
+                where("playerName", "==", playerName), 
+                where("email", "==", email)
+            );
+            const querySnapshot = await getDocs(q);
+            if (!querySnapshot.empty) {
+                const data = querySnapshot.docs[0].data();
+
+                // Päivitetään state
+                setImageToNumberXp(data.imageToNumberXp);
+                setSoundToNumberXp(data.soundToNumberXp);
+                setComparisonXp(data.comparisonXp);
+                setBondsXp(data.bondsXp);
+                setPlayerLevel(data.playerLevel);
+            } else {
+                console.log("Pelaajan tietoja ei löytynyt.");
+            }
+        } catch (error) {
+            console.error("Virhe noudettaessa pelaajan tietoja:", error);
+        }
     }
 
     // KokonaisXp
@@ -113,6 +135,7 @@ export const ScoreProvider = ({ children }) => {
                 playerLevel,
                 totalXp,
                 savePlayerStatsToDatabase,
+                recievePlayerStatsFromDatabase,
 
                 // Tehtäväpisteet
                 imageToNumberXp,
