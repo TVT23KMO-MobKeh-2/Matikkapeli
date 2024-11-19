@@ -71,7 +71,7 @@ export default function Animation({ onBack, setSelectedTask }) {
                 <Image
                     source={backgroundImageFront}
                     style={styles.overlayImage}
-                    resizeMode='contain'
+                    contentFit='contain'
                 />
             </Animated.View>
 
