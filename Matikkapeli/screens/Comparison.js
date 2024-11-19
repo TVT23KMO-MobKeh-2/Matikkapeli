@@ -41,6 +41,7 @@ export default function Comparison({ onBack }) {
     setQuestionsAnswered(0);
     setPoints(0);
     onBack();
+    savePlayerStatsToDatabase()
   }
 
   // Tämä koukku suoritetaan kerran, kun komponentti on renderöity
