@@ -1,18 +1,43 @@
 import { createContext, useState, useEffect } from 'react';
+import { addDoc, collection, firestore, PLAYERSTATS } from '../firebase/Config';
 
 // Luodaan konteksti, joka tarjoaa pelin tilan ja toiminnot lapsikomponenteille
 export const ScoreContext = createContext();
 
 export const ScoreProvider = ({ children }) => {
-    // Seuraavat 5 tilamuuttujaa haetaan oikeasti sovelluksessa tietokannasta, nyt kovakoodattuna tähän.
+    const [playerName, setPlayerName] = useState("Irja")
     // Pelaajan taso
-    const [playerLevel, setPlayerLevel] = useState(5);
+    const [playerLevel, setPlayerLevel] = useState(1);
     // Eri tehtävien Xp:t
     const [imageToNumberXp, setImageToNumberXp] = useState(0);
     const [soundToNumberXp, setSoundToNumberXp] = useState(0);
     const [comparisonXp, setComparisonXp] = useState(0);
     const [bondsXp, setBondsXp] = useState(0);
-    
+
+    const savePlayerStatsToDatabase = async () => {
+        try {
+            const docRef = await addDoc(collection(firestore, PLAYERSTATS), {
+                playerName: playerName,
+                playerLevel: playerLevel,
+                imageToNumberXp: imageToNumberXp,
+                soundToNumberXp: soundToNumberXp,
+                comparisonXp: comparisonXp,
+                bondsXp: bondsXp
+            })
+            console.log("Pelaajan tiedot tallennettu")
+        } catch (error) {
+            console.log("Virhe tallentaessa tietokantaan pelaajan tietoja:", error)
+        }
+    }
+
+    const recievePlayerStatsFromDatabase = async () => {
+        const q = query(collection(firestore, PLAYERSTATS), where(playerName === playerName))
+        setImageToNumberXp(q.imageToNumberXp)
+        setSoundToNumberXp(q.soundToNumberXp)
+        setComparisonXp(q.comparisonXp)
+        setBondsXp(q.bondsXp)
+        setPlayerLevel(q.playerLevel)
+    }
 
     // KokonaisXp
     const [totalXp, setTotalXp] = useState(comparisonXp + bondsXp + soundToNumberXp + imageToNumberXp);
@@ -87,6 +112,7 @@ export const ScoreProvider = ({ children }) => {
                 // Pelaajan perustiedot
                 playerLevel,
                 totalXp,
+                savePlayerStatsToDatabase,
 
                 // Tehtäväpisteet
                 imageToNumberXp,
