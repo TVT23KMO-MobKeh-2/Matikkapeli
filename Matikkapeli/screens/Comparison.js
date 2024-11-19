@@ -3,12 +3,19 @@ import React, { useContext, useEffect, useState } from 'react'
 import ModalComponent from '../components/ModalComponent'
 import * as Speech from 'expo-speech';
 import { ScoreContext } from '../components/ScoreContext';
+import styles from '../styles';
+import { useTheme } from '../components/ThemeContext';
+import { useSoundSettings } from '../components/SoundSettingsContext';
+import { useTaskReading } from '../components/TaskReadingContext';
+import { useTaskSyllabification } from '../components/TaskSyllabificationContext';
+import { Audio } from 'expo-av';
 
 export default function Comparison({ onBack }) {
-  const [hyphens, setHyphens] = useState(false)//tilapäinen kunnes asetukset saatu Tavutus  
-  const [isSpeak, setIsSpeak] = useState(true)//tilapäinen  kunnes asetukset saatu Puhe
-  
-  const {playerLevel,points,setPoints,questionsAnswered,setQuestionsAnswered,incrementXp} = useContext(ScoreContext)
+  const { isDarkTheme } = useTheme();
+  const { gameSounds } = useSoundSettings();
+  const { taskReading } = useTaskReading();
+  const { syllabify, taskSyllabification } = useTaskSyllabification();
+  const { playerLevel, points, setPoints, questionsAnswered, setQuestionsAnswered, incrementXp, savePlayerStatsToDatabase } = useContext(ScoreContext)
   const [modalVisible, setModalVisible] = useState(false)//Määrittää näytetäänkö Modal
   const [isLevelNumberFirstComparable, setIsLevelNumberFirstComparable] = useState(true) // Määrittää, esitetäänkö tason mukainen numero vertailussa ensimmäisenä (true) vai toisena (false)
   const [comparisonXp, setComparisonXp] = useState(0) // Tämänhetkiset pisteet oikeasta vastauksesta. Kasvaa jokaisesta oikeasta vastauksesta ja vähenee väärästä.
@@ -43,7 +50,7 @@ export default function Comparison({ onBack }) {
   // Funktio uusien lukujen arpomista varten
   const drawNewNumbers = () => {
     // Arvotaan uusi satunnaisluku, jonka maksimiarvo riippuu comparisonXp:n arvosta
-    setRandomNumber(drawRandomNumber(0, comparisonXp * 0.2 + 1))
+    setRandomNumber(drawRandomNumber(0, playerLevel))
     // Arvotaan, onko tason mukainen numero 1. vai 2. vertailtava
     setIsLevelNumberFirstComparable(drawRandomNumber(0, 1) === 1)
 
@@ -60,14 +67,14 @@ export default function Comparison({ onBack }) {
     // Arvotaan, etsitäänkö isompaa vai pienempää lukua
     if (drawRandomNumber(0, 1) === 1) {
       setLookingForBigger(true) // Haetaan isompaa
-      /*if (speech) {
-        speak("Valitse yhtäsuuri tai suurempi.") //toistetaan tehtävänanto puheena
-      }*/
+      if (taskReading) {
+        Speech.speak("Valitse yhtäsuuri tai suurempi.") //toistetaan tehtävänanto puheena
+      }
     } else {
       setLookingForBigger(false) // Haetaan pienempää
-      /*if (speech) {
-        speak("Valitse yhtäsuuri tai pienempi.") //toistetaan tehtävänanto puheena
-      }*/
+      if (taskReading) {
+        Speech.speak("Valitse yhtäsuuri tai pienempi.") //toistetaan tehtävänanto puheena
+      }
     }
   }
 
@@ -178,11 +185,11 @@ export default function Comparison({ onBack }) {
   //Funktio ohjeen renderöintiä varten
   const renderGuide = () => {
     //Tallennetaan muuttujaan teksti sen perusteella, etsitäänkö suurempaa ja tavutetaanko teksti
-     const text = lookingForBigger 
-      ? hyphens 
-        ? 'VA-LIT-SE YH-TÄ-SUU-RI TAI SUU-REM-PI' 
-        : 'Valitse yhtäsuuri tai suurempi' 
-      : hyphens
+    const text = lookingForBigger
+      ? taskSyllabification
+        ? 'VA-LIT-SE YH-TÄ-SUU-RI TAI SUU-REM-PI'
+        : 'Valitse yhtäsuuri tai suurempi'
+      : taskSyllabification
         ? 'VA-LIT-SE YH-TÄ-SUU-RI TAI PIE-NEM-PI'
         : 'Valitse yhtäsuuri tai pienempi';
 
@@ -237,35 +244,3 @@ export default function Comparison({ onBack }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    width: "100%"
-  },
-  title: {
-    fontSize: 24,
-  },
-  guideBigger: {
-    fontSize: 24,
-    textAlign: 'center',
-    marginBottom: 16,
-    backgroundColor: '#FFDE21'
-  },
-  guideSmaller: {
-    fontSize: 24,
-    textAlign: 'center',
-    marginBottom: 16,
-    backgroundColor: '#00FFFF'
-  },
-  options: {
-    width: "80%",
-    fontSize: 16,
-    textAlign: 'center',
-    marginBottom: 16,
-    backgroundColor: '#3bb143'
-  }
-});
