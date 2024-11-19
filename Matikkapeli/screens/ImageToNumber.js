@@ -17,6 +17,7 @@ function random(min, max) {
 }
 
 export default function ImageToNumber({ onBack }) {
+
   const { points, setPoints, questionsAnswered, setQuestionsAnswered, incrementXp } = useContext(ScoreContext);
   const { isDarkTheme } = useTheme(); //Käytetään teemakontekstia (tumma tila)
   const { gameSounds, volume } = useSoundSettings(); //Käytetään ääniasetuksia
@@ -30,13 +31,17 @@ export default function ImageToNumber({ onBack }) {
   const [gameEnded, setGameEnded] = useState(false); //Onko peli päättynyt
   const [isSpeechFinished, setIsSpeechFinished] = useState(false); //Seurataan puheen valmistumista
 
+
   //Generoi kysymyksiä pelille
+
   const generateQuestions = () => {
     const questions = [];
     for (let i = 0; i < 5; i++) {
       const iconCount = random(0, 10); //Satunnainen määrä vasaroita
       questions.push({
+
         question: `Montako vasaraa näet näytöllä?`, //Kysymyksen teksti
+
         iconCount,
         options: Array.from({ length: 11 }, (_, i) => i), //Vaihtoehdot
       });
@@ -52,21 +57,25 @@ export default function ImageToNumber({ onBack }) {
     setQuestionIndex(0); //Nollaa kysymysindeksi, kun peli alkaa
   }, []);
 
+
   // Funktio, joka toistaa oikea/väärä äänen
   async function playSound(isCorrect) {
     if (!gameSounds || gameEnded) return; //Ääntä ei toisteta, jos peli on päättynyt tai äänet ovat pois päältä
 
     const soundUri = isCorrect
+
       ? require('../assets/sounds/mixkit-achievement-bell.wav') //Oikein ääni
       : require('../assets/sounds/mixkit-losing-bleeps.wav'); //Väärin ääni
 
     const { sound } = await Audio.Sound.createAsync(soundUri);
     setSound(sound);
     await sound.playAsync();
+
     await sound.setVolumeAsync(volume); //Säädä äänenvoimakkuus
 
     //Ladataan ääni pois muistin säästämiseksi, kun se on toistettu
     sound.setOnPlaybackStatusUpdate((status) => {
+
       if (status.didJustFinish) {
         sound.unloadAsync();
       }
@@ -176,7 +185,6 @@ export default function ImageToNumber({ onBack }) {
       </View>
     );
   };
-
 
   //Renderöi kysymyksen teksti tavutuksella, jos se on käytössä
   const renderQuestionText = () => {
