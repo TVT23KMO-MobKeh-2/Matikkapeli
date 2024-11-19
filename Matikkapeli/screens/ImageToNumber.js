@@ -55,6 +55,7 @@ export default function ImageToNumber({ onBack }) {
   // Funktio, joka toistaa oikea/väärä äänen
   async function playSound(isCorrect) {
     if (!gameSounds || gameEnded) return; //Ääntä ei toisteta, jos peli on päättynyt tai äänet ovat pois päältä
+
     const soundUri = isCorrect
       ? require('../assets/sounds/mixkit-achievement-bell.wav') //Oikein ääni
       : require('../assets/sounds/mixkit-losing-bleeps.wav'); //Väärin ääni
@@ -176,6 +177,7 @@ export default function ImageToNumber({ onBack }) {
     );
   };
 
+
   //Renderöi kysymyksen teksti tavutuksella, jos se on käytössä
   const renderQuestionText = () => {
     const currentQuestion = questions[questionIndex];
@@ -198,3 +200,4 @@ export default function ImageToNumber({ onBack }) {
     </View>
   );
 }
+
