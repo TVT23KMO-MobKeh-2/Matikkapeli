@@ -1,15 +1,39 @@
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
-  container: {
+  safeContainer: {
     flex: 1,
+    width: '100%', //Varmistaa SafeAreaView:n leveyskattavuuden
+  },
+  container: {
+    flex: 1, //Varmistaa koko näytön korkeuden
+    width: '100%', //Täyttää näytön leveyssuunnassa
     justifyContent: 'center',
     alignItems: 'center',
   },
   title: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 20,
+    color: '#000',  //Tummalle teemalle muuttuu dynaamisesti
+  },
+  settingItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  settingItemColumn: { //Uusi tyyli pystysuuntaiseen asetteluun
+    alignItems: 'center',
+    marginVertical: 10,
+    width: '100%',
+  },
+  label: {
+    fontSize: 18,
+    marginRight: 10,
+    marginBottom: 5, //Tilaa liukusäätimen ja otsikon väliin
+  },
+  slider: { 
+    width: '80%', //Asetetaan liukusäätimen leveys keskitetysti
   },
   level: {
     fontSize: 20,
@@ -20,6 +44,7 @@ export default StyleSheet.create({
     fontSize: 18,
     marginBottom: 10,
     textAlign: 'center',
+    color: '#000', //Muuttuu tummalla teemalla
   },
   iconContainer: {
     flexDirection: 'row',
@@ -53,8 +78,8 @@ export default StyleSheet.create({
     fontSize: 16,
   },
   buttonContainer: {
-    marginVertical: 10, // space between buttons
-    width: '80%', // set button width
+    marginVertical: 10, //Tilaa nappien välille
+    width: '80%', //Nappien leveys
   },
   modalOverlay: {
     flex: 1,
@@ -65,14 +90,31 @@ export default StyleSheet.create({
   modalContent: {
     width: 300,
     padding: 20,
-    backgroundColor: 'white',
+    backgroundColor: 'white', //Muuttuu tummalla teemalla
     borderRadius: 10,
     alignItems: 'center',
   },
   modalText: {
     fontSize: 18,
     marginBottom: 20,
+    color: '#000', //Muuttuu tummalla teemalla
   },
+  settingsIcon: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: '#f0f0f0', //Muuttuu tummalla teemalla
+    borderRadius: 50,
+    padding: 10,
+  },
+  backIcon: { 
+    position: 'absolute',
+    bottom: 20, // Siirtää ikonia alaspäin 20 pikseliä
+    left: 20,
+    backgroundColor: '#f0f0f0', // Muuttuu tummalla teemalla
+    borderRadius: 50,
+    padding: 10,
+},
   background: {
     height: '100%',
     width: '100%',
@@ -348,9 +390,12 @@ settingsButton: {
   padding: 5, 
 },
 settingsIcon: {
-  width: 30,
-  height: 30,
-  tintColor: "#333", 
+  position: 'absolute',
+  bottom: 20,
+  right: 20,
+  backgroundColor: '#f0f0f0', // Tämä muuttuu tummalla teemalla
+  borderRadius: 50,
+  padding: 10,
 },
 timerText: {
   fontSize: 24,
