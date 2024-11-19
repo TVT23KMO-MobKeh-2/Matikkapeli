@@ -1,9 +1,10 @@
 import { View, Text, Button, Image } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import styles from '../styles'
 
 export default function ProfileScreen({ onBack }) {
     const profileFoxImage = require('../assets/proffox.png')
+    const [name] = useState('Tunski')
 
     return (
         <View style={styles.container}>
@@ -13,7 +14,7 @@ export default function ProfileScreen({ onBack }) {
                     style={styles.profileImage}
                 />
                 <View>
-                 <Text>ProfileScreen</Text>   
+                 <Text>{name}</Text>   
                  <Text>ProfileScreen</Text>  
                 </View>
                 
