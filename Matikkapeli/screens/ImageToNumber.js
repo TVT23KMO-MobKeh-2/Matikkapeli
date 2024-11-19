@@ -31,6 +31,9 @@ export default function ImageToNumber({ onBack }) {
   const [gameEnded, setGameEnded] = useState(false); //Onko peli päättynyt
   const [isSpeechFinished, setIsSpeechFinished] = useState(false); //Seurataan puheen valmistumista
 
+
+  //Generoi kysymyksiä pelille
+
   const generateQuestions = () => {
     const questions = [];
     for (let i = 0; i < 5; i++) {
@@ -48,20 +51,21 @@ export default function ImageToNumber({ onBack }) {
 
   const [questions, setQuestions] = useState(generateQuestions());
 
-
   //Alustetaan kysymykset ja nollataan kysymysindeksi
   useEffect(() => {
     setQuestions(generateQuestions());
     setQuestionIndex(0); //Nollaa kysymysindeksi, kun peli alkaa
   }, []);
 
+
   // Funktio, joka toistaa oikea/väärä äänen
   async function playSound(isCorrect) {
     if (!gameSounds || gameEnded) return; //Ääntä ei toisteta, jos peli on päättynyt tai äänet ovat pois päältä
 
     const soundUri = isCorrect
-      ? require('../assets/sounds/mixkit-game-level-completed.wav') //Oikein ääni
-      : require('../assets/sounds/mixkit-arcade-retro-game-over.wav'); //Väärin ääni
+
+      ? require('../assets/sounds/mixkit-achievement-bell.wav') //Oikein ääni
+      : require('../assets/sounds/mixkit-losing-bleeps.wav'); //Väärin ääni
 
     const { sound } = await Audio.Sound.createAsync(soundUri);
     setSound(sound);
