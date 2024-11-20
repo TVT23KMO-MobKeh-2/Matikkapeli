@@ -59,7 +59,6 @@ export async function recievePlayerStatsFromDatabase({email, playerName, setImag
 
         if (!querySnapshotWithFilters.empty) { //jos kyselyllä löytyi
             const doc = querySnapshotWithFilters.docs[0]; // haetaan ensimmäinen tulos
-            //console.log("docId hakufunktiosta:", doc.id);
 
             const data = doc.data(); // Haetaan datasisältö
             console.log("Löydetyt tiedot:", data);
@@ -79,8 +78,7 @@ export async function recievePlayerStatsFromDatabase({email, playerName, setImag
 
         }
     } catch (error) {
-        console.log("Haetaan tietoja sähköpostilla:", email, "ja nimellä:", playerName);
-        console.error("Virhe1 noudettaessa pelaajan tietoja:", error);
+        console.error("Virhe noudettaessa pelaajan tietoja:", error);
         Alert.alert("Virhe", "Pelaajan tietojen hakeminen ei onnistunut. Yritä myöhemmin uudestaan.")
     }
 };
