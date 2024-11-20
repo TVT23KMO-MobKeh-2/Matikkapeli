@@ -2,6 +2,7 @@ import { View, Text, Pressable, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { FontAwesome5 } from '@expo/vector-icons';
 import styles from '../styles';
+import ProfileScreen from './ProfileScreen';
 
 
 const fetchCharactersDatabase = () => {
@@ -12,10 +13,10 @@ const fetchCharactersDatabase = () => {
             career: 'Rakentaja',
             profilePic: require('../assets/proffox.png'),
             level: 5,
-            ImageToNumber: 40,
-            SoundToNumber: 30,
-            Comparison: 25,
-            Bonds: 20,
+            ImageNumber: 42,
+            SoundNumber: 30,
+            Comparisons: 23,
+            Bondss: 20,
         },
         {
             id: 2,
@@ -23,10 +24,10 @@ const fetchCharactersDatabase = () => {
             career: 'Lääkäri',
             profilePic: require('../assets/profbear.png'),
             level: 3,
-            ImageToNumber: 30,
-            SoundToNumber: 25,
-            Comparison: 15,
-            Bonds: 10,
+            ImageNumber: 30,
+            SoundNumber: 23,
+            Comparisons: 15,
+            Bondss: 18,
         },
     ])
 
@@ -45,6 +46,15 @@ export default function SelectProfile() {
         }
         loadCharacters()
     }, [])
+
+    if (selectedCharacter) {
+        return (
+            <ProfileScreen
+            character={selectedCharacter}
+            onBack={() => setSelectedCharacter(null)}
+            />
+        )
+    }
 
     return (
         <View>
