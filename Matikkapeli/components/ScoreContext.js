@@ -172,7 +172,7 @@ const recievePlayerStatsFromDatabase = async () => {
                 playerLevel,
                 totalXp,
                 savePlayerStatsToDatabase,
-                updatePlayerStatsToDatabase
+                updatePlayerStatsToDatabase,
 
                 // Tehtäväpisteet
                 imageToNumberXp,
