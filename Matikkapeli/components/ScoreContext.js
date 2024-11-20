@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect } from 'react';
-import { addDoc, collection, firestore, PLAYERSTATS, where, query, getDocs, updateDoc } from '../firebase/Config';
+import { addDoc, collection, firestore, PLAYERSTATS, where, query, getDocs, updateDoc, doc } from '../firebase/Config';
+import { Alert } from 'react-native';
 
 // Luodaan konteksti, joka tarjoaa pelin tilan ja toiminnot lapsikomponenteille
 export const ScoreContext = createContext();
@@ -68,10 +69,14 @@ export const ScoreProvider = ({ children }) => {
         }
     }
 
+    // Funktio pelaajan tietojen päivittämiseen tietokantaan
     const updatePlayerStatsToDatabase = async () => {
         try {
-            const docRef = doc(firestore, "PLAYERSTATS", docId);
-    
+            //console.log("Päivitetään tietoja tietokantaan, docId: ", docId)
+            // Mitä päivitetään:
+            const docRef = doc(firestore, "playerstats", docId);
+
+            //Tiedot millä päivitetään:
             await updateDoc(docRef, {
                 email: email,
                 playerName: playerName,
@@ -81,47 +86,54 @@ export const ScoreProvider = ({ children }) => {
                 comparisonXp: comparisonXp,
                 bondsXp: bondsXp
             });
-    
+
             console.log("Pelaajan tiedot päivitetty tietokantaan");
         } catch (error) {
             console.error("Virhe päivittäessä tietokantaan pelaajan tietoja:", error);
         }
     }
-    
+
     // Funktio pelaajatietojen hakuun tietokannasta
-const recievePlayerStatsFromDatabase = async () => {
-    try {
-        console.log("Haetaan tietoja sähköpostilla:", email, "ja nimellä:", playerName);
-        
-        const q = query(
-            collection(firestore, PLAYERSTATS),
-            where("email", "==", email),
-            where("playerName", "==", playerName)
-        );
+    const recievePlayerStatsFromDatabase = async () => {
+        try {
+            //console.log("Haetaan tietoja sähköpostilla:", email, "ja nimellä:", playerName);
 
-        const querySnapshotWithFilters = await getDocs(q);
-        
-        if (!querySnapshotWithFilters.empty) {
-            const doc = querySnapshotWithFilters.docs[0];
-            const data = doc.data(); // Haetaan datasisältö
-            console.log("Löydetyt tiedot:", data);
+            //Annetaan tiedot hakua varten
+            const q = query(
+                collection(firestore, PLAYERSTATS), // Mistä haetaan
+                where("email", "==", email), // Ehtona sähköpostiosoite
+                where("playerName", "==", playerName) // sekä pelaajan nimi
+            );
 
-            // Päivitetään tiedot
-            setImageToNumberXp(data.imageToNumberXp);
-            setSoundToNumberXp(data.soundToNumberXp);
-            setComparisonXp(data.comparisonXp);
-            setBondsXp(data.bondsXp);
-            setPlayerLevel(data.playerLevel);
-            setDocId(doc.id);
-        } else {
-            console.log("Pelaajan tietoja ei löytynyt.");
+            const querySnapshotWithFilters = await getDocs(q); // Suoritetaan kysely
+
+            if (!querySnapshotWithFilters.empty) { //jos kyselyllä löytyi
+                const doc = querySnapshotWithFilters.docs[0]; // haetaan ensimmäinen tulos
+                //console.log("docId hakufunktiosta:", doc.id);
+                
+                const data = doc.data(); // Haetaan datasisältö
+                //console.log("Löydetyt tiedot:", data);
+                //console.log("docId:", doc.id)
+
+                // Päivitetään tiedot tilamuuttujiin:
+                setImageToNumberXp(data.imageToNumberXp);
+                setSoundToNumberXp(data.soundToNumberXp);
+                setComparisonXp(data.comparisonXp);
+                setBondsXp(data.bondsXp);
+                setPlayerLevel(data.playerLevel);
+                // Tallennetaan documentin ID, jotta voidaan myöhemmin päivittää samaa dokumenttia.
+                setDocId(doc.id);
+            } else {
+                console.log("Pelaajan tietoja ei löytynyt.");
+                Alert.alert("Virhe:","Pelaajan tietoja ei löytynyt")
+            }
+        } catch (error) {
+            console.error("Virhe noudettaessa pelaajan tietoja:", error);
+            Alert.alert("Virhe", "Pelaajan tietojen hakeminen ei onnistunut. Yritä myöhemmin uudestaan.")
         }
-    } catch (error) {
-        console.error("Virhe noudettaessa pelaajan tietoja:", error);
-    }
-};
+    };
 
-    
+
 
     // Määritetään incrementXp-funktiota varten, kuinka paljon xp voi olla milläkin tasolla.
     const maxXpByLevel = {
@@ -172,7 +184,7 @@ const recievePlayerStatsFromDatabase = async () => {
                 playerLevel,
                 totalXp,
                 savePlayerStatsToDatabase,
-                updatePlayerStatsToDatabase
+                updatePlayerStatsToDatabase,
 
                 // Tehtäväpisteet
                 imageToNumberXp,
