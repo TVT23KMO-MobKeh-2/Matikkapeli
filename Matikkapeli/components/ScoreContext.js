@@ -1,19 +1,21 @@
 import { createContext, useState, useEffect } from 'react';
+import { addDoc, collection, firestore, PLAYERSTATS, where, query, getDocs, updateDoc, doc } from '../firebase/Config';
+import { Alert } from 'react-native';
 
 // Luodaan konteksti, joka tarjoaa pelin tilan ja toiminnot lapsikomponenteille
 export const ScoreContext = createContext();
 
 export const ScoreProvider = ({ children }) => {
-    // Seuraavat 5 tilamuuttujaa haetaan oikeasti sovelluksessa tietokannasta, nyt kovakoodattuna tähän.
+    const [email, setEmail] = useState("isi@gmail.com") //Tunnisteena, jos monta samannimistä Kallea
+    const [playerName, setPlayerName] = useState("Irja")
+    const [docId, setDocId] = useState("")
     // Pelaajan taso
-    const [playerLevel, setPlayerLevel] = useState(5);
+    const [playerLevel, setPlayerLevel] = useState(1);
     // Eri tehtävien Xp:t
     const [imageToNumberXp, setImageToNumberXp] = useState(0);
     const [soundToNumberXp, setSoundToNumberXp] = useState(0);
     const [comparisonXp, setComparisonXp] = useState(0);
     const [bondsXp, setBondsXp] = useState(0);
-    
-
     // KokonaisXp
     const [totalXp, setTotalXp] = useState(comparisonXp + bondsXp + soundToNumberXp + imageToNumberXp);
     // Kulloisestakin tehtävästä saadut pisteet ja vastattujen kysymysten määrä, joiden perusteella annetaan palaute ja päätetään tehtävä
@@ -25,10 +27,113 @@ export const ScoreProvider = ({ children }) => {
     //Taulukko tasojen nousua varten
     const xpForLevelUp = [15, 30, 50, 70, 90, 110, 130, 150, 170];
 
-    // Lasketaan totalXp, kun joku XP muuttuu
+    // Koukku pelaajatietojen hakuun tietokannasta
+    useEffect(() => {
+        recievePlayerStatsFromDatabase();
+    }, [])
+
+    // Koukku jolla lasketaan totalXp, kun joku XP muuttuu
     useEffect(() => {
         setTotalXp(comparisonXp + bondsXp + soundToNumberXp + imageToNumberXp);
     }, [comparisonXp, bondsXp, soundToNumberXp, imageToNumberXp]);
+
+
+    //Koukku, joka tarkistaa tason nousun tai koko pelin läpäisyn ja heittää niistä alertin
+    useEffect(() => {
+        if (xpMilestone) {
+            setTimeout(() => {
+                Alert.alert('Taso noustiin!', 'Hienoa, päästään seuraavalle tasolle', [{ text: 'OK' }]);
+            }, 2000);
+        } else if (gameAchieved) {
+            setTimeout(() => {
+                Alert.alert('Peli läpäisty', 'Hienoa, pääsit pelin läpi', [{ text: 'OK' }]);
+            }, 2000);
+        }
+    }, [xpMilestone, gameAchieved]);
+
+    // Funktio pelaajatietojen tallennukseen tietokantaan pelin alussa
+    const savePlayerStatsToDatabase = async () => {
+        try {
+            const docRef = await addDoc(collection(firestore, PLAYERSTATS), {
+                email: email,
+                playerName: playerName,
+                playerLevel: playerLevel,
+                imageToNumberXp: imageToNumberXp,
+                soundToNumberXp: soundToNumberXp,
+                comparisonXp: comparisonXp,
+                bondsXp: bondsXp
+            })
+            console.log("Pelaajan tiedot tallennettu")
+        } catch (error) {
+            console.log("Virhe tallentaessa tietokantaan pelaajan tietoja:", error)
+        }
+    }
+
+    // Funktio pelaajan tietojen päivittämiseen tietokantaan
+    const updatePlayerStatsToDatabase = async () => {
+        try {
+            //console.log("Päivitetään tietoja tietokantaan, docId: ", docId)
+            // Mitä päivitetään:
+            const docRef = doc(firestore, "playerstats", docId);
+
+            //Tiedot millä päivitetään:
+            await updateDoc(docRef, {
+                email: email,
+                playerName: playerName,
+                playerLevel: playerLevel,
+                imageToNumberXp: imageToNumberXp,
+                soundToNumberXp: soundToNumberXp,
+                comparisonXp: comparisonXp,
+                bondsXp: bondsXp
+            });
+
+            console.log("Pelaajan tiedot päivitetty tietokantaan");
+        } catch (error) {
+            console.error("Virhe päivittäessä tietokantaan pelaajan tietoja:", error);
+        }
+    }
+
+    // Funktio pelaajatietojen hakuun tietokannasta
+    const recievePlayerStatsFromDatabase = async () => {
+        try {
+            //console.log("Haetaan tietoja sähköpostilla:", email, "ja nimellä:", playerName);
+
+            //Annetaan tiedot hakua varten
+            const q = query(
+                collection(firestore, PLAYERSTATS), // Mistä haetaan
+                where("email", "==", email), // Ehtona sähköpostiosoite
+                where("playerName", "==", playerName) // sekä pelaajan nimi
+            );
+
+            const querySnapshotWithFilters = await getDocs(q); // Suoritetaan kysely
+
+            if (!querySnapshotWithFilters.empty) { //jos kyselyllä löytyi
+                const doc = querySnapshotWithFilters.docs[0]; // haetaan ensimmäinen tulos
+                //console.log("docId hakufunktiosta:", doc.id);
+                
+                const data = doc.data(); // Haetaan datasisältö
+                //console.log("Löydetyt tiedot:", data);
+                //console.log("docId:", doc.id)
+
+                // Päivitetään tiedot tilamuuttujiin:
+                setImageToNumberXp(data.imageToNumberXp);
+                setSoundToNumberXp(data.soundToNumberXp);
+                setComparisonXp(data.comparisonXp);
+                setBondsXp(data.bondsXp);
+                setPlayerLevel(data.playerLevel);
+                // Tallennetaan documentin ID, jotta voidaan myöhemmin päivittää samaa dokumenttia.
+                setDocId(doc.id);
+            } else {
+                console.log("Pelaajan tietoja ei löytynyt.");
+                Alert.alert("Virhe:","Pelaajan tietoja ei löytynyt")
+            }
+        } catch (error) {
+            console.error("Virhe noudettaessa pelaajan tietoja:", error);
+            Alert.alert("Virhe", "Pelaajan tietojen hakeminen ei onnistunut. Yritä myöhemmin uudestaan.")
+        }
+    };
+
+
 
     // Määritetään incrementXp-funktiota varten, kuinka paljon xp voi olla milläkin tasolla.
     const maxXpByLevel = {
@@ -60,7 +165,7 @@ export const ScoreProvider = ({ children }) => {
         // Lisätään pisteet, eli joko xp+pisteet tai tasonmukainen Xp:n maximi arvo, riippuen kumpi on pienempi
         setter(Math.min(value + points, maxXp));
 
-        // Tarkistetaan, onko päästäänkö seuraavalle tasolle tai onko koko peli läpi?
+        // Tarkistetaan, päästäänkö seuraavalle tasolle tai onko koko peli läpi?
         if (xpForLevelUp.includes(totalXp)) {
             setXpMilestone(true);
         } else if (totalXp >= 190) {
@@ -68,25 +173,18 @@ export const ScoreProvider = ({ children }) => {
         }
     };
 
-    //Efekti, joka tarkistaa tason nousun tai koko pelin läpäisyn ja heittää niistä alertin
-    useEffect(() => {
-        if (xpMilestone) {
-            setTimeout(() => {
-                Alert.alert('Taso noustiin!', 'Hienoa, päästään seuraavalle tasolle', [{ text: 'OK' }]);
-            }, 2000);
-        } else if (gameAchieved) {
-            setTimeout(() => {
-                Alert.alert('Peli läpäisty', 'Hienoa, pääsit pelin läpi', [{ text: 'OK' }]);
-            }, 2000);
-        }
-    }, [xpMilestone, gameAchieved]);
-
     return (
         <ScoreContext.Provider
             value={{
                 // Pelaajan perustiedot
+                email,
+                setEmail,
+                playerName,
+                setPlayerName,
                 playerLevel,
                 totalXp,
+                savePlayerStatsToDatabase,
+                updatePlayerStatsToDatabase,
 
                 // Tehtäväpisteet
                 imageToNumberXp,
