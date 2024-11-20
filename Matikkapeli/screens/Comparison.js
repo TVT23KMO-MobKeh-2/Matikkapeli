@@ -11,11 +11,12 @@ import { useTaskSyllabification } from '../components/TaskSyllabificationContext
 import { Audio } from 'expo-av';
 
 export default function Comparison({ onBack }) {
+
   const { isDarkTheme } = useTheme();
   const { gameSounds } = useSoundSettings();
   const { taskReading } = useTaskReading();
   const { syllabify, taskSyllabification } = useTaskSyllabification();
-  const { playerLevel, points, setPoints, questionsAnswered, setQuestionsAnswered, incrementXp, savePlayerStatsToDatabase } = useContext(ScoreContext)
+  const { playerLevel, points, setPoints, questionsAnswered, setQuestionsAnswered, incrementXp, updatePlayerStatsToDatabase } = useContext(ScoreContext)
   const [modalVisible, setModalVisible] = useState(false)//Määrittää näytetäänkö Modal
   const [isLevelNumberFirstComparable, setIsLevelNumberFirstComparable] = useState(true) // Määrittää, esitetäänkö tason mukainen numero vertailussa ensimmäisenä (true) vai toisena (false)
   const [comparisonXp, setComparisonXp] = useState(0) // Tämänhetkiset pisteet oikeasta vastauksesta. Kasvaa jokaisesta oikeasta vastauksesta ja vähenee väärästä.
@@ -41,7 +42,10 @@ export default function Comparison({ onBack }) {
     setQuestionsAnswered(0);
     setPoints(0);
     onBack();
-    savePlayerStatsToDatabase()
+
+    // Tallennetaan tiedot tietokantaan
+    updatePlayerStatsToDatabase()
+
   }
 
   // Tämä koukku suoritetaan kerran, kun komponentti on renderöity
