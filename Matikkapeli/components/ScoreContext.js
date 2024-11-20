@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect } from 'react';
-import { addDoc, collection, firestore, PLAYERSTATS, where, query, getDocs, updateDoc, doc } from '../firebase/Config';
+//import { addDoc, collection, firestore, PLAYERSTATS, where, query, getDocs, updateDoc, doc } from '../firebase/Config';
+import { savePlayerStatsToDatabase, recievePlayerStatsFromDatabase, updatePlayerStatsToDatabase } from '../firebase/Functions'
 import { Alert } from 'react-native';
 
 // Luodaan konteksti, joka tarjoaa pelin tilan ja toiminnot lapsikomponenteille
@@ -29,7 +30,7 @@ export const ScoreProvider = ({ children }) => {
 
     // Koukku pelaajatietojen hakuun tietokannasta
     useEffect(() => {
-        recievePlayerStatsFromDatabase();
+        recievePlayerStatsFromDatabase({email, playerName, setImageToNumberXp, setSoundToNumberXp, setComparisonXp, setBondsXp, setPlayerLevel, setDocId});
     }, [])
 
     // Koukku jolla lasketaan totalXp, kun joku XP muuttuu
@@ -37,6 +38,9 @@ export const ScoreProvider = ({ children }) => {
         setTotalXp(comparisonXp + bondsXp + soundToNumberXp + imageToNumberXp);
     }, [comparisonXp, bondsXp, soundToNumberXp, imageToNumberXp]);
 
+    const handleUpdatePlayerStatsToDatabase =() => {
+        updatePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, docId })
+    }
 
     //Koukku, joka tarkistaa tason nousun tai koko pelin läpäisyn ja heittää niistä alertin
     useEffect(() => {
@@ -51,7 +55,7 @@ export const ScoreProvider = ({ children }) => {
         }
     }, [xpMilestone, gameAchieved]);
 
-    // Funktio pelaajatietojen tallennukseen tietokantaan pelin alussa
+/*     // Funktio pelaajatietojen tallennukseen tietokantaan pelin alussa
     const savePlayerStatsToDatabase = async () => {
         try {
             const docRef = await addDoc(collection(firestore, PLAYERSTATS), {
@@ -67,9 +71,9 @@ export const ScoreProvider = ({ children }) => {
         } catch (error) {
             console.log("Virhe tallentaessa tietokantaan pelaajan tietoja:", error)
         }
-    }
+    } */
 
-    // Funktio pelaajan tietojen päivittämiseen tietokantaan
+/*     // Funktio pelaajan tietojen päivittämiseen tietokantaan
     const updatePlayerStatsToDatabase = async () => {
         try {
             //console.log("Päivitetään tietoja tietokantaan, docId: ", docId)
@@ -89,11 +93,11 @@ export const ScoreProvider = ({ children }) => {
 
             console.log("Pelaajan tiedot päivitetty tietokantaan");
         } catch (error) {
-            console.error("Virhe päivittäessä tietokantaan pelaajan tietoja:", error);
+            console.error("Virhe1 päivittäessä tietokantaan pelaajan tietoja:", error);
         }
-    }
+    } */
 
-    // Funktio pelaajatietojen hakuun tietokannasta
+/*     // Funktio pelaajatietojen hakuun tietokannasta
     const recievePlayerStatsFromDatabase = async () => {
         try {
             //console.log("Haetaan tietoja sähköpostilla:", email, "ja nimellä:", playerName);
@@ -131,7 +135,7 @@ export const ScoreProvider = ({ children }) => {
             console.error("Virhe noudettaessa pelaajan tietoja:", error);
             Alert.alert("Virhe", "Pelaajan tietojen hakeminen ei onnistunut. Yritä myöhemmin uudestaan.")
         }
-    };
+    }; */
 
 
 
@@ -185,6 +189,7 @@ export const ScoreProvider = ({ children }) => {
                 totalXp,
                 savePlayerStatsToDatabase,
                 updatePlayerStatsToDatabase,
+                handleUpdatePlayerStatsToDatabase,
 
                 // Tehtäväpisteet
                 imageToNumberXp,
@@ -204,3 +209,5 @@ export const ScoreProvider = ({ children }) => {
         </ScoreContext.Provider>
     );
 };
+
+export const useScore = () => useContext(ScoreContext);

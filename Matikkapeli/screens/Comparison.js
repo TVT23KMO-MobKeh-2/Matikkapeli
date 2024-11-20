@@ -9,7 +9,7 @@ export default function Comparison({ onBack }) {
   const [hyphens, setHyphens] = useState(false)//tilapäinen kunnes asetukset saatu Tavutus  
   const [isSpeak, setIsSpeak] = useState(true)//tilapäinen  kunnes asetukset saatu Puhe
 
-  const { playerLevel, points, setPoints, questionsAnswered, setQuestionsAnswered, incrementXp, updatePlayerStatsToDatabase } = useContext(ScoreContext)
+  const { playerLevel, points, setPoints, questionsAnswered, setQuestionsAnswered, incrementXp, handleUpdatePlayerStatsToDatabase } = useContext(ScoreContext)
   const [modalVisible, setModalVisible] = useState(false)//Määrittää näytetäänkö Modal
   const [isLevelNumberFirstComparable, setIsLevelNumberFirstComparable] = useState(true) // Määrittää, esitetäänkö tason mukainen numero vertailussa ensimmäisenä (true) vai toisena (false)
   const [comparisonXp, setComparisonXp] = useState(0) // Tämänhetkiset pisteet oikeasta vastauksesta. Kasvaa jokaisesta oikeasta vastauksesta ja vähenee väärästä.
@@ -36,7 +36,7 @@ export default function Comparison({ onBack }) {
     setPoints(0);
     onBack();
     // Tallennetaan tiedot tietokantaan
-    updatePlayerStatsToDatabase()
+    handleUpdatePlayerStatsToDatabase()
   }
 
   // Tämä koukku suoritetaan kerran, kun komponentti on renderöity
