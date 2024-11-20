@@ -19,6 +19,7 @@ import Animation from './screens/Animation';
 import TopBarComponent from './components/TopBarComponent';
 import ProfileScreen from './screens/ProfileScreen';
 import { firestore } from './firebase/Config';
+import SelectProfile from './screens/SelectProfile';
 
 
 export default function App() {
@@ -40,6 +41,8 @@ export default function App() {
         return <Animation onBack={() => setSelectedTask(null)} setSelectedTask={setSelectedTask}/>
       case 'Profile':
         return <ProfileScreen onBack={() => setSelectedTask(null)} />;
+      case 'SelectProfile':
+        return <SelectProfile onBack={() => setSelectedTask(null)} />;
       default:
         return <StartScreen onNavigate={setSelectedTask} />;
     }
