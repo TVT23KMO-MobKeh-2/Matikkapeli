@@ -24,10 +24,10 @@ const fetchCharactersDatabase = () => {
             career: 'Lääkäri',
             profilePic: require('../assets/profbear.png'),
             level: 3,
-            ImageNumber: 30,
-            SoundNumber: 23,
-            Comparisons: 15,
-            Bondss: 18,
+            ImageNumber: 0,
+            SoundNumber: 12,
+            Comparisons: 50,
+            Bondss: 40,
         },
     ])
 

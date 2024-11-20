@@ -39,8 +39,6 @@ export default function App() {
         return <Settings onBack={() => setSelectedTask(null)} />;
       case 'Animation':
         return <Animation onBack={() => setSelectedTask(null)} setSelectedTask={setSelectedTask}/>
-      case 'Profile':
-        return <ProfileScreen onBack={() => setSelectedTask(null)} />;
       case 'SelectProfile':
         return <SelectProfile onBack={() => setSelectedTask(null)} />;
       default:
