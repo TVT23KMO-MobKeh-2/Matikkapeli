@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, Switch, StatusBar, BackHandler } from 'react-native';
+import { View, Text, Button, Switch, StatusBar, BackHandler, TouchableOpacity, Image } from 'react-native';
 import { useTheme } from '../components/ThemeContext';
 import SliderComponent from '@react-native-community/slider';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -9,12 +9,25 @@ import { useTaskSyllabification } from '../components/TaskSyllabificationContext
 import { useBackgroundMusic } from '../components/BackgroundMusicContext'; //Taustamusiikki
 import styles from '../styles';
 
-export default function Settings() {
+export default function Settings({ onBack, onProfileImageChange }) {
   const { isDarkTheme, toggleTheme } = useTheme();
   const { taskReading, setTaskReading } = useTaskReading();
   const { taskSyllabification, setTaskSyllabification } = useTaskSyllabification(); //Käytä tavutuksen kontekstia
   const { gameSounds, setGameSounds } = useSoundSettings();
   const { isMusicPlaying, setIsMusicPlaying, setMusicVolume, musicVolume } = useBackgroundMusic(); //Taustamusiikki
+  const [selectedImage, setSelectedImage] = useState(null); // Profiilikuvan tila
+
+  const profileImages = [
+    require('../assets/images/kettu.png'),
+    require('../assets/images/pingviini.png'),
+    require('../assets/images/norsu.png'),
+    require('../assets/images/pollo.png'),
+  ];
+
+  const handleImageSelect = (image) => {
+    setSelectedImage(image);
+    onProfileImageChange(image); // Ilmoittaa TopBarComponentille valitun kuvan
+  };
 
   const handleCloseApp = () => {
     BackHandler.exitApp(); //Sulkee sovelluksen Android-laitteilla
@@ -76,10 +89,18 @@ export default function Settings() {
         </View>
 
         {/* Profiilikuvan vaihto */}
-        <View style={styles.settingItem}>
-          <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Profiilikuva</Text>
-          <Button title="Vaihda kuva" onPress={() => alert('Profiilikuva vaihdettu')} />
-        </View>
+        <Text style={styles.label}>Valitse profiilikuva</Text>
+      <View style={styles.imageOptionsContainer}>
+        {profileImages.map((image, index) => (
+          <TouchableOpacity
+            key={index}
+            onPress={() => handleImageSelect(image)} // Update profile image when tapped
+            style={styles.imageOption}
+          >
+            <Image source={image} style={styles.profileImageOption} />
+          </TouchableOpacity>
+        ))}
+      </View>
 
         {/* Sovelluksen sammuttaminen */}
         <Button title="Sammuta sovellus" onPress={handleCloseApp} />

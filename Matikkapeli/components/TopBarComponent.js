@@ -6,7 +6,7 @@ import Timer from "./Timer";
 //import Settings from "../screens/Settings"; 
 //import { UserContext } from "./UserContext"; // Esimerkki käyttäjänimen ja profiilikuvan hakemisesta
 
-const TopBarComponent = ({ customStyle }) => {
+const TopBarComponent = ({ customStyle, profileImage }) => {
   const { playerLevel, points, totalXp } = useContext(ScoreContext); // Gettaa pelaajan levelin, pisteet ja kokonais Xp:n
   //const { profileImage, username } = useContext(UserContext);  esimerkki käyttäjän profiilikuvan ja käyttäjänimen hakemisesta
   //Kovakoodattu profiilikuvan ja käyttäjänimen esimerkki
@@ -41,7 +41,7 @@ const TopBarComponent = ({ customStyle }) => {
       {/* Profiilikuva */}
       <TouchableOpacity onPress={handlePfpPress}>
         <Image
-          source={TemporaryProfileImage}
+          source={profileImage} 
           style={styles.topBarPfp}
           resizeMode="cover"
         />
