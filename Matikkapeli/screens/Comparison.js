@@ -4,12 +4,19 @@ import ModalComponent from '../components/ModalComponent'
 import * as Speech from 'expo-speech';
 import { ScoreContext } from '../components/ScoreContext';
 import styles from '../styles';
+import { useTheme } from '../components/ThemeContext';
+import { useSoundSettings } from '../components/SoundSettingsContext';
+import { useTaskReading } from '../components/TaskReadingContext';
+import { useTaskSyllabification } from '../components/TaskSyllabificationContext';
+import { Audio } from 'expo-av';
 
 export default function Comparison({ onBack }) {
-  const [hyphens, setHyphens] = useState(false)//tilapäinen kunnes asetukset saatu Tavutus  
-  const [isSpeak, setIsSpeak] = useState(true)//tilapäinen  kunnes asetukset saatu Puhe
 
-  const { playerLevel, points, setPoints, questionsAnswered, setQuestionsAnswered, incrementXp, updatePlayerStatsToDatabase } = useContext(ScoreContext)
+  const { isDarkTheme } = useTheme();
+  const { gameSounds } = useSoundSettings();
+  const { taskReading } = useTaskReading();
+  const { syllabify, taskSyllabification } = useTaskSyllabification();
+  const { playerLevel, points, setPoints, questionsAnswered, setQuestionsAnswered, incrementXp, handleUpdatePlayerStatsToDatabase } = useContext(ScoreContext)
   const [modalVisible, setModalVisible] = useState(false)//Määrittää näytetäänkö Modal
   const [isLevelNumberFirstComparable, setIsLevelNumberFirstComparable] = useState(true) // Määrittää, esitetäänkö tason mukainen numero vertailussa ensimmäisenä (true) vai toisena (false)
   const [comparisonXp, setComparisonXp] = useState(0) // Tämänhetkiset pisteet oikeasta vastauksesta. Kasvaa jokaisesta oikeasta vastauksesta ja vähenee väärästä.
@@ -35,8 +42,9 @@ export default function Comparison({ onBack }) {
     setQuestionsAnswered(0);
     setPoints(0);
     onBack();
+
     // Tallennetaan tiedot tietokantaan
-    updatePlayerStatsToDatabase()
+    handleUpdatePlayerStatsToDatabase()
   }
 
   // Tämä koukku suoritetaan kerran, kun komponentti on renderöity
@@ -71,12 +79,12 @@ export default function Comparison({ onBack }) {
     // Arvotaan, etsitäänkö isompaa vai pienempää lukua
     if (drawRandomNumber(0, 1) === 1) {
       setLookingForBigger(true) // Haetaan isompaa
-      if (isSpeak) {
+      if (taskReading) {
         Speech.speak("Valitse yhtäsuuri tai suurempi.") //toistetaan tehtävänanto puheena
       }
     } else {
       setLookingForBigger(false) // Haetaan pienempää
-      if (isSpeak) {
+      if (taskReading) {
         Speech.speak("Valitse yhtäsuuri tai pienempi.") //toistetaan tehtävänanto puheena
       }
     }
@@ -190,10 +198,10 @@ export default function Comparison({ onBack }) {
   const renderGuide = () => {
     //Tallennetaan muuttujaan teksti sen perusteella, etsitäänkö suurempaa ja tavutetaanko teksti
     const text = lookingForBigger
-      ? hyphens
+      ? taskSyllabification
         ? 'VA-LIT-SE YH-TÄ-SUU-RI TAI SUU-REM-PI'
         : 'Valitse yhtäsuuri tai suurempi'
-      : hyphens
+      : taskSyllabification
         ? 'VA-LIT-SE YH-TÄ-SUU-RI TAI PIE-NEM-PI'
         : 'Valitse yhtäsuuri tai pienempi';
 
