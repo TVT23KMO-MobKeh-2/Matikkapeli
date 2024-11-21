@@ -20,10 +20,10 @@ export default function ProfileScreen({ character, onBack }) {
 
             </View>
             <View style={styles.profileSelect}>
-                <LevelBar progress={character.ImageNumber} label={"Kuvat numeroiksi"} />
-                <LevelBar progress={character.SoundNumber} label={"Äänestä numeroiksi"} />
-                <LevelBar progress={character.Comparisons} label={"Vertailu"} />
-                <LevelBar progress={character.Bondss} label={"Hajonta"} />
+                <LevelBar progress={character.imageToNumberxP} label={"Kuvat numeroiksi"} />
+                <LevelBar progress={character.soundToNumberXp} label={"Äänestä numeroiksi"} />
+                <LevelBar progress={character.comparisonXp} label={"Vertailu"} />
+                <LevelBar progress={character.bondsXp} label={"Hajonta"} />
             </View>
 
             <Button title="Palaa takaisin" onPress={onBack} />

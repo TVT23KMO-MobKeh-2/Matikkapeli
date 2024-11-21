@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { FontAwesome5 } from '@expo/vector-icons';
 import styles from '../styles';
 import ProfileScreen from './ProfileScreen';
+import CreateProfile from './CreateProfile';
+
 
 
 const fetchCharactersDatabase = () => {
@@ -13,10 +15,10 @@ const fetchCharactersDatabase = () => {
             career: 'Rakentaja',
             profilePic: require('../assets/proffox.png'),
             level: 5,
-            ImageNumber: 42,
-            SoundNumber: 30,
-            Comparisons: 23,
-            Bondss: 20,
+            imageToNumberxP: 0,
+            soundToNumberXp: 0,
+            comparisonXp: 0,
+            bondsXp: 0,
         },
         {
             id: 2,
@@ -24,10 +26,10 @@ const fetchCharactersDatabase = () => {
             career: 'Lääkäri',
             profilePic: require('../assets/profbear.png'),
             level: 3,
-            ImageNumber: 0,
-            SoundNumber: 12,
-            Comparisons: 50,
-            Bondss: 40,
+            imageToNumberxP: 0,
+            soundToNumberXp: 0,
+            comparisonXp: 0,
+            bondsXp: 0,
         },
     ])
 
@@ -38,6 +40,7 @@ export default function SelectProfile() {
 
     const [characters, setCharacters] = useState([])
     const [selectedCharacter, setSelectedCharacter] = useState(null)
+    const [isCreatingProfile, setIsCreatingProfile] = useState(false)
 
     useEffect(() => {
         const loadCharacters = async () => {
@@ -47,12 +50,24 @@ export default function SelectProfile() {
         loadCharacters()
     }, [])
 
+    const handleNewProfile = (newProfile) => {
+            setCharacters((prev) => [...prev, newProfile])
+            setIsCreatingProfile(false)
+    }
+
+
     if (selectedCharacter) {
         return (
             <ProfileScreen
             character={selectedCharacter}
             onBack={() => setSelectedCharacter(null)}
             />
+        )
+    }
+
+    if (isCreatingProfile){
+        return (
+            <CreateProfile onCancel={() => setIsCreatingProfile(false)} onSave={handleNewProfile}/>
         )
     }
 
@@ -65,7 +80,9 @@ export default function SelectProfile() {
                         <Pressable
                             key={index}
                             style={styles.chooseProfile}
-                            onPress={() => setSelectedCharacter(character)}
+                            onPress={() => character 
+                                ? setSelectedCharacter(character)
+                            : setIsCreatingProfile(true)}
                         >
                             {character ? (
                                 <Image
