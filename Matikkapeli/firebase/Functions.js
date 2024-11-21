@@ -2,7 +2,7 @@ import { Alert } from 'react-native';
 import { addDoc, collection, firestore, PLAYERSTATS, where, query, getDocs, updateDoc, doc } from '../firebase/Config';
 
 // Funktio pelaajatietojen tallennukseen tietokantaan pelin alussa
-export async function savePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID }){
+export async function savePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career }){
     try {
         const docRef = await addDoc(collection(firestore, PLAYERSTATS), {
             email: email,
@@ -12,7 +12,8 @@ export async function savePlayerStatsToDatabase({ email, playerName, playerLevel
             soundToNumberXp: soundToNumberXp,
             comparisonXp: comparisonXp,
             bondsXp: bondsXp,
-            imageID: imageID
+            imageID: imageID,
+            career: career,
         })
         console.log("Pelaajan tiedot tallennettu")
     } catch (error) {
@@ -21,7 +22,7 @@ export async function savePlayerStatsToDatabase({ email, playerName, playerLevel
 }
 
 // Funktio pelaajan tietojen päivittämiseen tietokantaan
-export async function updatePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, docId, imageID }) {
+export async function updatePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, docId, imageID, career }) {
     try {
         console.log("Päivitetään tietoja tietokantaan, docId: ", docId)
         // Mitä päivitetään:
@@ -36,7 +37,8 @@ export async function updatePlayerStatsToDatabase({ email, playerName, playerLev
             soundToNumberXp: soundToNumberXp,
             comparisonXp: comparisonXp,
             bondsXp: bondsXp,
-            imageID: imageID
+            imageID: imageID,
+            career: career
         });
 
         console.log("Pelaajan tiedot päivitetty tietokantaan");
@@ -46,7 +48,7 @@ export async function updatePlayerStatsToDatabase({ email, playerName, playerLev
 }
 
 // Funktio pelaajatietojen hakuun tietokannasta
-export async function recievePlayerStatsFromDatabase({email, playerName, setImageToNumberXp, setSoundToNumberXp, setComparisonXp, setBondsXp, setPlayerLevel, setDocId, setImageID}) {
+export async function recievePlayerStatsFromDatabase({email, playerName, setImageToNumberXp, setSoundToNumberXp, setComparisonXp, setBondsXp, setPlayerLevel, setImageID, setCareer, setDocId}) {
     console.log("Haetaan tietoja sähköpostilla:", email, "ja nimellä:", playerName);
     try {
 
@@ -73,6 +75,7 @@ export async function recievePlayerStatsFromDatabase({email, playerName, setImag
             setBondsXp(data.bondsXp);
             setPlayerLevel(data.playerLevel);
             setImageID(data.imageID);
+            setCareer(data.career)
             // Tallennetaan documentin ID, jotta voidaan myöhemmin päivittää samaa dokumenttia.
             setDocId(doc.id);
         } else {

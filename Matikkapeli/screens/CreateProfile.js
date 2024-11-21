@@ -1,32 +1,45 @@
-import { View, Text, StyleSheet, Button } from 'react-native'
+import { View, Text, StyleSheet, Button, TextInput,Image } from 'react-native'
 import React, { useState } from 'react'
-import { TextInput } from 'react-native-gesture-handler'
 import { Picker } from '@react-native-picker/picker'
+import { savePlayerStatsToDatabase } from '../firebase/Functions'
 
 export default function CreateProfile({ onCancel, onSave }) {
     const [selectedCareer, setSelectedCareer] = useState()
     const [selectedAnimal, setSelectedAnimal] = useState()
     const [name, setName] = useState('')
+    const [isSaving, setIsSaving] = useState(false)
 
-    const handleSave = () => {
-        if (!name || !selectedCareer) {
+    const handleSave = async () => {
+        if (!name || !selectedCareer || !selectedAnimal) {
             alert('Täytä kaikki kentät!')
             return
         }
 
+        if(isSaving) return
+
+        setIsSaving(true)
         const newProfile = {
-            id: Math.random().toString(),
-            name,
-            career: selectedCareer,
-            profilePic: selectedAnimal,
-            level: 1,
-            imageToNumberxP: 0,
+            email: "minna@testi.com",
+            playerName: name,
+            playerLevel: 1,
+            imageToNumberXp: 0,
             soundToNumberXp: 0,
             comparisonXp: 0,
             bondsXp: 0,
+            imageID: selectedAnimal.value,
+            career: selectedCareer.value,
         }
 
-        onSave(newProfile)
+        try {
+            await savePlayerStatsToDatabase(newProfile)
+            onSave(newProfile)
+        } catch (error) {
+            console.error("Virhe profiilin tallennuksessa:", error)
+            alert('Profiilin tallenus epäonnistui')
+        } finally {
+            setIsSaving(false)
+        }
+        
     }
 
     const careerOptions = [
@@ -52,12 +65,12 @@ export default function CreateProfile({ onCancel, onSave }) {
                 style={styles.input}
                 placeholder='Kirjoita nimesi'
                 value={name}
-                onChangeText={(text) => setName}></TextInput>
+                onChangeText={(text) => setName(text)}></TextInput>
             <Text style={styles.label}>Valitse eläin</Text>
             <Picker
                 selectedValue={selectedAnimal}
                 style={styles.picker}
-                onValueChange={(itemValue, itemIndex) => setSelectedAnimal(itemValue)}
+                onValueChange={(itemValue) => setSelectedAnimal(itemValue)}
                 >
                 <Picker.Item label='Valitse eläin' value="" />
                 {animalOptions.map ((option) => (
@@ -74,7 +87,7 @@ export default function CreateProfile({ onCancel, onSave }) {
             <Picker
                 selectedValue={selectedCareer}
                 style={styles.picker}
-                onValueChange={(itemValue, itemIndex) => setSelectedCareer(itemValue)}
+                onValueChange={(itemValue) => setSelectedCareer(itemValue)}
                 >
                 <Picker.Item label='Valitse ammatti' value="" />
                 {careerOptions.map ((option) => (
@@ -83,8 +96,8 @@ export default function CreateProfile({ onCancel, onSave }) {
             </Picker>
 
 
-            <View>
-                <Button title='Tallenna' onPress={handleSave}/>
+            <View style={styles.buttonContainer}>
+                <Button title={isSaving ? 'Tallennetaan...' : 'Tallenna'} onPress={handleSave} disabled={isSaving}/>
                 <Button title='Peruuta' onPress={onCancel} color='red'/>
             </View>
         </View>

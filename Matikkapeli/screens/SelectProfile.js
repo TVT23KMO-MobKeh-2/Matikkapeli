@@ -4,37 +4,32 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import styles from '../styles';
 import ProfileScreen from './ProfileScreen';
 import CreateProfile from './CreateProfile';
+import { collection, getDocs } from 'firebase/firestore';
+import { firestore } from '../firebase/Config';
+import { savePlayerStatsToDatabase } from '../firebase/Functions';
 
 
 
-const fetchCharactersDatabase = () => {
-    return Promise.resolve([
-        {
-            id: 1,
-            name: 'Tunski',
-            career: 'Rakentaja',
-            profilePic: require('../assets/proffox.png'),
-            level: 5,
-            imageToNumberxP: 0,
-            soundToNumberXp: 0,
-            comparisonXp: 0,
-            bondsXp: 0,
-        },
-        {
-            id: 2,
-            name: 'Pekka',
-            career: 'Lääkäri',
-            profilePic: require('../assets/profbear.png'),
-            level: 3,
-            imageToNumberxP: 0,
-            soundToNumberXp: 0,
-            comparisonXp: 0,
-            bondsXp: 0,
-        },
-    ])
-
+const fetchCharactersDatabase = async () => {
+    try {
+        const querySnapshot = await getDocs(collection(firestore, "playerstats"))
+        const characters = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+        }))
+        return characters
+    } catch(error) {
+        console.error("Virhe noudaettaessa hahmotietoja", error)
+        return []
+    }
 }
 
+const animalImages = {
+    fox: require('../assets/proffox.png'),
+    bear: require('../assets/profbear.png'),
+    rabbit: require('../assets/profrabbit.png'),
+    wolf: require('../assets/profwolf.png'),
+};
 
 export default function SelectProfile() {
 
@@ -50,9 +45,15 @@ export default function SelectProfile() {
         loadCharacters()
     }, [])
 
-    const handleNewProfile = (newProfile) => {
-            setCharacters((prev) => [...prev, newProfile])
-            setIsCreatingProfile(false)
+    const handleNewProfile = async (newProfile) => {
+            try {
+                await savePlayerStatsToDatabase(newProfile)
+                setCharacters((prev) => [...prev, newProfile])
+                setIsCreatingProfile(false)
+            } catch (error) {
+                console.error("Virhe profiilin luomisessa:", error)
+                alert("Profiilin luominen epäonnistui")
+            } 
     }
 
 
@@ -86,8 +87,8 @@ export default function SelectProfile() {
                         >
                             {character ? (
                                 <Image
-                                    source={character.profilePic}
-                                    style={styles.picProfile}></Image>
+                                    source={animalImages[character.imageID]} 
+                                    style={styles.picProfile}/>
                             ) : (
                                 <View style={styles.addIcon}>
                                     <FontAwesome5 name="plus" size={40} color="black" />
