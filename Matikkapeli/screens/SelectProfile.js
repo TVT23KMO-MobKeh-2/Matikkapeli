@@ -18,7 +18,7 @@ const fetchCharactersDatabase = async () => {
             ...doc.data(),
         }))
         return characters
-    } catch(error) {
+    } catch (error) {
         console.error("Virhe noudaettaessa hahmotietoja", error)
         return []
     }
@@ -46,29 +46,31 @@ export default function SelectProfile() {
     }, [])
 
     const handleNewProfile = async (newProfile) => {
-            try {
-                await savePlayerStatsToDatabase(newProfile)
-                setCharacters((prev) => [...prev, newProfile])
-                setIsCreatingProfile(false)
-            } catch (error) {
-                console.error("Virhe profiilin luomisessa:", error)
-                alert("Profiilin luominen epäonnistui")
-            } 
+
+        try {
+            await savePlayerStatsToDatabase(newProfile) 
+        } catch (error) {
+            console.error("Virhe profiilin luomisessa:", error)
+            alert("Profiilin luominen epäonnistui")
+        } finally {
+            const updatedCharacters = await fetchCharactersDatabase()
+            setCharacters(updatedCharacters)
+        }
     }
 
 
     if (selectedCharacter) {
         return (
             <ProfileScreen
-            character={selectedCharacter}
-            onBack={() => setSelectedCharacter(null)}
+                character={selectedCharacter}
+                onBack={() => setSelectedCharacter(null)}
             />
         )
     }
 
-    if (isCreatingProfile){
+    if (isCreatingProfile) {
         return (
-            <CreateProfile onCancel={() => setIsCreatingProfile(false)} onSave={handleNewProfile}/>
+            <CreateProfile onCancel={() => setIsCreatingProfile(false)} onSave={handleNewProfile} />
         )
     }
 
@@ -81,14 +83,14 @@ export default function SelectProfile() {
                         <Pressable
                             key={index}
                             style={styles.chooseProfile}
-                            onPress={() => character 
+                            onPress={() => character
                                 ? setSelectedCharacter(character)
-                            : setIsCreatingProfile(true)}
+                                : setIsCreatingProfile(true)}
                         >
                             {character ? (
                                 <Image
-                                    source={animalImages[character.imageID]} 
-                                    style={styles.picProfile}/>
+                                    source={animalImages[character.imageID]}
+                                    style={styles.picProfile} />
                             ) : (
                                 <View style={styles.addIcon}>
                                     <FontAwesome5 name="plus" size={40} color="black" />

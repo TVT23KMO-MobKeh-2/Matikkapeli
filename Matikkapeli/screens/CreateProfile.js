@@ -1,7 +1,6 @@
 import { View, Text, StyleSheet, Button, TextInput, Image } from 'react-native'
 import React, { useState } from 'react'
 import { Picker } from '@react-native-picker/picker'
-import { savePlayerStatsToDatabase } from '../firebase/Functions'
 
 export default function CreateProfile({ onCancel, onSave }) {
     const [selectedCareer, setSelectedCareer] = useState()
@@ -9,7 +8,7 @@ export default function CreateProfile({ onCancel, onSave }) {
     const [name, setName] = useState('')
     const [isSaving, setIsSaving] = useState(false)
 
-    const handleSave = () => {
+    const handleSave = async () => {
         console.log("handleSave triggered")
         if (!name || !selectedCareer || !selectedAnimal) {
             alert('Täytä kaikki kentät!')
@@ -31,13 +30,13 @@ export default function CreateProfile({ onCancel, onSave }) {
             comparisonXp: 0,
             bondsXp: 0,
             imageID: selectedAnimal.value,
-            career: selectedCareer.value,
+            career: selectedCareer.label,
         }
 
         try {
             console.log("Saving to DB with profile")
-            savePlayerStatsToDatabase(newProfile)
-            onSave(newProfile)
+            await onSave(newProfile)
+            onCancel()
         } catch (error) {
             console.error("Virhe profiilin tallennuksessa:", error)
             alert('Profiilin tallenus epäonnistui')

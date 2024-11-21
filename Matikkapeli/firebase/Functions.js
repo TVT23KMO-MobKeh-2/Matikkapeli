@@ -5,6 +5,20 @@ import { addDoc, collection, firestore, PLAYERSTATS, where, query, getDocs, upda
 export async function savePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career }){
     console.log("Saving player stats to database with:", { email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career })
     try {
+
+        const q = query(
+            collection(firestore, PLAYERSTATS),
+            where("email", "==", email),
+            where("playerName", "==", playerName)
+        )
+
+        const querySnapshotWithFilters = await getDocs(q)
+        if(!querySnapshotWithFilters.empty) {
+            console.log("Profiili on jo olemassa.")
+            Alert.alert("Virhe", "Samalla sähköpostilla ja nimillä on jo profiili")
+            return
+        }
+
         const docRef = await addDoc(collection(firestore, PLAYERSTATS), {
             email: email,
             playerName: playerName,
