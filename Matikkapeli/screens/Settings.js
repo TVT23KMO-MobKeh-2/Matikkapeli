@@ -35,15 +35,6 @@ export default function Settings({ onBack, onProfileImageChange }) {
     onProfileImageChange(image); // Ilmoittaa TopBarComponentille valitun kuvan
   };
 
-  const [selectedImage, setSelectedImage] = useState(null); // Profiilikuvan tila
-
-  const profileImages = [
-    require('../assets/images/kettu.png'),
-    require('../assets/images/pingviini.png'),
-    require('../assets/images/norsu.png'),
-    require('../assets/images/pollo.png'),
-  ];
-
   useEffect(() => {
     const fetchSettings = async () => {
       if (!email || !playerName) {
@@ -122,12 +113,6 @@ export default function Settings({ onBack, onProfileImageChange }) {
       saveSettings(); // Tallennetaan asetukset automaattisesti
     }
   }, [isDarkTheme, gameSounds, taskSyllabification, taskReading, isMusicPlaying, musicVolume, email, playerName, docId]);
-  
-
-  const handleImageSelect = (image) => {
-    setSelectedImage(image);
-    onProfileImageChange(image); // Ilmoittaa TopBarComponentille valitun kuvan
-  };
 
   const handleCloseApp = () => {
     BackHandler.exitApp(); // Sulkee sovelluksen Android-laitteilla
