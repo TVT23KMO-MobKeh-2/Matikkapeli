@@ -15,7 +15,7 @@ export async function savePlayerStatsToDatabase({ email, playerName, playerLevel
         const querySnapshotWithFilters = await getDocs(q)
         if(!querySnapshotWithFilters.empty) {
             console.log("Profiili on jo olemassa.")
-            Alert.alert("Virhe", "Samalla sähköpostilla ja nimillä on jo profiili")
+            Alert.alert("Virhe", "Samalla sähköpostilla ja nimellä on jo profiili")
             return
         }
 
@@ -129,6 +129,20 @@ export async function updatePlayerSettingsToDatabase({email, playerName, isDarkT
 // funktio, jolla tallennetaan asetukset tietokantaan
 export async function savePlayerSettingsToDatabase({ email, playerName, isDarkTheme, taskReading, taskSyllabification, gamesounds, isMusicPlaying, musicVolume}) {
     try {
+
+        const q = query(
+            collection(firestore, PLAYERSTATS),
+            where("email", "==", email),
+            where("playerName", "==", playerName)
+        )
+
+        const querySnapshotWithFilters = await getDocs(q)
+        if(!querySnapshotWithFilters.empty) {
+            console.log("Profiili on jo olemassa.")
+            Alert.alert("Virhe", "Samalla sähköpostilla ja nimellä on jo profiili")
+            return
+        }
+
         const docRef = await addDoc(collection(firestore, "playersettings"),{
             email: email,
             playerName: playerName,
