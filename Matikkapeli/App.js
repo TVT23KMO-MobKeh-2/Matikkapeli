@@ -19,6 +19,7 @@ import Animation from './screens/Animation';
 import TopBarComponent from './components/TopBarComponent';
 import ProfileScreen from './screens/ProfileScreen';
 import { firestore } from './firebase/Config';
+//import SelectProfile from './screens/SelectProfile';
 
 
 export default function App() {
@@ -36,16 +37,16 @@ export default function App() {
       case 'ComparisonOperators':
         return <Comparison onBack={() => setSelectedTask(null)} />;
         case 'Settings':
-        return (
-          <Settings
-            onBack={() => setSelectedTask(null)}
-            onProfileImageChange={setProfileImage} // Pass down the profile image update function
-          />
-        );
+          return (
+            <Settings
+              onBack={() => setSelectedTask(null)}
+              onProfileImageChange={setProfileImage} // Pass down the profile image update function
+            />
+          );
       case 'Animation':
         return <Animation onBack={() => setSelectedTask(null)} setSelectedTask={setSelectedTask}/>
-      case 'Profile':
-        return <ProfileScreen onBack={() => setSelectedTask(null)} />;
+      case 'SelectProfile':
+        return <SelectProfile onBack={() => setSelectedTask(null)} />;
       default:
         return <StartScreen onNavigate={setSelectedTask} />;
     }
@@ -58,11 +59,13 @@ export default function App() {
           <ScoreProvider>
             <SoundSettingsProvider>
               <TaskReadingProvider>
-              <TopBarComponent profileImage={profileImage} />
+                {/* Top Bar */}
+                <TopBarComponent profileImage={profileImage} />
                 <View style={styles.container}>
                   {renderTask()}
                   <StatusBar style="auto" />
 
+                  {/* Back icon, shown on all pages except the StartScreen */}
                   {selectedTask && (
                     <TouchableOpacity
                       style={styles.backIcon}
@@ -72,6 +75,7 @@ export default function App() {
                     </TouchableOpacity>
                   )}
 
+                  {/* Settings icon, hidden on the Settings page */}
                   {selectedTask !== 'Settings' && (
                     <TouchableOpacity
                       style={styles.settingsIcon}
