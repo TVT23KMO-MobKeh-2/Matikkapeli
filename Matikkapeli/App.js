@@ -65,7 +65,6 @@ export default function App() {
                   {renderTask()}
                   <StatusBar style="auto" />
 
-                  {/* Back icon, shown on all pages except the StartScreen */}
                   {selectedTask && (
                     <TouchableOpacity
                       style={styles.backIcon}
@@ -75,7 +74,6 @@ export default function App() {
                     </TouchableOpacity>
                   )}
 
-                  {/* Settings icon, hidden on the Settings page */}
                   {selectedTask !== 'Settings' && (
                     <TouchableOpacity
                       style={styles.settingsIcon}

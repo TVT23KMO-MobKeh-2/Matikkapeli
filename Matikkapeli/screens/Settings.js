@@ -21,6 +21,19 @@ export default function Settings({ onBack, onProfileImageChange }) {
   const { taskSyllabification, setTaskSyllabification } = useTaskSyllabification(); //Käytä tavutuksen kontekstia
   const { gameSounds, setGameSounds } = useSoundSettings();
   const { isMusicPlaying, setIsMusicPlaying, setMusicVolume, musicVolume } = useBackgroundMusic(); //Taustamusiikki
+  const [selectedImage, setSelectedImage] = useState(null); // Profiilikuvan tila
+
+  const profileImages = [
+    require('../assets/images/kettu.png'),
+    require('../assets/images/pingviini.png'),
+    require('../assets/images/norsu.png'),
+    require('../assets/images/pollo.png'),
+  ];
+
+  const handleImageSelect = (image) => {
+    setSelectedImage(image);
+    onProfileImageChange(image); // Ilmoittaa TopBarComponentille valitun kuvan
+  };
 
   const [selectedImage, setSelectedImage] = useState(null); // Profiilikuvan tila
 
