@@ -3,6 +3,7 @@ import { addDoc, collection, firestore, PLAYERSTATS, where, query, getDocs, upda
 
 // Funktio pelaajatietojen tallennukseen tietokantaan pelin alussa
 export async function savePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career }){
+    console.log("Saving player stats to database with:", { email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career })
     try {
         const docRef = await addDoc(collection(firestore, PLAYERSTATS), {
             email: email,
