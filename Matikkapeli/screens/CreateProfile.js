@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
 
     pickerWrapper: {
         width: '100%',
-        marginBottom: 20,// Make each picker take up 48% of the width
+        marginBottom: 20,
     },
     picker: {
         height: 50,
