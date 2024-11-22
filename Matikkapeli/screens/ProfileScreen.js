@@ -3,27 +3,36 @@ import React from 'react'
 import styles from '../styles'
 import LevelBar from '../components/LevelBar'
 
+const animalImages = {
+    fox: require('../assets/proffox.png'),
+    bear: require('../assets/profbear.png'),
+    rabbit: require('../assets/profrabbit.png'),
+    wolf: require('../assets/profwolf.png'),
+};
+
 export default function ProfileScreen({ character, onBack }) {
+    const { imageID, playerName, career, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp } = character
+    const characterImage = animalImages[imageID]
 
     return (
         <View style={styles.container}>
             <View style={styles.profilebox}>
                 <Image
-                    source={character.profilePic}
+                    source={characterImage}
                     style={styles.profileImage}
                 />
                 <View>
-                    <Text>Nimi: {character.name}</Text>
-                    <Text>Ammatti: {character.career}</Text>
-                    <Text>Taso: {character.level}</Text>
+                    <Text>Nimi: {playerName}</Text>
+                    <Text>Ammatti: {career}</Text>
+                    <Text>Taso: {playerLevel}</Text>
                 </View>
 
             </View>
             <View style={styles.profileSelect}>
-                <LevelBar progress={character.ImageNumber} label={"Kuvat numeroiksi"} />
-                <LevelBar progress={character.SoundNumber} label={"Äänestä numeroiksi"} />
-                <LevelBar progress={character.Comparisons} label={"Vertailu"} />
-                <LevelBar progress={character.Bondss} label={"Hajonta"} />
+                <LevelBar progress={imageToNumberXp} label={"Kuvat numeroiksi"} />
+                <LevelBar progress={soundToNumberXp} label={"Äänestä numeroiksi"} />
+                <LevelBar progress={comparisonXp} label={"Vertailu"} />
+                <LevelBar progress={bondsXp} label={"Hajonta"} />
             </View>
 
             <Button title="Palaa takaisin" onPress={onBack} />

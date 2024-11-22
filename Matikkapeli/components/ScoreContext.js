@@ -17,6 +17,8 @@ export const ScoreProvider = ({ children }) => {
     const [soundToNumberXp, setSoundToNumberXp] = useState(0);
     const [comparisonXp, setComparisonXp] = useState(0);
     const [bondsXp, setBondsXp] = useState(0);
+    const [imageID, setImageID] = useState("");
+    const [career, setCareer] = useState("");
     // KokonaisXp
     const [totalXp, setTotalXp] = useState(comparisonXp + bondsXp + soundToNumberXp + imageToNumberXp);
     // Kulloisestakin tehtävästä saadut pisteet ja vastattujen kysymysten määrä, joiden perusteella annetaan palaute ja päätetään tehtävä
@@ -30,7 +32,7 @@ export const ScoreProvider = ({ children }) => {
 
     // Koukku pelaajatietojen hakuun tietokannasta
     useEffect(() => {
-        recievePlayerStatsFromDatabase({email, playerName, setImageToNumberXp, setSoundToNumberXp, setComparisonXp, setBondsXp, setPlayerLevel, setDocId});
+        recievePlayerStatsFromDatabase({email, playerName, setImageToNumberXp, setSoundToNumberXp, setComparisonXp, setBondsXp, setPlayerLevel, setImageID, setCareer, setDocId});
     }, [])
 
     // Koukku jolla lasketaan totalXp, kun joku XP muuttuu
@@ -39,7 +41,7 @@ export const ScoreProvider = ({ children }) => {
     }, [comparisonXp, bondsXp, soundToNumberXp, imageToNumberXp]);
 
     const handleUpdatePlayerStatsToDatabase =() => {
-        updatePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, docId })
+        updatePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career, docId })
     }
 
     //Koukku, joka tarkistaa tason nousun tai koko pelin läpäisyn ja heittää niistä alertin
@@ -186,6 +188,10 @@ export const ScoreProvider = ({ children }) => {
                 setEmail,
                 playerName,
                 setPlayerName,
+                imageID,
+                setImageID,
+                career,
+                setCareer,
                 playerLevel,
                 totalXp,
                 savePlayerStatsToDatabase,

@@ -2,8 +2,23 @@ import { Alert } from 'react-native';
 import { addDoc, collection, firestore, PLAYERSTATS, where, query, getDocs, updateDoc, doc } from '../firebase/Config';
 
 // Funktio pelaajatietojen tallennukseen tietokantaan pelin alussa
-export async function savePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp }){
+export async function savePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career }){
+    console.log("Saving player stats to database with:", { email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career })
     try {
+
+        const q = query(
+            collection(firestore, PLAYERSTATS),
+            where("email", "==", email),
+            where("playerName", "==", playerName)
+        )
+
+        const querySnapshotWithFilters = await getDocs(q)
+        if(!querySnapshotWithFilters.empty) {
+            console.log("Profiili on jo olemassa.")
+            Alert.alert("Virhe", "Samalla sähköpostilla ja nimellä on jo profiili")
+            return
+        }
+
         const docRef = await addDoc(collection(firestore, PLAYERSTATS), {
             email: email,
             playerName: playerName,
@@ -11,7 +26,9 @@ export async function savePlayerStatsToDatabase({ email, playerName, playerLevel
             imageToNumberXp: imageToNumberXp,
             soundToNumberXp: soundToNumberXp,
             comparisonXp: comparisonXp,
-            bondsXp: bondsXp
+            bondsXp: bondsXp,
+            imageID: imageID,
+            career: career,
         })
         console.log("Pelaajan tiedot tallennettu")
     } catch (error) {
@@ -20,7 +37,7 @@ export async function savePlayerStatsToDatabase({ email, playerName, playerLevel
 }
 
 // Funktio pelaajan tietojen päivittämiseen tietokantaan
-export async function updatePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, docId }) {
+export async function updatePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, docId, imageID, career }) {
     try {
         console.log("Päivitetään tietoja tietokantaan, docId: ", docId)
         // Mitä päivitetään:
@@ -34,7 +51,9 @@ export async function updatePlayerStatsToDatabase({ email, playerName, playerLev
             imageToNumberXp: imageToNumberXp,
             soundToNumberXp: soundToNumberXp,
             comparisonXp: comparisonXp,
-            bondsXp: bondsXp
+            bondsXp: bondsXp,
+            imageID: imageID,
+            career: career
         });
 
         console.log("Pelaajan tiedot päivitetty tietokantaan");
@@ -44,7 +63,7 @@ export async function updatePlayerStatsToDatabase({ email, playerName, playerLev
 }
 
 // Funktio pelaajatietojen hakuun tietokannasta
-export async function recievePlayerStatsFromDatabase({email, playerName, setImageToNumberXp, setSoundToNumberXp, setComparisonXp, setBondsXp, setPlayerLevel, setDocId}) {
+export async function recievePlayerStatsFromDatabase({email, playerName, setImageToNumberXp, setSoundToNumberXp, setComparisonXp, setBondsXp, setPlayerLevel, setImageID, setCareer, setDocId}) {
     console.log("Haetaan tietoja sähköpostilla:", email, "ja nimellä:", playerName);
     try {
 
@@ -70,6 +89,8 @@ export async function recievePlayerStatsFromDatabase({email, playerName, setImag
             setComparisonXp(data.comparisonXp);
             setBondsXp(data.bondsXp);
             setPlayerLevel(data.playerLevel);
+            setImageID(data.imageID);
+            setCareer(data.career)
             // Tallennetaan documentin ID, jotta voidaan myöhemmin päivittää samaa dokumenttia.
             setDocId(doc.id);
         } else {
@@ -108,6 +129,20 @@ export async function updatePlayerSettingsToDatabase({email, playerName, isDarkT
 // funktio, jolla tallennetaan asetukset tietokantaan
 export async function savePlayerSettingsToDatabase({ email, playerName, isDarkTheme, taskReading, taskSyllabification, gamesounds, isMusicPlaying, musicVolume}) {
     try {
+
+        const q = query(
+            collection(firestore, PLAYERSTATS),
+            where("email", "==", email),
+            where("playerName", "==", playerName)
+        )
+
+        const querySnapshotWithFilters = await getDocs(q)
+        if(!querySnapshotWithFilters.empty) {
+            console.log("Profiili on jo olemassa.")
+            Alert.alert("Virhe", "Samalla sähköpostilla ja nimellä on jo profiili")
+            return
+        }
+
         const docRef = await addDoc(collection(firestore, "playersettings"),{
             email: email,
             playerName: playerName,
