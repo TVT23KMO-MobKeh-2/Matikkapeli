@@ -83,10 +83,10 @@ export async function recievePlayerStatsFromDatabase({email, playerName, setImag
 };
 
 // funktio, jolla päivitetään asetukset tietokantaan
-export async function updatePlayerSettingsToDatabase({email, playerName, isDarkTheme, taskReading, taskSyllabification, gamesounds, isMusicPlaying, musicVolume, docId}) {
+export async function updatePlayerSettingsToDatabase({email, playerName, isDarkTheme, taskReading, taskSyllabification, gamesounds, isMusicPlaying, musicVolume, settingsDocId}) {
     try {
-        console.log("Päivitetään asetuksia tietokantaan, docId:", docId)
-        const docRef = doc(firestore, PLAYERSETTINGS, docId)
+        console.log("Päivitetään asetuksia tietokantaan, settingsDocId:", settingsDocId)
+        const docRef = doc(firestore, PLAYERSETTINGS, settingsDocId)
 
         await updateDoc(docRef, {
             email: email,
@@ -104,6 +104,7 @@ export async function updatePlayerSettingsToDatabase({email, playerName, isDarkT
         Alert.alert("Virhe", "Asetuksien tallentaminen tietokantaan ei onnistunut. Yritä myöhemmin uudestaan")
     }
 }
+
 
 // funktio, jolla tallennetaan asetukset tietokantaan
 export async function savePlayerSettingsToDatabase({ email, playerName, isDarkTheme, taskReading, taskSyllabification, gamesounds, isMusicPlaying, musicVolume}) {
@@ -126,11 +127,11 @@ export async function savePlayerSettingsToDatabase({ email, playerName, isDarkTh
 }
 
 // funktio, jolla haetaan asetukset tietokannasta
-export async function recievePlayerSettingsFromDatabase({email, playerName, toggleTheme, setTaskReading, setTaskSyllabification, setGameSounds, setIsMusicPlaying, setMusicVolume}) {
+export async function recievePlayerSettingsFromDatabase({email, playerName, toggleTheme, setTaskReading, setTaskSyllabification, setGameSounds, setIsMusicPlaying, setMusicVolume, setSettingsDocId}) {
     console.log("Haetaan asetuksia sähköpostilla:", email, "ja nimellä:", playerName);
     try {
         
-        //Annetaan tiedot hakua varten
+        // Annetaan tiedot hakua varten
         const q = query(
             collection(firestore, PLAYERSETTINGS), // Mistä haetaan
             where("email", "==", email), // Ehtona sähköpostiosoite
@@ -139,27 +140,29 @@ export async function recievePlayerSettingsFromDatabase({email, playerName, togg
 
         const querySnapshotWithFilters = await getDocs(q); // Suoritetaan kysely
 
-        if (!querySnapshotWithFilters.empty) { //jos kyselyllä löytyi
+        if (!querySnapshotWithFilters.empty) { // jos kyselyllä löytyi tuloksia
             const doc = querySnapshotWithFilters.docs[0]; // haetaan ensimmäinen tulos
-
             const data = doc.data(); // Haetaan datasisältö
+        
             console.log("Löydetyt tiedot:", data);
-            console.log("docId:", doc.id)
-
-            // Päivitetään tiedot tilamuuttujiin:
-            toggleTheme(data.isDarkTheme)
-            setTaskReading(data.taskReading)
-            setTaskSyllabification(data.taskSyllabification) 
-            setGameSounds(data.gamesounds)
-            setIsMusicPlaying(data.isMusicPlaying)
-            setMusicVolume(data.musicVolume)
-            // Tallennetaan documentin ID, jotta voidaan myöhemmin päivittää samaa dokumenttia.
-            setDocId(doc.id);
+            console.log("docId:", doc.id); // Varmista, että tämä tulostuu oikein
+        
+            // Päivitetään tiedot tilamuuttujiin
+            toggleTheme(data.isDarkTheme);
+            setTaskReading(data.taskReading);
+            setTaskSyllabification(data.taskSyllabification);
+            setGameSounds(data.gamesounds);
+            setIsMusicPlaying(data.isMusicPlaying);
+            setMusicVolume(data.musicVolume);
+        
+            // Asetetaan settingsDocId
+            setSettingsDocId(doc.id); // TÄRKEÄ!
         } else {
             console.log("Pelaajan tietoja ei löytynyt.");
-            Alert.alert("Virhe:", "Pelaajan tietoja ei löytynyt")
+            Alert.alert("Virhe:", "Pelaajan tietoja ei löytynyt");
         }
-    }catch (error) {
+        
+    } catch (error) {
         console.log("Virhe asetuksien hakemisessa", error)
         Alert.alert("Virhe", "Asetuksien hakeminen tietokannasta ei onnistunut. Yritä myöhemmin uudestaan")
     }

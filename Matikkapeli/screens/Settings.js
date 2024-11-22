@@ -3,25 +3,24 @@ import { View, Text, Button, Switch, StatusBar, BackHandler, TouchableOpacity, I
 import { useTheme } from '../components/ThemeContext';
 import SliderComponent from '@react-native-community/slider';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useSoundSettings } from '../components/SoundSettingsContext'; //Peliäänet on/off
-import { useTaskReading } from '../components/TaskReadingContext'; //Tehtävien lukeminen
-import { useTaskSyllabification } from '../components/TaskSyllabificationContext'; //Tavutus
-import { useBackgroundMusic } from '../components/BackgroundMusicContext'; //Taustamusiikki
+import { useSoundSettings } from '../components/SoundSettingsContext';
+import { useTaskReading } from '../components/TaskReadingContext';
+import { useTaskSyllabification } from '../components/TaskSyllabificationContext';
+import { useBackgroundMusic } from '../components/BackgroundMusicContext';
 import styles from '../styles';
-import { savePlayerSettingsToDatabase, updatePlayerSettingsToDatabase, recievePlayerSettingsFromDatabase } from '../firebase/Functions'; 
+import { savePlayerSettingsToDatabase, updatePlayerSettingsToDatabase, recievePlayerSettingsFromDatabase } from '../firebase/Functions';
 
 export default function Settings({ onBack, onProfileImageChange }) {
-  // Kovakoodatut arvot ennen kirjautumista
   const [email, setEmail] = useState("isi@gmail.com");
   const [playerName, setPlayerName] = useState("Irja");
-  const [docId, setDocId] = useState("");
+  const [settingsDocId, setSettingsDocId] = useState(""); // Document ID of the settings
 
   const { isDarkTheme, toggleTheme } = useTheme();
   const { taskReading, setTaskReading } = useTaskReading();
-  const { taskSyllabification, setTaskSyllabification } = useTaskSyllabification(); //Käytä tavutuksen kontekstia
+  const { taskSyllabification, setTaskSyllabification } = useTaskSyllabification();
   const { gameSounds, setGameSounds } = useSoundSettings();
-  const { isMusicPlaying, setIsMusicPlaying, setMusicVolume, musicVolume } = useBackgroundMusic(); //Taustamusiikki
-  const [selectedImage, setSelectedImage] = useState(null); // Profiilikuvan tila
+  const { isMusicPlaying, setIsMusicPlaying, setMusicVolume, musicVolume } = useBackgroundMusic();
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const profileImages = [
     require('../assets/images/kettu.png'),
@@ -32,19 +31,64 @@ export default function Settings({ onBack, onProfileImageChange }) {
 
   const handleImageSelect = (image) => {
     setSelectedImage(image);
-    onProfileImageChange(image); // Ilmoittaa TopBarComponentille valitun kuvan
+    onProfileImageChange && onProfileImageChange(image);
   };
 
+  const handleCloseApp = () => {
+    Alert.alert(
+      "Vahvistus",
+      "Haluatko varmasti sulkea sovelluksen?",
+      [
+        { text: "Peruuta", style: "cancel" },
+        { text: "Kyllä", onPress: () => BackHandler.exitApp() }
+      ]
+    );
+  };
+
+  // Function to save or update player settings
+  const saveSettings = async () => {
+    if (!email || !playerName) {
+      Alert.alert("Virhe", "Käyttäjätietoja ei löytynyt.");
+      return;
+    }
+  
+    const settings = {
+      email,
+      playerName,
+      isDarkTheme,
+      taskReading,
+      taskSyllabification,
+      gamesounds: gameSounds,
+      isMusicPlaying,
+      musicVolume,
+      selectedImage,
+    };
+  
+    try {
+      if (settingsDocId) {
+        console.log("Päivitetään dokumenttia:", settingsDocId);
+        await updatePlayerSettingsToDatabase({ ...settings, settingsDocId });
+      } else {
+        console.log("settingsDocId ei löytynyt, luodaan uusi dokumentti.");
+        await savePlayerSettingsToDatabase(settings, setSettingsDocId);  // Create new document and save ID
+      }
+    } catch (error) {
+      console.error("Virhe asetuksia tallennettaessa:", error);
+      Alert.alert("Virhe", "Asetusten tallennus epäonnistui.");
+    }
+  };
+
+  // First fetch settings or create a new document if not found
   useEffect(() => {
-    const fetchSettings = async () => {
+    const fetchSettingsOrCreateNew = async () => {
       if (!email || !playerName) {
         Alert.alert("Virhe", "Käyttäjätietoja ei löytynyt.");
         return;
       }
   
       try {
-        // Haetaan asetukset tietokannasta
-        const settings = await recievePlayerSettingsFromDatabase({
+        // Attempt to fetch player settings
+        const fetchedSettings = await recievePlayerSettingsFromDatabase({
           email,
           playerName,
           toggleTheme,
@@ -53,16 +97,13 @@ export default function Settings({ onBack, onProfileImageChange }) {
           setGameSounds,
           setIsMusicPlaying,
           setMusicVolume,
+          setSettingsDocId, // Set settingsDocId if document found
         });
   
-        if (settings && settings.docId) {
-          // Asetetaan docId oikein, jos löytyi
-          setDocId(settings.docId);
-        } else {
-          // Ei luoda docId:tä uudelleen, jos se on jo olemassa
-          if (!docId) {  // Tarkistetaan, ettei docId ole vielä määritelty
-            console.log("Ei löytynyt docId:tä, mutta ei luoda uutta.");
-          }
+        if (!fetchedSettings) {
+          // If settings were not found, create new document
+          console.log("Pelaajan asetuksia ei löytynyt, luodaan uusi dokumentti.");
+          saveSettings();
         }
       } catch (error) {
         console.error("Virhe asetuksia haettaessa:", error);
@@ -70,91 +111,59 @@ export default function Settings({ onBack, onProfileImageChange }) {
       }
     };
   
-    fetchSettings();
-  }, [email, playerName]); 
+    // Fetch or create settings once email and playerName are available
+    fetchSettingsOrCreateNew();
+  }, [email, playerName]);  // Ensure that `email` and `playerName` are available
   
+  // Save settings when they change
   useEffect(() => {
-    // Tallennetaan asetukset automaattisesti, kun jokin asetus muuttuu
-    const saveSettings = async () => {
-      if (!email || !playerName) {
-        Alert.alert("Virhe", "Käyttäjätietoja ei löytynyt.");
-        return;
-      }
-  
-      try {
-        const settings = {
-          email,
-          playerName,
-          isDarkTheme,
-          taskReading,
-          taskSyllabification,
-          gamesounds: gameSounds,
-          isMusicPlaying,
-          musicVolume,
-        };
-  
-        // Tarkistetaan, onko docId olemassa
-        if (docId) {
-          // Jos docId on olemassa, päivitetään se
-          await updatePlayerSettingsToDatabase({ ...settings, docId });
-          console.log("Asetukset päivitetty onnistuneesti.");
-        } else {
-          // Jos docId ei ole olemassa, luodaan uusi dokumentti
-          await savePlayerSettingsToDatabase(settings);
-          console.log("Asetukset tallennettu onnistuneesti.");
-        }
-      } catch (error) {
-        console.error("Virhe asetuksia tallennettaessa:", error);
-        Alert.alert("Virhe", "Asetusten tallennus epäonnistui.");
-      }
-    };
-  
-    if (docId || (!docId && email && playerName)) {
-      saveSettings(); // Tallennetaan asetukset automaattisesti
+    if (settingsDocId) {
+      saveSettings();
     }
-  }, [isDarkTheme, gameSounds, taskSyllabification, taskReading, isMusicPlaying, musicVolume, email, playerName, docId]);
-
-  const handleCloseApp = () => {
-    BackHandler.exitApp(); // Sulkee sovelluksen Android-laitteilla
-  };
+  }, [
+    isDarkTheme,
+    gameSounds,
+    taskSyllabification,
+    taskReading,
+    isMusicPlaying,
+    musicVolume,
+    email,
+    playerName,
+    settingsDocId,
+    selectedImage // Save profile image as well
+  ]);
 
   return (
     <SafeAreaView style={[styles.safeContainer, { backgroundColor: isDarkTheme ? '#333' : '#fff' }]}>
-      <StatusBar
-        barStyle={isDarkTheme ? 'light-content' : 'dark-content'}
-        backgroundColor={isDarkTheme ? '#333' : '#fff'}
-      />
+      <StatusBar barStyle={isDarkTheme ? 'light-content' : 'dark-content'} backgroundColor={isDarkTheme ? '#333' : '#fff'} />
       <View style={[styles.container, { backgroundColor: isDarkTheme ? '#333' : '#fff' }]}>
         <Text style={[styles.title, { color: isDarkTheme ? '#fff' : '#000' }]}>Asetukset</Text>
 
-        {/* Teeman valinta */}
+        {/* Theme Selection */}
         <View style={styles.settingItem}>
           <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Tumman teeman valinta</Text>
           <Switch value={isDarkTheme} onValueChange={toggleTheme} />
         </View>
 
-        {/* Tavutuksen valinta */}
+        {/* Syllabification */}
         <View style={styles.settingItem}>
           <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Tavutus</Text>
-          <Switch
-            value={taskSyllabification} // Kontekstin tila
-            onValueChange={() => setTaskSyllabification(!taskSyllabification)} // Päivitä tila
-          />
+          <Switch value={taskSyllabification} onValueChange={() => setTaskSyllabification(!taskSyllabification)} />
         </View>
 
-        {/* Tehtävien lukeminen */}
+        {/* Task Reading */}
         <View style={styles.settingItem}>
           <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Tehtävien lukeminen</Text>
           <Switch value={taskReading} onValueChange={() => setTaskReading(!taskReading)} />
         </View>
 
-        {/* Taustamusiikin päälle/pois */}
+        {/* Background Music */}
         <View style={styles.settingItem}>
           <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Taustamusiikki</Text>
           <Switch value={isMusicPlaying} onValueChange={setIsMusicPlaying} />
         </View>
 
-        {/* Taustamusiikin voimakkuus */}
+        {/* Music Volume */}
         <View style={styles.settingItemColumn}>
           <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Taustamusiikin voimakkuus</Text>
           <SliderComponent
@@ -167,27 +176,23 @@ export default function Settings({ onBack, onProfileImageChange }) {
           />
         </View>
 
-        {/* Peliäänet */}
+        {/* Game Sounds */}
         <View style={styles.settingItem}>
           <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Peliäänet</Text>
           <Switch value={gameSounds} onValueChange={() => setGameSounds(!gameSounds)} />
         </View>
 
-        {/* Profiilikuvan vaihto */}
+        {/* Profile Image Selection */}
         <Text style={styles.label}>Valitse profiilikuva</Text>
         <View style={styles.imageOptionsContainer}>
           {profileImages.map((image, index) => (
-            <TouchableOpacity
-              key={index}
-              onPress={() => handleImageSelect(image)} 
-              style={styles.imageOption}
-            >
+            <TouchableOpacity key={index} onPress={() => handleImageSelect(image)} style={styles.imageOption}>
               <Image source={image} style={styles.profileImageOption} />
             </TouchableOpacity>
           ))}
         </View>
 
-        {/* Sovelluksen sammuttaminen */}
+        {/* Close App Button */}
         <Button title="Sammuta sovellus" onPress={handleCloseApp} />
       </View>
     </SafeAreaView>
