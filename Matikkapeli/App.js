@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, ActivityIndicator  } from 'react-native';
 import { useState } from 'react';
 import { ThemeProvider } from './components/ThemeContext';
 import StartScreen from './screens/StartScreen';
@@ -20,11 +20,19 @@ import TopBarComponent from './components/TopBarComponent';
 import ProfileScreen from './screens/ProfileScreen';
 import { firestore } from './firebase/Config';
 import SelectProfile from './screens/SelectProfile';
-
+import { useFonts, ComicNeue_400Regular, ComicNeue_700Bold } from '@expo-google-fonts/comic-neue';
 
 export default function App() {
   const [selectedTask, setSelectedTask] = useState(null);
   const [isProfileScreen, setIsProfileScreen] = useState(false);
+  const [fontsLoaded] = useFonts({
+    ComicNeue_400Regular,
+    ComicNeue_700Bold,
+  });
+
+  if (!fontsLoaded) {
+    return <ActivityIndicator size="large" />;
+  }
 
   const renderTask = () => {
     if (isProfileScreen) {
@@ -59,7 +67,7 @@ export default function App() {
           <ScoreProvider>
             <SoundSettingsProvider>
               <TaskReadingProvider>
-              <TopBarComponent/>
+              {selectedTask !== 'Settings' && selectedTask !== 'SelectProfile' && <TopBarComponent />}
                 <View style={styles.container}>
                   {renderTask()}
                   <StatusBar style="auto" />

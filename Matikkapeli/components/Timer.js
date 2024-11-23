@@ -64,7 +64,7 @@ const Timer = ({ closeModal, onTimerStart, onTimerEnd }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View>
       {/* Timer valinta modal */}
       <Modal
         transparent={true}
@@ -75,13 +75,27 @@ const Timer = ({ closeModal, onTimerStart, onTimerEnd }) => {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalText}>Valitse aika:</Text>
-            <Button title="1 minuutti" onPress={() => startTimer(1)} />
-            <Button title="2 minuuttia" onPress={() => startTimer(2)} />
-            <Button title="15 minuuttia" onPress={() => startTimer(15)} />
-            <Button title="30 minuuttia" onPress={() => startTimer(30)} />
-            <Button title="45 minuuttia" onPress={() => startTimer(45)} />
-            <Button title="60 minuuttia" onPress={() => startTimer(60)} />
-            <Button title="Sulje" onPress={() => { closeTimerSelectionModal(); closeModal(); }} />
+            <TouchableOpacity onPress={() => startTimer(1)}>
+              <Text style={styles.modalButton}>1 minuutti</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => startTimer(2)}>
+              <Text style={styles.modalButton}>2 minuuttia</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => startTimer(15)}>
+              <Text style={styles.modalButton}>15 minuuttia</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => startTimer(30)}>
+              <Text style={styles.modalButton}>30 minuuttia</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => startTimer(45)}>
+              <Text style={styles.modalButton}>45 minuuttia</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => startTimer(60)}>
+              <Text style={styles.modalButton}>60 minuuttia</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={closeTimerSelectionModal}>
+              <Text style={styles.startButton}>Sulje</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
@@ -103,8 +117,12 @@ const Timer = ({ closeModal, onTimerStart, onTimerEnd }) => {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalText}>Oletko varma, että haluat pysäyttää ajastimen?</Text>
-            <Button title="Kyllä, pysäytä" onPress={() => { stopTimer(); closeModal(); }} />
-            <Button title="Ei, jatka" onPress={closeStopTimerModal} />
+            <TouchableOpacity onPress={() => { stopTimer(); closeModal(); }}>
+              <Text style={styles.modalButton}>Kyllä, pysäytä</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={closeStopTimerModal}>
+              <Text style={styles.modalButton}>Ei, jatka</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
@@ -121,7 +139,9 @@ const Timer = ({ closeModal, onTimerStart, onTimerEnd }) => {
             <Text style={styles.modalText}>
               Olet pelannut {selectedTime} minuuttia. Olisiko aika tauolle?
             </Text>
-            <Button title="Sulje" onPress={handleClose} />
+            <TouchableOpacity onPress={handleClose}>
+              <Text style={styles.modalButton}>Sulje</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>

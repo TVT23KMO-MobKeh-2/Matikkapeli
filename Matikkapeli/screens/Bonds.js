@@ -129,7 +129,7 @@ export default function Bonds({ onBack }) {
   (witchBox === 0 && inputValue1 === '') || 
   (witchBox === 1 && inputValue2 === '') ||
   isTaskChanging
-
+  
   return (
     <ImageBackground
       source={imagaBG}
@@ -209,4 +209,3 @@ export default function Bonds({ onBack }) {
 
   );
 }
-

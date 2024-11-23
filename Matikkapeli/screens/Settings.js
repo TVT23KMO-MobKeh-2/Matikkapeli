@@ -26,7 +26,7 @@ export default function Settings() {
         barStyle={isDarkTheme ? 'light-content' : 'dark-content'}
         backgroundColor={isDarkTheme ? '#333' : '#fff'}
       />
-      <View style={[styles.container, { backgroundColor: isDarkTheme ? '#333' : '#fff' }]}>
+      <View style={[styles.settingItemContainer, { backgroundColor: isDarkTheme ? '#333' : '#fff' }]}>
         <Text style={[styles.title, { color: isDarkTheme ? '#fff' : '#000' }]}>Asetukset</Text>
 
         {/* Teeman valinta */}
@@ -61,6 +61,9 @@ export default function Settings() {
           <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Taustamusiikin voimakkuus</Text>
           <SliderComponent
             style={styles.slider}
+            maximumTrackTintColor="#FF0000" //Punainen
+            minimumTrackTintColor="#FF004F" //Punainen
+            thumbTintColor="#006400"
             value={musicVolume}
             onValueChange={setMusicVolume}
             minimumValue={0}
@@ -73,6 +76,7 @@ export default function Settings() {
         <View style={styles.settingItem}>
           <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Peliäänet</Text>
           <Switch value={gameSounds} onValueChange={() => setGameSounds(!gameSounds)} />
+            
         </View>
 
         {/* Profiilikuvan vaihto */}

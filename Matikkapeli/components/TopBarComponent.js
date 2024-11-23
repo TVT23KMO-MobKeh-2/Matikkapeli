@@ -6,6 +6,7 @@ import Timer from "./Timer";
 import ProfileScreen from "../screens/ProfileScreen";
 import { useNavigation } from '@react-navigation/native';
 import SelectProfile from "../screens/SelectProfile";
+import { isDarkTheme } from "./ThemeContext";
 
 const TopBarComponent = ({ customStyle }) => {
   const { imageID, playerName, career, playerLevel } = useContext(ScoreContext);
@@ -20,7 +21,6 @@ const animalImages = {
     wolf: require('../assets/profwolf.png'),
 };
 const profileImage = animalImages[imageID];
-const [selectedTask, setSelectedTask] = useState(null);
 
   const handlePfpPress = () => {
     console.log('Profile image pressed');
@@ -41,7 +41,7 @@ const [selectedTask, setSelectedTask] = useState(null);
   };
 
   return (
-    <View style={[styles.topBarContainer, customStyle]}>
+    <View style={styles.topBarContainer}>
       
       {/* Profiilikuva */}
       <TouchableOpacity onPress={handlePfpPress}>
@@ -55,7 +55,7 @@ const [selectedTask, setSelectedTask] = useState(null);
       {/* Käyttäjäinfo */}
       <View style={styles.topBarInfoContainer}>
         <Text style={styles.topBarUsername}> {playerName} </Text> 
-        <Text style={styles.topBarLevelAndPoints}>
+        <Text style={styles.topBarInfoContainer}>
           Taso {playerLevel} | {career}
         </Text>
       </View>
