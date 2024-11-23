@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, Pressable, ImageBackground, Image, StyleSheet } from 'react-native';
 import styles from '../styles';
 
-export default function TaskWindow({ modalVisible, setModalVisible, onNavigate }) {
+export default function TaskWindow({ modalVisible, setModalVisible, navigation, profile}) {
     const backgroundImage = require('../assets/sign2.png'); 
     const apple = require('../assets/apple2.png'); 
     const note = require('../assets/note1.png');
@@ -23,7 +23,7 @@ export default function TaskWindow({ modalVisible, setModalVisible, onNavigate }
                         <Pressable 
                             style={styles.taskContainer}
                             onPress={() => { 
-                                onNavigate('ImageToNumbers'); 
+                                navigation.navigate('ImageToNumbers', { profile });
                                 setModalVisible(false); 
                             }}>
                             <Image source={apple} style={styles.taskImage} />
@@ -31,7 +31,7 @@ export default function TaskWindow({ modalVisible, setModalVisible, onNavigate }
                         <Pressable 
                             style={styles.taskContainer}
                             onPress={() => { 
-                                onNavigate('SoundToNumbers'); 
+                                navigation.navigate('SoundToNumbers', { profile });
                                 setModalVisible(false); 
                             }}>
                             <Image source={note} style={styles.taskImage} />
@@ -39,7 +39,7 @@ export default function TaskWindow({ modalVisible, setModalVisible, onNavigate }
                         <Pressable 
                             style={styles.taskContainer}
                             onPress={() => { 
-                                onNavigate('ComparisonOperators'); 
+                                navigation.navigate('ComparisonOperators', { profile });
                                 setModalVisible(false); 
                             }}>
                             <Image source={conv} style={styles.taskImage} />
@@ -47,7 +47,7 @@ export default function TaskWindow({ modalVisible, setModalVisible, onNavigate }
                         <Pressable 
                             style={styles.taskContainer}
                             onPress={() => { 
-                                onNavigate('NumberBonds'); 
+                                navigation.navigate('Bonds', { profile });
                                 setModalVisible(false);
                             }}>
                             <Image source={bond} style={styles.taskImage} />

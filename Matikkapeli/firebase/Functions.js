@@ -1,10 +1,33 @@
 import { Alert } from 'react-native';
 import { addDoc, collection, firestore, PLAYERSTATS, where, query, getDocs, updateDoc, doc } from '../firebase/Config';
 
+export async function saveEmailToDatabase({email}) {
+    try {
+        const emailQuery = query(
+            collection(firestore, PLAYERSTATS),
+            where("email", "==", email)
+        )
+        const emailQuerySnapshot = await getDocs(emailQuery)
+        if (!emailQuerySnapshot.empty) {
+            // Email already exists, just update the associated profiles or link email to new profiles
+            console.log("Email already exists in database.");
+            return;
+        }
+
+        console.log("Email saved successfully with player name linked.");
+    } catch (error) {
+        console.log("Error saving email:", error);
+        Alert.alert("Virhe", "Sähköpostin tallentaminen ei onnistunut.");
+    }
+}
+
+
 // Funktio pelaajatietojen tallennukseen tietokantaan pelin alussa
 export async function savePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career }){
     console.log("Saving player stats to database with:", { email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career })
     try {
+        
+        await saveEmailToDatabase({email})
 
         const q = query(
             collection(firestore, PLAYERSTATS),

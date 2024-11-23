@@ -443,5 +443,8 @@ export default StyleSheet.create({
     justifyContent: 'space-between',
     margin: 10,
 
-  }
+  },
+
+
+
 });

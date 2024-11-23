@@ -10,6 +10,8 @@ import { useTheme } from '../components/ThemeContext';
 import { useSoundSettings } from '../components/SoundSettingsContext';
 import { useTaskReading } from '../components/TaskReadingContext';
 import { useTaskSyllabification } from '../components/TaskSyllabificationContext';
+import { useRoute } from '@react-navigation/native';
+
 
 // Satunnaisen arvon generointi annetulla alueella
 function random(min, max) {
@@ -36,6 +38,10 @@ export default function Bonds({ onBack }) {
   const { syllabify, taskSyllabification } = useTaskSyllabification();  // Käytetäänkö tavutusta
   const [isTaskChanging, setIsTaskChanging] = useState(false)
   const [isButtonClicked, setIsButtonClicked] = useState(false)
+  const route = useRoute(); // Access the route prop
+  const { profile } = route.params;
+
+  console.log(profile); 
 
   // Äänitiedostot oikein ja väärin vastauksille
   const correctSound = require('../assets/sounds/mixkit-achievement-bell.wav');  // Oikea vastausääni

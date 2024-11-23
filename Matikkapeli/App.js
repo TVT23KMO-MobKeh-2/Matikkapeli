@@ -1,86 +1,56 @@
+import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { View, TouchableOpacity } from 'react-native';
-import { useState } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import { ThemeProvider } from './components/ThemeContext';
+import { ScoreProvider } from './components/ScoreContext';
+import { SoundSettingsProvider } from './components/SoundSettingsContext';
+import { TaskReadingProvider } from './components/TaskReadingContext';
+import { TaskSyllabificationProvider } from './components/TaskSyllabificationContext';
+import { BackgroundMusicProvider } from './components/BackgroundMusicContext';
+import { View } from 'react-native';  // Import required components for icons
+import TopBarComponent from './components/TopBarComponent'
+
 import StartScreen from './screens/StartScreen';
 import ImageToNumber from './screens/ImageToNumber';
 import SoundToNumber from './screens/SoundToNumber';
 import Bonds from './screens/Bonds';
 import Comparison from './screens/Comparison';
 import Settings from './screens/Settings';
-import { ScoreProvider } from './components/ScoreContext';
-import { SoundSettingsProvider } from './components/SoundSettingsContext';
-import { TaskReadingProvider } from './components/TaskReadingContext';
-import { TaskSyllabificationProvider } from './components/TaskSyllabificationContext';
-import { BackgroundMusicProvider } from './components/BackgroundMusicContext';
-import { Ionicons } from '@expo/vector-icons';
-import styles from './styles';
 import Animation from './screens/Animation';
-import TopBarComponent from './components/TopBarComponent';
-import ProfileScreen from './screens/ProfileScreen';
-import { firestore } from './firebase/Config';
+import WelcomeScreen from './screens/WelcomeScreen';
 import SelectProfile from './screens/SelectProfile';
+import UserCreation from './components/UserCreation';
+import ProfileScreen from './screens/ProfileScreen';
+import CreateProfile from './screens/CreateProfile';
 
+const Stack = createStackNavigator();
 
 export default function App() {
-  const [selectedTask, setSelectedTask] = useState(null);
-
-  const renderTask = () => {
-    switch (selectedTask) {
-      case 'ImageToNumbers':
-        return <ImageToNumber onBack={() => setSelectedTask(null)} />;
-      case 'SoundToNumbers':
-        return <SoundToNumber onBack={() => setSelectedTask(null)} />;
-      case 'NumberBonds':
-        return <Bonds onBack={() => setSelectedTask(null)} />;
-      case 'ComparisonOperators':
-        return <Comparison onBack={() => setSelectedTask(null)} />;
-      case 'Settings':
-        return <Settings onBack={() => setSelectedTask(null)} />;
-      case 'Animation':
-        return <Animation onBack={() => setSelectedTask(null)} setSelectedTask={setSelectedTask}/>
-      case 'SelectProfile':
-        return <SelectProfile onBack={() => setSelectedTask(null)} />;
-      default:
-        return <StartScreen onNavigate={setSelectedTask} />;
-    }
-  };
-
   return (
-    <BackgroundMusicProvider>   
-      <TaskSyllabificationProvider> 
+    <BackgroundMusicProvider>
+      <TaskSyllabificationProvider>
         <ThemeProvider>
           <ScoreProvider>
             <SoundSettingsProvider>
               <TaskReadingProvider>
-                {/* Top Bar */}
-                <TopBarComponent />
-                <View style={styles.container}>
-                  {renderTask()}
-                  <StatusBar style="auto" />
-
-                  {/* Back icon, shown on all pages except the StartScreen */}
-                  {selectedTask && (
-                    <TouchableOpacity
-                      style={styles.backIcon}
-                      onPress={() => setSelectedTask(null)}
-                    >
-                      <Ionicons name="arrow-back" size={32} color="black" />
-                    </TouchableOpacity>
-                  )}
-
-                  {/* Settings icon, hidden on the Settings page */}
-                  {selectedTask !== 'Settings' && (
-                    <TouchableOpacity
-                      style={styles.settingsIcon}
-                      onPress={() => setSelectedTask('Settings')}
-                    >
-                      <Ionicons name="settings-outline" size={32} color="black" />
-                    </TouchableOpacity>
-                  )}
-
-                  <StatusBar style="auto" />
-                </View>
+                <NavigationContainer>
+                  <TopBarComponent />
+                  <Stack.Navigator initialRouteName="StartScreen">
+                    <Stack.Screen name="StartScreen" component={StartScreen} />
+                    <Stack.Screen name="Settings" component={Settings} />
+                    <Stack.Screen name="Welcome" component={WelcomeScreen} />
+                    <Stack.Screen name="UserCreation" component={UserCreation} />
+                    <Stack.Screen name="SelectProfile" component={SelectProfile} />
+                    <Stack.Screen name="CreateProfile" component={CreateProfile} />
+                    <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+                    <Stack.Screen name="Animation" component={Animation} />
+                    <Stack.Screen name="ImageToNumbers" component={ImageToNumber} />
+                    <Stack.Screen name="SoundToNumbers" component={SoundToNumber} />
+                    <Stack.Screen name="Bonds" component={Bonds} />
+                    <Stack.Screen name="ComparisonOperators" component={Comparison} />
+                  </Stack.Navigator>
+                </NavigationContainer>
               </TaskReadingProvider>
             </SoundSettingsProvider>
           </ScoreProvider>

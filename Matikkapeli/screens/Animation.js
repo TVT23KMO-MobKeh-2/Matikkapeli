@@ -5,7 +5,7 @@ import TaskWindow from '../components/TaskWindow'
 import styles from '../styles'
 import { Image } from 'expo-image';
 
-export default function Animation({ onBack, setSelectedTask }) {
+export default function Animation({ route, onBack, navigation }) {
     const backgroundImageBack = require('../assets/Pixel-art-back_full.png')
     const backgroundImageFront = require('../assets/Pixel-art-front-sign_full.png')
     const translateX = useSharedValue(750)
@@ -15,6 +15,16 @@ export default function Animation({ onBack, setSelectedTask }) {
     const movingImage = require('../assets/foxwalking.gif')
     const [isGifVisible, setIsGifVisible] = useState(false)
     const [modalVisible, setModalVisible] = useState(false)
+    const { profile } = route.params;
+    console.log('Received profile data:', profile);
+
+    useEffect(() => {
+        if (!profile) {
+            console.error('No profile data received in Animation screen');
+        } else {
+            console.log('Profile data received in Animation:', profile);
+        }
+    }, [profile]);
 
     const handlePress = () => {
         setIsMoving(true); 
@@ -78,7 +88,8 @@ export default function Animation({ onBack, setSelectedTask }) {
             {modalVisible && <TaskWindow
                 modalVisible={modalVisible}
                 setModalVisible={setModalVisible}
-                onNavigate={setSelectedTask} 
+                profile={profile}
+                navigation={navigation}
             />}
 
             <View style={styles.buttonContainer1}>

@@ -1,23 +1,28 @@
 import React, { useContext, useState } from "react";
-import { View, Text, Image, TouchableOpacity, Modal} from "react-native";
-import { ScoreContext }  from "./ScoreContext"; 
+import { View, Text, Image, TouchableOpacity, Modal } from "react-native";
+import { ScoreContext } from "./ScoreContext"; 
 import styles from "../styles";
 import Timer from "./Timer";
-//import Settings from "../screens/Settings"; 
-//import { UserContext } from "./UserContext"; // Esimerkki käyttäjänimen ja profiilikuvan hakemisesta
+import { Ionicons } from "@expo/vector-icons";  // Make sure this is imported
+import { useNavigation } from '@react-navigation/native';
 
 const TopBarComponent = ({ customStyle }) => {
-  const { playerLevel, points, totalXp } = useContext(ScoreContext); // Gettaa pelaajan levelin, pisteet ja kokonais Xp:n
-  //const { profileImage, username } = useContext(UserContext);  esimerkki käyttäjän profiilikuvan ja käyttäjänimen hakemisesta
-  //Kovakoodattu profiilikuvan ja käyttäjänimen esimerkki
+  const { playerLevel, points, totalXp } = useContext(ScoreContext); // Get the player level, points, and totalXp
+  
+  // Temporary values for profile image, username, and settings icon
   const TemporaryProfileImage = require('../assets/favicon.png'); 
   const TemporaryUsername = "Testi";
   const TemporarySettings = require('../assets/icon.png');
+  
   const [timerModalVisible, setTimerModalVisible] = useState(false);
   const [timerStarted, setTimerStarted] = useState(false);
 
+  const navigation = useNavigation();  // Use navigation hook to navigate
+
+  // Function to handle the settings button press
   const handleSettingsPress = () => {
     console.log('Settings button pressed');
+    navigation.navigate('Settings');  // Navigate to Settings screen
   };
 
   const handlePfpPress = () => {
@@ -38,7 +43,7 @@ const TopBarComponent = ({ customStyle }) => {
   return (
     <View style={[styles.topBarContainer, customStyle]}>
       
-      {/* Profiilikuva */}
+      {/* Profile Image */}
       <TouchableOpacity onPress={handlePfpPress}>
         <Image
           source={TemporaryProfileImage}
@@ -47,7 +52,7 @@ const TopBarComponent = ({ customStyle }) => {
         />
       </TouchableOpacity>
 
-      {/* Käyttäjäinfo */}
+      {/* User Info */}
       <View style={styles.topBarInfoContainer}>
         <Text style={styles.topBarUsername}> {TemporaryUsername} </Text> 
         <Text style={styles.topBarLevelAndPoints}>
@@ -55,17 +60,18 @@ const TopBarComponent = ({ customStyle }) => {
         </Text>
       </View>
       
-      {/* Timeri */}
+      {/* Timer Button */}
       <TouchableOpacity onPress={openTimerModal} 
-        style={[styles.settingsButton, {width: 40}]}>
+        style={[styles.settingsButton, { width: 40 }]}>
         {!timerStarted && <Text style={styles.topBarLevelAndPoints}>⏰</Text>}
       </TouchableOpacity>
 
-      {/* Asetukset */}
+      {/* Settings Button */}
       <TouchableOpacity onPress={handleSettingsPress} style={styles.settingsButton}>
-        <Image source={TemporarySettings} style={styles.settingsIcon} />
+        <Ionicons name="settings-outline" size={32} color="black" />
       </TouchableOpacity>
       
+      {/* Timer Modal */}
       {timerModalVisible && (
         <Timer
           closeModal={closeTimerModal}

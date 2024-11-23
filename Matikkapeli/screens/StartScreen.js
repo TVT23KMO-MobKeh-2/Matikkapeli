@@ -4,7 +4,7 @@ import { useTheme } from '../components/ThemeContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import styles from '../styles';
 
-export default function StartScreen({ onNavigate }) {
+export default function StartScreen({ navigation }) {
   const { isDarkTheme } = useTheme();
 
   return (
@@ -19,25 +19,27 @@ export default function StartScreen({ onNavigate }) {
         </Text>
 
         <View style={styles.buttonContainer}>
-          <Button onPress={() => onNavigate('ImageToNumbers')} title="Kuvat numeroiksi" />
+          <Button onPress={() => navigation.navigate('ImageToNumbers')} title="Kuvat numeroiksi" />
         </View>
         <View style={styles.buttonContainer}>
-          <Button onPress={() => onNavigate('SoundToNumbers')} title="Ääni numeroiksi" />
+          <Button onPress={() => navigation.navigate('SoundToNumbers')} title="Ääni numeroiksi" />
         </View>
         <View style={styles.buttonContainer}>
-          <Button onPress={() => onNavigate('ComparisonOperators')} title="Vertailu" />
+          <Button onPress={() => navigation.navigate('ComparisonOperators')} title="Vertailu" />
         </View>
         <View style={styles.buttonContainer}>
-          <Button onPress={() => onNavigate('NumberBonds')} title="Hajonta" />
+          <Button onPress={() => navigation.navigate('Bonds')} title="Hajonta" />
         </View>
         <View style={styles.buttonContainer}>
-          <Button onPress={() => onNavigate('Animation')} title='Animaatio' />
+          <Button onPress={() => navigation.navigate('Animation')} title="Animaatio" />
         </View>
         <View style={styles.buttonContainer}>
-          <Button onPress={() => onNavigate('SelectProfile')} title='Profiili valinta' />
+          <Button onPress={() => navigation.navigate('Welcome')} title="Etusivu" />
+        </View>
+        <View style={styles.buttonContainer}>
+          <Button onPress={() => navigation.navigate('Settings')} title="Asetukset" />
         </View>
       </View>
-
     </SafeAreaView>
   );
 }
