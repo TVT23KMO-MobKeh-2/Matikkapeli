@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, Pressable, ImageBackground, Image, StyleSheet } from 'react-native';
 import styles from '../styles';
 
+
 export default function TaskWindow({ modalVisible, setModalVisible, navigation, profile}) {
     const backgroundImage = require('../assets/sign2.png'); 
     const apple = require('../assets/apple2.png'); 

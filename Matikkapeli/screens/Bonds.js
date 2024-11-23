@@ -19,9 +19,14 @@ function random(min, max) {
 }
 
 export default function Bonds({ onBack }) {
+  const route = useRoute();
+  const { profile } = route.params;
+  const bondsXp = profile ? profile.bondsXp : 0;
+
+  console.log(profile); 
 
   // Pelin aloitustaso ja muut tilamuuttujat
-  const levelData = 7;
+  const levelData = bondsXp;
   const [leftBox, setLeftBox] = useState(0);  // Vasemman laatikon arvo
   const [rightBox, setRightBox] = useState(0);  // Oikean laatikon arvo
   const [witchBox, setWitchBox] = useState(random(0, 1));  // Tieto siitä, kummassa laatikossa on puuttuva luku
@@ -38,10 +43,8 @@ export default function Bonds({ onBack }) {
   const { syllabify, taskSyllabification } = useTaskSyllabification();  // Käytetäänkö tavutusta
   const [isTaskChanging, setIsTaskChanging] = useState(false)
   const [isButtonClicked, setIsButtonClicked] = useState(false)
-  const route = useRoute(); // Access the route prop
-  const { profile } = route.params;
 
-  console.log(profile); 
+
 
   // Äänitiedostot oikein ja väärin vastauksille
   const correctSound = require('../assets/sounds/mixkit-achievement-bell.wav');  // Oikea vastausääni
