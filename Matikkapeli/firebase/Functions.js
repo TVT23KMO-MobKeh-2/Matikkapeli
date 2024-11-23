@@ -127,43 +127,45 @@ export async function savePlayerSettingsToDatabase({ email, playerName, isDarkTh
 }
 
 // funktio, jolla haetaan asetukset tietokannasta
-export async function recievePlayerSettingsFromDatabase({email, playerName, toggleTheme, setTaskReading, setTaskSyllabification, setGameSounds, setIsMusicPlaying, setMusicVolume, setSettingsDocId}) {
+export async function recievePlayerSettingsFromDatabase({email, playerName, setIsDarkTheme, setTaskReading, setTaskSyllabification, setGameSounds, setIsMusicPlaying, setMusicVolume, setSettingsDocId}) {
     console.log("Haetaan asetuksia sähköpostilla:", email, "ja nimellä:", playerName);
     try {
         
-        // Annetaan tiedot hakua varten
+        //Annetaan tiedot hakua varten
         const q = query(
-            collection(firestore, PLAYERSETTINGS), // Mistä haetaan
-            where("email", "==", email), // Ehtona sähköpostiosoite
-            where("playerName", "==", playerName) // sekä pelaajan nimi
+            collection(firestore, PLAYERSETTINGS), //Mistä haetaan
+            where("email", "==", email), //Ehtona sähköpostiosoite
+            where("playerName", "==", playerName) //sekä pelaajan nimi
         );
 
-        const querySnapshotWithFilters = await getDocs(q); // Suoritetaan kysely
+        const querySnapshotWithFilters = await getDocs(q); //Suoritetaan kysely
 
-        if (!querySnapshotWithFilters.empty) { // jos kyselyllä löytyi tuloksia
-            const doc = querySnapshotWithFilters.docs[0]; // haetaan ensimmäinen tulos
-            const data = doc.data(); // Haetaan datasisältö
+        if (!querySnapshotWithFilters.empty) { //jos kyselyllä löytyi tuloksia
+            const doc = querySnapshotWithFilters.docs[0]; //haetaan ensimmäinen tulos
+            const data = doc.data(); //Haetaan datasisältö
         
             console.log("Löydetyt tiedot:", data);
-            console.log("docId:", doc.id); // Varmista, että tämä tulostuu oikein
+            console.log("docId:", doc.id); //Varmista, että tämä tulostuu oikein
         
-            // Päivitetään tiedot tilamuuttujiin
-            toggleTheme(data.isDarkTheme);
+            //Päivitetään tiedot tilamuuttujiin
+            setIsDarkTheme(data.isDarkTheme)
             setTaskReading(data.taskReading);
             setTaskSyllabification(data.taskSyllabification);
             setGameSounds(data.gamesounds);
             setIsMusicPlaying(data.isMusicPlaying);
             setMusicVolume(data.musicVolume);
         
-            // Asetetaan settingsDocId
-            setSettingsDocId(doc.id); // TÄRKEÄ!
+            //Asetetaan settingsDocId
+            setSettingsDocId(doc.id);
         } else {
             console.log("Pelaajan tietoja ei löytynyt.");
             Alert.alert("Virhe:", "Pelaajan tietoja ei löytynyt");
+            return false; //Palautus
         }
         
     } catch (error) {
         console.log("Virhe asetuksien hakemisessa", error)
         Alert.alert("Virhe", "Asetuksien hakeminen tietokannasta ei onnistunut. Yritä myöhemmin uudestaan")
     }
+    return true; //Palautus siirretty
 }

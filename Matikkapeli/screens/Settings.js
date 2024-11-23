@@ -3,23 +3,23 @@ import { View, Text, Button, Switch, StatusBar, BackHandler, TouchableOpacity, I
 import { useTheme } from '../components/ThemeContext';
 import SliderComponent from '@react-native-community/slider';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useSoundSettings } from '../components/SoundSettingsContext';
-import { useTaskReading } from '../components/TaskReadingContext';
-import { useTaskSyllabification } from '../components/TaskSyllabificationContext';
-import { useBackgroundMusic } from '../components/BackgroundMusicContext';
+import { useSoundSettings } from '../components/SoundSettingsContext'; //Peliäänet on/off
+import { useTaskReading } from '../components/TaskReadingContext'; //Tehtävien lukeminen
+import { useTaskSyllabification } from '../components/TaskSyllabificationContext'; //Tavutus
+import { useBackgroundMusic } from '../components/BackgroundMusicContext'; //Taustamusiikki
 import styles from '../styles';
 import { savePlayerSettingsToDatabase, updatePlayerSettingsToDatabase, recievePlayerSettingsFromDatabase } from '../firebase/Functions';
 
 export default function Settings({ onBack, onProfileImageChange }) {
   const [email, setEmail] = useState("isi@gmail.com");
   const [playerName, setPlayerName] = useState("Irja");
-  const [settingsDocId, setSettingsDocId] = useState(""); // Document ID of the settings
+  const [settingsDocId, setSettingsDocId] = useState(""); //Doc ID
 
-  const { isDarkTheme, toggleTheme } = useTheme();
+  const { isDarkTheme, setIsDarkTheme } = useTheme();
   const { taskReading, setTaskReading } = useTaskReading();
-  const { taskSyllabification, setTaskSyllabification } = useTaskSyllabification();
+  const { taskSyllabification, setTaskSyllabification } = useTaskSyllabification(); //Käytä tavutuksen kontekstia
   const { gameSounds, setGameSounds } = useSoundSettings();
-  const { isMusicPlaying, setIsMusicPlaying, setMusicVolume, musicVolume } = useBackgroundMusic();
+  const { isMusicPlaying, setIsMusicPlaying, setMusicVolume, musicVolume } = useBackgroundMusic(); //Taustamusiikki
   const [selectedImage, setSelectedImage] = useState(null);
 
   const profileImages = [
@@ -34,6 +34,7 @@ export default function Settings({ onBack, onProfileImageChange }) {
     onProfileImageChange && onProfileImageChange(image);
   };
 
+  //Sulkee sovelluksen Android-laitteilla
   const handleCloseApp = () => {
     Alert.alert(
       "Vahvistus",
@@ -45,7 +46,7 @@ export default function Settings({ onBack, onProfileImageChange }) {
     );
   };
 
-  // Function to save or update player settings
+  //Player asetukset asetusten tallentaminen ja päivittäminen
   const saveSettings = async () => {
     if (!email || !playerName) {
       Alert.alert("Virhe", "Käyttäjätietoja ei löytynyt.");
@@ -70,7 +71,7 @@ export default function Settings({ onBack, onProfileImageChange }) {
         await updatePlayerSettingsToDatabase({ ...settings, settingsDocId });
       } else {
         console.log("settingsDocId ei löytynyt, luodaan uusi dokumentti.");
-        await savePlayerSettingsToDatabase(settings, setSettingsDocId);  // Create new document and save ID
+        await savePlayerSettingsToDatabase(settings, setSettingsDocId);  //Luo uuden dokumentin ja tallentaa id:n
       }
     } catch (error) {
       console.error("Virhe asetuksia tallennettaessa:", error);
@@ -78,7 +79,7 @@ export default function Settings({ onBack, onProfileImageChange }) {
     }
   };
 
-  // First fetch settings or create a new document if not found
+  //Haetaan ensin asetukset tai luodaan uusi asiakirja, jos sitä ei löydy
   useEffect(() => {
     const fetchSettingsOrCreateNew = async () => {
       if (!email || !playerName) {
@@ -87,21 +88,21 @@ export default function Settings({ onBack, onProfileImageChange }) {
       }
   
       try {
-        // Attempt to fetch player settings
+        //Haetaan player asetukset
         const fetchedSettings = await recievePlayerSettingsFromDatabase({
           email,
           playerName,
-          toggleTheme,
+          setIsDarkTheme,
           setTaskReading,
           setTaskSyllabification,
           setGameSounds,
           setIsMusicPlaying,
           setMusicVolume,
-          setSettingsDocId, // Set settingsDocId if document found
+          setSettingsDocId, //settingsDocId jos dokumentti löytyy
         });
   
         if (!fetchedSettings) {
-          // If settings were not found, create new document
+          //Jos asetuksia ei löydy, luodaan uusi dokumentti
           console.log("Pelaajan asetuksia ei löytynyt, luodaan uusi dokumentti.");
           saveSettings();
         }
@@ -111,11 +112,11 @@ export default function Settings({ onBack, onProfileImageChange }) {
       }
     };
   
-    // Fetch or create settings once email and playerName are available
+    //Haetaan tai luodaan asetukset, kun sähköposti ja pelaajanimi ovat saatavilla
     fetchSettingsOrCreateNew();
-  }, [email, playerName]);  // Ensure that `email` and `playerName` are available
+  }, [email, playerName]);  //Varmistetaan, että "email" ja "playerName" ovat saatavilla
   
-  // Save settings when they change
+  //Tallennetaan asetukset kun ne ovat muuttuneet
   useEffect(() => {
     if (settingsDocId) {
       saveSettings();
@@ -130,7 +131,7 @@ export default function Settings({ onBack, onProfileImageChange }) {
     email,
     playerName,
     settingsDocId,
-    selectedImage // Save profile image as well
+    selectedImage
   ]);
 
   return (
@@ -139,31 +140,31 @@ export default function Settings({ onBack, onProfileImageChange }) {
       <View style={[styles.container, { backgroundColor: isDarkTheme ? '#333' : '#fff' }]}>
         <Text style={[styles.title, { color: isDarkTheme ? '#fff' : '#000' }]}>Asetukset</Text>
 
-        {/* Theme Selection */}
+        {/* Teeman valinta */}
         <View style={styles.settingItem}>
           <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Tumman teeman valinta</Text>
-          <Switch value={isDarkTheme} onValueChange={toggleTheme} />
+          <Switch value={isDarkTheme} onValueChange={setIsDarkTheme} />
         </View>
 
-        {/* Syllabification */}
+        {/* Tavutuksen valinta */}
         <View style={styles.settingItem}>
           <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Tavutus</Text>
           <Switch value={taskSyllabification} onValueChange={() => setTaskSyllabification(!taskSyllabification)} />
         </View>
 
-        {/* Task Reading */}
+        {/* Tehtävien lukeminen */}
         <View style={styles.settingItem}>
           <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Tehtävien lukeminen</Text>
           <Switch value={taskReading} onValueChange={() => setTaskReading(!taskReading)} />
         </View>
 
-        {/* Background Music */}
+        {/* Taustamusiikin päälle/pois */}
         <View style={styles.settingItem}>
           <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Taustamusiikki</Text>
           <Switch value={isMusicPlaying} onValueChange={setIsMusicPlaying} />
         </View>
 
-        {/* Music Volume */}
+        {/* Taustamusiikin voimakkuus */}
         <View style={styles.settingItemColumn}>
           <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Taustamusiikin voimakkuus</Text>
           <SliderComponent
@@ -176,13 +177,13 @@ export default function Settings({ onBack, onProfileImageChange }) {
           />
         </View>
 
-        {/* Game Sounds */}
+        {/* Peliäänet */}
         <View style={styles.settingItem}>
           <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Peliäänet</Text>
           <Switch value={gameSounds} onValueChange={() => setGameSounds(!gameSounds)} />
         </View>
 
-        {/* Profile Image Selection */}
+        {/* Profiilikuvan vaihto */}
         <Text style={styles.label}>Valitse profiilikuva</Text>
         <View style={styles.imageOptionsContainer}>
           {profileImages.map((image, index) => (
@@ -192,7 +193,7 @@ export default function Settings({ onBack, onProfileImageChange }) {
           ))}
         </View>
 
-        {/* Close App Button */}
+        {/* Sovelluksen sammuttaminen */}
         <Button title="Sammuta sovellus" onPress={handleCloseApp} />
       </View>
     </SafeAreaView>
