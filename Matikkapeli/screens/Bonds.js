@@ -21,12 +21,12 @@ function random(min, max) {
 export default function Bonds({ onBack }) {
   const route = useRoute();
   const { profile } = route.params;
-  const bondsXp = profile ? profile.bondsXp : 0;
+
 
   console.log(profile); 
 
   // Pelin aloitustaso ja muut tilamuuttujat
-  const levelData = bondsXp;
+  const levelData = profile ? profile.playerLevel : 0;;
   const [leftBox, setLeftBox] = useState(0);  // Vasemman laatikon arvo
   const [rightBox, setRightBox] = useState(0);  // Oikean laatikon arvo
   const [witchBox, setWitchBox] = useState(random(0, 1));  // Tieto siitä, kummassa laatikossa on puuttuva luku
