@@ -24,8 +24,12 @@ import SelectProfile from './screens/SelectProfile';
 
 export default function App() {
   const [selectedTask, setSelectedTask] = useState(null);
+  const [isProfileScreen, setIsProfileScreen] = useState(false);
 
   const renderTask = () => {
+    if (isProfileScreen) {
+      return <ProfileScreen onBack={() => setIsProfileScreen(false)} />;
+    }
     switch (selectedTask) {
       case 'ImageToNumbers':
         return <ImageToNumber onBack={() => setSelectedTask(null)} />;
@@ -41,6 +45,8 @@ export default function App() {
         return <Animation onBack={() => setSelectedTask(null)} setSelectedTask={setSelectedTask}/>
       case 'SelectProfile':
         return <SelectProfile onBack={() => setSelectedTask(null)} />;
+      case 'SelectProfile':
+        return <SelectProfile onBack={() => setSelectedTask(null)} />;
       default:
         return <StartScreen onNavigate={setSelectedTask} />;
     }
@@ -53,8 +59,7 @@ export default function App() {
           <ScoreProvider>
             <SoundSettingsProvider>
               <TaskReadingProvider>
-                {/* Top Bar */}
-                <TopBarComponent />
+              <TopBarComponent/>
                 <View style={styles.container}>
                   {renderTask()}
                   <StatusBar style="auto" />
