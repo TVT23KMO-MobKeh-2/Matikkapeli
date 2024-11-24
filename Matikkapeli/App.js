@@ -23,6 +23,7 @@ import SelectProfile from './screens/SelectProfile';
 import UserCreation from './components/UserCreation';
 import ProfileScreen from './screens/ProfileScreen';
 import CreateProfile from './screens/CreateProfile';
+import ModalComponent from './components/ModalComponent';
 
 const Stack = createStackNavigator();
 
@@ -49,6 +50,7 @@ export default function App() {
                     <Stack.Screen name="SoundToNumbers" component={SoundToNumber} />
                     <Stack.Screen name="Bonds" component={Bonds} />
                     <Stack.Screen name="ComparisonOperators" component={Comparison} />
+                    <Stack.Screen name="ModalComponenet" component={ModalComponent} />
                   </Stack.Navigator>
                 </NavigationContainer>
               </TaskReadingProvider>

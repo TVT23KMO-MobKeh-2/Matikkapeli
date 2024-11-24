@@ -9,8 +9,14 @@ import { useSoundSettings } from '../components/SoundSettingsContext';
 import { useTaskReading } from '../components/TaskReadingContext';
 import { useTaskSyllabification } from '../components/TaskSyllabificationContext';
 import { Audio } from 'expo-av';
+import { useNavigation } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 
 export default function Comparison({ onBack }) {
+
+  const route = useRoute();
+  const { profile } = route.params;
+  const navigation = useNavigation()
 
   const { isDarkTheme } = useTheme();
   const { gameSounds } = useSoundSettings();
@@ -26,12 +32,14 @@ export default function Comparison({ onBack }) {
   const [equationOperand1, setEquationOperand1] = useState(0) // Yhtälön ensimmäinen operandin arvo, käytetään laskutoimituksissa
   const [equationOperand2, setEquationOperand2] = useState(0) // Yhtälön toinen operandin arvo, käytetään laskutoimituksissa
   const [isEquationAddition, setIsEquationAddition] = useState(false) // Määrittää, onko laskutoimitus yhteenlasku (true) vai ei (false)
+  const [showButtons, setShowButtons] = useState(false);
 
   //Koukku jolla tarkistetaan joko kierros päättyy.
   useEffect(() => {
     if (questionsAnswered === 5) {
       incrementXp(points, "comparison")
       setModalVisible(true)
+      setShowButtons(true)
     }
   }, [questionsAnswered])
 
@@ -41,7 +49,7 @@ export default function Comparison({ onBack }) {
     setModalVisible(false);
     setQuestionsAnswered(0);
     setPoints(0);
-    onBack();
+
 
     // Tallennetaan tiedot tietokantaan
     handleUpdatePlayerStatsToDatabase()
@@ -240,6 +248,16 @@ export default function Comparison({ onBack }) {
     }
   }
 
+  const handleContinueGame = () => {
+    handleBack(); // Actually call handleBack
+    navigation.navigate('Animation', { profile });
+  };
+
+  const handleEndGame = () => {
+    handleBack(); // Actually call handleBack
+    navigation.navigate('SelectProfile', { profile });
+  };
+
   return (
     <View style={styles.comparisonContainer}>
       <Text style={styles.title}>Vertailu</Text>
@@ -248,11 +266,17 @@ export default function Comparison({ onBack }) {
       {renderComparable(1)}
       <Text onPress={() => checkAnswer("equali")} style={styles.comparisonOptions} >=</Text>
       {renderComparable(2)}
-      <Button title="Palaa takaisin" onPress={onBack} />
       <ModalComponent
         isVisible={modalVisible}
-        onBack={handleBack}
+        profile={profile}
+        onBack={() => setModalVisible(false)} 
       />
+         {showButtons && (
+        <View style={styles.buttonContainer}>
+          <Button title="Seuraava tehtävä odottaa" onPress={handleContinueGame} />
+          <Button title="Lopeta peli" onPress={handleEndGame} />
+        </View>
+      )}
     </View>
   );
 }

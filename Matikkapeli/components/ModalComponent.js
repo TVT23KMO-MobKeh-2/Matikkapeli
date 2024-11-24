@@ -5,12 +5,38 @@ import * as Speech from 'expo-speech';
 import { ScoreContext } from './ScoreContext';
 import { useTaskReading } from '../components/TaskReadingContext';
 import { useTaskSyllabification } from '../components/TaskSyllabificationContext';
+import { useNavigation } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 
-export default function ModalComponent({ onBack, isVisible }) {
+export default function ModalComponent({ onBack, isVisible}) {
+    const route = useRoute();
+    const { profile } = route.params;
+
+    useEffect(() => {
+        if (isVisible) {
+          console.log("modal:", profile); // Log only when modal is visible
+        }
+      }, [isVisible, profile]); 
+
+    const navigation = useNavigation()
     const [voiceFeedbackMsg, setVoiceFeedbackMsg] = useState("Tässä tämän hetkiset pisteesi")
     const { syllabify, taskSyllabification } = useTaskSyllabification();
     const { taskReading } = useTaskReading();
-    const {playerLevel,points,imageToNumberXp,soundToNumberXp,comparisonXp,bondsXp, totalXp} = useContext(ScoreContext)
+    const { email, playerName, playerLevel, points, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, totalXp } = useContext(ScoreContext)
+
+    useEffect(() => {
+        if (isVisible) {
+            console.log("Modal is now visible");
+            console.log(`Player Level: ${profile.email}`);
+            console.log(`Player Level: ${profile.playerName}`);
+            console.log(`Player Level: ${playerLevel}`);
+            console.log(`Total XP: ${totalXp}`);
+            console.log(`ImageToNumber XP: ${imageToNumberXp}`);
+            console.log(`SoundToNumber XP: ${soundToNumberXp}`);
+            console.log(`Comparison XP: ${comparisonXp}`);
+            console.log(`Bonds XP: ${bondsXp}`);
+        }
+    }, [isVisible, playerLevel, totalXp, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp]);
 
     const feedbackMsg = (() => {
         switch (points) {
@@ -58,6 +84,12 @@ export default function ModalComponent({ onBack, isVisible }) {
         }
     }, [isVisible, voiceFeedbackMsg]);
 
+
+    const handleProfile = (() => {
+        onBack()
+    })
+
+
     return (
         <Modal
             animationType='slide'
@@ -77,7 +109,11 @@ export default function ModalComponent({ onBack, isVisible }) {
                         <Text>Comparison: {comparisonXp}/50</Text>
                         <Text>Bonds: {bondsXp}/40</Text>
                     </View>
-                    <Button title="Palaa aloitusnäyttöön" onPress={onBack}></Button>
+
+                    <Button
+                        title="Go to Profile Screen"
+                        onPress={handleProfile}
+                    />
                 </View>
 
             </View>

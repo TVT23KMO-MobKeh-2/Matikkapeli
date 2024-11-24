@@ -14,7 +14,7 @@ export default function Animation({ route, onBack, navigation }) {
     const stopImage = require('../assets/foxwalking1.png')
     const movingImage = require('../assets/foxwalking.gif')
     const [isGifVisible, setIsGifVisible] = useState(false)
-    const [modalVisible, setModalVisible] = useState(false)
+    const [taskVisible, setTaskVisible] = useState(false)
     const { profile } = route.params;
     console.log('Received profile data:', profile);
 
@@ -35,7 +35,7 @@ export default function Animation({ route, onBack, navigation }) {
         translateX.value = 750; 
         setIsMoving(false); 
         setIsGifVisible(false); 
-        setModalVisible(false);
+        setTaskVisible(false);
     };
 
 
@@ -43,7 +43,7 @@ export default function Animation({ route, onBack, navigation }) {
         if (isMoving) {
             translateX.value = withTiming(-850, { duration: 7000 }, () => {
                 runOnJS(setIsGifVisible)(false)
-                runOnJS(setModalVisible)(true)
+                runOnJS(setTaskVisible)(true)
             })
         } else {
             translateX.value = withTiming(750)
@@ -85,9 +85,9 @@ export default function Animation({ route, onBack, navigation }) {
                 />
             </Animated.View>
 
-            {modalVisible && <TaskWindow
-                modalVisible={modalVisible}
-                setModalVisible={setModalVisible}
+            {taskVisible && <TaskWindow
+                taskVisible={taskVisible}
+                setTaskVisible={setTaskVisible}
                 profile={profile}
                 navigation={navigation}
             />}

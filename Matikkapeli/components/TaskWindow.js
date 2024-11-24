@@ -3,7 +3,7 @@ import { View, Text, Pressable, ImageBackground, Image, StyleSheet } from 'react
 import styles from '../styles';
 
 
-export default function TaskWindow({ modalVisible, setModalVisible, navigation, profile}) {
+export default function TaskWindow({ taskVisible, setTaskVisible, navigation, profile}) {
     const backgroundImage = require('../assets/sign2.png'); 
     const apple = require('../assets/apple2.png'); 
     const note = require('../assets/note1.png');
@@ -11,7 +11,7 @@ export default function TaskWindow({ modalVisible, setModalVisible, navigation, 
     const conv = require('../assets/conv1.png');
 
 
-    if (!modalVisible) return null;
+    if (!taskVisible) return null;
 
     return (
         <View style={[styles.container, { position: 'absolute', zIndex: 5 }]}>
@@ -21,11 +21,12 @@ export default function TaskWindow({ modalVisible, setModalVisible, navigation, 
                 resizeMode="cover">
                 <View style={styles.content}>
                     <View style={styles.grid}>
+                        <Text>{profile.playername}</Text>
                         <Pressable 
                             style={styles.taskContainer}
                             onPress={() => { 
                                 navigation.navigate('ImageToNumbers', { profile });
-                                setModalVisible(false); 
+                                setTaskVisible(false); 
                             }}>
                             <Image source={apple} style={styles.taskImage} />
                         </Pressable>
@@ -33,7 +34,7 @@ export default function TaskWindow({ modalVisible, setModalVisible, navigation, 
                             style={styles.taskContainer}
                             onPress={() => { 
                                 navigation.navigate('SoundToNumbers', { profile });
-                                setModalVisible(false); 
+                                setTaskVisible(false); 
                             }}>
                             <Image source={note} style={styles.taskImage} />
                         </Pressable>
@@ -41,7 +42,7 @@ export default function TaskWindow({ modalVisible, setModalVisible, navigation, 
                             style={styles.taskContainer}
                             onPress={() => { 
                                 navigation.navigate('ComparisonOperators', { profile });
-                                setModalVisible(false); 
+                                setTaskVisible(false); 
                             }}>
                             <Image source={conv} style={styles.taskImage} />
                         </Pressable>
@@ -49,13 +50,13 @@ export default function TaskWindow({ modalVisible, setModalVisible, navigation, 
                             style={styles.taskContainer}
                             onPress={() => { 
                                 navigation.navigate('Bonds', { profile });
-                                setModalVisible(false);
+                                setTaskVisible(false);
                             }}>
                             <Image source={bond} style={styles.taskImage} />
                         </Pressable>
                     </View>
 
-                    <Pressable onPress={() => setModalVisible(false)}>
+                    <Pressable onPress={() => setTaskVisible(false)}>
                         <Text style={styles.closeText}>Sulje</Text>
                     </Pressable>
                 </View>

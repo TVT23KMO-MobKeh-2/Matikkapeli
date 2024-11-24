@@ -6,19 +6,19 @@ import { Alert } from 'react-native';
 // Luodaan konteksti, joka tarjoaa pelin tilan ja toiminnot lapsikomponenteille
 export const ScoreContext = createContext();
 
-export const ScoreProvider = ({ children }) => {
-    const [email, setEmail] = useState("isi@gmail.com") //Tunnisteena, jos monta samannimistä Kallea
-    const [playerName, setPlayerName] = useState("Irja")
-    const [docId, setDocId] = useState("")
+export const ScoreProvider = ({ children, profile = {} }) => {
+    const [email, setEmail] = useState(profile.email || "") //Tunnisteena, jos monta samannimistä Kallea
+    const [playerName, setPlayerName] = useState(profile.playerName || "")
+    const [docId, setDocId] = useState(profile.playerLevel || 1)
     // Pelaajan taso
     const [playerLevel, setPlayerLevel] = useState(1);
     // Eri tehtävien Xp:t
     const [imageToNumberXp, setImageToNumberXp] = useState(0);
     const [soundToNumberXp, setSoundToNumberXp] = useState(0);
     const [comparisonXp, setComparisonXp] = useState(0);
-    const [bondsXp, setBondsXp] = useState(0);
-    const [imageID, setImageID] = useState("");
-    const [career, setCareer] = useState("");
+    const [bondsXp, setBondsXp] = useState(profile.bondsXp || 0);
+    const [imageID, setImageID] = useState(profile.imageID || "");
+    const [career, setCareer] = useState(profile.career || "");
     // KokonaisXp
     const [totalXp, setTotalXp] = useState(comparisonXp + bondsXp + soundToNumberXp + imageToNumberXp);
     // Kulloisestakin tehtävästä saadut pisteet ja vastattujen kysymysten määrä, joiden perusteella annetaan palaute ja päätetään tehtävä
@@ -32,15 +32,22 @@ export const ScoreProvider = ({ children }) => {
 
     // Koukku pelaajatietojen hakuun tietokannasta
     useEffect(() => {
-        recievePlayerStatsFromDatabase({email, playerName, setImageToNumberXp, setSoundToNumberXp, setComparisonXp, setBondsXp, setPlayerLevel, setImageID, setCareer, setDocId});
-    }, [])
+        if (email && playerName) {
+            console.log("Fetching player stats with email:", email, "and player name:", playerName);
+            recievePlayerStatsFromDatabase({ email, playerName, setImageToNumberXp, setSoundToNumberXp, setComparisonXp, setBondsXp, setPlayerLevel, setImageID, setCareer, setDocId });
+        }
+    }, [email, playerName]);
 
     // Koukku jolla lasketaan totalXp, kun joku XP muuttuu
     useEffect(() => {
         setTotalXp(comparisonXp + bondsXp + soundToNumberXp + imageToNumberXp);
+        console.log(`Total XP updated: ${totalXp}`);
     }, [comparisonXp, bondsXp, soundToNumberXp, imageToNumberXp]);
 
     const handleUpdatePlayerStatsToDatabase =() => {
+        console.log("Updating player stats to the database:", {
+            email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career, docId
+        });
         updatePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career, docId })
     }
 
@@ -171,6 +178,9 @@ export const ScoreProvider = ({ children }) => {
 
         // Lisätään pisteet, eli joko xp+pisteet tai tasonmukainen Xp:n maximi arvo, riippuen kumpi on pienempi
         setter(Math.min(value + points, maxXp));
+
+        console.log(`XP for ${task} updated: ${value + points}/${maxXp}`);
+
 
         // Tarkistetaan, päästäänkö seuraavalle tasolle tai onko koko peli läpi?
         if (xpForLevelUp.includes(totalXp)) {

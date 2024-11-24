@@ -5,8 +5,15 @@ import ModalComponent from '../components/ModalComponent'
 import { ScoreContext } from '../components/ScoreContext';
 import styles from '../styles';
 import { Audio } from 'expo-av';
+import { useNavigation } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 
 export default function SoundToNumber({ onBack }) {
+
+  const route = useRoute();
+  const { profile } = route.params;
+  const navigation = useNavigation()
+
   const [number, setNumber] = useState(generateRandomNumber());
   const [options, setOptions] = useState(generateOptions(number));
   const [modalVisible, setModalVisible] = useState(false);
@@ -14,6 +21,7 @@ export default function SoundToNumber({ onBack }) {
   const [sound, setSound] = useState();
   const [gameEnded, setGameEnded] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showButtons, setShowButtons] = useState(false);
 
   //Koukku jolla tarkistetaan joko kierros päättyy.
   useEffect(() => {
@@ -22,6 +30,7 @@ export default function SoundToNumber({ onBack }) {
       incrementXp(points,"soundToNumber") //comparisonin tilalle oma tehtävän nimi: "imageToNumber", "soundToNumber", "comparison" tai "bonds"
       setModalVisible(true)
       setGameEnded(true)
+      setShowButtons(true)
     }
   }, [questionsAnswered]);
 
@@ -30,13 +39,22 @@ export default function SoundToNumber({ onBack }) {
     setModalVisible(false);
     setQuestionsAnswered(0);
     setPoints(0);
-    onBack();
   };
   /*useEffect(() => {
     if (loading) {
       playNumber();
     }
   }, [number]);*/
+
+  const handleContinueGame = () => {
+    handleBack(); // Actually call handleBack
+    navigation.navigate('Animation', { profile });
+  };
+
+  const handleEndGame = () => {
+    handleBack(); // Actually call handleBack
+    navigation.navigate('SelectProfile', { profile });
+  };
 
   const playSound = async (isCorrect) => {
     setLoading(true); //napit pois käytöstä
@@ -111,11 +129,17 @@ export default function SoundToNumber({ onBack }) {
           </TouchableOpacity>
         ))}
       </View>
-      <Button title="Palaa takaisin" onPress={onBack} />
       <ModalComponent
         isVisible={modalVisible}
-        onBack={handleBack}
+        onBack={() => setModalVisible(false)}
+        profile={profile}
       />
+        {showButtons && (
+        <View style={styles.buttonContainer}>
+          <Button title="Seuraava tehtävä odottaa" onPress={handleContinueGame} />
+          <Button title="Lopeta peli" onPress={handleEndGame} />
+        </View>
+      )}
     </View>
   );
 };

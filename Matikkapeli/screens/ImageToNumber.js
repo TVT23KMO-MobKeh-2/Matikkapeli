@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Button } from 'react-native';
 import { Audio } from 'expo-av';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Speech from 'expo-speech';
@@ -10,6 +10,8 @@ import { useTheme } from '../components/ThemeContext';
 import { useSoundSettings } from '../components/SoundSettingsContext';
 import { useTaskReading } from '../components/TaskReadingContext';
 import { useTaskSyllabification } from '../components/TaskSyllabificationContext';
+import { useNavigation } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 
 //Funktio, joka generoi satunnaisen luvun väliltä min ja max
 function random(min, max) {
@@ -18,18 +20,23 @@ function random(min, max) {
 
 export default function ImageToNumber({ onBack }) {
 
+  const route = useRoute();
+  const { profile } = route.params;
+  const navigation = useNavigation()
+
   const { points, setPoints, questionsAnswered, setQuestionsAnswered, incrementXp } = useContext(ScoreContext);
   const { isDarkTheme } = useTheme(); //Käytetään teemakontekstia (tumma tila)
   const { gameSounds, volume } = useSoundSettings(); //Käytetään ääniasetuksia
   const { taskReading } = useTaskReading(); //Käytetään tehtävänlukukontekstia
   const { syllabify, taskSyllabification } = useTaskSyllabification(); //Käytetään tavutuskontekstia
-  
+
   const [sound, setSound] = useState();
   const [questionIndex, setQuestionIndex] = useState(0); //Nykyinen kysymyksen indeksi
   const [answered, setAnswered] = useState(false); //Onko kysymykseen vastattu
   const [modalVisible, setModalVisible] = useState(false); //Näytetäänkö modaalikomponentti
   const [gameEnded, setGameEnded] = useState(false); //Onko peli päättynyt
   const [isSpeechFinished, setIsSpeechFinished] = useState(false); //Seurataan puheen valmistumista
+  const [showButtons, setShowButtons] = useState(false);
 
 
   //Generoi kysymyksiä pelille
@@ -37,7 +44,7 @@ export default function ImageToNumber({ onBack }) {
   const generateQuestions = () => {
     const questions = [];
     for (let i = 0; i < 5; i++) {
-      const iconCount = random(0, 10); //Satunnainen määrä vasaroita
+      const iconCount = Math.min(random(0, profile?.playerLevel || 1), 10) //Satunnainen määrä vasaroita
       questions.push({
 
         question: `Montako vasaraa näet näytöllä?`, //Kysymyksen teksti
@@ -90,7 +97,8 @@ export default function ImageToNumber({ onBack }) {
   //Tarkistetaan, onko peli päättynyt (5 kysymystä vastattu)
   useEffect(() => {
     if (questionsAnswered === 5) {
-      incrementXp(points, "imageToNumber"); //Päivitetään XP
+      incrementXp(points, "imageToNumber");//Päivitetään XP
+      setShowButtons(true)
       setGameEnded(true);
       setModalVisible(true); //Näytetään modal pelin lopussa
     }
@@ -126,14 +134,14 @@ export default function ImageToNumber({ onBack }) {
     setQuestionsAnswered((prev) => prev + 1);
   };
 
-  
+
   const handleBack = () => {
     Speech.stop(); //Lopeta mahdollinen puhe
     setModalVisible(false);
-    setQuestionsAnswered(0); 
-    setPoints(0); 
-    setGameEnded(false); 
-    onBack(); 
+    setQuestionsAnswered(0);
+    setPoints(0);
+    setGameEnded(false);
+    setShowButtons(false)
   };
 
   //Puheen hallinta ja valmistuminen
@@ -193,6 +201,16 @@ export default function ImageToNumber({ onBack }) {
     return taskSyllabification ? syllabify(text) : text;
   };
 
+  const handleContinueGame = () => {
+    handleBack(); // Actually call handleBack
+    navigation.navigate('Animation', { profile });
+  };
+
+  const handleEndGame = () => {
+    handleBack(); // Actually call handleBack
+    navigation.navigate('SelectProfile', { profile });
+  };
+
   return (
     <View style={[styles.container, { backgroundColor: isDarkTheme ? '#333' : '#fff' }]}>
       <Text style={[styles.title, { color: isDarkTheme ? '#fff' : '#000' }]}>Tehtävä {questionIndex + 1}</Text>
@@ -203,8 +221,14 @@ export default function ImageToNumber({ onBack }) {
       {renderOptions()}
       <ModalComponent
         isVisible={modalVisible}
-        onBack={handleBack}
+        
       />
+      {showButtons && (
+        <View style={styles.buttonContainer}>
+          <Button title="Seuraava tehtävä odottaa" onPress={handleContinueGame} />
+          <Button title="Lopeta peli" onPress={handleEndGame} />
+        </View>
+      )}
     </View>
   );
 }

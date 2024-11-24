@@ -11,7 +11,7 @@ import { useSoundSettings } from '../components/SoundSettingsContext';
 import { useTaskReading } from '../components/TaskReadingContext';
 import { useTaskSyllabification } from '../components/TaskSyllabificationContext';
 import { useRoute } from '@react-navigation/native';
-
+import { useNavigation } from '@react-navigation/native';
 
 // Satunnaisen arvon generointi annetulla alueella
 function random(min, max) {
@@ -21,12 +21,20 @@ function random(min, max) {
 export default function Bonds({ onBack }) {
   const route = useRoute();
   const { profile } = route.params;
+  const navigation = useNavigation()
 
+  useEffect(() => {
+    if (profile) {
+      console.log("Bonds:", profile);
+    }
+  }, [profile]);
 
-  console.log(profile); 
+  useEffect(() => {
+    console.log("showButtons state:", showButtons);
+  }, [showButtons]);
 
   // Pelin aloitustaso ja muut tilamuuttujat
-  const levelData = profile ? profile.playerLevel : 0;;
+  const levelData = profile ? profile.playerLevel : 0;
   const [leftBox, setLeftBox] = useState(0);  // Vasemman laatikon arvo
   const [rightBox, setRightBox] = useState(0);  // Oikean laatikon arvo
   const [witchBox, setWitchBox] = useState(random(0, 1));  // Tieto siitä, kummassa laatikossa on puuttuva luku
@@ -34,7 +42,7 @@ export default function Bonds({ onBack }) {
   const [inputValue2, setInputValue2] = useState('');  // Käyttäjän syöte oikeaan laatikkoon
   const [sound, setSound] = useState();  // Äänet, joita toistetaan vastauksen perusteella
   const [doneTasks, setDoneTasks] = useState(0);  // Tavoitteena on vastata oikein 5 kysymykseen
-  const { playerLevel, points, setPoints, questionsAnswered, setQuestionsAnswered, incrementXp } = useContext(ScoreContext);  // Pelin pistetilanne ja XP:n käsittely
+  const { points, setPoints, questionsAnswered, setQuestionsAnswered, incrementXp } = useContext(ScoreContext);  // Pelin pistetilanne ja XP:n käsittely
   const [instructionVisibility, setInstructionVisibility] = useState(true);  // Näytetäänkö ohjeet pelin alussa
   const [modalVisible, setModalVisible] = useState(false);  // Modal-ikkuna näkyvissä vai ei
   const { isDarkTheme } = useTheme();  // Teeman väri (tumma vai vaalea)
@@ -43,8 +51,7 @@ export default function Bonds({ onBack }) {
   const { syllabify, taskSyllabification } = useTaskSyllabification();  // Käytetäänkö tavutusta
   const [isTaskChanging, setIsTaskChanging] = useState(false)
   const [isButtonClicked, setIsButtonClicked] = useState(false)
-
-
+  const [showButtons, setShowButtons] = useState(false); // State for showing the buttons
 
   // Äänitiedostot oikein ja väärin vastauksille
   const correctSound = require('../assets/sounds/mixkit-achievement-bell.wav');  // Oikea vastausääni
@@ -91,8 +98,10 @@ export default function Bonds({ onBack }) {
   // Tehtävän tarkistus (tarkistaa onko käyttäjän vastaus oikein)
   useEffect(() => {
     if (questionsAnswered === 5) {
+      incrementXp(points, "bonds"); 
+      setShowButtons(true)
       setModalVisible(true);  // Näytetään modal-ikkuna, kun 5 kysymystä on vastattu
-      incrementXp(points, "bonds");  // Lisätään XP-pisteet
+       // Lisätään XP-pisteet
     }
   }, [questionsAnswered]);
 
@@ -127,17 +136,32 @@ export default function Bonds({ onBack }) {
   const handleBack = () => {
     Speech.stop();  // Pysäytetään mahdollinen puhe
     setModalVisible(false);  // Piilotetaan modal-ikkuna
-    setTimeout(() => {
-      setQuestionsAnswered(0);  // Nollataan kysymykset
-      setPoints(0);  // Nollataan pisteet
-      onBack();  // Palataan edelliseen näkymään
-    }, 500);
+    setShowButtons(false)
+    setQuestionsAnswered(0);  // Nollataan kysymykset
+    setPoints(0);  // Nollataan pisteet
+
   };
 
   const isButtonDisabled = 
   (witchBox === 0 && inputValue1 === '') || 
   (witchBox === 1 && inputValue2 === '') ||
   isTaskChanging
+
+  useEffect(() => {
+    if (questionsAnswered === 0) {
+      setModalVisible(false);  // Piilotetaan modal ennen pelin alkamista
+    }
+  }, [questionsAnswered]);
+
+  const handleContinueGame = () => {
+    handleBack(); // Actually call handleBack
+    navigation.navigate('Animation', { profile }); 
+  };
+
+  const handleEndGame = () => {
+    handleBack(); // Actually call handleBack
+    navigation.navigate('SelectProfile', { profile }); 
+  };
 
   return (
     <ImageBackground
@@ -152,7 +176,7 @@ export default function Bonds({ onBack }) {
                 <Text style={styles.title}>Hajonta</Text>
                 <Text>Täydennä puuttuva luku niin, että laatikoiden luvut ovat yhteensä yhtä paljon kuin pallon luku.</Text>
                 <View style={styles.buttonContainer}>
-                <Button title='Aloita' onPress={() => setInstructionVisibility(false)}></Button>
+                  <Button title='Aloita' onPress={() => setInstructionVisibility(false)}></Button>
                 </View>
               </View>
             </View>
@@ -160,7 +184,6 @@ export default function Bonds({ onBack }) {
         )}
         <View style={styles.taskbox}>
           <Text style={styles.title}> Täydennä puuttuva luku.</Text>
-
         </View>
 
         <Svg height="300" width="300" style={styles.lineContainer}>
@@ -202,20 +225,29 @@ export default function Bonds({ onBack }) {
             )}
           </View>
         </View>
-        <Pressable
-          onPress={checkAnswer}
-          style={[styles.checkButton, isButtonDisabled ? styles.disabledButton : null]}
-          disabled={isButtonDisabled}>
-          <Text style={styles.checkButtonText}>Tarkista</Text>
-        </Pressable>
 
-      </View>
-      <ModalComponent
-        isVisible={modalVisible}
-        onBack={handleBack}
-      />
-    </ImageBackground>
-
-  );
+        {
+  showButtons ? (
+    <View style={styles.buttonContainer}>
+      <Button title="Seuraava tehtävä odottaa" onPress={handleContinueGame} />
+      <Button title="Lopeta peli" onPress={handleEndGame} />
+    </View>
+  ) : (
+    <Pressable
+      onPress={checkAnswer}
+      style={[styles.checkButton, isButtonDisabled ? styles.disabledButton : null]}
+      disabled={isButtonDisabled}>
+      <Text style={styles.checkButtonText}>Tarkista</Text>
+    </Pressable>
+  )
 }
 
+        <ModalComponent
+          isVisible={modalVisible}
+          profile={profile}
+          onBack={() => setModalVisible(false)}  // Dynamically pass the state updater
+        />
+      </View>
+    </ImageBackground>
+  );
+}
