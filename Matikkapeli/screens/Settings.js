@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, Switch, StatusBar, BackHandler } from 'react-native';
+import { View, Text, Button, Switch, StatusBar, BackHandler, ImageBackground } from 'react-native';
 import { useTheme } from '../components/ThemeContext';
 import SliderComponent from '@react-native-community/slider';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -15,28 +15,36 @@ export default function Settings() {
   const { taskSyllabification, setTaskSyllabification } = useTaskSyllabification(); //Käytä tavutuksen kontekstia
   const { gameSounds, setGameSounds } = useSoundSettings();
   const { isMusicPlaying, setIsMusicPlaying, setMusicVolume, musicVolume } = useBackgroundMusic(); //Taustamusiikki
+  const ImageBG = require('../assets/background2.jpg');
+  const ImageBGDark = require('../assets/background3.png');
 
   const handleCloseApp = () => {
     BackHandler.exitApp(); //Sulkee sovelluksen Android-laitteilla
   };
 
   return (
-    <SafeAreaView style={[styles.safeContainer, { backgroundColor: isDarkTheme ? '#333' : '#fff' }]}>
-      <StatusBar
-        barStyle={isDarkTheme ? 'light-content' : 'dark-content'}
-        backgroundColor={isDarkTheme ? '#333' : '#fff'}
+    <ImageBackground 
+    source={isDarkTheme ? ImageBGDark : ImageBG} 
+    style={styles.background} 
+    resizeMode="cover"
+    >
+    <SafeAreaView style={styles.safeContainer}>
+      <StatusBar 
+        barStyle={isDarkTheme ? 'light-content' : 'dark-content'} 
+        backgroundColor="transparent" 
+        translucent={true} 
       />
-      <View style={[styles.settingItemContainer, { backgroundColor: isDarkTheme ? '#333' : '#fff' }]}>
+      <View style={styles.settingItemContainer}>
         <Text style={[styles.title, { color: isDarkTheme ? '#fff' : '#000' }]}>Asetukset</Text>
 
         {/* Teeman valinta */}
-        <View style={styles.settingItem}>
+        <View style={isDarkTheme ? styles.settingItemDark : styles.settingItem}>
           <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Tumman teeman valinta</Text>
           <Switch value={isDarkTheme} onValueChange={toggleTheme} />
         </View>
 
         {/* Tavutuksen valinta */}
-        <View style={styles.settingItem}>
+        <View style={isDarkTheme ? styles.settingItemDark : styles.settingItem}>
           <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Tavutus</Text>
           <Switch
             value={taskSyllabification} //Kontekstin tila
@@ -45,19 +53,19 @@ export default function Settings() {
         </View>
 
         {/* Tehtävien lukeminen */}
-        <View style={styles.settingItem}>
+        <View style={isDarkTheme ? styles.settingItemDark : styles.settingItem}>
           <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Tehtävien lukeminen</Text>
           <Switch value={taskReading} onValueChange={() => setTaskReading(!taskReading)} />
         </View>
 
         {/* Taustamusiikin päälle/pois */}
-        <View style={styles.settingItem}>
+        <View style={isDarkTheme ? styles.settingItemDark : styles.settingItem}>
           <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Taustamusiikki</Text>
           <Switch value={isMusicPlaying} onValueChange={setIsMusicPlaying} />
         </View>
 
         {/* Taustamusiikin voimakkuus */}
-        <View style={styles.settingItemColumn}>
+        <View style={isDarkTheme ? styles.settingItemColumnDark : styles.settingItemColumn}>
           <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Taustamusiikin voimakkuus</Text>
           <SliderComponent
             style={styles.slider}
@@ -73,14 +81,14 @@ export default function Settings() {
         </View>
 
         {/* Peliäänet */}
-        <View style={styles.settingItem}>
+        <View style={isDarkTheme ? styles.settingItemDark : styles.settingItem}>
           <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Peliäänet</Text>
           <Switch value={gameSounds} onValueChange={() => setGameSounds(!gameSounds)} />
             
         </View>
 
         {/* Profiilikuvan vaihto */}
-        <View style={styles.settingItem}>
+        <View style={isDarkTheme ? styles.settingItemDark : styles.settingItem}>
           <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Profiilikuva</Text>
           <Button title="Vaihda kuva" onPress={() => alert('Profiilikuva vaihdettu')} />
         </View>
@@ -89,5 +97,6 @@ export default function Settings() {
         <Button title="Sammuta sovellus" onPress={handleCloseApp} />
       </View>
     </SafeAreaView>
+    </ImageBackground>
   );
 }

@@ -1,4 +1,4 @@
-import { View, Text, Button, TouchableOpacity } from 'react-native';
+import { View, Text, Button, TouchableOpacity, ImageBackground } from 'react-native';
 import React, { useState, useContext, useEffect } from 'react';
 import * as Speech from 'expo-speech';
 import ModalComponent from '../components/ModalComponent';
@@ -11,7 +11,6 @@ import { useTaskReading } from '../components/TaskReadingContext';
 import { useTaskSyllabification } from '../components/TaskSyllabificationContext';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import TopBarComponent from '../components/TopBarComponent';
 
 export default function SoundToNumber({ onBack }) {
   const [number, setNumber] = useState(generateRandomNumber());
@@ -25,6 +24,9 @@ export default function SoundToNumber({ onBack }) {
   const { gameSounds } = useSoundSettings();
   const { taskReading } = useTaskReading();
   const { syllabify, taskSyllabification } = useTaskSyllabification();
+
+  const ImageBG = require('../assets/background2.jpg');
+  const ImageBGDark = require('../assets/background3.png');
 
   useEffect(() => {
     if (questionsAnswered === 5) {
@@ -107,14 +109,22 @@ export default function SoundToNumber({ onBack }) {
   };
 
   return (
-    <SafeAreaView style={[styles.safeContainer, { backgroundColor: isDarkTheme ? '#333' : '#fff' }]}>
-      <StatusBar barStyle={isDarkTheme ? 'light-content' : 'dark-content'} backgroundColor={isDarkTheme ? '#333' : '#fff'} />
-      <View style={[styles.container, { backgroundColor: isDarkTheme ? '#333' : '#fff' }]}>
+    <ImageBackground 
+      source={isDarkTheme ? ImageBGDark : ImageBG} 
+      style={styles.background} 
+      resizeMode="cover"
+    >
+    <StatusBar 
+      barStyle={isDarkTheme ? 'light-content' : 'dark-content'} 
+      backgroundColor="transparent" 
+      translucent={true} 
+    />
+      <View style={styles.container}>
         <Text style={[styles.title, { color: isDarkTheme ? '#fff' : '#000' }]}>Valitse oikea numero</Text>
         <TouchableOpacity style={styles.startButton} onPress={playNumber}>
           <Text style={styles.buttonText}>Kuuntele numero 🔊</Text>
         </TouchableOpacity>
-        <View style={styles.optionsContainer}>
+        <View style={isDarkTheme ? styles.optionsContainerDark : styles.optionsContainer}>
           {options.map((option, index) => (
             <TouchableOpacity
               key={index}
@@ -128,6 +138,6 @@ export default function SoundToNumber({ onBack }) {
         </View>
         <ModalComponent isVisible={modalVisible} onBack={handleBack} />
       </View>
-    </SafeAreaView>
+    </ImageBackground>
   );
 }

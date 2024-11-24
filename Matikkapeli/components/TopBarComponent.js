@@ -26,7 +26,6 @@ const profileImage = animalImages[imageID];
     console.log('Profile image pressed');
    // navigation.navigate('ProfileScreen');
     //<ProfileScreen onBack={() => setSelectedTask(null)} />;
-
   }; 
 
   const openTimerModal = () => {
@@ -55,7 +54,7 @@ const profileImage = animalImages[imageID];
       {/* Käyttäjäinfo */}
       <View style={styles.topBarInfoContainer}>
         <Text style={styles.topBarUsername}> {playerName} </Text> 
-        <Text style={styles.topBarInfoContainer}>
+        <Text style={styles.topBarLevelAndPoints}>
           Taso {playerLevel} | {career}
         </Text>
       </View>

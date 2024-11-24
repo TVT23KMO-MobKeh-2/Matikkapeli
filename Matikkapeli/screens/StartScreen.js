@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Button, StatusBar, TouchableOpacity } from 'react-native';
+import { View, Text, Button, StatusBar, TouchableOpacity, ImageBackground } from 'react-native';
 import { useTheme } from '../components/ThemeContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import styles from '../styles';
@@ -7,19 +7,27 @@ import TopBarComponent from '../components/TopBarComponent';
 
 export default function StartScreen({ onNavigate }) {
   const { isDarkTheme } = useTheme();
+  const ImageBG = require('../assets/background2.jpg');
+  const ImageBGDark = require('../assets/background3.png');
 
   return (
-    <SafeAreaView style={[styles.safeContainer, { backgroundColor: isDarkTheme ? '#333' : '#fff' }]}>
-      <StatusBar
-        barStyle={isDarkTheme ? 'light-content' : 'dark-content'}
-        backgroundColor={isDarkTheme ? '#333' : '#fff'}
+    <ImageBackground 
+      source={isDarkTheme ? ImageBGDark : ImageBG} 
+      style={styles.background} 
+      resizeMode="cover"
+    >
+    <SafeAreaView style={styles.safeContainer}>
+      <StatusBar 
+        barStyle={isDarkTheme ? 'light-content' : 'dark-content'} 
+        backgroundColor="transparent" 
+        translucent={true} 
       />
       <TopBarComponent/>
       <View style={styles.container}>
         <Text style={[styles.title, { color: isDarkTheme ? '#fff' : '#000' }]}>
           Valitse tehtävä:
         </Text>
-        <View style={styles.optionsContainer}>
+        <View style={isDarkTheme ? styles.optionsContainerDark : styles.optionsContainer}>
         <TouchableOpacity style={styles.startButton} onPress={() => onNavigate('ImageToNumbers')}>
           <Text style={styles.buttonText}>Kuvat numeroiksi</Text>
         </TouchableOpacity>
@@ -41,5 +49,6 @@ export default function StartScreen({ onNavigate }) {
         </View>
       </View>
     </SafeAreaView>
+    </ImageBackground>
   );
 }
