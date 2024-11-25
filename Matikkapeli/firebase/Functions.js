@@ -1,5 +1,5 @@
 import { Alert } from 'react-native';
-import { addDoc, collection, firestore, PLAYERSTATS, where, query, getDocs, updateDoc, doc } from '../firebase/Config';
+import { addDoc, collection, firestore, PLAYERSTATS, PLAYERSETTINGS, where, query, getDocs, updateDoc, doc } from '../firebase/Config';
 
 // Funktio pelaajatietojen tallennukseen tietokantaan pelin alussa
 export async function savePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career }){
@@ -104,10 +104,10 @@ export async function recievePlayerStatsFromDatabase({email, playerName, setImag
 };
 
 // funktio, jolla päivitetään asetukset tietokantaan
-export async function updatePlayerSettingsToDatabase({email, playerName, isDarkTheme, taskReading, taskSyllabification, gamesounds, isMusicPlaying, musicVolume, docId}) {
+export async function updatePlayerSettingsToDatabase({email, playerName, isDarkTheme, taskReading, taskSyllabification, gamesounds, isMusicPlaying, musicVolume, settingsDocId}) {
     try {
-        console.log("Päivitetään asetuksia tietokantaan, docId:", docId)
-        const docRef = doc(firestore, "playersettings", docId)
+        console.log("Päivitetään asetuksia tietokantaan, settingsDocId:", settingsDocId)
+        const docRef = doc(firestore, PLAYERSETTINGS, settingsDocId)
 
         await updateDoc(docRef, {
             email: email,
@@ -129,21 +129,7 @@ export async function updatePlayerSettingsToDatabase({email, playerName, isDarkT
 // funktio, jolla tallennetaan asetukset tietokantaan
 export async function savePlayerSettingsToDatabase({ email, playerName, isDarkTheme, taskReading, taskSyllabification, gamesounds, isMusicPlaying, musicVolume}) {
     try {
-
-        const q = query(
-            collection(firestore, PLAYERSTATS),
-            where("email", "==", email),
-            where("playerName", "==", playerName)
-        )
-
-        const querySnapshotWithFilters = await getDocs(q)
-        if(!querySnapshotWithFilters.empty) {
-            console.log("Profiili on jo olemassa.")
-            Alert.alert("Virhe", "Samalla sähköpostilla ja nimellä on jo profiili")
-            return
-        }
-
-        const docRef = await addDoc(collection(firestore, "playersettings"),{
+        const docRef = await addDoc(collection(firestore, PLAYERSETTINGS),{
             email: email,
             playerName: playerName,
             isDarkTheme: isDarkTheme,
@@ -161,42 +147,46 @@ export async function savePlayerSettingsToDatabase({ email, playerName, isDarkTh
 }
 
 // funktio, jolla haetaan asetukset tietokannasta
-export async function recievePlayerSettingsFromDatabase({email, playerName, toggleTheme, setTaskReading, setTaskSyllabification, setGameSounds, setIsMusicPlaying, setMusicVolume}) {
+export async function recievePlayerSettingsFromDatabase({email, playerName, setIsDarkTheme, setTaskReading, setTaskSyllabification, setGameSounds, setIsMusicPlaying, setMusicVolume, setSettingsDocId}) {
     console.log("Haetaan asetuksia sähköpostilla:", email, "ja nimellä:", playerName);
     try {
         
         //Annetaan tiedot hakua varten
         const q = query(
-            collection(firestore, "playersettings"), // Mistä haetaan
-            where("email", "==", email), // Ehtona sähköpostiosoite
-            where("playerName", "==", playerName) // sekä pelaajan nimi
+            collection(firestore, PLAYERSETTINGS), //Mistä haetaan
+            where("email", "==", email), //Ehtona sähköpostiosoite
+            where("playerName", "==", playerName) //sekä pelaajan nimi
         );
 
-        const querySnapshotWithFilters = await getDocs(q); // Suoritetaan kysely
+        const querySnapshotWithFilters = await getDocs(q); //Suoritetaan kysely
 
-        if (!querySnapshotWithFilters.empty) { //jos kyselyllä löytyi
-            const doc = querySnapshotWithFilters.docs[0]; // haetaan ensimmäinen tulos
-
-            const data = doc.data(); // Haetaan datasisältö
+        if (!querySnapshotWithFilters.empty) { //jos kyselyllä löytyi tuloksia
+            const doc = querySnapshotWithFilters.docs[0]; //haetaan ensimmäinen tulos
+            const data = doc.data(); //Haetaan datasisältö
+        
             console.log("Löydetyt tiedot:", data);
-            console.log("docId:", doc.id)
-
-            // Päivitetään tiedot tilamuuttujiin:
-            toggleTheme(data.isDarkTheme)
-            setTaskReading(data.taskReading)
-            setTaskSyllabification(data.taskSyllabification) 
-            setGameSounds(data.gamesounds)
-            setIsMusicPlaying(data.isMusicPlaying)
-            setMusicVolume(data.musicVolume)
-            // Tallennetaan documentin ID, jotta voidaan myöhemmin päivittää samaa dokumenttia.
-            setDocId(doc.id);
+            console.log("docId:", doc.id); //Varmista, että tämä tulostuu oikein
+        
+            //Päivitetään tiedot tilamuuttujiin
+            setIsDarkTheme(data.isDarkTheme)
+            setTaskReading(data.taskReading);
+            setTaskSyllabification(data.taskSyllabification);
+            setGameSounds(data.gamesounds);
+            setIsMusicPlaying(data.isMusicPlaying);
+            setMusicVolume(data.musicVolume);
+        
+            //Asetetaan settingsDocId
+            setSettingsDocId(doc.id);
         } else {
             console.log("Pelaajan tietoja ei löytynyt.");
-            Alert.alert("Virhe:", "Pelaajan tietoja ei löytynyt")
+            Alert.alert("Virhe:", "Pelaajan tietoja ei löytynyt");
+            return false; //Palautus
         }
-    }catch (error) {
+        
+    } catch (error) {
         console.log("Virhe asetuksien hakemisessa", error)
         Alert.alert("Virhe", "Asetuksien hakeminen tietokannasta ei onnistunut. Yritä myöhemmin uudestaan")
     }
+    return true; //Palautus siirretty
 }
 

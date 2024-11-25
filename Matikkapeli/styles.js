@@ -408,7 +408,7 @@ export default StyleSheet.create({
   },
   content: {
     padding: 0,
-    zIndex: 5,
+    //zIndex: 5,
   },
   headerText: {
     fontSize: 18,
@@ -472,6 +472,56 @@ export default StyleSheet.create({
     marginBottom: 16,
     backgroundColor: '#3bb143'
   },
+  //!!!!! Top Bar Styles !!!!!!!
+  topBarContainer: {
+    position: 'absolute',
+    top: 40,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: 'rgba(248, 248, 248, 0.7)',
+    padding: 10,
+    elevation: 4, // Shadow for Android
+    shadowColor: '#000', // Shadow for iOS
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    zIndex: 10,
+  },
+  topBarPfp: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    //backgroundColor: '#ddd',
+  },
+  topBarInfoContainer: {
+    marginLeft: 10,
+    flex: 1,
+  },
+  topBarUsername: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  topBarLevelAndPoints: {
+    fontSize: 14,
+    color: '#666',
+  },
+  settingsButton: {
+    padding: 5,
+  },
+  settingsIcon: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: '#f0f0f0', // Tämä muuttuu tummalla teemalla
+    borderRadius: 50,
+    padding: 10,
+    width: 50,
+    height: 50
+  },
   timerText: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -489,6 +539,29 @@ export default StyleSheet.create({
     backgroundColor: '#F4A261',
     margin: 20,
     borderRadius: 20,
+  },
+  //Profiilikuvan tyylit
+  topBarContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: '#f8f8f8',
+  },
+  imageOptionsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+   marginTop: 20,
+  },
+  imageOption: {
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 10,
+  },
+  profileImageOption: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
   },
   chooseProfile:{
     alignItems: 'center',
