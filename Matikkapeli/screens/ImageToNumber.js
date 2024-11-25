@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { Audio } from 'expo-av';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Speech from 'expo-speech';
 import styles from '../styles';
@@ -17,31 +16,25 @@ function random(min, max) {
 }
 
 export default function ImageToNumber({ onBack }) {
-
   const { points, setPoints, questionsAnswered, setQuestionsAnswered, incrementXp } = useContext(ScoreContext);
-  const { isDarkTheme } = useTheme(); //Käytetään teemakontekstia (tumma tila)
-  const { gameSounds, volume } = useSoundSettings(); //Käytetään ääniasetuksia
-  const { taskReading } = useTaskReading(); //Käytetään tehtävänlukukontekstia
-  const { syllabify, taskSyllabification } = useTaskSyllabification(); //Käytetään tavutuskontekstia
-  
-  const [sound, setSound] = useState();
+  const { isDarkTheme } = useTheme();
+  const { gameSounds, volume, playSound } = useSoundSettings(); //Käytetään playSound-funktiota kontekstista
+  const { taskReading } = useTaskReading();
+  const { syllabify, taskSyllabification } = useTaskSyllabification();
+
   const [questionIndex, setQuestionIndex] = useState(0); //Nykyinen kysymyksen indeksi
   const [answered, setAnswered] = useState(false); //Onko kysymykseen vastattu
   const [modalVisible, setModalVisible] = useState(false); //Näytetäänkö modaalikomponentti
   const [gameEnded, setGameEnded] = useState(false); //Onko peli päättynyt
   const [isSpeechFinished, setIsSpeechFinished] = useState(false); //Seurataan puheen valmistumista
 
-
   //Generoi kysymyksiä pelille
-
   const generateQuestions = () => {
     const questions = [];
     for (let i = 0; i < 5; i++) {
       const iconCount = random(0, 10); //Satunnainen määrä vasaroita
       questions.push({
-
         question: `Montako vasaraa näet näytöllä?`, //Kysymyksen teksti
-
         iconCount,
         options: Array.from({ length: 11 }, (_, i) => i), //Vaihtoehdot
       });
@@ -56,36 +49,6 @@ export default function ImageToNumber({ onBack }) {
     setQuestions(generateQuestions());
     setQuestionIndex(0); //Nollaa kysymysindeksi, kun peli alkaa
   }, []);
-
-
-  // Funktio, joka toistaa oikea/väärä äänen
-  async function playSound(isCorrect) {
-    if (!gameSounds || gameEnded) return; //Ääntä ei toisteta, jos peli on päättynyt tai äänet ovat pois päältä
-
-    const soundUri = isCorrect
-
-      ? require('../assets/sounds/mixkit-achievement-bell.wav') //Oikein ääni
-      : require('../assets/sounds/mixkit-losing-bleeps.wav'); //Väärin ääni
-
-    const { sound } = await Audio.Sound.createAsync(soundUri);
-    setSound(sound);
-    await sound.playAsync();
-
-    await sound.setVolumeAsync(volume); //Säädä äänenvoimakkuus
-
-    //Ladataan ääni pois muistin säästämiseksi, kun se on toistettu
-    sound.setOnPlaybackStatusUpdate((status) => {
-
-      if (status.didJustFinish) {
-        sound.unloadAsync();
-      }
-    });
-  }
-
-  //Tyhjennetään ääni, kun komponentti poistetaan
-  useEffect(() => {
-    return sound ? () => sound.unloadAsync() : undefined;
-  }, [sound]);
 
   //Tarkistetaan, onko peli päättynyt (5 kysymystä vastattu)
   useEffect(() => {
