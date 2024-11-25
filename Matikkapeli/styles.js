@@ -415,7 +415,6 @@ export default StyleSheet.create({
     margin: 20,
     borderRadius: 20,
   },
-
   //Profiilikuvan tyylit
   topBarContainer: {
     flexDirection: 'row',
@@ -439,4 +438,33 @@ export default StyleSheet.create({
     height: 50,
     borderRadius: 25,
   },
+  chooseProfile:{
+    alignItems: 'center',
+    justifyContent:'center',
+    borderRadius: 10,
+    margin: 10,
+    width: 150,
+    height: 150,
+    backgroundColor: 'lightblue'
+  },
+  addIcon: {
+    backgroundColor: 'orange',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 150,
+    height: 150,
+    borderRadius: 10
+  },
+  picProfile:{
+    width: 150,
+    height: 150,
+    borderRadius: 10,
+  },
+  profileSelect: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    margin: 10,
+
+  }
 });
