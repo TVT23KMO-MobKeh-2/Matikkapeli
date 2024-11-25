@@ -21,12 +21,12 @@ export default function SoundToNumber({ onBack }) {
   const { taskReading } = useTaskReading();
   const { syllabify, taskSyllabification } = useTaskSyllabification();
 
-  const [sound, setSound] = useState();
   const [gameEnded, setGameEnded] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [number, setNumber] = useState(generateRandomNumber());
+  const [number, setNumber] = useState(() => generateRandomNumber(0, playerLevel || 10));
   const [options, setOptions] = useState(generateOptions(number));
   const [modalVisible, setModalVisible] = useState(false);
+  const [sound, setSound] = useState();
 
   const ImageBG = require('../assets/background2.jpg');
   const ImageBGDark = require('../assets/background3.png');
@@ -47,6 +47,8 @@ export default function SoundToNumber({ onBack }) {
     setQuestionsAnswered(0);
     setPoints(0);
     onBack();
+
+    handleUpdatePlayerStatsToDatabase();
   };
 
   //Oikein : väärin äänien alustus ja toisto
@@ -75,32 +77,36 @@ export default function SoundToNumber({ onBack }) {
     return sound ? () => sound.unloadAsync() : undefined;
   }, [sound]);
 
-//Korjaa siihen levelisysteemiin
 //Pelin logiikka
-
-  const generateRightNumber = () => {
-    
-  };
-
-  function generateRandomNumber() {
-    return Math.floor(Math.random() * 10);
+//Päivitetään optionssit kun oikea numero vaihtuu
+useEffect(() => {
+  if (number !== null) {
+    setOptions(generateOptions(number));
   }
+}, [number, playerLevel]);
 
-  function generateOptions(correctNumber) {
-    const options = [correctNumber];
-    while (options.length < 4) {
-      const randomNum = Math.floor(Math.random() * 10);
-      if (!options.includes(randomNum)) {
-        options.push(randomNum);
-      }
+const playNumber = () => {
+  Speech.stop();
+  Speech.speak(number.toString());
+};
+
+function generateRandomNumber(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+//valitsee oikean numeron ja 3 muuta 0 - playerlevelin väliltä
+function generateOptions(correctNumber) {
+  const max = typeof playerLevel == 'number' && playerLevel > 0 ? playerLevel : 10;
+  const options = [correctNumber];
+  while (options.length < 4) {
+    const randomNum = generateRandomNumber(0, max);
+    if (!options.includes(randomNum)) {
+      options.push(randomNum);
     }
-    return options.sort(() => Math.random() - 0.5);
   }
-
-  const playNumber = () => {
-    Speech.stop();
-    Speech.speak(number.toString());
-  };
+  //sekoittaa vaihtoehdot
+  return options.sort(() => Math.random() - 0.5); 
+}
 
   const handleSelect = (selectedNumber) => {
     if (gameEnded) return;
@@ -110,13 +116,18 @@ export default function SoundToNumber({ onBack }) {
     const isCorrect = selectedNumber === number;
     playSound(isCorrect);
 
-    const newNumber = generateRandomNumber();
+    const newNumber = generateRandomNumber(0, playerLevel);
     setNumber(newNumber);
-    setOptions(generateOptions(newNumber));
+
     if (isCorrect) {
       setPoints((prevPoints) => prevPoints + 1);
     }
     setQuestionsAnswered((prevQuestionsAnswered) => prevQuestionsAnswered + 1);
+  
+  const response = isCorrect ? "Oikein!" : "Yritetään uudelleen!";
+    if (taskReading) {
+      Speech.speak(response);
+    }
   };
 
   return (
