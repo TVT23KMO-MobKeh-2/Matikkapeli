@@ -323,6 +323,7 @@ export default StyleSheet.create({
   input: {
     fontSize: 40,
   },
+  // !!!!!! BACKGROUND KUVA !!!!!!!!
   background: {
     height: '100%',
     width: '100%',
@@ -426,6 +427,7 @@ export default StyleSheet.create({
     color: 'red',
     marginTop: 20,
   },
+  //!!!!!! TASK WINDOW !!!!!!!
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap', // Allows items to wrap in the container
@@ -444,6 +446,7 @@ export default StyleSheet.create({
     width: 60, // Adjust size as needed
     height: 60, // Adjust size as needed
   },
+  //!!!!!! COMPARISON !!!!!!!
   comparisonContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -472,61 +475,6 @@ export default StyleSheet.create({
     marginBottom: 16,
     backgroundColor: '#3bb143'
   },
-  //!!!!! Top Bar Styles !!!!!!!
-  topBarContainer: {
-    position: 'absolute',
-    top: 40,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: 'rgba(248, 248, 248, 0.7)',
-    padding: 10,
-    elevation: 4, // Shadow for Android
-    shadowColor: '#000', // Shadow for iOS
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    zIndex: 10,
-  },
-  topBarPfp: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    //backgroundColor: '#ddd',
-  },
-  topBarInfoContainer: {
-    marginLeft: 10,
-    flex: 1,
-  },
-  topBarUsername: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  topBarLevelAndPoints: {
-    fontSize: 14,
-    color: '#666',
-  },
-  settingsButton: {
-    padding: 5,
-  },
-  settingsIcon: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    backgroundColor: '#f0f0f0', // Tämä muuttuu tummalla teemalla
-    borderRadius: 50,
-    padding: 10,
-    width: 50,
-    height: 50
-  },
-  timerText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginTop: 20,
-  },
   //!!!!!!!!!!!!!! PROFILE STYLES !!!!!!!!!!!!!!!
   profilebox: {
     flexDirection: 'row',
@@ -541,12 +489,15 @@ export default StyleSheet.create({
     borderRadius: 20,
   },
   //Profiilikuvan tyylit
-  topBarContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-    backgroundColor: '#f8f8f8',
-  },
+
+  //// ?????????????????????????????????????????????????????????????????????????????
+  //topBarContainer: {
+  //  flexDirection: 'row',
+  //  alignItems: 'center',
+  //  padding: 10,
+  //  backgroundColor: '#f8f8f8',
+  //},
+  //???????????????????????????????????????????????????????????????????????????????????
   imageOptionsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',

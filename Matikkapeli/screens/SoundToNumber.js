@@ -1,33 +1,37 @@
 import { View, Text, Button, TouchableOpacity, ImageBackground } from 'react-native';
 import React, { useState, useContext, useEffect } from 'react';
 import * as Speech from 'expo-speech';
+import { Audio } from 'expo-av';
+import { StatusBar } from 'expo-status-bar';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 import ModalComponent from '../components/ModalComponent';
 import { ScoreContext } from '../components/ScoreContext';
 import styles from '../styles';
-import { Audio } from 'expo-av';
 import { useTheme } from '../components/ThemeContext';
 import { useSoundSettings } from '../components/SoundSettingsContext';
 import { useTaskReading } from '../components/TaskReadingContext';
 import { useTaskSyllabification } from '../components/TaskSyllabificationContext';
-import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView } from 'react-native-safe-area-context';
+
 
 export default function SoundToNumber({ onBack }) {
-  const [number, setNumber] = useState(generateRandomNumber());
-  const [options, setOptions] = useState(generateOptions(number));
-  const [modalVisible, setModalVisible] = useState(false);
   const { playerLevel, points, setPoints, questionsAnswered, setQuestionsAnswered, incrementXp, handleUpdatePlayerStatsToDatabase } = useContext(ScoreContext);
-  const [sound, setSound] = useState();
-  const [gameEnded, setGameEnded] = useState(false);
-  const [loading, setLoading] = useState(false);
   const { isDarkTheme } = useTheme();
   const { gameSounds } = useSoundSettings();
   const { taskReading } = useTaskReading();
   const { syllabify, taskSyllabification } = useTaskSyllabification();
 
+  const [sound, setSound] = useState();
+  const [gameEnded, setGameEnded] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [number, setNumber] = useState(generateRandomNumber());
+  const [options, setOptions] = useState(generateOptions(number));
+  const [modalVisible, setModalVisible] = useState(false);
+
   const ImageBG = require('../assets/background2.jpg');
   const ImageBGDark = require('../assets/background3.png');
 
+  //Modalin avaaminen ja sulkeminen
   useEffect(() => {
     if (questionsAnswered === 5) {
       Speech.stop();
@@ -45,6 +49,7 @@ export default function SoundToNumber({ onBack }) {
     onBack();
   };
 
+  //Oikein : väärin äänien alustus ja toisto
   async function playSound(isCorrect) {
     if (!gameSounds || gameEnded) return;
 
@@ -57,7 +62,7 @@ export default function SoundToNumber({ onBack }) {
     const { sound } = await Audio.Sound.createAsync(soundUri);
     setSound(sound);
     await sound.playAsync();
-    await sound.setVolumeAsync(1.0); // Volume is set to max for demonstration
+    await sound.setVolumeAsync(1.0);
 
     sound.setOnPlaybackStatusUpdate((status) => {
       if (status.didJustFinish) {
@@ -66,7 +71,17 @@ export default function SoundToNumber({ onBack }) {
       }
     });
   }
+  useEffect(() => {
+    return sound ? () => sound.unloadAsync() : undefined;
+  }, [sound]);
+
 //Korjaa siihen levelisysteemiin
+//Pelin logiikka
+
+  const generateRightNumber = () => {
+    
+  };
+
   function generateRandomNumber() {
     return Math.floor(Math.random() * 10);
   }
@@ -81,10 +96,6 @@ export default function SoundToNumber({ onBack }) {
     }
     return options.sort(() => Math.random() - 0.5);
   }
-
-  useEffect(() => {
-    return sound ? () => sound.unloadAsync() : undefined;
-  }, [sound]);
 
   const playNumber = () => {
     Speech.stop();

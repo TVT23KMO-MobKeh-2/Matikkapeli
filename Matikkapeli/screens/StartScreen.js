@@ -3,7 +3,6 @@ import { View, Text, Button, StatusBar, TouchableOpacity, ImageBackground } from
 import { useTheme } from '../components/ThemeContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import styles from '../styles';
-import TopBarComponent from '../components/TopBarComponent';
 
 export default function StartScreen({ onNavigate }) {
   const { isDarkTheme } = useTheme();
@@ -22,7 +21,6 @@ export default function StartScreen({ onNavigate }) {
         backgroundColor="transparent" 
         translucent={true} 
       />
-      <TopBarComponent/>
       <View style={styles.container}>
         <Text style={[styles.title, { color: isDarkTheme ? '#fff' : '#000' }]}>
           Valitse tehtävä:

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, Switch, StatusBar, BackHandler, ImageBackground } from 'react-native';
+import { View, Text, Button, Switch, StatusBar, BackHandler, ImageBackground, TouchableOpacity, Image, Alert, ScrollView } from 'react-native';
 import { useTheme } from '../components/ThemeContext';
 import SliderComponent from '@react-native-community/slider';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -148,10 +148,8 @@ export default function Settings({ onBack, onProfileImageChange }) {
         backgroundColor="transparent" 
         translucent={true} 
       />
+      <ScrollView>
       <View style={styles.settingItemContainer}>
-    <SafeAreaView style={[styles.safeContainer, { backgroundColor: isDarkTheme ? '#333' : '#fff' }]}>
-      <StatusBar barStyle={isDarkTheme ? 'light-content' : 'dark-content'} backgroundColor={isDarkTheme ? '#333' : '#fff'} />
-      <View style={[styles.container, { backgroundColor: isDarkTheme ? '#333' : '#fff' }]}>
         <Text style={[styles.title, { color: isDarkTheme ? '#fff' : '#000' }]}>Asetukset</Text>
 
         {/* Teeman valinta */}
@@ -202,7 +200,8 @@ export default function Settings({ onBack, onProfileImageChange }) {
         </View>
 
         {/* Profiilikuvan vaihto */}
-        <Text style={styles.label}>Valitse profiilikuva</Text>
+        <View style={isDarkTheme ? styles.settingItemColumnDark : styles.settingItemColumn}>
+        <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Valitse profiilikuva</Text>
         <View style={styles.imageOptionsContainer}>
           {profileImages.map((image, index) => (
             <TouchableOpacity key={index} onPress={() => handleImageSelect(image)} style={styles.imageOption}>
@@ -210,11 +209,13 @@ export default function Settings({ onBack, onProfileImageChange }) {
             </TouchableOpacity>
           ))}
         </View>
+        </View>
 
         {/* Sovelluksen sammuttaminen */}
         <Button title="Sammuta sovellus" onPress={handleCloseApp} />
       </View>
-    </SafeAreaView>
+      </ScrollView>
+      </SafeAreaView>
     </ImageBackground>
   );
 }

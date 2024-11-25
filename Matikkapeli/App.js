@@ -26,13 +26,14 @@ export default function App() {
   const [selectedTask, setSelectedTask] = useState(null);
   const [profileImage, setProfileImage] = useState(require('./assets/images/norsu.png')); // Oletusprofiilikuva
   const [isProfileScreen, setIsProfileScreen] = useState(false);
+  
   const [fontsLoaded] = useFonts({
     ComicNeue_400Regular,
     ComicNeue_700Bold,
   });
 
   if (!fontsLoaded) {
-    return <ActivityIndicator size="large" />;
+    return <ActivityIndicator size="large" center="center" />;
   }
 
   const renderTask = () => {
@@ -73,7 +74,7 @@ export default function App() {
           <ScoreProvider>
             <SoundSettingsProvider>
               <TaskReadingProvider>
-              {selectedTask !== 'Settings' && selectedTask !== 'SelectProfile' && <TopBarComponent profileImage={profileImage} />}
+              {selectedTask !== 'Settings' && selectedTask !== 'SelectProfile' && <TopBarComponent />}
                 <View style={styles.container}>
                   {renderTask()}
                   <StatusBar style="auto" />
