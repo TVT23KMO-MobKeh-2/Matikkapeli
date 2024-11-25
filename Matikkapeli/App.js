@@ -24,6 +24,7 @@ import SelectProfile from './screens/SelectProfile';
 
 export default function App() {
   const [selectedTask, setSelectedTask] = useState(null);
+  const [profileImage, setProfileImage] = useState(require('./assets/images/norsu.png')); // Oletusprofiilikuva
 
   const renderTask = () => {
     switch (selectedTask) {
@@ -35,8 +36,13 @@ export default function App() {
         return <Bonds onBack={() => setSelectedTask(null)} />;
       case 'ComparisonOperators':
         return <Comparison onBack={() => setSelectedTask(null)} />;
-      case 'Settings':
-        return <Settings onBack={() => setSelectedTask(null)} />;
+        case 'Settings':
+          return (
+            <Settings
+              onBack={() => setSelectedTask(null)}
+              onProfileImageChange={setProfileImage} // Pass down the profile image update function
+            />
+          );
       case 'Animation':
         return <Animation onBack={() => setSelectedTask(null)} setSelectedTask={setSelectedTask}/>
       case 'SelectProfile':
@@ -54,12 +60,11 @@ export default function App() {
             <SoundSettingsProvider>
               <TaskReadingProvider>
                 {/* Top Bar */}
-                <TopBarComponent />
+                <TopBarComponent profileImage={profileImage} />
                 <View style={styles.container}>
                   {renderTask()}
                   <StatusBar style="auto" />
 
-                  {/* Back icon, shown on all pages except the StartScreen */}
                   {selectedTask && (
                     <TouchableOpacity
                       style={styles.backIcon}
@@ -69,7 +74,6 @@ export default function App() {
                     </TouchableOpacity>
                   )}
 
-                  {/* Settings icon, hidden on the Settings page */}
                   {selectedTask !== 'Settings' && (
                     <TouchableOpacity
                       style={styles.settingsIcon}

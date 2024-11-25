@@ -285,7 +285,7 @@ export default StyleSheet.create({
   },
   content: {
     padding: 0,
-    zIndex: 5,
+    //zIndex: 5,
   },
   headerText: {
     fontSize: 18,
@@ -371,7 +371,7 @@ export default StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: '#ddd',
+    //backgroundColor: '#ddd',
   },
   topBarInfoContainer: {
     marginLeft: 10,
@@ -414,6 +414,29 @@ export default StyleSheet.create({
     backgroundColor: '#F4A261',
     margin: 20,
     borderRadius: 20,
+  },
+  //Profiilikuvan tyylit
+  topBarContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: '#f8f8f8',
+  },
+  imageOptionsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+   marginTop: 20,
+  },
+  imageOption: {
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 10,
+  },
+  profileImageOption: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
   },
   chooseProfile:{
     alignItems: 'center',
