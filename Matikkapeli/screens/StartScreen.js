@@ -34,7 +34,7 @@ export default function StartScreen({ onNavigate }) {
           <Button onPress={() => onNavigate('Animation')} title='Animaatio' />
         </View>
         <View style={styles.buttonContainer}>
-          <Button onPress={() => onNavigate('Profile')} title='Profiili' />
+          <Button onPress={() => onNavigate('SelectProfile')} title='Profiili valinta' />
         </View>
       </View>
 

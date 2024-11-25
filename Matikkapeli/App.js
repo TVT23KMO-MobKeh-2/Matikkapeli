@@ -19,7 +19,7 @@ import Animation from './screens/Animation';
 import TopBarComponent from './components/TopBarComponent';
 import ProfileScreen from './screens/ProfileScreen';
 import { firestore } from './firebase/Config';
-//import SelectProfile from './screens/SelectProfile';
+import SelectProfile from './screens/SelectProfile';
 
 
 export default function App() {

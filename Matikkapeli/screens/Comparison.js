@@ -12,7 +12,6 @@ import { Audio } from 'expo-av';
 
 export default function Comparison({ onBack }) {
 
-
   const { isDarkTheme } = useTheme();
   const { gameSounds } = useSoundSettings();
   const { taskReading } = useTaskReading();
