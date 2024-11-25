@@ -3,22 +3,24 @@ import { createContext, useState, useEffect } from 'react';
 import { savePlayerStatsToDatabase, recievePlayerStatsFromDatabase, updatePlayerStatsToDatabase } from '../firebase/Functions'
 import { Alert } from 'react-native';
 
+
 // Luodaan konteksti, joka tarjoaa pelin tilan ja toiminnot lapsikomponenteille
 export const ScoreContext = createContext();
 
-export const ScoreProvider = ({ children, profile = {} }) => {
-    const [email, setEmail] = useState(profile.email || "") //Tunnisteena, jos monta samannimistä Kallea
-    const [playerName, setPlayerName] = useState(profile.playerName || "")
-    const [docId, setDocId] = useState(profile.playerLevel || 1)
+export const ScoreProvider = ({children, profile = {} }) => {
+
+    const [email, setEmail] = useState(profile.email) //Tunnisteena, jos monta samannimistä Kallea
+    const [playerName, setPlayerName] = useState(profile.playerName)
+    const [docId, setDocId] = useState(profile.id)
     // Pelaajan taso
-    const [playerLevel, setPlayerLevel] = useState(1);
+    const [playerLevel, setPlayerLevel] = useState(profile.playerLevel)
     // Eri tehtävien Xp:t
     const [imageToNumberXp, setImageToNumberXp] = useState(0);
     const [soundToNumberXp, setSoundToNumberXp] = useState(0);
     const [comparisonXp, setComparisonXp] = useState(0);
-    const [bondsXp, setBondsXp] = useState(profile.bondsXp || 0);
-    const [imageID, setImageID] = useState(profile.imageID || "");
-    const [career, setCareer] = useState(profile.career || "");
+    const [bondsXp, setBondsXp] = useState(profile.bondsXp);
+    const [imageID, setImageID] = useState(profile.imageID);
+    const [career, setCareer] = useState(profile.career);
     // KokonaisXp
     const [totalXp, setTotalXp] = useState(comparisonXp + bondsXp + soundToNumberXp + imageToNumberXp);
     // Kulloisestakin tehtävästä saadut pisteet ja vastattujen kysymysten määrä, joiden perusteella annetaan palaute ja päätetään tehtävä

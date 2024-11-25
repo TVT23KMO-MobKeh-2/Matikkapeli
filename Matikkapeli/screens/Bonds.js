@@ -13,6 +13,7 @@ import { useTaskSyllabification } from '../components/TaskSyllabificationContext
 import { useRoute } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 
+
 // Satunnaisen arvon generointi annetulla alueella
 function random(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min
@@ -23,11 +24,13 @@ export default function Bonds({ onBack }) {
   const { profile } = route.params;
   const navigation = useNavigation()
 
-  useEffect(() => {
-    if (profile) {
-      console.log("Bonds:", profile);
-    }
-  }, [profile]);
+ useEffect(() => {
+  if (profile) {
+    console.log("Bonds:", profile);
+  } else {
+    console.log("Profile is undefined or null");
+  }
+}, [profile]);
 
   useEffect(() => {
     console.log("showButtons state:", showButtons);
@@ -42,7 +45,7 @@ export default function Bonds({ onBack }) {
   const [inputValue2, setInputValue2] = useState('');  // Käyttäjän syöte oikeaan laatikkoon
   const [sound, setSound] = useState();  // Äänet, joita toistetaan vastauksen perusteella
   const [doneTasks, setDoneTasks] = useState(0);  // Tavoitteena on vastata oikein 5 kysymykseen
-  const { points, setPoints, questionsAnswered, setQuestionsAnswered, incrementXp } = useContext(ScoreContext);  // Pelin pistetilanne ja XP:n käsittely
+  const {points, setPoints, questionsAnswered, setQuestionsAnswered, incrementXp, handleUpdatePlayerStatsToDatabase } = useContext(ScoreContext);  // Pelin pistetilanne ja XP:n käsittely
   const [instructionVisibility, setInstructionVisibility] = useState(true);  // Näytetäänkö ohjeet pelin alussa
   const [modalVisible, setModalVisible] = useState(false);  // Modal-ikkuna näkyvissä vai ei
   const { isDarkTheme } = useTheme();  // Teeman väri (tumma vai vaalea)
@@ -98,10 +101,11 @@ export default function Bonds({ onBack }) {
   // Tehtävän tarkistus (tarkistaa onko käyttäjän vastaus oikein)
   useEffect(() => {
     if (questionsAnswered === 5) {
-      incrementXp(points, "bonds"); 
       setShowButtons(true)
       setModalVisible(true);  // Näytetään modal-ikkuna, kun 5 kysymystä on vastattu
        // Lisätään XP-pisteet
+       incrementXp(points, "bonds");
+       console.log("Bonds points: ",points) 
     }
   }, [questionsAnswered]);
 
@@ -139,19 +143,13 @@ export default function Bonds({ onBack }) {
     setShowButtons(false)
     setQuestionsAnswered(0);  // Nollataan kysymykset
     setPoints(0);  // Nollataan pisteet
-
+    handleUpdatePlayerStatsToDatabase()
   };
 
   const isButtonDisabled = 
   (witchBox === 0 && inputValue1 === '') || 
   (witchBox === 1 && inputValue2 === '') ||
   isTaskChanging
-
-  useEffect(() => {
-    if (questionsAnswered === 0) {
-      setModalVisible(false);  // Piilotetaan modal ennen pelin alkamista
-    }
-  }, [questionsAnswered]);
 
   const handleContinueGame = () => {
     handleBack(); // Actually call handleBack

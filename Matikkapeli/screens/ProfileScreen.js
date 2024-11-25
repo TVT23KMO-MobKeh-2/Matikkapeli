@@ -15,7 +15,6 @@ const animalImages = {
 
 export default function ProfileScreen({ character, onBack }) {
     const navigation = useNavigation();  // Get the navigation prop using the hook
-    console.log('Navigation prop:', navigation); // Should now work
 
     const { imageID, playerName, career, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp } = character;
     const characterImage = animalImages[imageID];

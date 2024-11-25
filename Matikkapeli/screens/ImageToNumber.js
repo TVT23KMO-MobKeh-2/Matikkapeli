@@ -24,7 +24,7 @@ export default function ImageToNumber({ onBack }) {
   const { profile } = route.params;
   const navigation = useNavigation()
 
-  const { points, setPoints, questionsAnswered, setQuestionsAnswered, incrementXp } = useContext(ScoreContext);
+  const { points, setPoints, questionsAnswered, setQuestionsAnswered, incrementXp, handleUpdatePlayerStatsToDatabase } = useContext(ScoreContext);
   const { isDarkTheme } = useTheme(); //Käytetään teemakontekstia (tumma tila)
   const { gameSounds, volume } = useSoundSettings(); //Käytetään ääniasetuksia
   const { taskReading } = useTaskReading(); //Käytetään tehtävänlukukontekstia
@@ -140,8 +140,9 @@ export default function ImageToNumber({ onBack }) {
     setModalVisible(false);
     setQuestionsAnswered(0);
     setPoints(0);
-    setGameEnded(false);
+
     setShowButtons(false)
+    handleUpdatePlayerStatsToDatabase()
   };
 
   //Puheen hallinta ja valmistuminen
@@ -221,12 +222,21 @@ export default function ImageToNumber({ onBack }) {
       {renderOptions()}
       <ModalComponent
         isVisible={modalVisible}
-        
+        onBack={() => setModalVisible(false)}
       />
       {showButtons && (
         <View style={styles.buttonContainer}>
-          <Button title="Seuraava tehtävä odottaa" onPress={handleContinueGame} />
-          <Button title="Lopeta peli" onPress={handleEndGame} />
+          <Button
+            title="Seuraava tehtävä odottaa"
+            onPress={() => {
+              handleContinueGame();
+              setGameEnded(false);
+            }}
+          />
+          <Button title="Lopeta peli"  onPress={() => {
+              handleEndGame();
+              setGameEnded(false);
+            }} />
         </View>
       )}
     </View>

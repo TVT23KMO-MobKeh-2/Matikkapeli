@@ -111,7 +111,7 @@ export default function ModalComponent({ onBack, isVisible}) {
                     </View>
 
                     <Button
-                        title="Go to Profile Screen"
+                        title="Palaa peliin"
                         onPress={handleProfile}
                     />
                 </View>

@@ -126,6 +126,38 @@ export async function recievePlayerStatsFromDatabase({email, playerName, setImag
     }
 };
 
+// Funktio, joka hakee pelaajan profiilin pelkästään sähköpostin perusteella
+export async function recieveProfileByEmail({ email, setProfileData, setDocId }) {
+    console.log("Haetaan profiilia sähköpostilla:", email);
+    try {
+        // Annetaan tiedot hakua varten
+        const q = query(
+            collection(firestore, PLAYERSTATS), // Mistä haetaan
+            where("email", "==", email) // Ehtona sähköpostiosoite
+        );
+
+        const querySnapshot = await getDocs(q); // Suoritetaan kysely
+
+        if (!querySnapshot.empty) { // Jos kyselyllä löytyi tuloksia
+            const doc = querySnapshot.docs[0]; // Haetaan ensimmäinen tulos
+            const data = doc.data(); // Haetaan datasisältö
+            console.log("Löydetyt tiedot:", data);
+            console.log("docId:", doc.id);
+
+            // Päivitetään tiedot tilamuuttujiin:
+            setProfileData(data);
+            setDocId(doc.id); // Tallennetaan documentin ID, jotta voidaan myöhemmin päivittää samaa dokumenttia
+        } else {
+            console.log("Pelaajan profiilia ei löytynyt.");
+            Alert.alert("Virhe:", "Pelaajan profiilia ei löytynyt");
+        }
+    } catch (error) {
+        console.error("Virhe haettaessa profiilia sähköpostilla:", error);
+        Alert.alert("Virhe", "Pelaajan profiilin hakeminen ei onnistunut. Yritä myöhemmin uudestaan.");
+    }
+};
+
+
 // funktio, jolla päivitetään asetukset tietokantaan
 export async function updatePlayerSettingsToDatabase({email, playerName, isDarkTheme, taskReading, taskSyllabification, gamesounds, isMusicPlaying, musicVolume, docId}) {
     try {
