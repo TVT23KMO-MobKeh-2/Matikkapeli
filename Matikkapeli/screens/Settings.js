@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, Switch, StatusBar, BackHandler, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, Text, Button, Switch, StatusBar, BackHandler, Alert } from 'react-native';
 import { useTheme } from '../components/ThemeContext';
 import SliderComponent from '@react-native-community/slider';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -10,7 +10,7 @@ import { useBackgroundMusic } from '../components/BackgroundMusicContext'; //Tau
 import styles from '../styles';
 import { savePlayerSettingsToDatabase, updatePlayerSettingsToDatabase, recievePlayerSettingsFromDatabase } from '../firebase/Functions';
 
-export default function Settings({ onBack, onProfileImageChange }) {
+export default function Settings({ onBack }) {
   const [email, setEmail] = useState("isi@gmail.com");
   const [playerName, setPlayerName] = useState("Irja");
   const [settingsDocId, setSettingsDocId] = useState(""); //Doc ID
@@ -20,19 +20,6 @@ export default function Settings({ onBack, onProfileImageChange }) {
   const { taskSyllabification, setTaskSyllabification } = useTaskSyllabification(); //Käytä tavutuksen kontekstia
   const { gameSounds, setGameSounds } = useSoundSettings();
   const { isMusicPlaying, setIsMusicPlaying, setMusicVolume, musicVolume } = useBackgroundMusic(); //Taustamusiikki
-  const [selectedImage, setSelectedImage] = useState(null);
-
-  const profileImages = [
-    require('../assets/images/kettu.png'),
-    require('../assets/images/pingviini.png'),
-    require('../assets/images/norsu.png'),
-    require('../assets/images/pollo.png'),
-  ];
-
-  const handleImageSelect = (image) => {
-    setSelectedImage(image);
-    onProfileImageChange && onProfileImageChange(image);
-  };
 
   //Sulkee sovelluksen Android-laitteilla
   const handleCloseApp = () => {
@@ -52,7 +39,7 @@ export default function Settings({ onBack, onProfileImageChange }) {
       Alert.alert("Virhe", "Käyttäjätietoja ei löytynyt.");
       return;
     }
-  
+
     const settings = {
       email,
       playerName,
@@ -62,16 +49,15 @@ export default function Settings({ onBack, onProfileImageChange }) {
       gamesounds: gameSounds,
       isMusicPlaying,
       musicVolume,
-      selectedImage,
     };
-  
+
     try {
       if (settingsDocId) {
         console.log("Päivitetään dokumenttia:", settingsDocId);
         await updatePlayerSettingsToDatabase({ ...settings, settingsDocId });
       } else {
         console.log("settingsDocId ei löytynyt, luodaan uusi dokumentti.");
-        await savePlayerSettingsToDatabase(settings, setSettingsDocId);  //Luo uuden dokumentin ja tallentaa id:n
+        await savePlayerSettingsToDatabase(settings, setSettingsDocId); //Luo uuden dokumentin ja tallentaa id:n
       }
     } catch (error) {
       console.error("Virhe asetuksia tallennettaessa:", error);
@@ -86,7 +72,7 @@ export default function Settings({ onBack, onProfileImageChange }) {
         Alert.alert("Virhe", "Käyttäjätietoja ei löytynyt.");
         return;
       }
-  
+
       try {
         //Haetaan player asetukset
         const fetchedSettings = await recievePlayerSettingsFromDatabase({
@@ -100,7 +86,7 @@ export default function Settings({ onBack, onProfileImageChange }) {
           setMusicVolume,
           setSettingsDocId, //settingsDocId jos dokumentti löytyy
         });
-  
+
         if (!fetchedSettings) {
           //Jos asetuksia ei löydy, luodaan uusi dokumentti
           console.log("Pelaajan asetuksia ei löytynyt, luodaan uusi dokumentti.");
@@ -111,11 +97,11 @@ export default function Settings({ onBack, onProfileImageChange }) {
         Alert.alert("Virhe", "Asetusten haku epäonnistui.");
       }
     };
-  
+
     //Haetaan tai luodaan asetukset, kun sähköposti ja pelaajanimi ovat saatavilla
     fetchSettingsOrCreateNew();
-  }, [email, playerName]);  //Varmistetaan, että "email" ja "playerName" ovat saatavilla
-  
+  }, [email, playerName]); //Varmistetaan, että "email" ja "playerName" ovat saatavilla
+
   //Tallennetaan asetukset kun ne ovat muuttuneet
   useEffect(() => {
     if (settingsDocId) {
@@ -131,7 +117,6 @@ export default function Settings({ onBack, onProfileImageChange }) {
     email,
     playerName,
     settingsDocId,
-    selectedImage
   ]);
 
   return (
@@ -181,16 +166,6 @@ export default function Settings({ onBack, onProfileImageChange }) {
         <View style={styles.settingItem}>
           <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Peliäänet</Text>
           <Switch value={gameSounds} onValueChange={() => setGameSounds(!gameSounds)} />
-        </View>
-
-        {/* Profiilikuvan vaihto */}
-        <Text style={styles.label}>Valitse profiilikuva</Text>
-        <View style={styles.imageOptionsContainer}>
-          {profileImages.map((image, index) => (
-            <TouchableOpacity key={index} onPress={() => handleImageSelect(image)} style={styles.imageOption}>
-              <Image source={image} style={styles.profileImageOption} />
-            </TouchableOpacity>
-          ))}
         </View>
 
         {/* Sovelluksen sammuttaminen */}
