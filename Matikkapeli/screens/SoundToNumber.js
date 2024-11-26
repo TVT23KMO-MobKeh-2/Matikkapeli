@@ -1,123 +1,173 @@
-import { View, Text, Button, TouchableOpacity } from 'react-native';
+import { View, Text, Button, TouchableOpacity, ImageBackground } from 'react-native';
 import React, { useState, useContext, useEffect } from 'react';
 import * as Speech from 'expo-speech';
-import ModalComponent from '../components/ModalComponent'
+import { Audio } from 'expo-av';
+import { StatusBar } from 'expo-status-bar';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import ModalComponent from '../components/ModalComponent';
 import { ScoreContext } from '../components/ScoreContext';
 import { useTaskSyllabification } from '../components/TaskSyllabificationContext'; //Lisätty tavutus
 import styles from '../styles';
-import { Audio } from 'expo-av';
+import { useTheme } from '../components/ThemeContext';
+import { useSoundSettings } from '../components/SoundSettingsContext';
+import { useTaskReading } from '../components/TaskReadingContext';
+import { useTaskSyllabification } from '../components/TaskSyllabificationContext';
+
 
 export default function SoundToNumber({ onBack }) {
-  const [number, setNumber] = useState(generateRandomNumber());
+  const { playerLevel, points, setPoints, questionsAnswered, setQuestionsAnswered, incrementXp, handleUpdatePlayerStatsToDatabase } = useContext(ScoreContext);
+  const { isDarkTheme } = useTheme();
+  const { gameSounds } = useSoundSettings();
+  const { taskReading } = useTaskReading();
+  const { syllabify, taskSyllabification } = useTaskSyllabification();
+
+  const [gameEnded, setGameEnded] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [number, setNumber] = useState(() => generateRandomNumber(0, playerLevel || 10));
   const [options, setOptions] = useState(generateOptions(number));
   const [modalVisible, setModalVisible] = useState(false);
-  const {playerLevel,points,setPoints,questionsAnswered,setQuestionsAnswered,incrementXp} = useContext(ScoreContext) // tuodaan tarvittavat muuttujat ja setterit
   const [sound, setSound] = useState();
   const [gameEnded, setGameEnded] = useState(false);
   const [loading, setLoading] = useState(false);
   const { syllabify } = useTaskSyllabification(); //Tavutusfunktio käyttöön
 
-  //Koukku jolla tarkistetaan joko kierros päättyy.
+
+  const ImageBG = require('../assets/background2.jpg');
+  const ImageBGDark = require('../assets/background3.png');
+
+  //Modalin avaaminen ja sulkeminen
   useEffect(() => {
-    if(questionsAnswered===5){
-      Speech.stop(); //pysäyttää puheen
-      incrementXp(points,"soundToNumber") //comparisonin tilalle oma tehtävän nimi: "imageToNumber", "soundToNumber", "comparison" tai "bonds"
-      setModalVisible(true)
-      setGameEnded(true)
+    if (questionsAnswered === 5) {
+      Speech.stop();
+      incrementXp(points, 'soundToNumber');
+      setModalVisible(true);
+      setGameEnded(true);
     }
   }, [questionsAnswered]);
 
   const handleBack = () => {
-    Speech.stop()
+    Speech.stop();
     setModalVisible(false);
     setQuestionsAnswered(0);
     setPoints(0);
     onBack();
-  };
-  /*useEffect(() => {
-    if (loading) {
-      playNumber();
-    }
-  }, [number]);*/
 
-  const playSound = async (isCorrect) => {
-    setLoading(true); //napit pois käytöstä
+    handleUpdatePlayerStatsToDatabase();
+  };
+
+  //Oikein : väärin äänien alustus ja toisto
+  async function playSound(isCorrect) {
+    if (!gameSounds || gameEnded) return;
+
+    setLoading(true);
+
     const soundUri = isCorrect
       ? require('../assets/sounds/mixkit-achievement-bell.wav')
       : require('../assets/sounds/mixkit-losing-bleeps.wav');
- 
+
     const { sound } = await Audio.Sound.createAsync(soundUri);
     setSound(sound);
     await sound.playAsync();
-    sound.setOnPlaybackStatusUpdate(async (status) => {
+    await sound.setVolumeAsync(1.0);
+
+    sound.setOnPlaybackStatusUpdate((status) => {
       if (status.didJustFinish) {
-        sound.unloadAsync(); 
-        setLoading(false); // napit takaisin käyttöön
+        sound.unloadAsync();
+        setLoading(false);
       }
     });
-  };
-  
-//tässä vaiheessa vielä generoi randomilla numeron 1-10 väliltä
-  function generateRandomNumber() {
-    return Math.floor(Math.random() * 10); 
   }
- 
-//valitsee oikean numeron ja 3 muuta randomilla
-  function generateOptions(correctNumber) {
-    const options = [correctNumber];
-    while (options.length < 3) {
-      const randomNum = Math.floor(Math.random() * 10);
-      if (!options.includes(randomNum)) {
-        options.push(randomNum);
-      }
-    }
-    //sekoittaa vaihtoehdot
-    return options.sort(() => Math.random() - 0.5); 
-  }
+  useEffect(() => {
+    return sound ? () => sound.unloadAsync() : undefined;
+  }, [sound]);
 
-  const playNumber = () => {
-    Speech.stop();
-    Speech.speak(number.toString());
-  };
-  
+//Pelin logiikka
+//Päivitetään optionssit kun oikea numero vaihtuu
+useEffect(() => {
+  if (number !== null) {
+    setOptions(generateOptions(number));
+  }
+}, [number, playerLevel]);
+
+const playNumber = () => {
+  Speech.stop();
+  Speech.speak(number.toString());
+};
+
+function generateRandomNumber(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+//valitsee oikean numeron ja 3 muuta 0 - playerlevelin väliltä
+function generateOptions(correctNumber) {
+  const max = typeof playerLevel == 'number' && playerLevel > 0 ? playerLevel : 10;
+  const options = [correctNumber];
+  while (options.length < 4) {
+    const randomNum = generateRandomNumber(0, max);
+    if (!options.includes(randomNum)) {
+      options.push(randomNum);
+    }
+  }
+  //sekoittaa vaihtoehdot
+  return options.sort(() => Math.random() - 0.5); 
+}
+
   const handleSelect = (selectedNumber) => {
     if (gameEnded) return;
     Speech.stop();
-    setLoading(true); //napit pois käytöstä
-    const isCorrect = selectedNumber === number; //tarkistaa onko valittu numero oikein
+    setLoading(true);
+
+    const isCorrect = selectedNumber === number;
     playSound(isCorrect);
 
-    const newNumber = generateRandomNumber();
+    const newNumber = generateRandomNumber(0, playerLevel);
     setNumber(newNumber);
-    setOptions(generateOptions(newNumber));
+
     if (isCorrect) {
       setPoints((prevPoints) => prevPoints + 1);
     }
     setQuestionsAnswered((prevQuestionsAnswered) => prevQuestionsAnswered + 1);
-  };
   
+  const response = isCorrect ? "Oikein!" : "Yritetään uudelleen!";
+    if (taskReading) {
+      Speech.speak(response);
+    }
+  };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{syllabify("Ääni numeroiksi")}</Text>
-      <Button title={syllabify("Kuuntele numero 🔊")} onPress={playNumber} />
-      <View style={styles.optionsContainer}>
-        {options.map((option, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[styles.optionButton, loading && { opacity: 0.5 }]}
-            onPress={() => handleSelect(option)}
-            disabled={loading}
-          >
-            <Text style={styles.optionText}>{option}</Text>
-          </TouchableOpacity>
-        ))}
+
+    <ImageBackground 
+      source={isDarkTheme ? ImageBGDark : ImageBG} 
+      style={styles.background} 
+      resizeMode="cover"
+    >
+    <StatusBar 
+      barStyle={isDarkTheme ? 'light-content' : 'dark-content'} 
+      backgroundColor="transparent" 
+      translucent={true} 
+    />
+      <View style={styles.container}>
+        <Text style={[styles.title, { color: isDarkTheme ? '#fff' : '#000' }]}>Valitse oikea numero</Text>
+        <TouchableOpacity style={styles.startButton} onPress={playNumber}>
+          <Text style={styles.buttonText}>{syllabify("Kuuntele numero 🔊")}Kuuntele numero 🔊</Text>
+        </TouchableOpacity>
+        <View style={isDarkTheme ? styles.optionsContainerDark : styles.optionsContainer}>
+          {options.map((option, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[styles.number1, loading && { opacity: 0.5 }]}
+              onPress={() => handleSelect(option)}
+              disabled={loading}
+            >
+              <Text style={styles.label2}>{option}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+        <ModalComponent isVisible={modalVisible} onBack={handleBack} />
+
       </View>
-      <Button title="Palaa takaisin" onPress={onBack} />
-      <ModalComponent
-        isVisible={modalVisible}
-        onBack={handleBack}
-      />
-    </View>
+    </ImageBackground>
   );
-};
+
+}

@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, ActivityIndicator  } from 'react-native';
 import { useState } from 'react';
 import { ThemeProvider } from './components/ThemeContext';
 import StartScreen from './screens/StartScreen';
@@ -20,13 +20,26 @@ import TopBarComponent from './components/TopBarComponent';
 import ProfileScreen from './screens/ProfileScreen';
 import { firestore } from './firebase/Config';
 import SelectProfile from './screens/SelectProfile';
-
+import { useFonts, ComicNeue_400Regular, ComicNeue_700Bold } from '@expo-google-fonts/comic-neue';
 
 export default function App() {
   const [selectedTask, setSelectedTask] = useState(null);
   const [profileImage, setProfileImage] = useState(require('./assets/images/norsu.png')); // Oletusprofiilikuva
+  const [isProfileScreen, setIsProfileScreen] = useState(false);
+  
+  const [fontsLoaded] = useFonts({
+    ComicNeue_400Regular,
+    ComicNeue_700Bold,
+  });
+
+  if (!fontsLoaded) {
+    return <ActivityIndicator size="large" center="center" />;
+  }
 
   const renderTask = () => {
+    if (isProfileScreen) {
+      return <ProfileScreen onBack={() => setIsProfileScreen(false)} />;
+    }
     switch (selectedTask) {
       case 'ImageToNumbers':
         return <ImageToNumber onBack={() => setSelectedTask(null)} />;
@@ -47,6 +60,8 @@ export default function App() {
         return <Animation onBack={() => setSelectedTask(null)} setSelectedTask={setSelectedTask}/>
       case 'SelectProfile':
         return <SelectProfile onBack={() => setSelectedTask(null)} />;
+      case 'SelectProfile':
+        return <SelectProfile onBack={() => setSelectedTask(null)} />;
       default:
         return <StartScreen onNavigate={setSelectedTask} />;
     }
@@ -59,8 +74,7 @@ export default function App() {
           <ScoreProvider>
             <SoundSettingsProvider>
               <TaskReadingProvider>
-                {/* Top Bar */}
-                <TopBarComponent profileImage={profileImage} />
+              {selectedTask !== 'Settings' && selectedTask !== 'SelectProfile' && <TopBarComponent />}
                 <View style={styles.container}>
                   {renderTask()}
                   <StatusBar style="auto" />
