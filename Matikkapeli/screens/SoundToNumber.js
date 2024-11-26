@@ -12,7 +12,7 @@ import styles from '../styles';
 import { useTheme } from '../components/ThemeContext';
 import { useSoundSettings } from '../components/SoundSettingsContext';
 import { useTaskReading } from '../components/TaskReadingContext';
-import { useTaskSyllabification } from '../components/TaskSyllabificationContext';
+
 
 
 export default function SoundToNumber({ onBack }) {
@@ -20,10 +20,6 @@ export default function SoundToNumber({ onBack }) {
   const { isDarkTheme } = useTheme();
   const { gameSounds } = useSoundSettings();
   const { taskReading } = useTaskReading();
-  const { syllabify, taskSyllabification } = useTaskSyllabification();
-
-  const [gameEnded, setGameEnded] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [number, setNumber] = useState(() => generateRandomNumber(0, playerLevel || 10));
   const [options, setOptions] = useState(generateOptions(number));
   const [modalVisible, setModalVisible] = useState(false);
