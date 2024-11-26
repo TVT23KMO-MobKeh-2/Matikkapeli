@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import ModalComponent from '../components/ModalComponent';
 import { ScoreContext } from '../components/ScoreContext';
+import { useTaskSyllabification } from '../components/TaskSyllabificationContext'; //Lisätty tavutus
 import styles from '../styles';
 import { useTheme } from '../components/ThemeContext';
 import { useSoundSettings } from '../components/SoundSettingsContext';
@@ -27,6 +28,10 @@ export default function SoundToNumber({ onBack }) {
   const [options, setOptions] = useState(generateOptions(number));
   const [modalVisible, setModalVisible] = useState(false);
   const [sound, setSound] = useState();
+  const [gameEnded, setGameEnded] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const { syllabify } = useTaskSyllabification(); //Tavutusfunktio käyttöön
+
 
   const ImageBG = require('../assets/background2.jpg');
   const ImageBGDark = require('../assets/background3.png');
@@ -131,6 +136,7 @@ function generateOptions(correctNumber) {
   };
 
   return (
+
     <ImageBackground 
       source={isDarkTheme ? ImageBGDark : ImageBG} 
       style={styles.background} 
@@ -144,7 +150,7 @@ function generateOptions(correctNumber) {
       <View style={styles.container}>
         <Text style={[styles.title, { color: isDarkTheme ? '#fff' : '#000' }]}>Valitse oikea numero</Text>
         <TouchableOpacity style={styles.startButton} onPress={playNumber}>
-          <Text style={styles.buttonText}>Kuuntele numero 🔊</Text>
+          <Text style={styles.buttonText}>{syllabify("Kuuntele numero 🔊")}Kuuntele numero 🔊</Text>
         </TouchableOpacity>
         <View style={isDarkTheme ? styles.optionsContainerDark : styles.optionsContainer}>
           {options.map((option, index) => (
@@ -159,7 +165,9 @@ function generateOptions(correctNumber) {
           ))}
         </View>
         <ModalComponent isVisible={modalVisible} onBack={handleBack} />
+
       </View>
     </ImageBackground>
   );
+
 }

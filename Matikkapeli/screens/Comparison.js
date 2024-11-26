@@ -1,6 +1,6 @@
-import { View, Text, Button } from 'react-native'
-import React, { useContext, useEffect, useState } from 'react'
-import ModalComponent from '../components/ModalComponent'
+import { View, Text, Button } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import ModalComponent from '../components/ModalComponent';
 import * as Speech from 'expo-speech';
 import { ScoreContext } from '../components/ScoreContext';
 import styles from '../styles';
@@ -11,7 +11,7 @@ import { useTaskSyllabification } from '../components/TaskSyllabificationContext
 import { Audio } from 'expo-av';
 
 export default function Comparison({ onBack }) {
-
+  
   const { isDarkTheme } = useTheme();
   const { gameSounds } = useSoundSettings();
   const { taskReading } = useTaskReading();
@@ -30,22 +30,22 @@ export default function Comparison({ onBack }) {
   //Koukku jolla tarkistetaan joko kierros päättyy.
   useEffect(() => {
     if (questionsAnswered === 5) {
-      incrementXp(points, "comparison")
-      setModalVisible(true)
+      incrementXp(points, "comparison");
+      setModalVisible(true);
     }
-  }, [questionsAnswered])
+  }, [questionsAnswered]);
 
   //Backin handleri
   const handleBack = () => {
-    Speech.stop()
+    Speech.stop();
     setModalVisible(false);
     setQuestionsAnswered(0);
     setPoints(0);
     onBack();
 
     // Tallennetaan tiedot tietokantaan
-    handleUpdatePlayerStatsToDatabase()
-  }
+    handleUpdatePlayerStatsToDatabase();
+  };
 
   // Tämä koukku suoritetaan kerran, kun komponentti on renderöity
   useEffect(() => {
@@ -55,43 +55,43 @@ export default function Comparison({ onBack }) {
   // Arpoo satunnaisluvun annetulta väliltä (mukaan lukien minimi ja maksimi) ja palauttaa sen
   const drawRandomNumber = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
+  };
 
   // Funktio uusien lukujen arpomista varten
   const drawNewNumbers = () => {
     // Keskeytetään mahdollinen edellinen puhe
-    Speech.stop()
+    Speech.stop();
     // Arvotaan uusi satunnaisluku, jonka maksimiarvo riippuu comparisonXp:n arvosta
-    setRandomNumber(drawRandomNumber(0, playerLevel ))
+    setRandomNumber(drawRandomNumber(0, playerLevel));
     // Arvotaan, onko tason mukainen numero 1. vai 2. vertailtava
-    setIsLevelNumberFirstComparable(drawRandomNumber(0, 1) === 1)
+    setIsLevelNumberFirstComparable(drawRandomNumber(0, 1) === 1);
 
     // Jos comparisonXp ylittää 10, arvotaan yhtälön tarve ja muodostetaan yhtälö tarvittaessa
     if (comparisonXp > 10) {
       if (drawRandomNumber(0, 1) === 1) {
-        setIsComparableEquation(true)
-        generateEquation(setIsEquationAddition, setEquationOperand1, setEquationOperand2)
+        setIsComparableEquation(true);
+        generateEquation(setIsEquationAddition, setEquationOperand1, setEquationOperand2);
       }
     } else {
-      setIsComparableEquation(false)
+      setIsComparableEquation(false);
     }
 
     // Arvotaan, etsitäänkö isompaa vai pienempää lukua
     if (drawRandomNumber(0, 1) === 1) {
-      setLookingForBigger(true) // Haetaan isompaa
+      setLookingForBigger(true); // Haetaan isompaa
       if (taskReading) {
-        Speech.speak("Valitse yhtäsuuri tai suurempi.") //toistetaan tehtävänanto puheena
+        Speech.speak("Valitse yhtäsuuri tai suurempi."); //toistetaan tehtävänanto puheena
       }
     } else {
-      setLookingForBigger(false) // Haetaan pienempää
+      setLookingForBigger(false); // Haetaan pienempää
       if (taskReading) {
-        Speech.speak("Valitse yhtäsuuri tai pienempi.") //toistetaan tehtävänanto puheena
+        Speech.speak("Valitse yhtäsuuri tai pienempi."); //toistetaan tehtävänanto puheena
       }
     }
   }
 
-  // Funktio yhtälön arvon laskemista varten
-  const calculateEquation = (operand1, operand2, isAddition) => {
+   // Funktio yhtälön arvon laskemista varten
+   const calculateEquation = (operand1, operand2, isAddition) => {
     if (isAddition) {//Jos yhteenslasku, palautetaan summa
       return operand1 + operand2
     } else { //Muutoin palautetaan erotus
@@ -124,8 +124,8 @@ export default function Comparison({ onBack }) {
     }
   }
 
-  //Funktio vastauksen tarkistukseen 
-  const checkAnswer = (answer) => {
+   //Funktio vastauksen tarkistukseen 
+   const checkAnswer = (answer) => {
     let valueOfComparable = 0 //Muuttuja vertailtavan arvon tallentamiseen
     let valueOfAnswer = 0 //Muuttuja annetun vastauksen arvon tallentamiseen
     let correctAnswer = false //Muuttuja vastauksen oikeellisuuden tarkistamiseen ja lopputoimien määrittämiseen
@@ -193,24 +193,20 @@ export default function Comparison({ onBack }) {
     // Arvotaan uudet numerot seuraavaa tehtävää varten
     drawNewNumbers()
   }
-
+  
   //Funktio ohjeen renderöintiä varten
   const renderGuide = () => {
     //Tallennetaan muuttujaan teksti sen perusteella, etsitäänkö suurempaa ja tavutetaanko teksti
-    const text = lookingForBigger
-      ? taskSyllabification
-        ? 'VA-LIT-SE YH-TÄ-SUU-RI TAI SUU-REM-PI'
-        : 'Valitse yhtäsuuri tai suurempi'
-      : taskSyllabification
-        ? 'VA-LIT-SE YH-TÄ-SUU-RI TAI PIE-NEM-PI'
-        : 'Valitse yhtäsuuri tai pienempi';
+    const guideText = lookingForBigger
+      ? "Valitse yhtäsuuri tai suurempi"
+      : "Valitse yhtäsuuri tai pienempi";
 
-    //Määritellään tyyli sen perusteella, etsitäänkö suurempaa vai pienempää
+    // Käytetään syllabify-funktiota kontekstista tavutukseen
+    const displayText = taskSyllabification ? syllabify(guideText) : guideText;
     const style = lookingForBigger ? styles.comparisonGuideBigger : styles.comparisonGuideSmaller;
 
-    //Palautetaan ohjeteksti oikealla tyylillä.
-    return <Text style={style}>{text}</Text>
-  }
+    return <Text style={style}>{displayText}</Text>;
+  };
 
   //Funktio vertailtavan renderöintiä
   const renderComparable = (comparableNumber) => {
@@ -242,7 +238,7 @@ export default function Comparison({ onBack }) {
 
   return (
     <View style={styles.comparisonContainer}>
-      <Text style={styles.title}>Vertailu</Text>
+      <Text style={styles.title}>{syllabify("Vertailu")}</Text>
       <Text>comparisonXp: {comparisonXp}</Text>
       {renderGuide()}
       {renderComparable(1)}
