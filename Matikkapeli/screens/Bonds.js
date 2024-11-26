@@ -1,19 +1,19 @@
-import { View, Text, Button, StyleSheet, TextInput, ImageBackground, TouchableWithoutFeedback, Touchable, Pressable } from 'react-native'
-import React, { useState, useEffect, useContext } from 'react'
-import Svg, { Line } from 'react-native-svg';
-import { Audio } from 'expo-av';
-import styles from '../styles';
-import * as Speech from 'expo-speech';
-import ModalComponent from '../components/ModalComponent';
-import { ScoreContext } from '../components/ScoreContext';
-import { useTheme } from '../components/ThemeContext';
-import { useSoundSettings } from '../components/SoundSettingsContext';
-import { useTaskReading } from '../components/TaskReadingContext';
-import { useTaskSyllabification } from '../components/TaskSyllabificationContext';
+import {View,Text,Button,StyleSheet,TextInput,ImageBackground,TouchableWithoutFeedback,Touchable,Pressable} from "react-native";
+import React, { useState, useEffect, useContext } from "react";
+import Svg, { Line } from "react-native-svg";
+import { Audio } from "expo-av";
+import styles from "../styles";
+import * as Speech from "expo-speech";
+import ModalComponent from "../components/ModalComponent";
+import { ScoreContext } from "../components/ScoreContext";
+import { useTheme } from "../components/ThemeContext";
+import { useSoundSettings } from "../components/SoundSettingsContext";
+import { useTaskReading } from "../components/TaskReadingContext";
+import { useTaskSyllabification } from "../components/TaskSyllabificationContext";
 
 // Satunnaisen arvon generointi annetulla alueella
 function random(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 export default function Bonds({ onBack }) {
@@ -79,8 +79,8 @@ export default function Bonds({ onBack }) {
     await sound.playAsync();  // Soitetaan ääni
   };
 
-  // Tehtävän tarkistus (tarkistaa onko käyttäjän vastaus oikein)
-  useEffect(() => {
+   // Tehtävän tarkistus (tarkistaa onko käyttäjän vastaus oikein)
+   useEffect(() => {
     if (questionsAnswered === 5) {
       setModalVisible(true);  // Näytetään modal-ikkuna, kun 5 kysymystä on vastattu
       incrementXp(points, "bonds");  // Lisätään XP-pisteet
@@ -140,18 +140,21 @@ export default function Bonds({ onBack }) {
           <TouchableWithoutFeedback>
             <View style={styles.overlayInstruction}>
               <View style={styles.instructionWindow}>
-                <Text style={styles.title}>Hajonta</Text>
-                <Text>Täydennä puuttuva luku niin, että laatikoiden luvut ovat yhteensä yhtä paljon kuin pallon luku.</Text>
+                <Text style={styles.title}>{syllabify("Hajonta")}</Text>
+                <Text>
+                  {syllabify(
+                    "Täydennä puuttuva luku niin, että laatikoiden luvut ovat yhteensä yhtä paljon kuin pallon luku."
+                  )}
+                </Text>
                 <View style={styles.buttonContainer}>
-                <Button title='Aloita' onPress={() => setInstructionVisibility(false)}></Button>
+                <Button title={syllabify("Aloita")} onPress={() => setInstructionVisibility(false)}/>
                 </View>
               </View>
             </View>
           </TouchableWithoutFeedback>
         )}
         <View style={styles.taskbox}>
-          <Text style={styles.title}> Täydennä puuttuva luku.</Text>
-
+          <Text style={styles.title}>{syllabify("Täydennä puuttuva luku.")}</Text>
         </View>
 
         <Svg height="300" width="300" style={styles.lineContainer}>
@@ -196,8 +199,9 @@ export default function Bonds({ onBack }) {
         <Pressable
           onPress={checkAnswer}
           style={[styles.checkButton, isButtonDisabled ? styles.disabledButton : null]}
-          disabled={isButtonDisabled}>
-          <Text style={styles.checkButtonText}>Tarkista</Text>
+          disabled={isButtonDisabled}
+        >
+          <Text style={styles.checkButtonText}>{syllabify("Tarkista")}</Text>
         </Pressable>
 
       </View>
@@ -209,4 +213,3 @@ export default function Bonds({ onBack }) {
 
   );
 }
-

@@ -3,6 +3,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import * as Speech from 'expo-speech';
 import ModalComponent from '../components/ModalComponent'
 import { ScoreContext } from '../components/ScoreContext';
+import { useTaskSyllabification } from '../components/TaskSyllabificationContext'; //Lisätty tavutus
 import styles from '../styles';
 import { Audio } from 'expo-av';
 
@@ -14,6 +15,7 @@ export default function SoundToNumber({ onBack }) {
   const [sound, setSound] = useState();
   const [gameEnded, setGameEnded] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { syllabify } = useTaskSyllabification(); //Tavutusfunktio käyttöön
 
   //Koukku jolla tarkistetaan joko kierros päättyy.
   useEffect(() => {
@@ -97,8 +99,8 @@ export default function SoundToNumber({ onBack }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Ääni numeroiksi</Text>
-      <Button title="Kuuntele numero 🔊" onPress={playNumber} />
+      <Text style={styles.title}>{syllabify("Ääni numeroiksi")}</Text>
+      <Button title={syllabify("Kuuntele numero 🔊")} onPress={playNumber} />
       <View style={styles.optionsContainer}>
         {options.map((option, index) => (
           <TouchableOpacity
