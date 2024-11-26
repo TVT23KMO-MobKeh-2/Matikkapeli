@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import styles from '../styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserCreation from '../components/UserCreation';
-import { recieveProfileByEmail } from '../firebase/Functions'; // Import your function
+import { deleteUserDataFromDatabase, recieveProfileByEmail } from '../firebase/Functions'; // Import your function
 import { Alert } from 'react-native';
 
 export default function WelcomeScreen({ navigation }) {
@@ -12,6 +12,7 @@ export default function WelcomeScreen({ navigation }) {
     const [isCreatingUser, setIsCreatingUser] = useState(false);
     const [isSearchMode, setIsSearchMode] = useState(false); // State to toggle search mode
     const [profileData, setProfileData] = useState(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const getData = async () => {
         try {
@@ -35,6 +36,20 @@ export default function WelcomeScreen({ navigation }) {
             console.error('Virhe tietojen poistamisessa');
         }
     };
+
+    const deletemail = async () => {
+        setIsDeleting(true); // Set loading state
+        try {
+            await deleteUserDataFromDatabase({ email });
+            Alert.alert('Success', 'Profile deleted successfully');
+            navigation.goBack(); // Optionally, navigate back after deletion
+            clearemail()
+        } catch (error) {
+            Alert.alert('Error', 'Failed to delete profile');
+        } finally {
+            setIsDeleting(false); // Reset loading state
+        }
+    }
 
     const handleSearchProfile = async () => {
         if (inputEmail) {
@@ -100,10 +115,16 @@ export default function WelcomeScreen({ navigation }) {
                         onPress={() => navigation.navigate('SelectProfile', { email: email })}
                     />
                     <Button
-                        title="Poista tunnus"
+                        title="Poista tunnus puhelimen muistista"
                         onPress={clearemail}
                         color="red"
                     />
+                    <Button
+                title={isDeleting ? 'Poistetaan...' : 'Poista tunnus'}
+                onPress={deletemail}
+                disabled={isDeleting} 
+                color="darkred"// Disable button during deletion
+            />
                 </View>
             </View>
         );

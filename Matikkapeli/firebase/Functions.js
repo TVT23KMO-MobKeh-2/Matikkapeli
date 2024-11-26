@@ -1,5 +1,5 @@
 import { Alert } from 'react-native';
-import { addDoc, collection, firestore, PLAYERSTATS, where, query, getDocs, updateDoc, doc } from '../firebase/Config';
+import { addDoc, collection, firestore, PLAYERSTATS, where, query, getDocs, updateDoc, doc, deleteDoc } from '../firebase/Config';
 
 export async function saveEmailToDatabase({email}) {
     try {
@@ -254,4 +254,79 @@ export async function recievePlayerSettingsFromDatabase({email, playerName, togg
         Alert.alert("Virhe", "Asetuksien hakeminen tietokannasta ei onnistunut. Yritä myöhemmin uudestaan")
     }
 }
+
+export async function deletePlayerDataFromDatabase({ email, playerName }) {
+    try {
+        // Luodaan kysely tiedoista sähköpostin mukaan
+        const emailQueryStats = query(
+            collection(firestore, PLAYERSTATS),
+            where("email", "==", email),
+            where("playerName", "==", playerName )
+        );
+        // Haetaan kyselyn tulokset
+        const querySnapshot = await getDocs(emailQueryStats);
+
+        // Käydään läpi kaikki dokumentit ja poistetaan ne
+        for (const docSnapshot of querySnapshot.docs) {
+            const docRef = doc(firestore, PLAYERSTATS, docSnapshot.id);
+            await deleteDoc(docRef);
+        }
+
+        // Luodaan kysely asetuksista sähköpostin mukaan
+        const emailQuerySettings = query(
+            collection(firestore, "playersettings"),
+            where("email", "==", email),
+            where("playerName", "==", playerName )
+        );
+        // Haetaan kyselyn tulokset
+        const querySnapshotSettings = await getDocs(emailQuerySettings);
+
+        // Käydään läpi kaikki dokumentit ja poistetaan ne
+        for (const docSnapshot of querySnapshotSettings.docs) {
+            const docRef = doc(firestore, "playersettings", docSnapshot.id);
+            await deleteDoc(docRef);
+        }
+
+        console.log('Kaikki pelaajatiedot poistettu onnistuneesti');
+    } catch (error) {
+        console.error('Virhe pelaajatietojen poistamisessa: ', error);
+    }
+}
+
+export async function deleteUserDataFromDatabase({ email }) {
+    try {
+        // Luodaan kysely tiedoista sähköpostin mukaan
+        const emailQueryStats = query(
+            collection(firestore, PLAYERSTATS),
+            where("email", "==", email)
+        );
+        // Haetaan kyselyn tulokset
+        const querySnapshot = await getDocs(emailQueryStats);
+
+        // Käydään läpi kaikki dokumentit ja poistetaan ne
+        for (const docSnapshot of querySnapshot.docs) {
+            const docRef = doc(firestore, PLAYERSTATS, docSnapshot.id);
+            await deleteDoc(docRef);
+        }
+
+        // Luodaan kysely asetuksista sähköpostin mukaan
+        const emailQuerySettings = query(
+            collection(firestore, "playersettings"),
+            where("email", "==", email)
+        );
+        // Haetaan kyselyn tulokset
+        const querySnapshotSettings = await getDocs(emailQuerySettings);
+
+        // Käydään läpi kaikki dokumentit ja poistetaan ne
+        for (const docSnapshot of querySnapshotSettings.docs) {
+            const docRef = doc(firestore, "playersettings", docSnapshot.id);
+            await deleteDoc(docRef);
+        }
+
+        console.log('Kaikki käyttäjän tiedot poistettu onnistuneesti');
+    } catch (error) {
+        console.error('Virhe käyttäjän tietojen poistamisessa: ', error);
+    }
+}
+
 
