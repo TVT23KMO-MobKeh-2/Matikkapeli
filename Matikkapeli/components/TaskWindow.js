@@ -13,6 +13,8 @@ export default function TaskWindow({ taskVisible, setTaskVisible, navigation, pr
 
     if (!taskVisible) return null;
 
+    const isDivisibleByFive = (profile.imageToNumberXp % (5 * profile.playerLevel) === 0) && (profile.soundToNumberXp % (5 * profile.playerLevel) === 0)
+
     return (
         <View style={[styles.container, { position: 'absolute', zIndex: 5 }]}>
             <ImageBackground 
@@ -38,22 +40,28 @@ export default function TaskWindow({ taskVisible, setTaskVisible, navigation, pr
                             }}>
                             <Image source={note} style={styles.taskImage} />
                         </Pressable>
-                        <Pressable 
-                            style={styles.taskContainer}
+                        
+                        {profile.imageToNumberXp >= 5 && profile.soundToNumberXp >= 5 && isDivisibleByFive && (
+                            <Pressable 
+                             style={styles.taskContainer}
                             onPress={() => { 
                                 navigation.navigate('ComparisonOperators', { profile });
                                 setTaskVisible(false); 
                             }}>
                             <Image source={conv} style={styles.taskImage} />
                         </Pressable>
-                        <Pressable 
+                        )}
+                        {profile.imageToNumberXp >= 15 && profile.soundToNumberXp >= 15 && profile.playerLevel >= 3 && isDivisibleByFive && (
+                           <Pressable 
                             style={styles.taskContainer}
                             onPress={() => { 
                                 navigation.navigate('Bonds', { profile });
                                 setTaskVisible(false);
                             }}>
                             <Image source={bond} style={styles.taskImage} />
-                        </Pressable>
+                        </Pressable> 
+                        )}   
+                        
                     </View>
 
                     <Pressable onPress={() => setTaskVisible(false)}>

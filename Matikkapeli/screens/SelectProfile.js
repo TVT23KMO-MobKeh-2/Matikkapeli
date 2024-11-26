@@ -1,5 +1,5 @@
 import { View, Text, Pressable, Image } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { FontAwesome5 } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Corrected import
 import styles from '../styles';
@@ -7,6 +7,7 @@ import ProfileScreen from './ProfileScreen';
 import CreateProfile from './CreateProfile';
 import {collection, query, where, getDocs  } from 'firebase/firestore';
 import { firestore } from '../firebase/Config';
+import { ScoreContext } from '../components/ScoreContext';
 import { recievePlayerStatsFromDatabase, savePlayerStatsToDatabase } from '../firebase/Functions';
 
 const fetchCharactersDatabase = async (email) => {
@@ -44,10 +45,27 @@ const animalImages = {
 
 export default function SelectProfile({ route, navigation }) {
   const { showCreate } = route.params;
-  const [email, setEmail] = useState('');
+  const {tunnus, setTunnus} = useState("")
   const [characters, setCharacters] = useState([]);
   const [selectedCharacter, setSelectedCharacter] = useState(null);
   const [isCreatingProfile, setIsCreatingProfile] = useState(false);
+  const { email, setEmail, playerName, setPlayerName, setImageID, setCareer, setPlayerLevel, savePlayerStatsToDatabase, updatePlayerStatsToDatabase, handleUpdatePlayerStatsToDatabase, setImageToNumberXp, setSoundToNumberXp, setComparisonXp, setBondsXp } = useContext(ScoreContext)
+
+  useEffect(() => {
+    if (characters && characters.length > 0) {
+      setEmail(characters[0].email);
+      setPlayerName(characters[0].playerName);
+      setImageID(characters[0].imageID);
+      setCareer(characters[0].career);
+      setPlayerLevel(characters[0].playerLevel);
+      setImageToNumberXp(characters[0].imageToNumberXp);
+      setSoundToNumberXp(characters[0].soundToNumberXp);
+      setComparisonXp(characters[0].comparisonXp);
+      setBondsXp(characters[0].bondsXp);
+    } else {
+      console.log('No characters found');
+    }
+  }, [selectedCharacter]);
 
   // Fetch email from AsyncStorage when the component loads
   useEffect(() => {
@@ -82,9 +100,7 @@ export default function SelectProfile({ route, navigation }) {
     } else {
       console.log('Email is not set or invalid');
     }
-  }, [email]);  // This will now only run when `email` is updated
-  
-  
+  }, [email]);  // This will now only run when `email` is updated 
 
   const handleNewProfile = async (newProfile) => {
     try {

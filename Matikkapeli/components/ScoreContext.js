@@ -221,7 +221,12 @@ export const ScoreProvider = ({children, profile = {} }) => {
                 setPoints,
                 questionsAnswered,
                 setQuestionsAnswered,
-                incrementXp
+                incrementXp,
+                setPlayerLevel,                 
+                setImageToNumberXp, 
+                setSoundToNumberXp, 
+                setComparisonXp, 
+                setBondsXp,
             }}
         >
             {children}
