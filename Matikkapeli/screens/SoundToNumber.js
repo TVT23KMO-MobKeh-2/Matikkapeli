@@ -6,6 +6,7 @@ import styles from '../styles';
 import { Audio } from 'expo-av';
 import { useNavigation } from '@react-navigation/native';
 import { useRoute } from '@react-navigation/native';
+import { useTaskSyllabification } from '../components/TaskSyllabificationContext';
 
 export default function SoundToNumber({ onBack }) {
 
@@ -18,6 +19,7 @@ export default function SoundToNumber({ onBack }) {
   const [showFeedback, setShowFeedback] = useState(false)
   const { playerLevel, points, setPoints, questionsAnswered, setQuestionsAnswered, incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, totalXp } = useContext(ScoreContext) // tuodaan tarvittavat muuttujat ja setterit
   const [sound, setSound] = useState();
+  const { syllabify, taskSyllabification } = useTaskSyllabification(); //Käytetään tavutuskontekstia
   const [gameEnded, setGameEnded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showButtons, setShowButtons] = useState(false);
@@ -48,7 +50,7 @@ export default function SoundToNumber({ onBack }) {
                   : "TÄ-MÄN HET-KI-SET PIS-TEE-SI";
       }
   })();
-  
+
   //Koukku jolla tarkistetaan joko kierros päättyy.
   useEffect(() => {
     if (questionsAnswered === 5) {
