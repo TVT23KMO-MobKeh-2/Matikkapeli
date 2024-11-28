@@ -30,51 +30,19 @@ export default function SoundToNumber({ onBack }) {
   const [number, setNumber] = useState(() => generateRandomNumber(0, playerLevel || 10));
   const [options, setOptions] = useState(generateOptions(number));
   const [sound, setSound] = useState();
-  const { syllabify, taskSyllabification } = useTaskSyllabification(); //Käytetään tavutuskontekstia
+  const { syllabify, taskSyllabification, getFeedbackMessage } = useTaskSyllabification(); //Käytetään tavutuskontekstia
   const [gameEnded, setGameEnded] = useState(false);
   const [loading, setLoading] = useState(false);
   const ImageBG = require('../assets/background2.jpg');
   const ImageBGDark = require('../assets/background3.png');
 
-
-  //feedback miten meni, odotelee tässä, että saadaan yhteiseen tiedostoon..
-  const feedbackMsg = (() => {
-    switch (points) {
-      case 0:
-        return (!taskSyllabification) ? "0/5 Hyvä, että yritit! Matikka on välillä tosi haastavaa. Harjoitellaan yhdessä lisää, niin ensi kerralla voi mennä paremmin!"
-          : "0/5 HY-VÄ ET-TÄ Y-RI-TIT! MA-TIK-KA ON VÄ-LIL-LÄ TO-SI HAAS-TA-VAA. HAR-JOI-TEL-LAAN YH-DES-SÄ LI-SÄÄ, NIIN EN-SI KER-RAL-LA VOI MEN-NÄ PA-REM-MIN";
-      case 1:
-        return (!taskSyllabification) ? "1/5 Hyvä, sait yhden oikein! Tämä on hyvä alku, ja joka kerta opit vähän lisää. Kokeillaan yhdessä uudelleen!"
-          : "1/5 HY-VÄ, SAIT YH-DEN OI-KEIN! TÄ-MÄ ON HY-VÄ AL-KU JA JO-KA KER-TA O-PIT VÄ-HÄN LI-SÄÄ. KO-KEIL-LAAN YH-DES-SÄ UU-DEL-LEEN!";
-      case 2:
-        return (!taskSyllabification) ? "2/5 Hienoa, sait jo kaksi oikein! Olet oppimassa. Jatketaan harjoittelua, niin ensi kerralla osaat vielä enemmän!"
-          : "2/5 HIE-NOA, SAIT JO KAK-SI OI-KEIN! O-LET OP-PI-MAS-SA. JAT-KE-TAAN HAR-JOIT-TE-LU-A, NIIN EN-SI KER-RAL-LA O-SAAT VIE-LÄ E-NEM-MÄN!";
-      case 3:
-        return (!taskSyllabification) ? "3/5 Mahtavaa, sait yli puolet oikein! Olet jo tosi lähellä. Harjoitellaan vielä vähän, niin pääset vieläkin pidemmälle!"
-          : "3/5 MAH-TA-VAA, SAIT Y-LI PUO-LET OI-KEIN! O-LET JO TO-SI LÄ-HEL-LÄ. HAR-JOI-TEL-LAAN VIE-LÄ VÄ-HÄN, NIIN PÄÄ-SET VIE-LÄ-KIN PI-DEM-MÄL-LE";
-      case 4:
-        return (!taskSyllabification) ? "4/5 Tosi hienoa! Melkein kaikki meni oikein. Vielä vähän harjoittelua, niin voit saada kaikki oikein ensi kerralla!"
-          : "4/5 TO-SI HIE-NO-A! MEL-KEIN KAIK-KI ME-NI OI-KEIN. VIE-LÄ VÄ-HÄN HAR-JOIT-TE-LUA, NIIN VOIT SAA-DA KAIK-KI OI-KEIN EN-SI KER-RAL-LA";
-      case 5:
-        return (!taskSyllabification) ? "5/5 Wau, ihan huippua! Sait kaikki oikein! Jatka samaan malliin, olet tosi taitava!"
-          : "5/5 WAU, I-HAN HUIP-PUA! SAIT KAIK-KI OIK-EIN! JAT-KA SA-MAAN MAL-LIIN, O-LET TO-SI TAI-TA-VA!";
-      default:
-        return (!taskSyllabification) ? "Tässä tämän hetkiset pisteesi:"
-          : "TÄ-MÄN HET-KI-SET PIS-TEE-SI";
-    }
-  })();
-
-
-
-  //Modalin avaaminen ja sulkeminen
+  //Palautteen avaaminen ja sulkeminen
   useEffect(() => {
     if (questionsAnswered === 5) {
-
       Speech.stop(); //pysäyttää puheen
       incrementXp(points, "soundToNumber") //comparisonin tilalle oma tehtävän nimi: "imageToNumber", "soundToNumber", "comparison" tai "bonds"
       setShowFeedback(true)
       setGameEnded(true)
-
     }
   }, [questionsAnswered]);
 
@@ -207,15 +175,12 @@ export default function SoundToNumber({ onBack }) {
             </TouchableOpacity>
           ))}
         </View>
-        <ModalComponent isVisible={modalVisible} onBack={handleBack} />
-
       </View>
-
       {showFeedback && (
         <TouchableWithoutFeedback>
           <View style={styles.overlayInstruction}>
             <View style={styles.instructionWindow}>
-              <Text >{feedbackMsg}</Text>
+              <Text >{getFeedbackMessage(points)}</Text>
               <Text style={styles.title}>Pistetaulu</Text>
               <Text>Level: {playerLevel}/10</Text>
               <Text>Kokonaispisteet: {totalXp}/190</Text>

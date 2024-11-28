@@ -66,12 +66,7 @@ export default function ModalComponent({ onBack, isVisible}) {
 
     useEffect(() => {
         const voiceFeedback = [
-            "nolla kautta viisi! Hyvä, että yritit! Matikka on välillä tosi haastavaa. Harjoitellaan yhdessä lisää, niin ensi kerralla voi mennä paremmin!",
-            "yksi kautta viisi! Hyvä, sait yhden oikein! Tämä on hyvä alku, ja joka kerta opit vähän lisää. Kokeillaan yhdessä uudelleen!",
-            "kaksi kautta viisi! Hienoa, sait jo kaksi oikein! Olet oppimassa. Jatketaan harjoittelua, niin ensi kerralla osaat vielä enemmän!",
-            "kolme kautta viisi! Mahtavaa, sait yli puolet oikein! Olet jo tosi lähellä. Harjoitellaan vielä vähän, niin pääset vieläkin pidemmälle!",
-            "neljä kautta viisi! Tosi hienoa! Melkein kaikki meni oikein. Vielä vähän harjoittelua, niin voit saada kaikki oikein ensi kerralla!",
-            "viisi kautta viisi! VAU! ihan huippua! Sait kaikki oikein! Jatka samaan malliin, olet tosi taitava!",
+            ,
         ];
         setVoiceFeedbackMsg(voiceFeedback[points] || "Tässä tämän hetkiset pisteesi");
     }, [points]);
