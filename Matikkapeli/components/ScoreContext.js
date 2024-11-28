@@ -7,7 +7,7 @@ import { Alert } from 'react-native';
 // Luodaan konteksti, joka tarjoaa pelin tilan ja toiminnot lapsikomponenteille
 export const ScoreContext = createContext();
 
-export const ScoreProvider = ({children, profile = {} }) => {
+export const ScoreProvider = ({ children, profile = {} }) => {
 
     const [email, setEmail] = useState(profile.email) //Tunnisteena, jos monta samannimistä Kallea
     const [playerName, setPlayerName] = useState(profile.playerName)
@@ -23,9 +23,9 @@ export const ScoreProvider = ({children, profile = {} }) => {
     const [career, setCareer] = useState(profile.career);
     // KokonaisXp
     const [totalXp, setTotalXp] = useState(comparisonXp + bondsXp + soundToNumberXp + imageToNumberXp);
-/*     // Kulloisestakin tehtävästä saadut pisteet ja vastattujen kysymysten määrä, joiden perusteella annetaan palaute ja päätetään tehtävä
-    const [points, setPoints] = useState(0);
-    const [questionsAnswered, setQuestionsAnswered] = useState(0); */
+    /*     // Kulloisestakin tehtävästä saadut pisteet ja vastattujen kysymysten määrä, joiden perusteella annetaan palaute ja päätetään tehtävä
+        const [points, setPoints] = useState(0);
+        const [questionsAnswered, setQuestionsAnswered] = useState(0); */
     // Seurataan onko taso noustu tai peli läpäisty
     const [xpMilestone, setXpMilestone] = useState(false);
     const [gameAchieved, setGameAchieved] = useState(false);
@@ -44,10 +44,20 @@ export const ScoreProvider = ({children, profile = {} }) => {
     useEffect(() => {
         console.log(`Total XP before updated: ${totalXp}`);
         setTotalXp(comparisonXp + bondsXp + soundToNumberXp + imageToNumberXp);
-        console.log("New totalXp:",comparisonXp + bondsXp + soundToNumberXp + imageToNumberXp);
+        console.log("New totalXp:", comparisonXp + bondsXp + soundToNumberXp + imageToNumberXp);
     }, [comparisonXp, bondsXp, soundToNumberXp, imageToNumberXp]);
 
-    const handleUpdatePlayerStatsToDatabase =() => {
+    // Tarkistetaan, päästäänkö seuraavalle tasolle tai onko koko peli läpi?
+    useEffect(() => {
+        if (xpForLevelUp.includes(totalXp)) {
+            setXpMilestone(true);
+        } else if (totalXp >= 190) {
+            setGameAchieved(true);
+        }
+    }, [totalXp])
+
+    
+    const handleUpdatePlayerStatsToDatabase = () => {
         console.log("Updating player stats to the database:", {
             email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career, docId
         });
@@ -101,12 +111,12 @@ export const ScoreProvider = ({children, profile = {} }) => {
         console.log(`XP for ${task} updated: ${value + points}/${maxXp}`);
 
 
-        // Tarkistetaan, päästäänkö seuraavalle tasolle tai onko koko peli läpi?
-        if (xpForLevelUp.includes(totalXp)) {
-            setXpMilestone(true);
-        } else if (totalXp >= 190) {
-            setGameAchieved(true);
-        }
+        /*         // Tarkistetaan, päästäänkö seuraavalle tasolle tai onko koko peli läpi?
+                if (xpForLevelUp.includes(totalXp)) {
+                    setXpMilestone(true);
+                } else if (totalXp >= 190) {
+                    setGameAchieved(true);
+                } */
     };
 
     return (
@@ -134,15 +144,15 @@ export const ScoreProvider = ({children, profile = {} }) => {
                 bondsXp,
 
                 // Pisteisiin liittyvät tilat ja toiminnot
-/*                 points,
-                setPoints,
-                questionsAnswered,
-                setQuestionsAnswered, */
+                /*                 points,
+                                setPoints,
+                                questionsAnswered,
+                                setQuestionsAnswered, */
                 incrementXp,
-                setPlayerLevel,                 
-                setImageToNumberXp, 
-                setSoundToNumberXp, 
-                setComparisonXp, 
+                setPlayerLevel,
+                setImageToNumberXp,
+                setSoundToNumberXp,
+                setComparisonXp,
                 setBondsXp,
             }}
         >
