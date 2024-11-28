@@ -1,4 +1,5 @@
-import { View, Text, Button } from 'react-native';
+
+import { View, Text, Button, TouchableWithoutFeedback } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 import ModalComponent from '../components/ModalComponent';
 import * as Speech from 'expo-speech';
@@ -9,17 +10,25 @@ import { useSoundSettings } from '../components/SoundSettingsContext';
 import { useTaskReading } from '../components/TaskReadingContext';
 import { useTaskSyllabification } from '../components/TaskSyllabificationContext';
 import { Audio } from 'expo-av';
+import { useNavigation } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 
 export default function Comparison({ onBack }) {
-  
+
+
+  const route = useRoute();
+  const { profile } = route.params;
+  const navigation = useNavigation()
+  const [showFeedback, setShowFeedback] = useState(false)
+
   const { isDarkTheme } = useTheme();
   const { gameSounds } = useSoundSettings();
   const { taskReading } = useTaskReading();
   const { syllabify, taskSyllabification } = useTaskSyllabification();
-  const { playerLevel, points, setPoints, questionsAnswered, setQuestionsAnswered, incrementXp, handleUpdatePlayerStatsToDatabase } = useContext(ScoreContext)
-  const [modalVisible, setModalVisible] = useState(false)//Määrittää näytetäänkö Modal
+  const [points, setPoints] = useState(0)
+  const [questionsAnswered, setQuestionsAnswered] = useState(0)
+  const { playerLevel,incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, totalXp } = useContext(ScoreContext)
   const [isLevelNumberFirstComparable, setIsLevelNumberFirstComparable] = useState(true) // Määrittää, esitetäänkö tason mukainen numero vertailussa ensimmäisenä (true) vai toisena (false)
-  const [comparisonXp, setComparisonXp] = useState(0) // Tämänhetkiset pisteet oikeasta vastauksesta. Kasvaa jokaisesta oikeasta vastauksesta ja vähenee väärästä.
   const [isComparableEquation, setIsComparableEquation] = useState(false) // Määrittää, onko vertailtavana yhtälö vai satunnaisluku (true = yhtälö, false = satunnaisluku)
   const [randomNumber, setRandomNumber] = useState(0) // Vertailtavaksi arvottu satunnaisluku, käytetään yksittäisissä lukuvertailutehtävissä
   const [lookingForBigger, setLookingForBigger] = useState(false) // Määrittää, etsitäänkö isompaa (true) vai pienempää arvoa (false)
@@ -27,22 +36,51 @@ export default function Comparison({ onBack }) {
   const [equationOperand2, setEquationOperand2] = useState(0) // Yhtälön toinen operandin arvo, käytetään laskutoimituksissa
   const [isEquationAddition, setIsEquationAddition] = useState(false) // Määrittää, onko laskutoimitus yhteenlasku (true) vai ei (false)
 
+
+    //feedback miten meni, odotelee tässä, että saadaan yhteiseen tiedostoon..
+    const feedbackMsg = (() => {
+      switch (points) {
+          case 0:
+              return (!taskSyllabification) ? "0/5 Hyvä, että yritit! Matikka on välillä tosi haastavaa. Harjoitellaan yhdessä lisää, niin ensi kerralla voi mennä paremmin!"
+                  : "0/5 HY-VÄ ET-TÄ Y-RI-TIT! MA-TIK-KA ON VÄ-LIL-LÄ TO-SI HAAS-TA-VAA. HAR-JOI-TEL-LAAN YH-DES-SÄ LI-SÄÄ, NIIN EN-SI KER-RAL-LA VOI MEN-NÄ PA-REM-MIN";
+          case 1:
+              return (!taskSyllabification) ? "1/5 Hyvä, sait yhden oikein! Tämä on hyvä alku, ja joka kerta opit vähän lisää. Kokeillaan yhdessä uudelleen!"
+                  : "1/5 HY-VÄ, SAIT YH-DEN OI-KEIN! TÄ-MÄ ON HY-VÄ AL-KU JA JO-KA KER-TA O-PIT VÄ-HÄN LI-SÄÄ. KO-KEIL-LAAN YH-DES-SÄ UU-DEL-LEEN!";
+          case 2:
+              return (!taskSyllabification) ? "2/5 Hienoa, sait jo kaksi oikein! Olet oppimassa. Jatketaan harjoittelua, niin ensi kerralla osaat vielä enemmän!"
+                  : "2/5 HIE-NOA, SAIT JO KAK-SI OI-KEIN! O-LET OP-PI-MAS-SA. JAT-KE-TAAN HAR-JOIT-TE-LU-A, NIIN EN-SI KER-RAL-LA O-SAAT VIE-LÄ E-NEM-MÄN!";
+          case 3:
+              return (!taskSyllabification) ? "3/5 Mahtavaa, sait yli puolet oikein! Olet jo tosi lähellä. Harjoitellaan vielä vähän, niin pääset vieläkin pidemmälle!"
+                  : "3/5 MAH-TA-VAA, SAIT Y-LI PUO-LET OI-KEIN! O-LET JO TO-SI LÄ-HEL-LÄ. HAR-JOI-TEL-LAAN VIE-LÄ VÄ-HÄN, NIIN PÄÄ-SET VIE-LÄ-KIN PI-DEM-MÄL-LE";
+          case 4:
+              return (!taskSyllabification) ? "4/5 Tosi hienoa! Melkein kaikki meni oikein. Vielä vähän harjoittelua, niin voit saada kaikki oikein ensi kerralla!"
+                  : "4/5 TO-SI HIE-NO-A! MEL-KEIN KAIK-KI ME-NI OI-KEIN. VIE-LÄ VÄ-HÄN HAR-JOIT-TE-LUA, NIIN VOIT SAA-DA KAIK-KI OI-KEIN EN-SI KER-RAL-LA";
+          case 5:
+              return (!taskSyllabification) ? "5/5 Wau, ihan huippua! Sait kaikki oikein! Jatka samaan malliin, olet tosi taitava!"
+                  : "5/5 WAU, I-HAN HUIP-PUA! SAIT KAIK-KI OIK-EIN! JAT-KA SA-MAAN MAL-LIIN, O-LET TO-SI TAI-TA-VA!";
+          default:
+              return (!taskSyllabification) ? "Tässä tämän hetkiset pisteesi:"
+                  : "TÄ-MÄN HET-KI-SET PIS-TEE-SI";
+      }
+  })();
+
   //Koukku jolla tarkistetaan joko kierros päättyy.
   useEffect(() => {
     if (questionsAnswered === 5) {
-      incrementXp(points, "comparison");
-      setModalVisible(true);
+
+      incrementXp(points, "comparison")
+      setShowFeedback(true)
+
     }
   }, [questionsAnswered]);
 
   //Backin handleri
   const handleBack = () => {
-    Speech.stop();
-    setModalVisible(false);
+
+    Speech.stop()
+    setShowFeedback(false);
     setQuestionsAnswered(0);
     setPoints(0);
-    onBack();
-
     // Tallennetaan tiedot tietokantaan
     handleUpdatePlayerStatsToDatabase();
   };
@@ -62,7 +100,9 @@ export default function Comparison({ onBack }) {
     // Keskeytetään mahdollinen edellinen puhe
     Speech.stop();
     // Arvotaan uusi satunnaisluku, jonka maksimiarvo riippuu comparisonXp:n arvosta
+
     setRandomNumber(drawRandomNumber(0, playerLevel));
+
     // Arvotaan, onko tason mukainen numero 1. vai 2. vertailtava
     setIsLevelNumberFirstComparable(drawRandomNumber(0, 1) === 1);
 
@@ -179,13 +219,9 @@ export default function Comparison({ onBack }) {
     console.log("correctAnswer: ", correctAnswer)
     // Lopputoimet tarkistuksen jälkeen
     if (correctAnswer) { //oikein
-      setComparisonXp(prevComparisonXp => prevComparisonXp + 1) //Lisätään piste
       setPoints(prevPoints => prevPoints + 1)
       //playSound(correct) //Toistetaan oikein-merkkiääni
-    } else { // väärin
-      /*       if (comparisonXp > 0) {
-              setComparisonXp(prevComparisonXp => prevComparisonXp - 1) //Vähennetään piste, jos mahdollista
-             } */
+    } else {
       //playSound(incorrect) //Toistetaan väärin-merkkiääni
     }
     // Lisätään vastattu kysymys
@@ -236,6 +272,16 @@ export default function Comparison({ onBack }) {
     }
   }
 
+  const handleContinueGame = () => {
+    handleBack(); // Actually call handleBack
+    navigation.navigate('Animation', { profile });
+  };
+
+  const handleEndGame = () => {
+    handleBack(); // Actually call handleBack
+    navigation.navigate('SelectProfile', { profile });
+  };
+
   return (
     <View style={styles.comparisonContainer}>
       <Text style={styles.title}>{syllabify("Vertailu")}</Text>
@@ -244,11 +290,35 @@ export default function Comparison({ onBack }) {
       {renderComparable(1)}
       <Text onPress={() => checkAnswer("equali")} style={styles.comparisonOptions} >=</Text>
       {renderComparable(2)}
-      <Button title="Palaa takaisin" onPress={onBack} />
-      <ModalComponent
-        isVisible={modalVisible}
-        onBack={handleBack}
-      />
+      {showFeedback && (
+        <TouchableWithoutFeedback>
+          <View style={styles.overlayInstruction}>
+            <View style={styles.instructionWindow}>
+              <Text >{feedbackMsg}</Text>
+              <Text style={styles.title}>Pistetaulu</Text>
+              <Text>Level: {playerLevel}/10</Text>
+              <Text>Kokonaispisteet: {totalXp}/190</Text>
+              <Text>ImageToNumbers: {imageToNumberXp}/50</Text>
+              <Text>SoundToNumbers: {soundToNumberXp}/50</Text>
+              <Text>Comparison: {comparisonXp}/50</Text>
+              <Text>Bonds: {bondsXp}/40</Text>
+              <View style={styles.buttonContainer}>
+              <Button
+                    title="Seuraava tehtävä odottaa"
+                    onPress={() => {
+                      handleContinueGame();
+                      setShowFeedback(false)
+                    }}
+                  />
+                  <Button title="Lopeta peli" onPress={() => {
+                    handleEndGame();
+                    setShowFeedback(false)
+                  }} />
+              </View>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      )}
     </View>
   );
 }

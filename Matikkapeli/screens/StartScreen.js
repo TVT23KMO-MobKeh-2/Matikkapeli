@@ -4,7 +4,7 @@ import { useTheme } from '../components/ThemeContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import styles from '../styles';
 
-export default function StartScreen({ onNavigate }) {
+export default function StartScreen({ navigation }) {
   const { isDarkTheme } = useTheme();
   const ImageBG = require('../assets/background2.jpg');
   const ImageBGDark = require('../assets/background3.png');
@@ -25,25 +25,10 @@ export default function StartScreen({ onNavigate }) {
         <Text style={[styles.title, { color: isDarkTheme ? '#fff' : '#000' }]}>
           Valitse tehtävä:
         </Text>
-        <View style={isDarkTheme ? styles.optionsContainerDark : styles.optionsContainer}>
-        <TouchableOpacity style={styles.startButton} onPress={() => onNavigate('ImageToNumbers')}>
-          <Text style={styles.buttonText}>Kuvat numeroiksi</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.startButton} onPress={() => onNavigate('SoundToNumbers')}>
-          <Text style={styles.buttonText}>Ääni numeroiksi</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.startButton} onPress={() => onNavigate('ComparisonOperators')}>
-          <Text style={styles.buttonText}>Vertailu</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.startButton} onPress={() => onNavigate('NumberBonds')}>
-          <Text style={styles.buttonText}>Hajonta</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.startButton} onPress={() => onNavigate('Animation')}>
-          <Text style={styles.buttonText}>Animaatio</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.startButton} onPress={() => onNavigate('SelectProfile')}>
-          <Text style={styles.buttonText}>Profiili valinta</Text>
-        </TouchableOpacity>
+
+        <View style={styles.buttonContainer}>
+          <Button onPress={() => navigation.navigate('Welcome')} title="Aloita peli" />
+
         </View>
       </View>
     </SafeAreaView>
