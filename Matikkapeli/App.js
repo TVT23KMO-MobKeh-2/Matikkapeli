@@ -50,14 +50,13 @@ export default function App() {
 
   return (
     <BackgroundMusicProvider>
-      <TaskSyllabificationProvider>
-        <ThemeProvider>
-          <ScoreProvider>
-            <SoundSettingsProvider>
-              <TaskReadingProvider>
+      <TaskReadingProvider>
+        <TaskSyllabificationProvider>
+          <ThemeProvider>
+            <ScoreProvider>
+              <SoundSettingsProvider>
                 <NavigationContainer>
                   <View style={{ flex: 1 }}>
-
                     <Stack.Navigator
                       initialRouteName="StartScreen"
                       screenOptions={{
@@ -80,12 +79,11 @@ export default function App() {
                     </Stack.Navigator>
                   </View>
                 </NavigationContainer>
-
-              </TaskReadingProvider>
-            </SoundSettingsProvider>
-          </ScoreProvider>
-        </ThemeProvider>
-      </TaskSyllabificationProvider>
+              </SoundSettingsProvider>
+            </ScoreProvider>
+          </ThemeProvider>
+        </TaskSyllabificationProvider>
+      </TaskReadingProvider>
     </BackgroundMusicProvider>
   );
 }
