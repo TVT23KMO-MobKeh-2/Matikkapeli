@@ -21,7 +21,9 @@ export default function Comparison({ onBack }) {
   const { gameSounds } = useSoundSettings();
   const { taskReading } = useTaskReading();
   const { syllabify, taskSyllabification } = useTaskSyllabification();
-  const { playerLevel, points, setPoints, questionsAnswered, setQuestionsAnswered, incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, totalXp } = useContext(ScoreContext)
+  const [points, setPoints] = useState(0)
+  const [questionsAnswered, setQuestionsAnswered] = useState(0)
+  const { playerLevel,incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, totalXp } = useContext(ScoreContext)
   const [isLevelNumberFirstComparable, setIsLevelNumberFirstComparable] = useState(true) // Määrittää, esitetäänkö tason mukainen numero vertailussa ensimmäisenä (true) vai toisena (false)
   const [isComparableEquation, setIsComparableEquation] = useState(false) // Määrittää, onko vertailtavana yhtälö vai satunnaisluku (true = yhtälö, false = satunnaisluku)
   const [randomNumber, setRandomNumber] = useState(0) // Vertailtavaksi arvottu satunnaisluku, käytetään yksittäisissä lukuvertailutehtävissä
@@ -57,7 +59,7 @@ export default function Comparison({ onBack }) {
                   : "TÄ-MÄN HET-KI-SET PIS-TEE-SI";
       }
   })();
-  
+
   //Koukku jolla tarkistetaan joko kierros päättyy.
   useEffect(() => {
     if (questionsAnswered === 5) {

@@ -17,7 +17,9 @@ export default function SoundToNumber({ onBack }) {
   const [number, setNumber] = useState(generateRandomNumber());
   const [options, setOptions] = useState(generateOptions(number));
   const [showFeedback, setShowFeedback] = useState(false)
-  const { playerLevel, points, setPoints, questionsAnswered, setQuestionsAnswered, incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, totalXp } = useContext(ScoreContext) // tuodaan tarvittavat muuttujat ja setterit
+  const { playerLevel, incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, totalXp } = useContext(ScoreContext) // tuodaan tarvittavat muuttujat ja setterit
+  const [points, setPoints] = useState(0)
+  const [questionsAnswered, setQuestionsAnswered] = useState(0)
   const [sound, setSound] = useState();
   const { syllabify, taskSyllabification } = useTaskSyllabification(); //Käytetään tavutuskontekstia
   const [gameEnded, setGameEnded] = useState(false);

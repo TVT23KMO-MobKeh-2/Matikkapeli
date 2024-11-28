@@ -22,8 +22,9 @@ export default function ImageToNumber({ onBack }) {
   const route = useRoute();
   const { profile } = route.params;
   const navigation = useNavigation()
-
-  const { points, setPoints, questionsAnswered, setQuestionsAnswered, incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, playerLevel, totalXp } = useContext(ScoreContext);
+  const [points, setPoints] = useState(0)
+  const [questionsAnswered, setQuestionsAnswered] = useState(0)
+  const { incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, playerLevel, totalXp } = useContext(ScoreContext);
   const { isDarkTheme } = useTheme(); //Käytetään teemakontekstia (tumma tila)
   const { gameSounds, volume } = useSoundSettings(); //Käytetään ääniasetuksia
   const { taskReading } = useTaskReading(); //Käytetään tehtävänlukukontekstia

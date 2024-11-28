@@ -44,7 +44,9 @@ export default function Bonds({ onBack }) {
   const [inputValue2, setInputValue2] = useState('');  // Käyttäjän syöte oikeaan laatikkoon
   const [sound, setSound] = useState();  // Äänet, joita toistetaan vastauksen perusteella
   const [doneTasks, setDoneTasks] = useState(0);  // Tavoitteena on vastata oikein 5 kysymykseen
-  const { points, setPoints, questionsAnswered, setQuestionsAnswered, incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, playerLevel, totalXp } = useContext(ScoreContext);  // Pelin pistetilanne ja XP:n käsittely
+  const {incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, playerLevel, totalXp } = useContext(ScoreContext);  // Pelin pistetilanne ja XP:n käsittely
+  const [questionsAnswered, setQuestionsAnswered] = useState(0)
+  const [points, setPoints] = useState(0)
   const [instructionVisibility, setInstructionVisibility] = useState(true);  // Näytetäänkö ohjeet pelin alussa
   const [showFeedback, setShowFeedback] = useState(false)
   const { isDarkTheme } = useTheme();  // Teeman väri (tumma vai vaalea)
@@ -86,7 +88,7 @@ export default function Bonds({ onBack }) {
                   : "TÄ-MÄN HET-KI-SET PIS-TEE-SI";
       }
   })();
-  
+
   // Funktio, joka generoi uuden pelitason (arvot vasemmalle ja oikealle laatikolle)
   const generateNewLevel = () => {
     setIsTaskChanging(true)
