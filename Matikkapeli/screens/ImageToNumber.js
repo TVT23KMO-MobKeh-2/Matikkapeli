@@ -16,7 +16,7 @@ function random(min, max) {
 }
 
 export default function ImageToNumber({ onBack }) {
-  const { points, setPoints, questionsAnswered, setQuestionsAnswered, incrementXp } = useContext(ScoreContext);
+  const { playerLevel, points, setPoints, questionsAnswered, setQuestionsAnswered, incrementXp, handleUpdatePlayerStatsToDatabase } = useContext(ScoreContext)
   const { isDarkTheme } = useTheme();
   const { gameSounds, volume, playSound } = useSoundSettings(); //Käytetään playSound-funktiota kontekstista
   const { taskReading } = useTaskReading();
@@ -97,6 +97,7 @@ export default function ImageToNumber({ onBack }) {
     setPoints(0); 
     setGameEnded(false); 
     onBack(); 
+    handleUpdatePlayerStatsToDatabase()
   };
 
   //Puheen hallinta ja valmistuminen
@@ -119,16 +120,21 @@ export default function ImageToNumber({ onBack }) {
 
   //Renderöi nykyisen kysymyksen ikonit
   const renderIcons = () => {
-    return Array.from({ length: questions[questionIndex].iconCount }).map((_, index) => (
-      <MaterialCommunityIcons
-        key={index}
-        name="hammer"
-        size={50}
-        color="#4CAF50"
-        style={styles.icon}
-      />
-    ));
+    return (
+      <View style={styles.iconBackground}>
+        {Array.from({ length: questions[questionIndex].iconCount }).map((_, index) => (
+          <MaterialCommunityIcons
+            key={index}
+            name="hammer"
+            size={50}
+            color="#4CAF50"
+            style={styles.icon}
+          />
+        ))}
+      </View>
+    );
   };
+  
 
   //Renderöi vastausvaihtoehdot nykyiseen kysymykseen
   const renderOptions = () => {

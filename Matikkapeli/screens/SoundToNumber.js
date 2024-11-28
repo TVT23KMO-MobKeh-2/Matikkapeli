@@ -1,68 +1,51 @@
 import { View, Text, Button, TouchableOpacity } from 'react-native';
 import React, { useState, useContext, useEffect } from 'react';
 import * as Speech from 'expo-speech';
-import ModalComponent from '../components/ModalComponent'
+import ModalComponent from '../components/ModalComponent';
 import { ScoreContext } from '../components/ScoreContext';
 import { useTaskSyllabification } from '../components/TaskSyllabificationContext'; //Lisätty tavutus
 import styles from '../styles';
-import { Audio } from 'expo-av';
+import { useSoundSettings } from '../components/SoundSettingsContext'; //Tuodaan playSound-konteksti
 
 export default function SoundToNumber({ onBack }) {
   const [number, setNumber] = useState(generateRandomNumber());
   const [options, setOptions] = useState(generateOptions(number));
   const [modalVisible, setModalVisible] = useState(false);
-  const {playerLevel,points,setPoints,questionsAnswered,setQuestionsAnswered,incrementXp} = useContext(ScoreContext) // tuodaan tarvittavat muuttujat ja setterit
-  const [sound, setSound] = useState();
+  const { playerLevel, points, setPoints, questionsAnswered, setQuestionsAnswered, incrementXp } = useContext(ScoreContext); //tuodaan tarvittavat muuttujat ja setterit
   const [gameEnded, setGameEnded] = useState(false);
   const [loading, setLoading] = useState(false);
   const { syllabify } = useTaskSyllabification(); //Tavutusfunktio käyttöön
+  const { playSound } = useSoundSettings(); //Tuodaan playSound käyttöön
 
   //Koukku jolla tarkistetaan joko kierros päättyy.
   useEffect(() => {
-    if(questionsAnswered===5){
+    if (questionsAnswered === 5) {
       Speech.stop(); //pysäyttää puheen
-      incrementXp(points,"soundToNumber") //comparisonin tilalle oma tehtävän nimi: "imageToNumber", "soundToNumber", "comparison" tai "bonds"
-      setModalVisible(true)
-      setGameEnded(true)
+      incrementXp(points, "soundToNumber"); //comparisonin tilalle oma tehtävän nimi: "imageToNumber", "soundToNumber", "comparison" tai "bonds"
+      setModalVisible(true);
+      setGameEnded(true);
     }
   }, [questionsAnswered]);
 
   const handleBack = () => {
-    Speech.stop()
+    Speech.stop();
     setModalVisible(false);
     setQuestionsAnswered(0);
     setPoints(0);
     onBack();
   };
-  /*useEffect(() => {
+   /*useEffect(() => {
     if (loading) {
       playNumber();
     }
   }, [number]);*/
 
-  const playSound = async (isCorrect) => {
-    setLoading(true); //napit pois käytöstä
-    const soundUri = isCorrect
-      ? require('../assets/sounds/mixkit-achievement-bell.wav')
-      : require('../assets/sounds/mixkit-losing-bleeps.wav');
- 
-    const { sound } = await Audio.Sound.createAsync(soundUri);
-    setSound(sound);
-    await sound.playAsync();
-    sound.setOnPlaybackStatusUpdate(async (status) => {
-      if (status.didJustFinish) {
-        sound.unloadAsync(); 
-        setLoading(false); // napit takaisin käyttöön
-      }
-    });
-  };
-  
-//tässä vaiheessa vielä generoi randomilla numeron 1-10 väliltä
+  //tässä vaiheessa vielä generoi randomilla numeron 1-10 väliltä
   function generateRandomNumber() {
-    return Math.floor(Math.random() * 10); 
+    return Math.floor(Math.random() * 10);
   }
- 
-//valitsee oikean numeron ja 3 muuta randomilla
+
+  //valitsee oikean numeron ja 3 muuta randomilla
   function generateOptions(correctNumber) {
     const options = [correctNumber];
     while (options.length < 3) {
@@ -72,14 +55,14 @@ export default function SoundToNumber({ onBack }) {
       }
     }
     //sekoittaa vaihtoehdot
-    return options.sort(() => Math.random() - 0.5); 
+    return options.sort(() => Math.random() - 0.5);
   }
 
   const playNumber = () => {
     Speech.stop();
     Speech.speak(number.toString());
   };
-  
+
   const handleSelect = (selectedNumber) => {
     if (gameEnded) return;
     Speech.stop();
@@ -94,8 +77,8 @@ export default function SoundToNumber({ onBack }) {
       setPoints((prevPoints) => prevPoints + 1);
     }
     setQuestionsAnswered((prevQuestionsAnswered) => prevQuestionsAnswered + 1);
+    setLoading(false); // napit takaisin käyttöön
   };
-  
 
   return (
     <View style={styles.container}>
@@ -120,4 +103,4 @@ export default function SoundToNumber({ onBack }) {
       />
     </View>
   );
-};
+}

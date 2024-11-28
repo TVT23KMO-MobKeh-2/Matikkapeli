@@ -466,5 +466,17 @@ export default StyleSheet.create({
     justifyContent: 'space-between',
     margin: 10,
 
-  }
+  },
+  iconBackground: {
+    backgroundColor: '#f0f0f0', // Yhteinen taustaväri
+    padding: 20, // Tila vasaroiden ympärillä
+    margin: 10, // Tila tausta-alueen ympärillä
+    borderRadius: 12, // Pyöristetyt kulmat
+    flexDirection: 'row', // Ikonit samalle riville
+    flexWrap: 'wrap', // Siirry seuraavalle riville, jos tila ei riitä
+    justifyContent: 'center', // Keskitetään ikonit vaakasuunnassa
+    alignItems: 'center', // Keskitetään ikonit pystysuunnassa
+    borderWidth: 1, // Lisää reunus (valinnainen)
+    borderColor: '#ccc', // Reunuksen väri (valinnainen)
+  },  
 });

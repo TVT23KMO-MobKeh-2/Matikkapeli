@@ -13,7 +13,7 @@ import { Audio } from 'expo-av';
 export default function Comparison({ onBack }) {
   
   const { isDarkTheme } = useTheme();
-  const { gameSounds } = useSoundSettings();
+  const { gameSounds, playSound } = useSoundSettings();
   const { taskReading } = useTaskReading();
   const { syllabify, taskSyllabification } = useTaskSyllabification();
   const { playerLevel, points, setPoints, questionsAnswered, setQuestionsAnswered, incrementXp, handleUpdatePlayerStatsToDatabase } = useContext(ScoreContext)
@@ -181,8 +181,9 @@ export default function Comparison({ onBack }) {
     if (correctAnswer) { //oikein
       setComparisonXp(prevComparisonXp => prevComparisonXp + 1) //Lisätään piste
       setPoints(prevPoints => prevPoints + 1)
-      //playSound(correct) //Toistetaan oikein-merkkiääni
+      playSound(true) //Toistetaan oikein-merkkiääni
     } else { // väärin
+      playSound(false); // Toistetaan väärin-merkkiääni
       /*       if (comparisonXp > 0) {
               setComparisonXp(prevComparisonXp => prevComparisonXp - 1) //Vähennetään piste, jos mahdollista
              } */
