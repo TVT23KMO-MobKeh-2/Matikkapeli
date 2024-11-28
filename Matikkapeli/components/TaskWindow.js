@@ -41,7 +41,7 @@ export default function TaskWindow({ taskVisible, setTaskVisible, navigation, pr
                             <Image source={note} style={styles.taskImage} />
                         </Pressable>
                         
-                        {profile.imageToNumberXp >= 5 && profile.soundToNumberXp >= 5 && isDivisibleByFive && (
+                        {isDivisibleByFive && (
                             <Pressable 
                              style={styles.taskContainer}
                             onPress={() => { 
