@@ -1,6 +1,7 @@
-import React from 'react';
 import { View, Text, Pressable, ImageBackground, Image, StyleSheet } from 'react-native';
 import styles from '../styles';
+import { ScoreContext } from '../components/ScoreContext';
+import React, { useContext } from 'react'
 
 
 export default function TaskWindow({ taskVisible, setTaskVisible, navigation, profile}) {
@@ -9,11 +10,12 @@ export default function TaskWindow({ taskVisible, setTaskVisible, navigation, pr
     const note = require('../assets/note1.png');
     const bond = require('../assets/bond2.png');
     const conv = require('../assets/conv1.png');
+    const {imageToNumberXp, soundToNumberXp, playerLevel, } = useContext(ScoreContext);
 
 
     if (!taskVisible) return null;
 
-    const isDivisibleByFive = (profile.imageToNumberXp % (5 * profile.playerLevel) === 0) && (profile.soundToNumberXp % (5 * profile.playerLevel) === 0)
+    const isDivisibleByFive = (imageToNumberXp % (5 * playerLevel) === 0) && (soundToNumberXp % (5 * playerLevel) === 0)
 
     return (
         <View style={[styles.container, { position: 'absolute', zIndex: 5 }]}>
@@ -41,7 +43,7 @@ export default function TaskWindow({ taskVisible, setTaskVisible, navigation, pr
                             <Image source={note} style={styles.taskImage} />
                         </Pressable>
                         
-                        {isDivisibleByFive && (
+                        {imageToNumberXp >= 5 && soundToNumberXp >= 5 && isDivisibleByFive && (
                             <Pressable 
                              style={styles.taskContainer}
                             onPress={() => { 
@@ -51,7 +53,7 @@ export default function TaskWindow({ taskVisible, setTaskVisible, navigation, pr
                             <Image source={conv} style={styles.taskImage} />
                         </Pressable>
                         )}
-                        {profile.imageToNumberXp >= 15 && profile.soundToNumberXp >= 15 && profile.playerLevel >= 3 && isDivisibleByFive && (
+                        {imageToNumberXp >= 15 && soundToNumberXp >= 15 && playerLevel >= 3 && isDivisibleByFive && (
                            <Pressable 
                             style={styles.taskContainer}
                             onPress={() => { 

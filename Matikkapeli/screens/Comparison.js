@@ -302,13 +302,11 @@ export default function Comparison({ onBack }) {
                     title="Seuraava tehtävä odottaa"
                     onPress={() => {
                       handleContinueGame();
-                      setGameEnded(false);
                       setShowFeedback(false)
                     }}
                   />
                   <Button title="Lopeta peli" onPress={() => {
                     handleEndGame();
-                    setGameEnded(false);
                     setShowFeedback(false)
                   }} />
               </View>

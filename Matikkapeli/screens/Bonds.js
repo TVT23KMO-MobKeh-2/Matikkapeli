@@ -246,6 +246,14 @@ export default function Bonds({ onBack }) {
           </View>
         </View>
 
+  
+            <Pressable
+              onPress={checkAnswer}
+              style={[styles.checkButton, isButtonDisabled ? styles.disabledButton : null]}
+              disabled={isButtonDisabled}>
+              <Text style={styles.checkButtonText}>Tarkista</Text>
+            </Pressable>
+
         {showFeedback && (
           <TouchableWithoutFeedback>
             <View style={styles.overlayInstruction}>
@@ -263,13 +271,11 @@ export default function Bonds({ onBack }) {
                     title="Seuraava tehtävä odottaa"
                     onPress={() => {
                       handleContinueGame();
-                      setGameEnded(false);
                       setShowFeedback(false)
                     }}
                   />
                   <Button title="Lopeta peli" onPress={() => {
                     handleEndGame();
-                    setGameEnded(false);
                     setShowFeedback(false)
                   }} />
                 </View>

@@ -45,7 +45,6 @@ const animalImages = {
 
 export default function SelectProfile({ route, navigation }) {
   const { showCreate } = route.params;
-  const {tunnus, setTunnus} = useState("")
   const [characters, setCharacters] = useState([]);
   const [selectedCharacter, setSelectedCharacter] = useState(null);
   const [isCreatingProfile, setIsCreatingProfile] = useState(false);
@@ -53,15 +52,15 @@ export default function SelectProfile({ route, navigation }) {
 
   useEffect(() => {
     if (characters && characters.length > 0) {
-      setEmail(characters[0].email);
-      setPlayerName(characters[0].playerName);
-      setImageID(characters[0].imageID);
-      setCareer(characters[0].career);
-      setPlayerLevel(characters[0].playerLevel);
-      setImageToNumberXp(characters[0].imageToNumberXp);
-      setSoundToNumberXp(characters[0].soundToNumberXp);
-      setComparisonXp(characters[0].comparisonXp);
-      setBondsXp(characters[0].bondsXp);
+      setEmail(selectedCharacter.email);
+      setPlayerName(selectedCharacter.playerName);
+      setImageID(selectedCharacter.imageID);
+      setCareer(selectedCharacter.career);
+      setPlayerLevel(selectedCharacter.playerLevel);
+      setImageToNumberXp(selectedCharacter.imageToNumberXp);
+      setSoundToNumberXp(selectedCharacter.soundToNumberXp);
+      setComparisonXp(selectedCharacter.comparisonXp);
+      setBondsXp(selectedCharacter.bondsXp);
     } else {
       console.log('No characters found');
     }

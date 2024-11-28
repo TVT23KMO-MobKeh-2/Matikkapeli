@@ -99,9 +99,6 @@ export default function Animation({ route, onBack, navigation }) {
                 <View style={{ marginHorizontal: 10 }}>
                     <Button onPress={handleReset} title="Reset" />
                 </View>
-                <View style={{ marginHorizontal: 10 }}>
-                    <Button title="Palaa takaisin" onPress={onBack} />
-                </View>
             </View>
         </View>
     )

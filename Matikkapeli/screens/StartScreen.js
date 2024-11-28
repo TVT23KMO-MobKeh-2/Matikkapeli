@@ -17,27 +17,8 @@ export default function StartScreen({ navigation }) {
         <Text style={[styles.title, { color: isDarkTheme ? '#fff' : '#000' }]}>
           Valitse tehtävä:
         </Text>
-
         <View style={styles.buttonContainer}>
-          <Button onPress={() => navigation.navigate('ImageToNumbers')} title="Kuvat numeroiksi" />
-        </View>
-        <View style={styles.buttonContainer}>
-          <Button onPress={() => navigation.navigate('SoundToNumbers')} title="Ääni numeroiksi" />
-        </View>
-        <View style={styles.buttonContainer}>
-          <Button onPress={() => navigation.navigate('ComparisonOperators')} title="Vertailu" />
-        </View>
-        <View style={styles.buttonContainer}>
-          <Button onPress={() => navigation.navigate('Bonds')} title="Hajonta" />
-        </View>
-        <View style={styles.buttonContainer}>
-          <Button onPress={() => navigation.navigate('Animation')} title="Animaatio" />
-        </View>
-        <View style={styles.buttonContainer}>
-          <Button onPress={() => navigation.navigate('Welcome')} title="Etusivu" />
-        </View>
-        <View style={styles.buttonContainer}>
-          <Button onPress={() => navigation.navigate('Settings')} title="Asetukset" />
+          <Button onPress={() => navigation.navigate('Welcome')} title="Aloita peli" />
         </View>
       </View>
     </SafeAreaView>
