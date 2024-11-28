@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
+  //!!!!!!!!!!!!!! COMMON STYLES!!!!!!!!!!!!!!
   safeContainer: {
     flex: 1,
     width: '100%', //Varmistaa SafeAreaView:n leveyskattavuuden
@@ -10,55 +11,194 @@ export default StyleSheet.create({
     width: '100%', //Täyttää näytön leveyssuunnassa
     justifyContent: 'center',
     alignItems: 'center',
+    //marginTop: 60, // Varmistaa, että sisältö ei mene top barin alle
   },
+  //!!!!!!!!! COMMON USED TEXTS !!!!!!!!!!!
   title: {
     fontSize: 30,
-    fontWeight: 'bold',
     marginBottom: 20,
-    color: '#000',  //Tummalle teemalle muuttuu dynaamisesti
-  },
-  settingItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 10,
-  },
-  settingItemColumn: { //Uusi tyyli pystysuuntaiseen asetteluun
-    alignItems: 'center',
-    marginVertical: 10,
-    width: '100%',
+    textAlign: 'center',
+    color: '#000',
+    fontFamily: 'ComicNeue_700Bold',
   },
   label: {
     fontSize: 18,
     marginRight: 10,
-    marginBottom: 5, //Tilaa liukusäätimen ja otsikon väliin
-  },
-  slider: {
-    width: '80%', //Asetetaan liukusäätimen leveys keskitetysti
-  },
-  level: {
-    fontSize: 20,
-    color: '#4CAF50',
-    marginBottom: 20,
-  },
+    marginBottom: 5,
+    fontFamily: 'ComicNeue_700Bold', 
+  },  
   question: {
     fontSize: 18,
     marginBottom: 10,
     textAlign: 'center',
-    color: '#000', //Muuttuu tummalla teemalla
+    fontFamily: 'ComicNeue_700Bold',
   },
-  iconContainer: {
+  label2: {
+    fontSize: 30,
+    marginBottom: 20,
+    textAlign: 'center',
+    fontFamily: 'ComicNeue_700Bold',
+  },
+  buttonText: {
+    color: '#000',
+    fontSize: 16,
+    fontFamily: 'ComicNeue_700Bold',
+  },
+  //!!!! NAVIGAATIO IKONIT !!!!!
+  backIcon: {
+    position: 'absolute',
+    bottom: 20, // Siirtää ikonia alaspäin 20 pikseliä
+    left: 20,
+    backgroundColor: '#f0f0f0', // Muuttuu tummalla teemalla
+    borderRadius: 50,
+    padding: 10,
+  },
+  settingsIcon: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: '#f0f0f0', // Tämä muuttuu tummalla teemalla
+    borderRadius: 50,
+    padding: 10,
+    width: 50,
+    height: 50
+  },
+  //!!!!! Top Bar Styles !!!!!!!
+  topBarContainer: {
+    position: 'absolute',
+    top: 40,
+    left: 0,
+    right: 0,
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    borderWidth: 2,
+    borderColor: '#3D843D',
+    paddingVertical: 10,
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    zIndex: 10,
+  },
+  topBarPfp: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#ddd',
+  },
+  topBarInfoContainer: {
+    marginLeft: 10,
+    flex: 1,
+  },
+  topBarUsername: {
+    fontSize: 20,
+    fontFamily: 'ComicNeue_700Bold',
+  },
+  topBarLevelAndPoints: {
+    fontSize: 16,
+    fontFamily: 'ComicNeue_400Regular',
+  },
+  //!!!!!!!!!!!!!! START SCREEN !!!!!!!!!!!!!
+  startButton: {
+    backgroundColor: '#F4A261',
+    padding: 15,
+    marginVertical: 10,
+    marginHorizontal: 10,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#FFDE21',
+    //minWidth: 150,
+    alignItems: 'center',
+    shadowColor: '#000',
+    elevation: 4,
+  },
+  //!!!!!!!!SETTINGS EXCLUSIVE!!!!!!!!!!!!
+  settingItemContainer: {
+    width: '100%',
+    paddingHorizontal: 10,
+    marginVertical: 10, 
+    alignItems: 'stretch', 
+  },
+  settingItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginVertical: 5, 
+    backgroundColor: '#CFFBCD', // Pale green
+    borderRadius: 8,
+    borderColor: '#3D843D',
+    borderWidth: 2,
+    padding: 10, 
+    width: '100%',
+  },
+  settingItemDark: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginVertical: 5, 
+    backgroundColor: '#3D843D', // Dark green
+    borderRadius: 8,
+    borderColor: '#3D843D',
+    borderWidth: 2,
+    padding: 10, 
+    width: '100%',
+  },
+  settingItemColumn: {
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginVertical: 5, 
+    backgroundColor: '#CFFBCD',
+    padding: 10,
+    borderRadius: 8,
+    borderColor: '#3D843D',
+    borderWidth: 2,
+    width: '100%',
+  },
+  settingItemColumnDark: {
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginVertical: 5,
+    backgroundColor: '#3D843D',
+    padding: 10,
+    borderRadius: 8,
+    borderColor: '#3D843D',
+    borderWidth: 2,
+    width: '100%',
+  },
+  slider: {
+    width: '80%', //Asetetaan liukusäätimen leveys keskitetysti
+  },
+  // Who uses?????
+  level: {
+    fontSize: 20,
+    color: '#6c9b40', 
     marginBottom: 20,
   },
-  icon: {
-    margin: 10,
-  },
+  //!!!! OPTIONS MITÄ KÄYTETÄÄN ESIM PELEISSÄ !!!!!
   optionsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
+    marginVertical: 10,
+    backgroundColor: '#CFFBCD',
+    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: '#3D843D',
+    width: '80%',
+    shadowColor: '#00000',
+    elevation: 4,
+  },
+  optionsContainerDark: {
+    backgroundColor: '#3D843D',
+    borderColor: '#CFFBCD',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    marginVertical: 10,
+    borderRadius: 8,
+    borderWidth: 2,
+    width: '80%',
+    shadowColor: '#00000',
+    elevation: 4,
   },
   optionWrapper: {
     width: '40%',
@@ -67,20 +207,24 @@ export default StyleSheet.create({
   },
   optionButton: {
     backgroundColor: '#4CAF50',
+    borderWidth : 2,
+    borderColor: '#3D843D',
     padding: 15,
     marginVertical: 5,
+    marginHorizontal: 5,
     borderRadius: 10,
-    minWidth: 150,
+    minWidth: 100,
     alignItems: 'center',
+    shadowColor: '#000',
+    elevation: 4,
   },
   optionText: {
     color: 'white',
     fontSize: 16,
+    fontWeight: 'bold',
+    fontFamily: 'ComicNeue_700Bold',
   },
-  buttonContainer: {
-    marginVertical: 10, //Tilaa nappien välille
-    width: '80%', //Nappien leveys
-  },
+  //!!!!!!!!!!!!!! MODAL STYLES !!!!!!!!!!!!!!!
   modalOverlay: {
     flex: 1,
     justifyContent: 'center',
@@ -90,29 +234,41 @@ export default StyleSheet.create({
   modalContent: {
     width: 300,
     padding: 20,
-    backgroundColor: 'white', //Muuttuu tummalla teemalla
+    backgroundColor: '#CFFBCD',
     borderRadius: 10,
     alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#3D843D',
   },
   modalText: {
     fontSize: 18,
     marginBottom: 20,
     color: '#000', //Muuttuu tummalla teemalla
+    fontFamily: 'ComicNeue_700Bold',
   },
-  backIcon: {
-    position: 'absolute',
-    bottom: 20, // Siirtää ikonia alaspäin 20 pikseliä
-    left: 20,
-    backgroundColor: '#f0f0f0', // Muuttuu tummalla teemalla
-    borderRadius: 50,
+  modalButton: {
+    backgroundColor: '#E9C46A',
+    marginVertical: 5,
     padding: 10,
+    borderRadius: 10,
+    borderBlockColor: '#3D843D',
+    shadowColor: '#000',
+    elevation: 4,
+    borderColor: '#F4A261',
+    borderWidth: 2,
+    fontFamily: 'ComicNeue_700Bold',
   },
-  background: {
-    height: '100%',
-    width: '100%',
+  // !!!!! IMAGE TO NUMBER EXCLUSIVE !!!!!
+  iconContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'center',
-    alignItems: 'center',
+    marginBottom: 20,
   },
+  icon: {
+    margin: 10,
+  },
+  //!!!!!!!!!! HAJONTA TYYLIT !!!!!!!!!!!!!
   lineContainer: {
     position: 'absolute',
     justifyContent: 'center',
@@ -122,10 +278,6 @@ export default StyleSheet.create({
   taskbox: {
     marginTop: 10,
     zIndex: 4,
-  },
-  title: {
-    fontSize: 24,
-    margin: 20,
   },
   circle: {
     width: 100,
@@ -171,39 +323,12 @@ export default StyleSheet.create({
   input: {
     fontSize: 40,
   },
+  // !!!!!! BACKGROUND KUVA !!!!!!!!
   background: {
     height: '100%',
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  lineContainer: {
-    position: 'absolute',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1,
-  },
-  taskbox: {
-    zIndex: 4,
-  },
-  title: {
-    fontSize: 24,
-    margin: 20,
-  },
-  circle: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: '#36BA98',
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: 20,
-    zIndex: 2,
-  },
-  circletext: {
-    fontSize: 40,
-    borderColor: 'black',
-    color: 'white',
   },
   overlayInstruction: {
     position: 'absolute',
@@ -216,7 +341,6 @@ export default StyleSheet.create({
     alignItems: 'center',
     zIndex: 4,
   },
-
   instructionWindow: {
     width: 300,
     padding: 20,
@@ -239,7 +363,7 @@ export default StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-
+//!!!!!! ANIMATION !!!!!!!!!
   backgroundAnimation: {
     height: '100%',
     justifyContent: 'center',
@@ -285,7 +409,7 @@ export default StyleSheet.create({
   },
   content: {
     padding: 0,
-    zIndex: 5,
+    //zIndex: 5,
   },
   headerText: {
     fontSize: 18,
@@ -303,6 +427,7 @@ export default StyleSheet.create({
     color: 'red',
     marginTop: 20,
   },
+  //!!!!!! TASK WINDOW !!!!!!!
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap', // Allows items to wrap in the container
@@ -321,6 +446,7 @@ export default StyleSheet.create({
     width: 60, // Adjust size as needed
     height: 60, // Adjust size as needed
   },
+  //!!!!!! COMPARISON !!!!!!!
   comparisonContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -349,64 +475,11 @@ export default StyleSheet.create({
     marginBottom: 16,
     backgroundColor: '#3bb143'
   },
-  //!!!!! Top Bar Styles !!!!!!!
-  topBarContainer: {
-    position: 'absolute',
-    top: 40,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: 'rgba(248, 248, 248, 0.7)',
-    padding: 10,
-    elevation: 4, // Shadow for Android
-    shadowColor: '#000', // Shadow for iOS
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    zIndex: 10,
-  },
-  topBarPfp: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: '#ddd',
-  },
-  topBarInfoContainer: {
-    marginLeft: 10,
-    flex: 1,
-  },
-  topBarUsername: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  topBarLevelAndPoints: {
-    fontSize: 14,
-    color: '#666',
-  },
-  settingsButton: {
-    padding: 5,
-  },
-  settingsIcon: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    backgroundColor: '#f0f0f0', // Tämä muuttuu tummalla teemalla
-    borderRadius: 50,
-    padding: 10,
-    width: 50,
-    height: 50
-  },
-  timerText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginTop: 20,
-  },
+  //!!!!!!!!!!!!!! PROFILE STYLES !!!!!!!!!!!!!!!
   profilebox: {
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   profileImage: {
     width: 100, // Adjust size as needed
@@ -414,6 +487,32 @@ export default StyleSheet.create({
     backgroundColor: '#F4A261',
     margin: 20,
     borderRadius: 20,
+  },
+  //Profiilikuvan tyylit
+
+  //// ?????????????????????????????????????????????????????????????????????????????
+  //topBarContainer: {
+  //  flexDirection: 'row',
+  //  alignItems: 'center',
+  //  padding: 10,
+  //  backgroundColor: '#f8f8f8',
+  //},
+  //???????????????????????????????????????????????????????????????????????????????????
+  imageOptionsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+   marginTop: 20,
+  },
+  imageOption: {
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 10,
+  },
+  profileImageOption: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
   },
   chooseProfile:{
     alignItems: 'center',
@@ -440,11 +539,8 @@ export default StyleSheet.create({
   profileSelect: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     margin: 10,
-
-  },
-
-
-
+    alignItems: 'center',
+  }
 });

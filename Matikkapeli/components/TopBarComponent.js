@@ -3,16 +3,15 @@ import { View, Text, Image, TouchableOpacity, Modal } from "react-native";
 import { ScoreContext } from "./ScoreContext"; 
 import styles from "../styles";
 import Timer from "./Timer";
+
 import { Ionicons } from "@expo/vector-icons";  // Make sure this is imported
 import { useNavigation } from '@react-navigation/native';
+import ProfileScreen from "../screens/ProfileScreen";
+import SelectProfile from "../screens/SelectProfile";
+import { isDarkTheme } from "./ThemeContext";
 
 const TopBarComponent = ({ customStyle }) => {
   const { playerLevel, playerName, totalXp } = useContext(ScoreContext); // Get the player level, points, and totalXp
-  
-  // Temporary values for profile image, username, and settings icon
-  const TemporaryProfileImage = require('../assets/favicon.png'); 
-  const TemporaryUsername = playerName;
-  const TemporarySettings = require('../assets/icon.png');
   
   const [timerModalVisible, setTimerModalVisible] = useState(false);
   const [timerStarted, setTimerStarted] = useState(false);
@@ -25,8 +24,26 @@ const TopBarComponent = ({ customStyle }) => {
     navigation.navigate('Settings');  // Navigate to Settings screen
   };
 
+
+const TopBarComponent = ({ customStyle }) => {
+  const { imageID, playerName, career, playerLevel } = useContext(ScoreContext);
+  const [timerModalVisible, setTimerModalVisible] = useState(false);
+  const [timerStarted, setTimerStarted] = useState(false);
+  //const navigation = useNavigation();
+  
+const animalImages = {
+    fox: require('../assets/proffox.png'),
+    bear: require('../assets/profbear.png'),
+    rabbit: require('../assets/profrabbit.png'),
+    wolf: require('../assets/profwolf.png'),
+};
+const profileImage = animalImages[imageID];
+
+
   const handlePfpPress = () => {
     console.log('Profile image pressed');
+   // navigation.navigate('ProfileScreen');
+    //<ProfileScreen onBack={() => setSelectedTask(null)} />;
   }; 
 
   const openTimerModal = () => {
@@ -41,12 +58,12 @@ const TopBarComponent = ({ customStyle }) => {
   };
 
   return (
-    <View style={[styles.topBarContainer, customStyle]}>
+    <View style={styles.topBarContainer}>
       
       {/* Profile Image */}
       <TouchableOpacity onPress={handlePfpPress}>
         <Image
-          source={TemporaryProfileImage}
+          source={profileImage}
           style={styles.topBarPfp}
           resizeMode="cover"
         />
@@ -54,9 +71,9 @@ const TopBarComponent = ({ customStyle }) => {
 
       {/* User Info */}
       <View style={styles.topBarInfoContainer}>
-        <Text style={styles.topBarUsername}> {TemporaryUsername} </Text> 
+        <Text style={styles.topBarUsername}> {playerName} </Text> 
         <Text style={styles.topBarLevelAndPoints}>
-          Taso {playerLevel} | {totalXp} Kokonaispisteet
+          Taso {playerLevel} | {career}
         </Text>
       </View>
       
@@ -66,12 +83,14 @@ const TopBarComponent = ({ customStyle }) => {
         {!timerStarted && <Text style={styles.topBarLevelAndPoints}>⏰</Text>}
       </TouchableOpacity>
 
+
       {/* Settings Button */}
       <TouchableOpacity onPress={handleSettingsPress} style={styles.settingsButton}>
         <Ionicons name="settings-outline" size={32} color="black" />
       </TouchableOpacity>
       
       {/* Timer Modal */}
+
       {timerModalVisible && (
         <Timer
           closeModal={closeTimerModal}

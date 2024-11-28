@@ -16,12 +16,14 @@ const firebaseConfig = {
   const firestore = getFirestore()
 
   const PLAYERSTATS = 'playerstats'
+  const PLAYERSETTINGS = 'playersettings';
 
   export {
     firestore,
     collection,
     addDoc,
     PLAYERSTATS,
+    PLAYERSETTINGS,
     where,
     query,
     getDocs,

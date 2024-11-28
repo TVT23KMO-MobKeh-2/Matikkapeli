@@ -26,28 +26,25 @@ export default function ImageToNumber({ onBack }) {
   const [questionsAnswered, setQuestionsAnswered] = useState(0)
   const { incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, playerLevel, totalXp } = useContext(ScoreContext);
   const { isDarkTheme } = useTheme(); //Käytetään teemakontekstia (tumma tila)
-  const { gameSounds, volume } = useSoundSettings(); //Käytetään ääniasetuksia
+  const { gameSounds, volume, playsound } = useSoundSettings(); //Käytetään ääniasetuksia
   const { taskReading } = useTaskReading(); //Käytetään tehtävänlukukontekstia
   const { syllabify, taskSyllabification } = useTaskSyllabification(); //Käytetään tavutuskontekstia
 
   const [sound, setSound] = useState();
+
   const [questionIndex, setQuestionIndex] = useState(0); //Nykyinen kysymyksen indeksi
   const [answered, setAnswered] = useState(false); //Onko kysymykseen vastattu
   const [showFeedback, setShowFeedback] = useState(false)
   const [gameEnded, setGameEnded] = useState(false); //Onko peli päättynyt
   const [isSpeechFinished, setIsSpeechFinished] = useState(false); //Seurataan puheen valmistumista
 
-
   //Generoi kysymyksiä pelille
-
   const generateQuestions = () => {
     const questions = [];
     for (let i = 0; i < 5; i++) {
       const iconCount = Math.min(random(0, profile?.playerLevel || 1), 10) //Satunnainen määrä vasaroita
       questions.push({
-
         question: `Montako vasaraa näet näytöllä?`, //Kysymyksen teksti
-
         iconCount,
         options: Array.from({ length: 11 }, (_, i) => i), //Vaihtoehdot
       });
@@ -62,6 +59,7 @@ export default function ImageToNumber({ onBack }) {
     setQuestions(generateQuestions());
     setQuestionIndex(0); //Nollaa kysymysindeksi, kun peli alkaa
   }, []);
+
 
   //feedback miten meni, odotelee tässä, että saadaan yhteiseen tiedostoon..
   const feedbackMsg = (() => {
@@ -118,6 +116,7 @@ export default function ImageToNumber({ onBack }) {
   useEffect(() => {
     return sound ? () => sound.unloadAsync() : undefined;
   }, [sound]);
+
 
   //Tarkistetaan, onko peli päättynyt (5 kysymystä vastattu)
   useEffect(() => {
@@ -236,7 +235,7 @@ export default function ImageToNumber({ onBack }) {
 
   return (
     <View style={[styles.container, { backgroundColor: isDarkTheme ? '#333' : '#fff' }]}>
-      <Text style={[styles.title, { color: isDarkTheme ? '#fff' : '#000' }]}>Tehtävä {questionIndex + 1}</Text>
+      <Text style={[styles.title, { color: isDarkTheme ? '#fff' : '#000' }]}>{syllabify("Kuva numeroiksi")}</Text>
       <Text style={[styles.question, { color: isDarkTheme ? '#fff' : '#000' }]}>{renderQuestionText()}</Text>
       <View style={styles.iconContainer}>
         {renderIcons()}

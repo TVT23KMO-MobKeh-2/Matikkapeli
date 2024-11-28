@@ -2,13 +2,14 @@ import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { View, TouchableOpacity, ActivityIndicator  } from 'react-native';
+import { useState } from 'react';
 import { ThemeProvider } from './components/ThemeContext';
 import { ScoreProvider } from './components/ScoreContext';
 import { SoundSettingsProvider } from './components/SoundSettingsContext';
 import { TaskReadingProvider } from './components/TaskReadingContext';
 import { TaskSyllabificationProvider } from './components/TaskSyllabificationContext';
 import { BackgroundMusicProvider } from './components/BackgroundMusicContext';
-import { View } from 'react-native';  // Import required components for icons
 import TopBarComponent from './components/TopBarComponent'
 
 import StartScreen from './screens/StartScreen';
@@ -20,14 +21,33 @@ import Settings from './screens/Settings';
 import Animation from './screens/Animation';
 import WelcomeScreen from './screens/WelcomeScreen';
 import SelectProfile from './screens/SelectProfile';
+
 import UserCreation from './components/UserCreation';
 import ProfileScreen from './screens/ProfileScreen';
 import CreateProfile from './screens/CreateProfile';
 import ModalComponent from './components/ModalComponent';
+import { useFonts, ComicNeue_400Regular, ComicNeue_700Bold } from '@expo-google-fonts/comic-neue';
 
 const Stack = createStackNavigator();
 
 export default function App() {
+
+
+
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [profileImage, setProfileImage] = useState(require('./assets/images/norsu.png')); // Oletusprofiilikuva
+  const [isProfileScreen, setIsProfileScreen] = useState(false);
+  
+  const [fontsLoaded] = useFonts({
+    ComicNeue_400Regular,
+    ComicNeue_700Bold,
+  });
+
+  if (!fontsLoaded) {
+    return <ActivityIndicator size="large" center="center" />;
+  }
+
+
   return (
     <BackgroundMusicProvider>
       <TaskSyllabificationProvider>
@@ -53,6 +73,7 @@ export default function App() {
                     <Stack.Screen name="ModalComponenet" component={ModalComponent} />
                   </Stack.Navigator>
                 </NavigationContainer>
+
               </TaskReadingProvider>
             </SoundSettingsProvider>
           </ScoreProvider>
