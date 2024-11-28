@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
-import { View, Text, Button, Switch, StatusBar, BackHandler, ImageBackground, TouchableOpacity, Image, Alert, ScrollView } from 'react-native';
-
+import { View, Text, Button, Switch, StatusBar, BackHandler, ImageBackground, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import { useTheme } from '../components/ThemeContext';
 import SliderComponent from '@react-native-community/slider';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -25,20 +23,6 @@ export default function Settings({ onBack }) {
 
   const ImageBG = require('../assets/background2.jpg');
   const ImageBGDark = require('../assets/background3.png');
-  const [selectedImage, setSelectedImage] = useState(null);
-
-  const profileImages = [
-    require('../assets/images/kettu.png'),
-    require('../assets/images/pingviini.png'),
-    require('../assets/images/norsu.png'),
-    require('../assets/images/pollo.png'),
-  ];
-
-  const handleImageSelect = (image) => {
-    setSelectedImage(image);
-    onProfileImageChange && onProfileImageChange(image);
-  };
-
 
   //Sulkee sovelluksen Android-laitteilla
   const handleCloseApp = () => {
@@ -200,20 +184,6 @@ export default function Settings({ onBack }) {
           <Switch value={gameSounds} onValueChange={() => setGameSounds(!gameSounds)} />
             
         </View>
-
-
-        {/* Profiilikuvan vaihto */}
-        <View style={isDarkTheme ? styles.settingItemColumnDark : styles.settingItemColumn}>
-        <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Valitse profiilikuva</Text>
-        <View style={styles.imageOptionsContainer}>
-          {profileImages.map((image, index) => (
-            <TouchableOpacity key={index} onPress={() => handleImageSelect(image)} style={styles.imageOption}>
-              <Image source={image} style={styles.profileImageOption} />
-            </TouchableOpacity>
-          ))}
-        </View>
-        </View>
-
 
         {/* Sovelluksen sammuttaminen */}
         <Button title="Sammuta sovellus" onPress={handleCloseApp} />

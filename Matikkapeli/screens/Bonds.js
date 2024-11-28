@@ -54,8 +54,6 @@ export default function Bonds({ onBack }) {
 
 
   // Äänitiedostot oikein ja väärin vastauksille
-  //const correctSound = require('../assets/sounds/mixkit-achievement-bell.wav');  // Oikea vastausääni
-  //const wrongSound = require('../assets/sounds/mixkit-losing-bleeps.wav');  // Väärä vastausääni
   const imagaBG = require('../assets/view6.png')  // Taustakuva
 
   // Funktio, joka generoi uuden pelitason (arvot vasemmalle ja oikealle laatikolle)
@@ -77,23 +75,6 @@ export default function Bonds({ onBack }) {
   useEffect(() => {
     generateNewLevel();
   }, [levelData]);
-
-  // Efekti, joka purkaa äänitiedoston, kun komponentti poistetaan
-  /*useEffect(() => {
-    return sound
-      ? () => {
-        sound.unloadAsync();
-      }
-      : undefined;
-  }, [sound]);
-
-  // Funktio, joka toistaa äänen sen mukaan, onko vastaus oikein vai väärin
-  const playSound = async (isCorrect) => {
-    const soundToPlay = isCorrect ? correctSound : wrongSound;  // Valitaan oikea ääni
-    const { sound } = await Audio.Sound.createAsync(soundToPlay);
-    setSound(sound);  // Asetetaan äänitiedosto soittokelpoiseksi
-    await sound.playAsync();  // Soitetaan ääni
-  };*/
 
   // Tehtävän tarkistus (tarkistaa onko käyttäjän vastaus oikein)
   useEffect(() => {
