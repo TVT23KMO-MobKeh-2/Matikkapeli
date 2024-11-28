@@ -7,11 +7,11 @@ import { Ionicons } from "@expo/vector-icons";  // Make sure this is imported
 import { useNavigation } from '@react-navigation/native';
 
 const TopBarComponent = ({ customStyle }) => {
-  const { playerLevel, points, totalXp } = useContext(ScoreContext); // Get the player level, points, and totalXp
+  const { playerLevel, playerName, totalXp } = useContext(ScoreContext); // Get the player level, points, and totalXp
   
   // Temporary values for profile image, username, and settings icon
   const TemporaryProfileImage = require('../assets/favicon.png'); 
-  const TemporaryUsername = "Testi";
+  const TemporaryUsername = playerName;
   const TemporarySettings = require('../assets/icon.png');
   
   const [timerModalVisible, setTimerModalVisible] = useState(false);
