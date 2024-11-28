@@ -31,7 +31,7 @@ export default function Comparison({ onBack }) {
   const [equationOperand1, setEquationOperand1] = useState(0) // Yhtälön ensimmäinen operandin arvo, käytetään laskutoimituksissa
   const [equationOperand2, setEquationOperand2] = useState(0) // Yhtälön toinen operandin arvo, käytetään laskutoimituksissa
   const [isEquationAddition, setIsEquationAddition] = useState(false) // Määrittää, onko laskutoimitus yhteenlasku (true) vai ei (false)
-  const [showButtons, setShowButtons] = useState(false);
+
 
     //feedback miten meni, odotelee tässä, että saadaan yhteiseen tiedostoon..
     const feedbackMsg = (() => {
@@ -65,7 +65,6 @@ export default function Comparison({ onBack }) {
     if (questionsAnswered === 5) {
       incrementXp(points, "comparison")
       setShowFeedback(true)
-      setShowButtons(true)
     }
   }, [questionsAnswered])
 
@@ -75,8 +74,6 @@ export default function Comparison({ onBack }) {
     setShowFeedback(false);
     setQuestionsAnswered(0);
     setPoints(0);
-
-
     // Tallennetaan tiedot tietokantaan
     handleUpdatePlayerStatsToDatabase()
   }
@@ -301,17 +298,23 @@ export default function Comparison({ onBack }) {
               <Text>Comparison: {comparisonXp}/50</Text>
               <Text>Bonds: {bondsXp}/40</Text>
               <View style={styles.buttonContainer}>
-                <Button title='Jatka' onPress={() => setShowFeedback(false)}></Button>
+              <Button
+                    title="Seuraava tehtävä odottaa"
+                    onPress={() => {
+                      handleContinueGame();
+                      setGameEnded(false);
+                      setShowFeedback(false)
+                    }}
+                  />
+                  <Button title="Lopeta peli" onPress={() => {
+                    handleEndGame();
+                    setGameEnded(false);
+                    setShowFeedback(false)
+                  }} />
               </View>
             </View>
           </View>
         </TouchableWithoutFeedback>
-      )}
-      {showButtons && (
-        <View style={styles.buttonContainer}>
-          <Button title="Seuraava tehtävä odottaa" onPress={handleContinueGame} />
-          <Button title="Lopeta peli" onPress={handleEndGame} />
-        </View>
       )}
     </View>
   );

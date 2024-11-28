@@ -31,10 +31,6 @@ export default function Bonds({ onBack }) {
     }
   }, [profile]);
 
-  useEffect(() => {
-    console.log("showButtons state:", showButtons);
-  }, [showButtons]);
-
   // Pelin aloitustaso ja muut tilamuuttujat
   const levelData = profile ? profile.playerLevel : 0;
   const [leftBox, setLeftBox] = useState(0);  // Vasemman laatikon arvo
@@ -55,7 +51,7 @@ export default function Bonds({ onBack }) {
   const { syllabify, taskSyllabification } = useTaskSyllabification();  // Käytetäänkö tavutusta
   const [isTaskChanging, setIsTaskChanging] = useState(false)
   const [isButtonClicked, setIsButtonClicked] = useState(false)
-  const [showButtons, setShowButtons] = useState(false); // State for showing the buttons
+
 
   // Äänitiedostot oikein ja väärin vastauksille
   const correctSound = require('../assets/sounds/mixkit-achievement-bell.wav');  // Oikea vastausääni
@@ -129,7 +125,6 @@ export default function Bonds({ onBack }) {
   // Tehtävän tarkistus (tarkistaa onko käyttäjän vastaus oikein)
   useEffect(() => {
     if (questionsAnswered === 5) {
-      setShowButtons(true)
       setShowFeedback(true);  // Näytetään feedback-ikkuna, kun 5 kysymystä on vastattu
       // Lisätään XP-pisteet
       incrementXp(points, "bonds");
@@ -168,7 +163,6 @@ export default function Bonds({ onBack }) {
   const handleBack = () => {
     Speech.stop();  // Pysäytetään mahdollinen puhe
     setShowFeedback(false);  // Piilotetaan feedback-ikkuna
-    setShowButtons(false)
     setQuestionsAnswered(0);  // Nollataan kysymykset
     setPoints(0);  // Nollataan pisteet
     handleUpdatePlayerStatsToDatabase()
@@ -252,22 +246,6 @@ export default function Bonds({ onBack }) {
           </View>
         </View>
 
-        {
-          showButtons ? (
-            <View style={styles.buttonContainer}>
-              <Button title="Seuraava tehtävä odottaa" onPress={handleContinueGame} />
-              <Button title="Lopeta peli" onPress={handleEndGame} />
-            </View>
-          ) : (
-            <Pressable
-              onPress={checkAnswer}
-              style={[styles.checkButton, isButtonDisabled ? styles.disabledButton : null]}
-              disabled={isButtonDisabled}>
-              <Text style={styles.checkButtonText}>Tarkista</Text>
-            </Pressable>
-          )
-        }
-
         {showFeedback && (
           <TouchableWithoutFeedback>
             <View style={styles.overlayInstruction}>
@@ -281,7 +259,19 @@ export default function Bonds({ onBack }) {
                 <Text>Comparison: {comparisonXp}/50</Text>
                 <Text>Bonds: {bondsXp}/40</Text>
                 <View style={styles.buttonContainer}>
-                  <Button title='Jatka' onPress={() => setShowFeedback(false)}></Button>
+                <Button
+                    title="Seuraava tehtävä odottaa"
+                    onPress={() => {
+                      handleContinueGame();
+                      setGameEnded(false);
+                      setShowFeedback(false)
+                    }}
+                  />
+                  <Button title="Lopeta peli" onPress={() => {
+                    handleEndGame();
+                    setGameEnded(false);
+                    setShowFeedback(false)
+                  }} />
                 </View>
               </View>
             </View>

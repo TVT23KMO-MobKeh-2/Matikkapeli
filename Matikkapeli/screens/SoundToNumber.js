@@ -24,7 +24,7 @@ export default function SoundToNumber({ onBack }) {
   const { syllabify, taskSyllabification } = useTaskSyllabification(); //Käytetään tavutuskontekstia
   const [gameEnded, setGameEnded] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [showButtons, setShowButtons] = useState(false);
+  
 
     //feedback miten meni, odotelee tässä, että saadaan yhteiseen tiedostoon..
     const feedbackMsg = (() => {
@@ -60,7 +60,6 @@ export default function SoundToNumber({ onBack }) {
       incrementXp(points, "soundToNumber") //comparisonin tilalle oma tehtävän nimi: "imageToNumber", "soundToNumber", "comparison" tai "bonds"
       setShowFeedback(true)
       setGameEnded(true)
-      setShowButtons(true)
     }
   }, [questionsAnswered]);
 
@@ -173,17 +172,23 @@ export default function SoundToNumber({ onBack }) {
               <Text>Comparison: {comparisonXp}/50</Text>
               <Text>Bonds: {bondsXp}/40</Text>
               <View style={styles.buttonContainer}>
-                <Button title='Jatka' onPress={() => setShowFeedback(false)}></Button>
+              <Button
+                    title="Seuraava tehtävä odottaa"
+                    onPress={() => {
+                      handleContinueGame();
+                      setGameEnded(false);
+                      setShowFeedback(false)
+                    }}
+                  />
+                  <Button title="Lopeta peli" onPress={() => {
+                    handleEndGame();
+                    setGameEnded(false);
+                    setShowFeedback(false)
+                  }} />
               </View>
             </View>
           </View>
         </TouchableWithoutFeedback>
-      )}
-      {showButtons && (
-        <View style={styles.buttonContainer}>
-          <Button title="Seuraava tehtävä odottaa" onPress={handleContinueGame} />
-          <Button title="Lopeta peli" onPress={handleEndGame} />
-        </View>
       )}
     </View>
   );

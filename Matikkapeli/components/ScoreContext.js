@@ -70,6 +70,7 @@ export const ScoreProvider = ({ children, profile = {} }) => {
             setTimeout(() => {
                 Alert.alert('Taso noustiin!', 'Hienoa, päästään seuraavalle tasolle', [{ text: 'OK' }]);
                 setPlayerLevel(prevPlayerLevel => prevPlayerLevel + 1)
+                setXpMilestone(false)
             }, 2000);
         } else if (gameAchieved) {
             setTimeout(() => {
