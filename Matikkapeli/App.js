@@ -2,7 +2,7 @@ import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { View, TouchableOpacity, ActivityIndicator  } from 'react-native';
+import { View, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useState } from 'react';
 import { ThemeProvider } from './components/ThemeContext';
 import { ScoreProvider } from './components/ScoreContext';
@@ -37,7 +37,7 @@ export default function App() {
   const [selectedTask, setSelectedTask] = useState(null);
   const [profileImage, setProfileImage] = useState(require('./assets/images/norsu.png')); // Oletusprofiilikuva
   const [isProfileScreen, setIsProfileScreen] = useState(false);
-  
+
   const [fontsLoaded] = useFonts({
     ComicNeue_400Regular,
     ComicNeue_700Bold,
@@ -56,22 +56,29 @@ export default function App() {
             <SoundSettingsProvider>
               <TaskReadingProvider>
                 <NavigationContainer>
-                  <TopBarComponent />
-                  <Stack.Navigator initialRouteName="StartScreen">
-                    <Stack.Screen name="StartScreen" component={StartScreen} />
-                    <Stack.Screen name="Settings" component={Settings} />
-                    <Stack.Screen name="Welcome" component={WelcomeScreen} />
-                    <Stack.Screen name="UserCreation" component={UserCreation} />
-                    <Stack.Screen name="SelectProfile" component={SelectProfile} />
-                    <Stack.Screen name="CreateProfile" component={CreateProfile} />
-                    <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
-                    <Stack.Screen name="Animation" component={Animation} />
-                    <Stack.Screen name="ImageToNumbers" component={ImageToNumber} />
-                    <Stack.Screen name="SoundToNumbers" component={SoundToNumber} />
-                    <Stack.Screen name="Bonds" component={Bonds} />
-                    <Stack.Screen name="ComparisonOperators" component={Comparison} />
-                    <Stack.Screen name="ModalComponenet" component={ModalComponent} />
-                  </Stack.Navigator>
+                  <View style={{ flex: 1 }}>
+
+                    <Stack.Navigator
+                      initialRouteName="StartScreen"
+                      screenOptions={{
+                        header: () => <TopBarComponent />, // Replaces default header with TopBarComponent
+                      }}
+                    >
+                      <Stack.Screen name="StartScreen" component={StartScreen} />
+                      <Stack.Screen name="Settings" component={Settings} />
+                      <Stack.Screen name="Welcome" component={WelcomeScreen} />
+                      <Stack.Screen name="UserCreation" component={UserCreation} />
+                      <Stack.Screen name="SelectProfile" component={SelectProfile} />
+                      <Stack.Screen name="CreateProfile" component={CreateProfile} />
+                      <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+                      <Stack.Screen name="Animation" component={Animation} />
+                      <Stack.Screen name="ImageToNumbers" component={ImageToNumber} />
+                      <Stack.Screen name="SoundToNumbers" component={SoundToNumber} />
+                      <Stack.Screen name="Bonds" component={Bonds} />
+                      <Stack.Screen name="ComparisonOperators" component={Comparison} />
+                      <Stack.Screen name="ModalComponenet" component={ModalComponent} />
+                    </Stack.Navigator>
+                  </View>
                 </NavigationContainer>
 
               </TaskReadingProvider>
