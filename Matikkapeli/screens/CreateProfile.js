@@ -2,49 +2,44 @@ import { View, Text, StyleSheet, Button, TextInput, Image } from 'react-native'
 import React, { useState } from 'react'
 import { Picker } from '@react-native-picker/picker'
 
-export default function CreateProfile({ onCancel, onSave }) {
-    const [selectedCareer, setSelectedCareer] = useState()
-    const [selectedAnimal, setSelectedAnimal] = useState()
-    const [name, setName] = useState('')
-    const [isSaving, setIsSaving] = useState(false)
+
+
+export default function CreateProfile({ onCancel, onSave, email }) {
+    const [selectedCareer, setSelectedCareer] = useState();
+    const [selectedAnimal, setSelectedAnimal] = useState();
+    const [name, setName] = useState('');
+    const [isSaving, setIsSaving] = useState(false);
 
     const handleSave = async () => {
-        console.log("handleSave triggered")
-        if (!name || !selectedCareer || !selectedAnimal) {
-            alert('Täytä kaikki kentät!')
-            return
-        }
+      if (!name || !selectedCareer || !selectedAnimal) {
+        alert('Täytä kaikki kentät!');
+        return;
+      }
 
-        if (isSaving) {
-            console.log("Skipping save: isSaving is true");
-            return
-        }
+      setIsSaving(true);
 
-        setIsSaving(true)
-        const newProfile = {
-            email: "minna@testi.com",
-            playerName: name,
-            playerLevel: 1,
-            imageToNumberXp: 0,
-            soundToNumberXp: 0,
-            comparisonXp: 0,
-            bondsXp: 0,
-            imageID: selectedAnimal.value,
-            career: selectedCareer.label,
-        }
+      const newProfile = {
+        email, // Email passed from SelectProfile
+        playerName: name,
+        playerLevel: 1,
+        imageToNumberXp: 0,
+        soundToNumberXp: 0,
+        comparisonXp: 0,
+        bondsXp: 0,
+        imageID: selectedAnimal.value,
+        career: selectedCareer.label,
+      };
 
-        try {
-            console.log("Saving to DB with profile")
-            await onSave(newProfile)
-            onCancel()
-        } catch (error) {
-            console.error("Virhe profiilin tallennuksessa:", error)
-            alert('Profiilin tallenus epäonnistui')
-        } finally {
-            setIsSaving(false)
-        }
-
-    }
+      try {
+        await onSave(newProfile);  // This will save the profile in the database
+        onCancel();  // Close the CreateProfile screen
+      } catch (error) {
+        console.error('Virhe profiilin tallennuksessa:', error);
+        alert('Profiilin tallenus epäonnistui');
+      } finally {
+        setIsSaving(false);
+      }
+    };
 
     const careerOptions = [
         { label: 'Lääkäri', value: "doctor" },
@@ -62,60 +57,57 @@ export default function CreateProfile({ onCancel, onSave }) {
         { label: 'Susi', value: 'wolf', image: require('../assets/profwolf.png') },
     ]
 
+
     return (
         <View style={styles.container}>
-            <View style={styles.container}>
-                {selectedAnimal && (
+            {selectedAnimal && (
                     <View style={styles.imageContainer}>
                         <Image source={selectedAnimal.image} style={styles.image} />
                     </View>
                 )}
-                <Text style={styles.label}>Nimi</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder='Kirjoita nimesi'
-                    value={name}
-                    onChangeText={(text) => setName(text)}></TextInput>
+            <Text style={styles.label}>Nimi</Text>
+            <TextInput
+                style={styles.input}
+                placeholder='Kirjoita nimesi'
+                value={name}
+                onChangeText={(text) => setName(text)} />
+            
+            <View style={styles.pickerContainer}>
+                <View style={styles.pickerWrapper}>
+                    <Picker
+                        selectedValue={selectedAnimal}
+                        onValueChange={(itemValue) => setSelectedAnimal(itemValue)}
+                    >
+                        <Picker.Item label='Valitse eläin' value="" />
+                        {animalOptions.map((option) => (
+                            <Picker.Item key={option.value} label={option.label} value={option} />
+                        ))}
+                    </Picker>
 
-                <View style={styles.pickerContainer}>
-                    <View style={styles.pickerWrapper}>
-                        <Picker
-                            selectedValue={selectedAnimal}
-                            style={styles.picker}
-                            onValueChange={(itemValue) => setSelectedAnimal(itemValue)}
-                        >
-                            <Picker.Item label='Valitse eläin' value="" />
-                            {animalOptions.map((option) => (
-                                <Picker.Item key={option.value} label={option.label} value={option} />
-                            ))}
-                        </Picker>
-
-
-                        <Picker
-                            selectedValue={selectedCareer}
-                            style={styles.picker}
-                            onValueChange={(itemValue) => setSelectedCareer(itemValue)}
-                        >
-                            <Picker.Item label='Valitse ammatti' value="" />
-                            {careerOptions.map((option) => (
-                                <Picker.Item key={option.value} label={option.label} value={option} />
-                            ))}
-                        </Picker>
-                    </View>
-                </View>
-
-                <View style={styles.buttonContainer}>
-                    <Button
-                        title={isSaving ? 'Tallennetaan...' : 'Tallenna'}
-                        onPress={handleSave}
-                        disabled={isSaving || !name || !selectedCareer || !selectedAnimal}
-                    />
-                    <Button title='Peruuta' onPress={onCancel} color='red' />
+                    <Picker
+                        selectedValue={selectedCareer}
+                        onValueChange={(itemValue) => setSelectedCareer(itemValue)}
+                    >
+                        <Picker.Item label='Valitse ammatti' value="" />
+                        {careerOptions.map((option) => (
+                            <Picker.Item key={option.value} label={option.label} value={option} />
+                        ))}
+                    </Picker>
                 </View>
             </View>
+
+            <View style={styles.buttonContainer}>    
+                <Button
+                    title={isSaving ? 'Tallennetaan...' : 'Tallenna'}
+                    onPress={handleSave}
+                    disabled={isSaving || !name || !selectedCareer || !selectedAnimal}
+                />
+                <Button title='Peruuta' onPress={onCancel} color='red' />
+            </View>
         </View>
-    )
+    );
 }
+
 const styles = StyleSheet.create({
     container: {
         width: 300,

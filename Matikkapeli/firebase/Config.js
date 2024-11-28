@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, addDoc, getDocs, updateDoc, where, query, doc } from "firebase/firestore";
+import { getFirestore, collection, addDoc, getDocs, updateDoc, where, query, doc, deleteDoc } from "firebase/firestore";
 import ENV from "../env";
 
 const firebaseConfig = {
@@ -28,5 +28,6 @@ const firebaseConfig = {
     query,
     getDocs,
     updateDoc,
-    doc
+    doc,
+    deleteDoc
   }

@@ -1,28 +1,44 @@
 import React, { useContext, useState } from "react";
-import { View, Text, Image, TouchableOpacity, Modal} from "react-native";
-import { ScoreContext }  from "./ScoreContext"; 
+import { View, Text, Image, TouchableOpacity, Modal } from "react-native";
+import { ScoreContext } from "./ScoreContext";
 import styles from "../styles";
 import Timer from "./Timer";
-//import Settings from "../screens/Settings"; 
-//import { UserContext } from "./UserContext"; // Esimerkki käyttäjänimen ja profiilikuvan hakemisesta
 
-const TopBarComponent = ({ customStyle, profileImage }) => {
-  const { playerLevel, points, totalXp } = useContext(ScoreContext); // Gettaa pelaajan levelin, pisteet ja kokonais Xp:n
-  //const { profileImage, username } = useContext(UserContext);  esimerkki käyttäjän profiilikuvan ja käyttäjänimen hakemisesta
-  //Kovakoodattu profiilikuvan ja käyttäjänimen esimerkki
-  const TemporaryProfileImage = require('../assets/favicon.png'); 
-  const TemporaryUsername = "Testi";
-  const TemporarySettings = require('../assets/icon.png');
-  const [timerModalVisible, setTimerModalVisible] = useState(false);
-  const [timerStarted, setTimerStarted] = useState(false);
+import { Ionicons } from "@expo/vector-icons";  // Make sure this is imported
+import { useNavigation } from '@react-navigation/native';
+import ProfileScreen from "../screens/ProfileScreen";
+import SelectProfile from "../screens/SelectProfile";
+import { isDarkTheme } from "./ThemeContext";
 
+const TopBarComponent = ({ customStyle }) => {
+  const navigation = useNavigation();  // Use navigation hook to navigate
+
+  // Function to handle the settings button press
   const handleSettingsPress = () => {
     console.log('Settings button pressed');
+    navigation.navigate('Settings');  // Navigate to Settings screen
   };
+
+
+  const { imageID, playerName, career, playerLevel, totalXp } = useContext(ScoreContext);
+  const [timerModalVisible, setTimerModalVisible] = useState(false);
+  const [timerStarted, setTimerStarted] = useState(false);
+  //const navigation = useNavigation();
+
+  const animalImages = {
+    fox: require('../assets/proffox.png'),
+    bear: require('../assets/profbear.png'),
+    rabbit: require('../assets/profrabbit.png'),
+    wolf: require('../assets/profwolf.png'),
+  };
+  const profileImage = animalImages[imageID];
+
 
   const handlePfpPress = () => {
     console.log('Profile image pressed');
-  }; 
+    // navigation.navigate('ProfileScreen');
+    //<ProfileScreen onBack={() => setSelectedTask(null)} />;
+  };
 
   const openTimerModal = () => {
     setTimerModalVisible(true);
@@ -36,36 +52,39 @@ const TopBarComponent = ({ customStyle, profileImage }) => {
   };
 
   return (
-    <View style={[styles.topBarContainer, customStyle]}>
-      
-      {/* Profiilikuva */}
+    <View style={styles.topBarContainer}>
+
+      {/* Profile Image */}
       <TouchableOpacity onPress={handlePfpPress}>
         <Image
-          source={profileImage} 
+          source={profileImage}
           style={styles.topBarPfp}
           resizeMode="cover"
         />
       </TouchableOpacity>
 
-      {/* Käyttäjäinfo */}
+      {/* User Info */}
       <View style={styles.topBarInfoContainer}>
-        <Text style={styles.topBarUsername}> {TemporaryUsername} </Text> 
+        <Text style={styles.topBarUsername}> {playerName} </Text>
         <Text style={styles.topBarLevelAndPoints}>
-          Taso {playerLevel} | {totalXp} Kokonaispisteet
+          Taso {playerLevel} | {career}
         </Text>
       </View>
-      
-      {/* Timeri */}
-      <TouchableOpacity onPress={openTimerModal} 
-        style={[styles.settingsButton, {width: 40}]}>
+
+      {/* Timer Button */}
+      <TouchableOpacity onPress={openTimerModal}
+        style={[styles.settingsButton, { width: 40 }]}>
         {!timerStarted && <Text style={styles.topBarLevelAndPoints}>⏰</Text>}
       </TouchableOpacity>
 
-      {/* Asetukset */}
+
+      {/* Settings Button */}
       <TouchableOpacity onPress={handleSettingsPress} style={styles.settingsButton}>
-        <Image source={TemporarySettings} style={styles.settingsIcon} />
+        <Ionicons name="settings-outline" size={32} color="black" />
       </TouchableOpacity>
-      
+
+      {/* Timer Modal */}
+
       {timerModalVisible && (
         <Timer
           closeModal={closeTimerModal}
@@ -76,5 +95,4 @@ const TopBarComponent = ({ customStyle, profileImage }) => {
     </View>
   );
 };
-
 export default TopBarComponent;

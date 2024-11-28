@@ -3,27 +3,29 @@ import { createContext, useState, useEffect } from 'react';
 import { savePlayerStatsToDatabase, recievePlayerStatsFromDatabase, updatePlayerStatsToDatabase } from '../firebase/Functions'
 import { Alert } from 'react-native';
 
+
 // Luodaan konteksti, joka tarjoaa pelin tilan ja toiminnot lapsikomponenteille
 export const ScoreContext = createContext();
 
-export const ScoreProvider = ({ children }) => {
-    const [email, setEmail] = useState("isi@gmail.com") //Tunnisteena, jos monta samannimistä Kallea
-    const [playerName, setPlayerName] = useState("Irja")
-    const [docId, setDocId] = useState("")
+export const ScoreProvider = ({ children, profile = {} }) => {
+
+    const [email, setEmail] = useState(profile.email) //Tunnisteena, jos monta samannimistä Kallea
+    const [playerName, setPlayerName] = useState(profile.playerName)
+    const [docId, setDocId] = useState(profile.id)
     // Pelaajan taso
-    const [playerLevel, setPlayerLevel] = useState(1);
+    const [playerLevel, setPlayerLevel] = useState(profile.playerLevel)
     // Eri tehtävien Xp:t
-    const [imageToNumberXp, setImageToNumberXp] = useState(0);
-    const [soundToNumberXp, setSoundToNumberXp] = useState(0);
-    const [comparisonXp, setComparisonXp] = useState(0);
-    const [bondsXp, setBondsXp] = useState(0);
-    const [imageID, setImageID] = useState("");
-    const [career, setCareer] = useState("");
+    const [imageToNumberXp, setImageToNumberXp] = useState(profile.imageToNumberXp ?? 0);
+    const [soundToNumberXp, setSoundToNumberXp] = useState(profile.soundToNumberXp ?? 0);
+    const [comparisonXp, setComparisonXp] = useState(profile.comparisonXp ?? 0);
+    const [bondsXp, setBondsXp] = useState(profile.bondsXp ?? 0);
+    const [imageID, setImageID] = useState(profile.imageID);
+    const [career, setCareer] = useState(profile.career);
     // KokonaisXp
     const [totalXp, setTotalXp] = useState(comparisonXp + bondsXp + soundToNumberXp + imageToNumberXp);
-    // Kulloisestakin tehtävästä saadut pisteet ja vastattujen kysymysten määrä, joiden perusteella annetaan palaute ja päätetään tehtävä
-    const [points, setPoints] = useState(0);
-    const [questionsAnswered, setQuestionsAnswered] = useState(0);
+    /*     // Kulloisestakin tehtävästä saadut pisteet ja vastattujen kysymysten määrä, joiden perusteella annetaan palaute ja päätetään tehtävä
+        const [points, setPoints] = useState(0);
+        const [questionsAnswered, setQuestionsAnswered] = useState(0); */
     // Seurataan onko taso noustu tai peli läpäisty
     const [xpMilestone, setXpMilestone] = useState(false);
     const [gameAchieved, setGameAchieved] = useState(false);
@@ -32,15 +34,33 @@ export const ScoreProvider = ({ children }) => {
 
     // Koukku pelaajatietojen hakuun tietokannasta
     useEffect(() => {
-        recievePlayerStatsFromDatabase({email, playerName, setImageToNumberXp, setSoundToNumberXp, setComparisonXp, setBondsXp, setPlayerLevel, setImageID, setCareer, setDocId});
-    }, [])
+        if (email && playerName) {
+            console.log("Fetching player stats with email:", email, "and player name:", playerName);
+            recievePlayerStatsFromDatabase({ email, playerName, setImageToNumberXp, setSoundToNumberXp, setComparisonXp, setBondsXp, setPlayerLevel, setImageID, setCareer, setDocId });
+        }
+    }, [email, playerName]);
 
     // Koukku jolla lasketaan totalXp, kun joku XP muuttuu
     useEffect(() => {
+        console.log(`Total XP before updated: ${totalXp}`);
         setTotalXp(comparisonXp + bondsXp + soundToNumberXp + imageToNumberXp);
+        console.log("New totalXp:", comparisonXp + bondsXp + soundToNumberXp + imageToNumberXp);
     }, [comparisonXp, bondsXp, soundToNumberXp, imageToNumberXp]);
 
-    const handleUpdatePlayerStatsToDatabase =() => {
+    // Tarkistetaan, päästäänkö seuraavalle tasolle tai onko koko peli läpi?
+    useEffect(() => {
+        if (xpForLevelUp.includes(totalXp)) {
+            setXpMilestone(true);
+        } else if (totalXp >= 190) {
+            setGameAchieved(true);
+        }
+    }, [totalXp])
+
+    
+    const handleUpdatePlayerStatsToDatabase = () => {
+        console.log("Updating player stats to the database:", {
+            email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career, docId
+        });
         updatePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career, docId })
     }
 
@@ -50,6 +70,7 @@ export const ScoreProvider = ({ children }) => {
             setTimeout(() => {
                 Alert.alert('Taso noustiin!', 'Hienoa, päästään seuraavalle tasolle', [{ text: 'OK' }]);
                 setPlayerLevel(prevPlayerLevel => prevPlayerLevel + 1)
+                setXpMilestone(false)
             }, 2000);
         } else if (gameAchieved) {
             setTimeout(() => {
@@ -57,90 +78,6 @@ export const ScoreProvider = ({ children }) => {
             }, 2000);
         }
     }, [xpMilestone, gameAchieved]);
-
-/*     // Funktio pelaajatietojen tallennukseen tietokantaan pelin alussa
-    const savePlayerStatsToDatabase = async () => {
-        try {
-            const docRef = await addDoc(collection(firestore, PLAYERSTATS), {
-                email: email,
-                playerName: playerName,
-                playerLevel: playerLevel,
-                imageToNumberXp: imageToNumberXp,
-                soundToNumberXp: soundToNumberXp,
-                comparisonXp: comparisonXp,
-                bondsXp: bondsXp
-            })
-            console.log("Pelaajan tiedot tallennettu")
-        } catch (error) {
-            console.log("Virhe tallentaessa tietokantaan pelaajan tietoja:", error)
-        }
-    } */
-
-/*     // Funktio pelaajan tietojen päivittämiseen tietokantaan
-    const updatePlayerStatsToDatabase = async () => {
-        try {
-            //console.log("Päivitetään tietoja tietokantaan, docId: ", docId)
-            // Mitä päivitetään:
-            const docRef = doc(firestore, "playerstats", docId);
-
-            //Tiedot millä päivitetään:
-            await updateDoc(docRef, {
-                email: email,
-                playerName: playerName,
-                playerLevel: playerLevel,
-                imageToNumberXp: imageToNumberXp,
-                soundToNumberXp: soundToNumberXp,
-                comparisonXp: comparisonXp,
-                bondsXp: bondsXp
-            });
-
-            console.log("Pelaajan tiedot päivitetty tietokantaan");
-        } catch (error) {
-            console.error("Virhe1 päivittäessä tietokantaan pelaajan tietoja:", error);
-        }
-    } */
-
-/*     // Funktio pelaajatietojen hakuun tietokannasta
-    const recievePlayerStatsFromDatabase = async () => {
-        try {
-            //console.log("Haetaan tietoja sähköpostilla:", email, "ja nimellä:", playerName);
-
-            //Annetaan tiedot hakua varten
-            const q = query(
-                collection(firestore, PLAYERSTATS), // Mistä haetaan
-                where("email", "==", email), // Ehtona sähköpostiosoite
-                where("playerName", "==", playerName) // sekä pelaajan nimi
-            );
-
-            const querySnapshotWithFilters = await getDocs(q); // Suoritetaan kysely
-
-            if (!querySnapshotWithFilters.empty) { //jos kyselyllä löytyi
-                const doc = querySnapshotWithFilters.docs[0]; // haetaan ensimmäinen tulos
-                //console.log("docId hakufunktiosta:", doc.id);
-                
-                const data = doc.data(); // Haetaan datasisältö
-                //console.log("Löydetyt tiedot:", data);
-                //console.log("docId:", doc.id)
-
-                // Päivitetään tiedot tilamuuttujiin:
-                setImageToNumberXp(data.imageToNumberXp);
-                setSoundToNumberXp(data.soundToNumberXp);
-                setComparisonXp(data.comparisonXp);
-                setBondsXp(data.bondsXp);
-                setPlayerLevel(data.playerLevel);
-                // Tallennetaan documentin ID, jotta voidaan myöhemmin päivittää samaa dokumenttia.
-                setDocId(doc.id);
-            } else {
-                console.log("Pelaajan tietoja ei löytynyt.");
-                Alert.alert("Virhe:","Pelaajan tietoja ei löytynyt")
-            }
-        } catch (error) {
-            console.error("Virhe noudettaessa pelaajan tietoja:", error);
-            Alert.alert("Virhe", "Pelaajan tietojen hakeminen ei onnistunut. Yritä myöhemmin uudestaan.")
-        }
-    }; */
-
-
 
     // Määritetään incrementXp-funktiota varten, kuinka paljon xp voi olla milläkin tasolla.
     const maxXpByLevel = {
@@ -172,12 +109,15 @@ export const ScoreProvider = ({ children }) => {
         // Lisätään pisteet, eli joko xp+pisteet tai tasonmukainen Xp:n maximi arvo, riippuen kumpi on pienempi
         setter(Math.min(value + points, maxXp));
 
-        // Tarkistetaan, päästäänkö seuraavalle tasolle tai onko koko peli läpi?
-        if (xpForLevelUp.includes(totalXp)) {
-            setXpMilestone(true);
-        } else if (totalXp >= 190) {
-            setGameAchieved(true);
-        }
+        console.log(`XP for ${task} updated: ${value + points}/${maxXp}`);
+
+
+        /*         // Tarkistetaan, päästäänkö seuraavalle tasolle tai onko koko peli läpi?
+                if (xpForLevelUp.includes(totalXp)) {
+                    setXpMilestone(true);
+                } else if (totalXp >= 190) {
+                    setGameAchieved(true);
+                } */
     };
 
     return (
@@ -205,11 +145,16 @@ export const ScoreProvider = ({ children }) => {
                 bondsXp,
 
                 // Pisteisiin liittyvät tilat ja toiminnot
-                points,
-                setPoints,
-                questionsAnswered,
-                setQuestionsAnswered,
-                incrementXp
+                /*                 points,
+                                setPoints,
+                                questionsAnswered,
+                                setQuestionsAnswered, */
+                incrementXp,
+                setPlayerLevel,
+                setImageToNumberXp,
+                setSoundToNumberXp,
+                setComparisonXp,
+                setBondsXp,
             }}
         >
             {children}
