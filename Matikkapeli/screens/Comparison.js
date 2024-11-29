@@ -22,7 +22,7 @@ export default function Comparison({ onBack }) {
   const [showFeedback, setShowFeedback] = useState(false)
 
   const { isDarkTheme } = useTheme();
-  const { gameSounds } = useSoundSettings();
+  const { gameSounds, playSound } = useSoundSettings();
   const { taskReading } = useTaskReading();
   const { syllabify, taskSyllabification, getFeedbackMessage } = useTaskSyllabification();
   const [points, setPoints] = useState(0)
@@ -191,8 +191,10 @@ export default function Comparison({ onBack }) {
     if (correctAnswer) { //oikein
       setPoints(prevPoints => prevPoints + 1)
       //playSound(correct) //Toistetaan oikein-merkkiääni
+      playSound(true); // Toistaa oikein-äänen
     } else {
       //playSound(incorrect) //Toistetaan väärin-merkkiääni
+      playSound(false); // Toistaa väärin-äänen
     }
     // Lisätään vastattu kysymys
     setQuestionsAnswered(prevQuestionsAnswered => prevQuestionsAnswered + 1)
