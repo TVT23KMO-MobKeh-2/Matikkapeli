@@ -37,7 +37,7 @@ export default function UserCreation({ onNavigate }) {
     };
 
     return (
-        <View>
+        <View style = {styles.container}>
             <Text style={styles.label}>Käyttäjätunnus</Text>
             <TextInput
                 style={styles.input}
@@ -45,7 +45,7 @@ export default function UserCreation({ onNavigate }) {
                 value={email}
                 onChangeText={(text) => setEmail(text)}
             />
-            <View style={styles.buttonContainer}>
+            <View style={styles.buttonContainer1}>
                 <Button
                     title={isSaving ? 'Tallennetaan...' : 'Tallenna'}
                     onPress={handleSave}

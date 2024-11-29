@@ -133,7 +133,7 @@ export default function SelectProfile({ route, navigation }) {
   }
 
   return (
-    <View>
+    <View style = {styles.container}>
       <View style={styles.profileSelect}>
         {[...Array(4)].map((_, index) => {
           const character = characters[index];

@@ -2,7 +2,8 @@ import { View, Text, Pressable, ImageBackground, Image, StyleSheet } from 'react
 import styles from '../styles';
 import { ScoreContext } from '../components/ScoreContext';
 import React, { useContext } from 'react'
-
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 
 export default function TaskWindow({ taskVisible, setTaskVisible, navigation, profile}) {
     const backgroundImage = require('../assets/sign2.png'); 
@@ -11,24 +12,39 @@ export default function TaskWindow({ taskVisible, setTaskVisible, navigation, pr
     const bond = require('../assets/bond2.png');
     const conv = require('../assets/conv1.png');
     const {imageToNumberXp, soundToNumberXp, playerLevel, } = useContext(ScoreContext);
-
+    
+    
+    useFocusEffect(
+        useCallback(() => {
+            console.log('TaskWindow is focused');
+            // Perform necessary state resets or checks here
+        }, [])
+    );
+    
 
     if (!taskVisible) return null;
 
     const isDivisibleByFive = (imageToNumberXp % (5 * playerLevel) === 0) && (soundToNumberXp % (5 * playerLevel) === 0)
-
+    console.log({
+        imageToNumberXp,
+        soundToNumberXp,
+        playerLevel,
+        isDivisibleByFive,
+    }); 
     return (
         <View style={[styles.container, { position: 'absolute', zIndex: 5 }]}>
             <ImageBackground 
                 source={backgroundImage} 
                 style={styles.backgroundImage} 
-                resizeMode="cover">
+                resizeMode="cover"
+                pointerEvents="box-none">
                 <View style={styles.content}>
-                    <View style={styles.grid}>
+                    <View style={styles.grid} >
                         <Text>{profile.playername}</Text>
                         <Pressable 
                             style={styles.taskContainer}
                             onPress={() => { 
+                                console.log('Navigating to ImageToNumbers');
                                 navigation.navigate('ImageToNumbers', { profile });
                                 setTaskVisible(false); 
                             }}>
@@ -37,7 +53,9 @@ export default function TaskWindow({ taskVisible, setTaskVisible, navigation, pr
                         <Pressable 
                             style={styles.taskContainer}
                             onPress={() => { 
+                                console.log('Navigating to SoundToNumbers');
                                 navigation.navigate('SoundToNumbers', { profile });
+                                console.log('profileeee', profile);
                                 setTaskVisible(false); 
                             }}>
                             <Image source={note} style={styles.taskImage} />
@@ -51,6 +69,7 @@ export default function TaskWindow({ taskVisible, setTaskVisible, navigation, pr
                                 setTaskVisible(false); 
                             }}>
                             <Image source={conv} style={styles.taskImage} />
+                    
                         </Pressable>
                         )}
                         {imageToNumberXp >= 15 && soundToNumberXp >= 15 && playerLevel >= 3 && isDivisibleByFive && (

@@ -445,6 +445,7 @@ export default StyleSheet.create({
   taskImage: {
     width: 60, // Adjust size as needed
     height: 60, // Adjust size as needed
+    resizeMode: 'contain',
   },
   //!!!!!! COMPARISON !!!!!!!
   comparisonContainer: {
@@ -556,4 +557,44 @@ export default StyleSheet.create({
     borderWidth: 1, // Lisää reunus (valinnainen)
     borderColor: '#ccc', // Reunuksen väri (valinnainen)
   }, 
+  input: {
+    width: '100%',
+    height: 40,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    marginBottom: 20,
+    paddingHorizontal: 10,
+},
+pickerContainer: {
+    width: '100%',
+},
+
+pickerWrapper: {
+    width: '100%',
+    marginBottom: 20,
+},
+picker: {
+    height: 50,
+},
+pickerContainer: {
+  width: '100%',
+},
+
+pickerWrapper: {
+  width: '100%',
+  marginBottom: 20,
+},
+picker: {
+  height: 50,
+},
+
+imageContainer: {
+  marginTop: 20,
+  alignItems: 'center',
+},
+image: {
+  width: 100,
+  height: 100,
+},
 });

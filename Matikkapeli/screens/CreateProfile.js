@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, Button, TextInput, Image } from 'react-native'
 import React, { useState } from 'react'
 import { Picker } from '@react-native-picker/picker'
+import styles from '../styles';
 
 
 
@@ -107,55 +108,3 @@ export default function CreateProfile({ onCancel, onSave, email }) {
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        width: 300,
-        padding: 20,
-        alignItems: 'center',
-        borderRadius: 10,
-        marginTop: 20,
-    },
-    label: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        marginBottom: 10,
-        alignSelf: 'flex-start'
-    },
-    input: {
-        width: '100%',
-        height: 40,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 5,
-        marginBottom: 20,
-        paddingHorizontal: 10,
-    },
-    pickerContainer: {
-        width: '100%',
-    },
-
-    pickerWrapper: {
-        width: '100%',
-        marginBottom: 20,
-    },
-    picker: {
-        height: 50,
-    },
-
-    imageContainer: {
-        marginTop: 20,
-        alignItems: 'center',
-    },
-    image: {
-        width: 100,
-        height: 100,
-    },
-    buttonContainer: {
-        marginTop: 20,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: '100%'
-    }
-
-})
