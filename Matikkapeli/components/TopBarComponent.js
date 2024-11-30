@@ -36,7 +36,7 @@ const TopBarComponent = ({ customStyle }) => {
 
   const handlePfpPress = () => {
     console.log('Profile image pressed');
-    // navigation.navigate('ProfileScreen');
+    //navigation.navigate('ProfileScreen');
     //<ProfileScreen onBack={() => setSelectedTask(null)} />;
   };
 
@@ -53,23 +53,29 @@ const TopBarComponent = ({ customStyle }) => {
 
   return (
     <View style={styles.topBarContainer}>
-
-      {/* Profile Image */}
-      <TouchableOpacity onPress={handlePfpPress}>
-        <Image
-          source={profileImage}
-          style={styles.topBarPfp}
-          resizeMode="cover"
-        />
-      </TouchableOpacity>
+   
+      {playerName && (
+        <TouchableOpacity onPress={handlePfpPress}>
+          <Image
+            source={profileImage}
+            style={styles.topBarPfp}
+            resizeMode="cover"
+          />
+        </TouchableOpacity>
+      )}
 
       {/* User Info */}
-      <View style={styles.topBarInfoContainer}>
-        <Text style={styles.topBarUsername}> {playerName} </Text>
-        <Text style={styles.topBarLevelAndPoints}>
-          Taso {playerLevel} | {career}
-        </Text>
-      </View>
+      {playerName && career && playerLevel ? (
+        <View style={styles.topBarInfoContainer}>
+          <Text style={styles.topBarUsername}> {playerName} </Text>
+          <Text style={styles.topBarLevelAndPoints}>
+            Taso {playerLevel} | {career}
+          </Text>
+        </View>
+      ) : (
+        <View style={styles.topBarInfoContainer}>
+        </View>
+      )}
 
       {/* Timer Button */}
       <TouchableOpacity onPress={openTimerModal}

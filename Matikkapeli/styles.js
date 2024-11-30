@@ -11,7 +11,8 @@ export default StyleSheet.create({
     width: '100%', //Täyttää näytön leveyssuunnassa
     justifyContent: 'center',
     alignItems: 'center',
-    //marginTop: 60, // Varmistaa, että sisältö ei mene top barin alle
+    paddingTop: 60, // Varmistaa, että sisältö ei mene top barin alle
+    //marginTop: 60,
   },
   //!!!!!!!!! COMMON USED TEXTS !!!!!!!!!!!
   title: {
@@ -43,6 +44,7 @@ export default StyleSheet.create({
     color: '#000',
     fontSize: 16,
     fontFamily: 'ComicNeue_700Bold',
+    textAlign: 'center',
   },
   //!!!! NAVIGAATIO IKONIT !!!!!
   backIcon: {

@@ -64,10 +64,18 @@ export default function App() {
                       }}
                     >
                       <Stack.Screen name="StartScreen" component={StartScreen} />
-                      <Stack.Screen name="Settings" component={Settings} />
+                      <Stack.Screen
+                      name="Settings"
+                      component={Settings}
+                      options={{ headerShown: false }}
+                    />
                       <Stack.Screen name="Welcome" component={WelcomeScreen} />
                       <Stack.Screen name="UserCreation" component={UserCreation} />
-                      <Stack.Screen name="SelectProfile" component={SelectProfile} />
+                      <Stack.Screen
+                      name="SelectProfile"
+                      component={SelectProfile}
+                      options={{ headerShown: false }}
+                    />
                       <Stack.Screen name="CreateProfile" component={CreateProfile} />
                       <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
                       <Stack.Screen name="Animation" component={Animation} />

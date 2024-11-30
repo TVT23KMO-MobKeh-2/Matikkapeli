@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Button, StatusBar, TouchableOpacity, ImageBackground } from 'react-native';
+import { View, Text, Button, StatusBar, TouchableOpacity, ImageBackground, Pressable } from 'react-native';
 import { useTheme } from '../components/ThemeContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import styles from '../styles';
@@ -23,12 +23,13 @@ export default function StartScreen({ navigation }) {
       />
       <View style={styles.container}>
         <Text style={[styles.title, { color: isDarkTheme ? '#fff' : '#000' }]}>
-          Valitse tehtävä:
+          Matikkapeli
         </Text>
 
-        <View style={styles.buttonContainer}>
-          <Button onPress={() => navigation.navigate('Welcome')} title="Aloita peli" />
-
+        <View style={styles.startButton}>
+          <Pressable onPress={() => navigation.navigate('Welcome')}>
+            <Text style={styles.buttonText}>Aloita peli</Text>
+          </Pressable>
         </View>
       </View>
     </SafeAreaView>

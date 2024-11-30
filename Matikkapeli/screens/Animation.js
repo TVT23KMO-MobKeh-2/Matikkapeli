@@ -55,7 +55,7 @@ export default function Animation({ route, onBack, navigation }) {
     }))
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, {paddingTop: 0}]}>
             <Animated.View style={[animatedStyles]}>
                 <ImageBackground
                     source={backgroundImageBack}

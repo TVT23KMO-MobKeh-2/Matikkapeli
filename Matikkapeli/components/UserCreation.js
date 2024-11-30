@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Button } from 'react-native';
+import { View, Text, TextInput, Button, Pressable } from 'react-native';
 import React, { useState } from 'react';
 import styles from '../styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -38,20 +38,20 @@ export default function UserCreation({ onNavigate }) {
 
     return (
         <View style = {styles.container}>
+            <View style={styles.optionsContainer}>
             <Text style={styles.label}>Käyttäjätunnus</Text>
             <TextInput
-                style={styles.input}
+                style={[styles.input, {backgroundColor: 'white'}]}
                 placeholder="Kirjoita tunnus"
                 value={email}
                 onChangeText={(text) => setEmail(text)}
             />
-            <View style={styles.buttonContainer1}>
-                <Button
-                    title={isSaving ? 'Tallennetaan...' : 'Tallenna'}
-                    onPress={handleSave}
-                    disabled={isSaving}
-                />
-                <Button title="Peruuta" onPress={() => navigation.goBack()} color="red" />
+                <Pressable style={[styles.startButton, {backgroundColor: 'green'}]} onPress={handleSave} disabled={isSaving}>
+                    <Text style={styles.buttonText}>{isSaving ? 'Tallennetaan...' : 'Tallenna'}</Text>
+                </Pressable>
+                <Pressable style={[styles.startButton, {backgroundColor: 'darkred'}]} onPress={() => navigation.goBack()}>
+                    <Text style={styles.buttonText}>Peruuta</Text>
+                </Pressable>
             </View>
         </View>
     );

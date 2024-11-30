@@ -135,7 +135,7 @@ export default function Settings({ onBack }) {
         translucent={true} 
       />
       <ScrollView>
-      <View style={styles.settingItemContainer}>
+      <View style={styles.container}>
         <Text style={[styles.title, { color: isDarkTheme ? '#fff' : '#000' }]}>Asetukset</Text>
 
         {/* Teeman valinta */}

@@ -1,4 +1,4 @@
-import { View, Text, Button, TextInput } from 'react-native';
+import { View, Text, TextInput, Pressable } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import styles from '../styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -107,26 +107,31 @@ export default function WelcomeScreen({ navigation }) {
     if (email) {
         return (
           <View style={styles.container}>
-                <Text>WelcomeScreen</Text>
-                <View style={styles.buttonContainer}>
-                    <Text>Hei, {email}</Text>
-                    <Button
-                        title="Valitse profiili"
-                        onPress={() => navigation.navigate('SelectProfile', { email: email })}
-                    />
-                    <Button
-                        title="Poista tunnus puhelimen muistista"
-                        onPress={clearemail}
-                        color="red"
-                    />
-                    <Button
-                title={isDeleting ? 'Poistetaan...' : 'Poista tunnus'}
-                onPress={deletemail}
-                disabled={isDeleting} 
-                color="darkred"// Disable button during deletion
-            />
-                </View>
-            </View>
+                <Text style = {styles.title}>WelcomeScreen</Text>
+                    <View style={styles.optionsContainer}>
+                    <Text style={styles.question}>Hei, {email}</Text>
+                        <Pressable onPress={() => navigation.navigate('SelectProfile', { email: email })}
+                            style={styles.startButton}>
+                            <Text style={styles.buttonText}>Valitse profiili</Text>
+                        </Pressable>
+                        <Pressable onPress={(clearemail)}
+                            style={[styles.startButton, {backgroundColor: 'red'}]}>
+                            <Text style={styles.buttonText}> Poista tunnus puhelimen muistista</Text>
+                        </Pressable>
+                        <Pressable onPress={(deletemail)}
+                            disabled={isDeleting} 
+                            style={[ styles.startButton,
+                                    {
+                                        backgroundColor: isDeleting ? 'gray' : 'darkred', 
+                                        opacity: isDeleting ? 0.6 : 1, 
+                                    },
+                            ]}>
+                            <Text style={styles.buttonText}>
+                            {isDeleting ? 'Poistetaan...' : 'Poista tunnus tietokannasta'}
+                            </Text>
+                        </Pressable>
+                    </View>
+        </View>
         );
     }
 
@@ -140,36 +145,38 @@ export default function WelcomeScreen({ navigation }) {
 
     return (
         <View style={styles.container}>
-            <Text>WelcomeScreen</Text>
-            <View style={styles.buttonContainer}>
-                {isSearchMode ? (
+            <Text style = {styles.title}>WelcomeScreen</Text>
+            
+            <View style={styles.optionsContainer}>
+             <Text style={styles.question}>Tervetuloa!</Text>
+               {isSearchMode ? (
                     <>
                         <TextInput
-                            style={styles.input}
+                            style={[styles.input, {backgroundColor: 'white'}]}
                             placeholder="Syötä sähköposti"
                             value={inputEmail}
                             onChangeText={setInputEmail}
                             keyboardType="email-address"
                         />
-                        <Button
-                            title="Hae profiilit"
-                            onPress={handleSearchProfile}
-                        />
-                        <Button
-                            title="Peruuta"
-                            onPress={toggleSearchMode} // Cancel search mode
-                        />
+                        <Pressable onPress={handleSearchProfile}
+                            style={[styles.startButton, {backgroundColor: 'green'}]}>
+                            <Text style={styles.buttonText}>Hae profiilit</Text>
+                        </Pressable>
+                        <Pressable onPress={toggleSearchMode}
+                            style={[styles.startButton, {backgroundColor: 'darkred'}]}>
+                            <Text style={styles.buttonText}>Peruuta</Text>
+                        </Pressable>
                     </>
                 ) : (
                     <>
-                        <Button
-                            title="Hae tunnus"
-                            onPress={toggleSearchMode} // Open input field for email
-                        />
-                        <Button
-                            title="Luo tunnus ja ensimmäinen profiili"
-                            onPress={() => setIsCreatingUser(true)}
-                        />
+                        <Pressable onPress={toggleSearchMode}// Open input field for email
+                            style={styles.startButton}>
+                            <Text style={styles.buttonText}>Hae profiili sähköpostilla</Text>
+                        </Pressable>
+                        <Pressable onPress={() => setIsCreatingUser(true)}
+                            style={styles.startButton}>
+                            <Text style={styles.buttonText}>Luo tunnus ja ensimmäinen profiili</Text>
+                        </Pressable>
                     </>
                 )}
             </View>
