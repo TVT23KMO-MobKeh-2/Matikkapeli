@@ -4,7 +4,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Corrected import
 import ProfileScreen from './ProfileScreen';
 import CreateProfile from './CreateProfile';
-import {collection, query, where, getDocs  } from 'firebase/firestore';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import { firestore } from '../firebase/Config';
 import { ScoreContext } from '../components/ScoreContext';
 import { recievePlayerStatsFromDatabase, savePlayerStatsToDatabase } from '../firebase/Functions';
@@ -60,6 +60,32 @@ export default function SelectProfile({ route, navigation }) {
   const bgIndex = 0; 
 
   useEffect(() => {
+    const loadEmail = async () => {
+      try {
+        const storedEmail = await AsyncStorage.getItem('email');
+        if (storedEmail) {
+          setEmail(storedEmail);
+        } else {
+          console.log('No email found');
+        }
+      } catch (error) {
+        console.error('Error fetching email from AsyncStorage', error);
+      }
+    };
+    loadEmail();
+  }, []);
+
+  useEffect(() => {
+    if (email) {
+      const loadCharacters = async () => {
+        const data = await fetchCharactersDatabase(email);
+        setCharacters(data);
+      };
+      loadCharacters();
+    }
+  }, [email]);
+  
+  useEffect(() => {
     if (characters && characters.length > 0) {
       setEmail(selectedCharacter.email);
       setPlayerName(selectedCharacter.playerName);
@@ -75,7 +101,6 @@ export default function SelectProfile({ route, navigation }) {
     }
   }, [selectedCharacter]);
 
-  // Fetch email from AsyncStorage when the component loads
   useEffect(() => {
     const loadEmail = async () => {
       try {
@@ -92,51 +117,62 @@ export default function SelectProfile({ route, navigation }) {
     loadEmail();
   }, []);
 
+  useEffect(() => {
+    const loadStoredProfile = async () => {
+      try {
+        const storedPlayerName = await AsyncStorage.getItem('playerName');
+        const storedImageID = await AsyncStorage.getItem('imageID');
+  
+        if (storedPlayerName && storedImageID) {
+          // Pre-select or load profile from AsyncStorage if available
+          setPlayerName(storedPlayerName);
+          setImageID(storedImageID);
+        }
+      } catch (error) {
+        console.error('Error loading stored profile:', error);
+      }
+    };
+  
+    loadStoredProfile();
+  }, []);
+
+
   // Log email to confirm it's being passed
   useEffect(() => {
     console.log('SelectProfile loaded with email:', email);
   }, [email]);
+  
 
-  useEffect(() => {
-    if (email && email !== '') {  // Ensure email is non-empty
-      console.log('Fetching characters for email:', email);
-      const loadCharacters = async () => {
-        const data = await fetchCharactersDatabase(email);
-        setCharacters(data);
-      };
-      loadCharacters();
+  // Trigger navigation after setting selected character
+  const handleSelectCharacter = (character) => {
+    if (character) {
+      setSelectedCharacter(character); // Set character if it's valid
+      navigation.navigate('ProfileScreen', { character: character });
     } else {
-      console.log('Email is not set or invalid');
+      setIsCreatingProfile(true); // If no character, go to create profile
     }
-  }, [email]);  // This will now only run when `email` is updated 
-
+  };
+  
   const handleNewProfile = async (newProfile) => {
     try {
-      await savePlayerStatsToDatabase(newProfile); // Tallenna profiili tietokantaan
+      await savePlayerStatsToDatabase(newProfile); 
+      await AsyncStorage.setItem('playerName', newProfile.playerName);
+    await AsyncStorage.setItem('imageID', newProfile.imageID.toString());
     } catch (error) {
       console.error('Virhe profiilin luomisessa:', error);
       alert('Profiilin luominen epäonnistui');
     } finally {
       const updatedCharacters = await fetchCharactersDatabase(email);
-      setCharacters(updatedCharacters); // Päivitä profiilit
+      setCharacters(updatedCharacters);
     }
   };
-
-  if (selectedCharacter) {
-    return (
-      <ProfileScreen
-        character={selectedCharacter}
-        onBack={() => setSelectedCharacter(null)}
-      />
-    );
-  }
 
   if (isCreatingProfile || showCreate) {
     return (
       <CreateProfile
         onCancel={() => setIsCreatingProfile(false)}
         onSave={handleNewProfile}
-        email={email} // Lähetetään edelleen sähköposti
+        email={email} 
       />
     );
   }
@@ -156,7 +192,14 @@ export default function SelectProfile({ route, navigation }) {
             <Pressable
               key={index}
               style={styles.chooseProfile}
-              onPress={() => character ? setSelectedCharacter(character) : setIsCreatingProfile(true)}
+              onPress={() => {
+                if (character) {
+                  setSelectedCharacter(character);
+                  handleSelectCharacter(character);
+                } else {
+                  setIsCreatingProfile(true);
+                }
+              }}
             >
               {character ? (
                 <Image source={animalImages[character.imageID]} style={styles.picProfile} />

@@ -1,7 +1,8 @@
-import { View, Text, TextInput, Pressable, ImageBackground } from 'react-native';
+import { View, Text, TextInput, Pressable, ImageBackground, Alert } from 'react-native';
 import React, { useState } from 'react';
+import { View, Text, TextInput, Button, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { saveEmailToDatabase } from '../firebase/Functions';
+import { saveEmailToDatabase, isEmailUsed } from '../firebase/Functions'; // Import the function
 import { useNavigation } from '@react-navigation/native';
 
 import createStyles from "../styles";
@@ -11,7 +12,7 @@ import { getBGImage } from '../components/backgrounds';
 
 
 export default function UserCreation({ onNavigate }) {
-    const navigation = useNavigation(); // Hook navigointia varten
+    const navigation = useNavigation();
     const [email, setEmail] = useState('');
     const [isSaving, setIsSaving] = useState(false);
     const { isDarkTheme } = useTheme();
@@ -24,18 +25,26 @@ export default function UserCreation({ onNavigate }) {
             alert('Täytä kaikki kentät!');
             return;
         }
-    
+
         setIsSaving(true);
-    
+
         try {
-            console.log('Tallennetaan sähköposti AsyncStorage:een:', email);  // Lisää tämä
-            await AsyncStorage.setItem('email', email); // Tallennetaan paikallisesti
-            
-            console.log('Sähköposti tallennettu AsyncStorage:een'); // Lisää tämä
+            // Check if the email is already used
+            const emailInUse = await isEmailUsed(email);
+            if (emailInUse) {
+                Alert.alert("Virhe", "Tämä sähköposti on jo käytössä.");
+                setIsSaving(false);
+                return;
+            }
+
+            console.log('Tallennetaan sähköposti AsyncStorage:een:', email);
+            await AsyncStorage.setItem('email', email); // Store the email locally
+
+            console.log('Sähköposti tallennettu AsyncStorage:een');
             if (onNavigate) {
-                onNavigate(); // Jos onNavigate-prop annettu, kutsutaan sitä
+                onNavigate(); // If onNavigate is passed, call it
             } else {
-                navigation.navigate('SelectProfile', { email: email }); // Navigoidaan suoraan
+                navigation.navigate('SelectProfile', { email: email }); // Navigate to the next screen
             }
         } catch (error) {
             console.error('Error saving profile:', error);

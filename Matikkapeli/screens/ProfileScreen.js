@@ -1,4 +1,4 @@
-import { View, Text, Button, Image, ImageBackground } from 'react-native'
+import { View, Text, Button, Image, ImageBackground, Alert } from 'react-native'
 import LevelBar from '../components/LevelBar'
 import { useNavigation } from '@react-navigation/native';  // Import the hook
 import { deletePlayerDataFromDatabase } from '../firebase/Functions';
@@ -18,9 +18,20 @@ const animalImages = {
 
 
 
-export default function ProfileScreen({ character, onBack }) {
-    const navigation = useNavigation();  // Get the navigation prop using the hook
+export default function ProfileScreen({ route, navigation }) {
+  // Get the navigation prop using the hook
     const [isDeleting, setIsDeleting] = useState(false);
+    const { character } = route.params;
+    const [setPlayerName] = useState('')
+    const [setImageID] = useState('')
+
+    if (!character) {
+        return (
+          <View style={styles.container}>
+            <Text>No character found.</Text>
+          </View>
+        );
+      }
 
     const {email, imageID, playerName, career, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp } = character;
     const characterImage = animalImages[imageID];
@@ -36,18 +47,38 @@ export default function ProfileScreen({ character, onBack }) {
     };
 
     const goBack = () => {
-        navigation.goBack(); // Go back to the previous screen
-    };
+        navigation.navigate('SelectProfile', { email: email });  // Goes back to the previous screen
+      };
 
-    const handleDeleteProfile = async () => {
+    const clearProfile = async () => {
+        try {
+            await AsyncStorage.removeItem('playerName');
+            await AsyncStorage.removeItem('imageID');
+
+            setPlayerName('');
+            setImageID('');
+        } catch (e) {
+            console.error('Virhe tietojen poistamisessa');
+        }
+    }
+
+      const handleDeleteProfile = async () => {
         setIsDeleting(true); // Set loading state
         try {
+            console.log('Deleting profile...');
             await deletePlayerDataFromDatabase({ email, playerName });
-            Alert.alert('Success', 'Profile deleted successfully');
-            navigation.goBack()
+            clearProfile()
+            Alert.alert('Poisto onnistuis', 'Profiili poistettu onnistuneesti');
+            console.log('Profile deleted, navigating to SelectProfile');
+            
+            // Debugging Navigation
+            console.log('Navigating to SelectProfile with email:', email);
+            navigation.navigate('SelectProfile', { email: email });
         } catch (error) {
+            console.error('Error deleting profile:', error);
             Alert.alert('Error', 'Failed to delete profile');
         } finally {
+            console.log('Resetting deleting state');
             setIsDeleting(false); // Reset loading state
         }
     };
