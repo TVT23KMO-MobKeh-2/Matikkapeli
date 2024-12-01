@@ -1,9 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Button, Modal, TouchableOpacity } from "react-native";
 import * as Speech from "expo-speech";
-import styles from "../styles";
+
+import createStyles from "../styles";
+import { useTheme } from '../components/ThemeContext';
+import { light, dark } from '../assets/themeColors'; 
+
 
 const Timer = ({ closeModal, onTimerStart, onTimerEnd }) => {
+  const { isDarkTheme } = useTheme();
+  const theme = isDarkTheme ? dark : light; 
+  const styles = createStyles(theme);  
+ 
   const [selectedTime, setSelectedTime] = useState(null);
   const [timeLeft, setTimeLeft] = useState(null);
   const [isTimerActive, setIsTimerActive] = useState(false);
@@ -93,8 +101,8 @@ const Timer = ({ closeModal, onTimerStart, onTimerEnd }) => {
             <TouchableOpacity onPress={() => startTimer(60)}>
               <Text style={styles.modalButton}>60 minuuttia</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={closeTimerSelectionModal}>
-              <Text style={styles.startButton}>Sulje</Text>
+            <TouchableOpacity style= {styles.startButton} onPress={closeTimerSelectionModal}>
+              <Text style={styles.buttonText}>Sulje</Text>
             </TouchableOpacity>
           </View>
         </View>

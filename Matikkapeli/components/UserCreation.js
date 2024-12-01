@@ -1,15 +1,23 @@
 import { View, Text, TextInput, Pressable, ImageBackground } from 'react-native';
 import React, { useState } from 'react';
-import styles, {getBGImage} from '../styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { saveEmailToDatabase } from '../firebase/Functions';
 import { useNavigation } from '@react-navigation/native';
+
+import createStyles from "../styles";
+import { useTheme } from '../components/ThemeContext';
+import { light, dark } from '../assets/themeColors'; 
+import { getBGImage } from '../components/backgrounds';
+
 
 export default function UserCreation({ onNavigate }) {
     const navigation = useNavigation(); // Hook navigointia varten
     const [email, setEmail] = useState('');
     const [isSaving, setIsSaving] = useState(false);
     const { isDarkTheme } = useTheme();
+    const bgIndex = 0;
+    const styles = createStyles(isDarkTheme ? dark : light);
+    
 
     const handleSave = async () => {
         if (!email) {
@@ -39,7 +47,7 @@ export default function UserCreation({ onNavigate }) {
 
     return (
       <ImageBackground 
-        source={getBGImage(isDarkTheme)} 
+      source={getBGImage(isDarkTheme, bgIndex)} 
         style={styles.background} 
         resizeMode="cover"
         >

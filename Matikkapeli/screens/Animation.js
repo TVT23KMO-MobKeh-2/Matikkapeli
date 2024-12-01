@@ -2,8 +2,11 @@ import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 
 import { View, Text, ImageBackground, Button } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import TaskWindow from '../components/TaskWindow'
-import styles from '../styles'
 import { Image } from 'expo-image';
+
+import createStyles from "../styles";
+import { useTheme } from '../components/ThemeContext';
+import { light, dark } from '../assets/themeColors';
 
 export default function Animation({ route, onBack, navigation }) {
     const backgroundImageBack = require('../assets/Pixel-art-back_full.png')
@@ -17,6 +20,9 @@ export default function Animation({ route, onBack, navigation }) {
     const [taskVisible, setTaskVisible] = useState(false)
     const { profile } = route.params;
     console.log('Received profile data:', profile);
+
+    const { isDarkTheme } = useTheme();
+    const styles = createStyles(isDarkTheme ? dark : light);
 
     useEffect(() => {
         if (!profile) {

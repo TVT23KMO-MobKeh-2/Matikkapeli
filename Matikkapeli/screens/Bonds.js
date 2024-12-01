@@ -1,17 +1,20 @@
 
-import { View, Text, Button, StyleSheet, TextInput, ImageBackground, TouchableWithoutFeedback, Touchable, Pressable } from 'react-native'
+import { View, Text, Button, StyleSheet, TextInput, ImageBackground, TouchableWithoutFeedback, ScrollView, Pressable } from 'react-native'
 import React, { useState, useEffect, useContext } from 'react'
 import Svg, { Line } from 'react-native-svg';
 import { Audio } from 'expo-av';
-import styles from '../styles';
 import * as Speech from 'expo-speech';
 import { ScoreContext } from '../components/ScoreContext';
-import { useTheme } from '../components/ThemeContext';
 import { useSoundSettings } from '../components/SoundSettingsContext';
 import { useTaskReading } from '../components/TaskReadingContext';
 import { useTaskSyllabification } from '../components/TaskSyllabificationContext';
 import { useRoute } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
+
+import createStyles from "../styles";
+import { useTheme } from '../components/ThemeContext';
+import { light, dark } from '../assets/themeColors'; 
+import { getBGImage } from '../components/backgrounds';
 
 // Satunnaisen arvon generointi annetulla alueella
 function random(min, max) {
@@ -52,9 +55,13 @@ export default function Bonds({ onBack }) {
   const [isTaskChanging, setIsTaskChanging] = useState(false)
   const [isButtonClicked, setIsButtonClicked] = useState(false)
 
+  const theme = isDarkTheme ? dark : light; 
+  const styles = createStyles(theme);  
+  const bgIndex = 4;
+
 
   // Äänitiedostot oikein ja väärin vastauksille
-  const imagaBG = require('../assets/view6.png')  // Taustakuva
+  //const imagaBG = require('../assets/view6.png')  // Taustakuva
 
   // Funktio, joka generoi uuden pelitason (arvot vasemmalle ja oikealle laatikolle)
   const generateNewLevel = () => {
@@ -139,11 +146,13 @@ export default function Bonds({ onBack }) {
   };
 
   return (
-    <ImageBackground
-      source={imagaBG}
-      style={styles.background}
-      resizeMode='cover'>
+    <ImageBackground 
+      source={getBGImage(isDarkTheme, bgIndex)} 
+      style={styles.background} 
+      resizeMode="cover"
+    >
       <View style={styles.container}>
+        <View style={styles.tehtcont}>
         {instructionVisibility && (
           <TouchableWithoutFeedback>
             <View style={styles.overlayInstruction}>
@@ -175,14 +184,14 @@ export default function Bonds({ onBack }) {
         </Svg>
 
         <View style={styles.circle}>
-          <Text style={styles.circletext}>{levelData}</Text>
+          <Text style={[styles.numbertext, {color: 'white'}]}>{levelData}</Text>
         </View>
 
         <View style={styles.numbers}>
           <View style={styles.number1}>
             {witchBox === 0 ? (
               <TextInput
-                style={styles.input}
+                style={styles.numbertext}
                 value={inputValue1}
                 onChangeText={setInputValue1}
                 keyboardType="numeric"
@@ -196,7 +205,7 @@ export default function Bonds({ onBack }) {
           <View style={styles.number2}>
             {witchBox === 1 ? (
               <TextInput
-                style={styles.input}
+                style={styles.numbertext}
                 value={inputValue2}
                 onChangeText={setInputValue2}
                 keyboardType="numeric"
@@ -213,7 +222,7 @@ export default function Bonds({ onBack }) {
           onPress={checkAnswer}
           style={[styles.checkButton, isButtonDisabled ? styles.disabledButton : null]}
           disabled={isButtonDisabled}>
-          <Text style={styles.checkButtonText}>{syllabify("Tarkista")}</Text>
+          <Text style={styles.buttonText}>{syllabify("Tarkista")}</Text>
         </Pressable>
 
         {showFeedback && (
@@ -245,6 +254,7 @@ export default function Bonds({ onBack }) {
             </View>
           </TouchableWithoutFeedback>
         )}
+        </View>
       </View>
     </ImageBackground>
   );

@@ -2,13 +2,16 @@ import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, Button, TouchableWithoutFeedback, ImageBackground } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Speech from 'expo-speech';
-import styles, {getBGImage} from '../styles';
 import { ScoreContext } from '../components/ScoreContext';
-import { useTheme } from '../components/ThemeContext';
 import { useSoundSettings } from '../components/SoundSettingsContext';
 import { useTaskReading } from '../components/TaskReadingContext';
 import { useTaskSyllabification } from '../components/TaskSyllabificationContext';
 import { useNavigation, useRoute } from '@react-navigation/native';
+
+import createStyles from "../styles";
+import { useTheme } from '../components/ThemeContext';
+import { light, dark } from '../assets/themeColors'; 
+import { getBGImage } from '../components/backgrounds';
 
 // Funktio, joka generoi satunnaisen luvun väliltä min ja max
 function random(min, max) {
@@ -22,10 +25,14 @@ export default function ImageToNumber({ onBack }) {
   const [points, setPoints] = useState(0);
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
   const { incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, playerLevel, totalXp } = useContext(ScoreContext);
-  const { isDarkTheme } = useTheme(); // Käytetään teemakontekstia (tumma tila)
   const { gameSounds, volume, playSound } = useSoundSettings(); // Käytetään ääniasetuksia ja kontekstin playSound-funktiota
   const { taskReading } = useTaskReading(); // Käytetään tehtävänlukukontekstia
   const { syllabify, taskSyllabification, getFeedbackMessage } = useTaskSyllabification(); // Käytetään tavutuskontekstia
+
+  const { isDarkTheme } = useTheme();
+  const theme = isDarkTheme ? dark : light; 
+  const styles = createStyles(theme);  
+  const bgIndex = 1;  
 
   const [questionIndex, setQuestionIndex] = useState(0); // Nykyinen kysymyksen indeksi
   const [answered, setAnswered] = useState(false); // Onko kysymykseen vastattu
@@ -127,7 +134,7 @@ export default function ImageToNumber({ onBack }) {
         <MaterialCommunityIcons
           key={index}
           name="hammer"
-          size={50}
+          size={40}
           color="#4CAF50"
           style={styles.icon}
         />
@@ -142,10 +149,10 @@ export default function ImageToNumber({ onBack }) {
         <View key={index} style={styles.optionWrapper}>
           <TouchableOpacity
             onPress={() => handleAnswer(option)}
-            style={[styles.optionButton, answered && styles.disabledButton]} // Estä painallus, jos on jo vastattu
+            style={[styles.startButton, answered && styles.disabledButton]} // Estä painallus, jos on jo vastattu
             disabled={answered} // Estä painallus, jos on jo vastattu
           >
-            <Text style={styles.optionText}>{option}</Text>
+            <Text style={styles.buttonText}>{option}</Text>
           </TouchableOpacity>
         </View>
       ))}
@@ -164,15 +171,17 @@ export default function ImageToNumber({ onBack }) {
 
   return (
     <ImageBackground 
-    source={getBGImage(isDarkTheme)} 
+    source={getBGImage(isDarkTheme, bgIndex)} 
     style={styles.background} 
     resizeMode="cover"
     >
     <View style={styles.container}>
-      <Text style={[styles.title, { color: isDarkTheme ? '#fff' : '#000' }]}>{syllabify("Kuva numeroiksi")}</Text>
-      <Text style={[styles.question, { color: isDarkTheme ? '#fff' : '#000' }]}>{questions[questionIndex]?.question}</Text>
+      <View style={styles.tehtcont}>
+      <Text style={styles.title}>{syllabify("Kuva numeroiksi")}</Text>
+      <Text style={styles.question}>{questions[questionIndex]?.question}</Text>
       <View style={styles.iconContainer}>{renderIcons()}</View>
       {renderOptions()}
+      </View>
       {showFeedback && (
         <TouchableWithoutFeedback>
           <View style={styles.overlayInstruction}>

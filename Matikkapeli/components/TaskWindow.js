@@ -1,11 +1,18 @@
 import { View, Text, Pressable, ImageBackground, Image, StyleSheet } from 'react-native';
-import styles from '../styles';
 import { ScoreContext } from '../components/ScoreContext';
 import React, { useContext } from 'react'
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
 
+import createStyles from "../styles";
+import { useTheme } from '../components/ThemeContext';
+import { light, dark } from '../assets/themeColors'; 
+
+
 export default function TaskWindow({ taskVisible, setTaskVisible, navigation, profile}) {
+    const { isDarkTheme } = useTheme();
+    const styles = createStyles(isDarkTheme ? dark : light);
+    
     const backgroundImage = require('../assets/sign2.png'); 
     const apple = require('../assets/apple2.png'); 
     const note = require('../assets/note1.png');

@@ -3,13 +3,17 @@ import React, { useState, useContext, useEffect } from 'react';
 import * as Speech from 'expo-speech';
 import { StatusBar } from 'expo-status-bar';
 import { ScoreContext } from '../components/ScoreContext';
-import styles, {getBGImage}  from '../styles';
 import { useNavigation } from '@react-navigation/native';
 import { useRoute } from '@react-navigation/native';
 import { useTaskSyllabification } from '../components/TaskSyllabificationContext';
-import { useTheme } from '../components/ThemeContext';
 import { useSoundSettings } from '../components/SoundSettingsContext';
 import { useTaskReading } from '../components/TaskReadingContext';
+
+import createStyles from "../styles";
+import { useTheme } from '../components/ThemeContext';
+import { light, dark } from '../assets/themeColors'; 
+import { getBGImage } from '../components/backgrounds';
+
 
 export default function SoundToNumber({ onBack }) {
   const route = useRoute();
@@ -20,7 +24,6 @@ export default function SoundToNumber({ onBack }) {
   const { playerLevel, incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, totalXp } = useContext(ScoreContext);
   const [points, setPoints] = useState(0);
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
-  const { isDarkTheme } = useTheme();
   const { gameSounds, playSound } = useSoundSettings(); // Haetaan playSound suoraan kontekstista
   const { taskReading } = useTaskReading();
   const [number, setNumber] = useState(() => generateRandomNumber(0, playerLevel || 10));
@@ -29,6 +32,11 @@ export default function SoundToNumber({ onBack }) {
   const [gameEnded, setGameEnded] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const { isDarkTheme } = useTheme();
+  const theme = isDarkTheme ? dark : light; 
+  const styles = createStyles(theme);  
+  const bgIndex = 2; 
+ 
   console.log('SoundToNumber profile:', profile);
   // Palautteen avaaminen ja sulkeminen
   useEffect(() => {
@@ -116,7 +124,7 @@ export default function SoundToNumber({ onBack }) {
  //console.log('TÄÄLLÄKI')
   return (
     <ImageBackground 
-    source={getBGImage(isDarkTheme)} 
+    source={getBGImage(isDarkTheme, bgIndex)} 
     style={styles.background} 
     resizeMode="cover"
     >
@@ -126,11 +134,11 @@ export default function SoundToNumber({ onBack }) {
         translucent={true}
       />
       <View style={styles.container}>
-        <Text style={[styles.title, { color: isDarkTheme ? '#fff' : '#000' }]}>Valitse oikea numero</Text>
+        <Text style={styles.title}>Valitse oikea numero</Text>
         <TouchableOpacity style={styles.startButton} onPress={playNumber}>
           <Text style={styles.buttonText}>{syllabify("Kuuntele numero 🔊")}</Text>
         </TouchableOpacity>
-        <View style={isDarkTheme ? styles.optionsContainerDark : styles.optionsContainer}>
+        <View style={styles.optionsContainer}>
           {options.map((option, index) => (
             <TouchableOpacity
               key={index}
@@ -138,11 +146,12 @@ export default function SoundToNumber({ onBack }) {
               onPress={() => handleSelect(option)}
               disabled={loading}
             >
-              <Text style={styles.title}>{option}</Text>
+              <Text style={styles.label2}>{option}</Text>
             </TouchableOpacity>
           ))}
-        </View>
+          </View>
       </View>
+      
       {showFeedback && (
         <TouchableWithoutFeedback>
           <View style={styles.overlayInstruction}>

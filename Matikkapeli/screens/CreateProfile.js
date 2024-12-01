@@ -1,8 +1,11 @@
 import { View, Text, StyleSheet, Button, TextInput, Image, ImageBackground } from 'react-native'
 import React, { useState } from 'react'
 import { Picker } from '@react-native-picker/picker'
-import styles, {getBGImage} from '../styles';
+
+import createStyles from "../styles";
 import { useTheme } from '../components/ThemeContext';
+import { light, dark } from '../assets/themeColors'; 
+import { getBGImage } from '../components/backgrounds';
 
 
 export default function CreateProfile({ onCancel, onSave, email }) {
@@ -12,6 +15,9 @@ export default function CreateProfile({ onCancel, onSave, email }) {
     const [isSaving, setIsSaving] = useState(false);
 
     const { isDarkTheme } = useTheme();
+    const theme = isDarkTheme ? dark : light; 
+    const styles = createStyles(theme);  
+    const bgIndex = 0;
 
     const handleSave = async () => {
       if (!name || !selectedCareer || !selectedAnimal) {
@@ -63,7 +69,7 @@ export default function CreateProfile({ onCancel, onSave, email }) {
 
     return (
         <ImageBackground 
-        source={getBGImage(isDarkTheme)} 
+        source={getBGImage(isDarkTheme, bgIndex)} 
         style={styles.background} 
         resizeMode="cover"
         >

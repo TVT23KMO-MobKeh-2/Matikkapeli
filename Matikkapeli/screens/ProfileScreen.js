@@ -1,10 +1,13 @@
 import { View, Text, Button, Image, ImageBackground } from 'react-native'
-import styles, {getBGImage} from '../styles'
 import LevelBar from '../components/LevelBar'
 import { useNavigation } from '@react-navigation/native';  // Import the hook
 import { deletePlayerDataFromDatabase } from '../firebase/Functions';
 import React, { useState } from 'react';
+
+import createStyles from "../styles";
 import { useTheme } from '../components/ThemeContext';
+import { light, dark } from '../assets/themeColors'; 
+import { getBGImage } from '../components/backgrounds';
 
 const animalImages = {
     fox: require('../assets/proffox.png'),
@@ -23,6 +26,9 @@ export default function ProfileScreen({ character, onBack }) {
     const characterImage = animalImages[imageID];
 
     const { isDarkTheme } = useTheme();
+    const theme = isDarkTheme ? dark : light; 
+    const styles = createStyles(theme);  
+    const bgIndex = 0;    
 
     const startGame = () => {
         console.log('Navigating to Animation with profile:', character);
@@ -48,7 +54,7 @@ export default function ProfileScreen({ character, onBack }) {
 
     return (
         <ImageBackground 
-        source={getBGImage(isDarkTheme)} 
+        source={getBGImage(isDarkTheme, bgIndex)} 
         style={styles.background} 
         resizeMode="cover"
       >

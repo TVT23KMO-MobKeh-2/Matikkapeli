@@ -4,8 +4,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import ModalComponent from '../components/ModalComponent';
 import * as Speech from 'expo-speech';
 import { ScoreContext } from '../components/ScoreContext';
-import styles, {getBGImage} from '../styles';
-import { useTheme } from '../components/ThemeContext';
 import { useSoundSettings } from '../components/SoundSettingsContext';
 import { useTaskReading } from '../components/TaskReadingContext';
 import { useTaskSyllabification } from '../components/TaskSyllabificationContext';
@@ -13,15 +11,21 @@ import { Audio } from 'expo-av';
 import { useNavigation } from '@react-navigation/native';
 import { useRoute } from '@react-navigation/native';
 
+import createStyles from "../styles";
+import { useTheme } from '../components/ThemeContext';
+import { light, dark } from '../assets/themeColors'; 
+import { getBGImage } from '../components/backgrounds';
+
 export default function Comparison({ onBack }) {
-
-
   const route = useRoute();
   const { profile } = route.params;
   const navigation = useNavigation()
   const [showFeedback, setShowFeedback] = useState(false)
 
   const { isDarkTheme } = useTheme();
+  const theme = isDarkTheme ? dark : light;
+  const styles = createStyles(theme);
+
   const { gameSounds, playSound } = useSoundSettings();
   const { taskReading } = useTaskReading();
   const { syllabify, taskSyllabification, getFeedbackMessage } = useTaskSyllabification();
@@ -35,6 +39,8 @@ export default function Comparison({ onBack }) {
   const [equationOperand1, setEquationOperand1] = useState(0) // Yhtälön ensimmäinen operandin arvo, käytetään laskutoimituksissa
   const [equationOperand2, setEquationOperand2] = useState(0) // Yhtälön toinen operandin arvo, käytetään laskutoimituksissa
   const [isEquationAddition, setIsEquationAddition] = useState(false) // Määrittää, onko laskutoimitus yhteenlasku (true) vai ei (false)
+
+  const bgIndex = 3;
 
   //Koukku jolla tarkistetaan joko kierros päättyy.
   useEffect(() => {
@@ -256,11 +262,11 @@ export default function Comparison({ onBack }) {
 
   return (
     <ImageBackground 
-      source={getBGImage(isDarkTheme)} 
-      style={styles.background} 
+    source={getBGImage(isDarkTheme, bgIndex)} 
+    style={styles.background} 
       resizeMode="cover"
     >
-    <View style={styles.comparisonContainer}>
+    <View style={styles.container}>
       <Text style={styles.title}>{syllabify("Vertailu")}</Text>
       <Text>comparisonXp: {comparisonXp}</Text>
       {renderGuide()}

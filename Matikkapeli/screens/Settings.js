@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, Switch, StatusBar, BackHandler, ImageBackground, TouchableOpacity, Alert, ScrollView } from 'react-native';
-import { useTheme } from '../components/ThemeContext';
+import { View, Text, Button, Switch, StatusBar, BackHandler, ImageBackground, Alert} from 'react-native';
 import SliderComponent from '@react-native-community/slider';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSoundSettings } from '../components/SoundSettingsContext'; //Peliäänet on/off
 import { useTaskReading } from '../components/TaskReadingContext'; //Tehtävien lukeminen
 import { useTaskSyllabification } from '../components/TaskSyllabificationContext'; //Tavutus
 import { useBackgroundMusic } from '../components/BackgroundMusicContext'; //Taustamusiikki
-import styles, {getBGImage}  from '../styles';
 import { savePlayerSettingsToDatabase, updatePlayerSettingsToDatabase, recievePlayerSettingsFromDatabase } from '../firebase/Functions';
+
+import createStyles from "../styles";
+import { useTheme } from '../components/ThemeContext';
+import { light, dark } from '../assets/themeColors'; 
+import { getBGImage } from '../components/backgrounds';
 
 export default function Settings({ onBack }) {
   const [email, setEmail] = useState("isi@gmail.com");
@@ -16,10 +19,15 @@ export default function Settings({ onBack }) {
   const [settingsDocId, setSettingsDocId] = useState(""); //Doc ID
 
   const { isDarkTheme, setIsDarkTheme } = useTheme();
+
   const { taskReading, setTaskReading } = useTaskReading();
   const { taskSyllabification, setTaskSyllabification } = useTaskSyllabification(); //Käytä tavutuksen kontekstia
   const { gameSounds, setGameSounds } = useSoundSettings();
   const { isMusicPlaying, setIsMusicPlaying, setMusicVolume, musicVolume } = useBackgroundMusic(); //Taustamusiikki
+
+  const theme = isDarkTheme ? dark : light; 
+  const styles = createStyles(theme);  
+  const bgIndex = 0;  
 
   //Sulkee sovelluksen Android-laitteilla
   const handleCloseApp = () => {
@@ -121,7 +129,7 @@ export default function Settings({ onBack }) {
 
   return (
     <ImageBackground 
-    source={getBGImage(isDarkTheme)} 
+    source={getBGImage(isDarkTheme, bgIndex)} 
     style={styles.background} 
     resizeMode="cover"
     >
@@ -131,37 +139,36 @@ export default function Settings({ onBack }) {
         backgroundColor="transparent" 
         translucent={true} 
       />
-      <ScrollView>
       <View style={styles.container}>
-        <Text style={[styles.title, { color: isDarkTheme ? '#fff' : '#000' }]}>Asetukset</Text>
+        <Text style={styles.title}>Asetukset</Text>
 
         {/* Teeman valinta */}
-        <View style={isDarkTheme ? styles.settingItemDark : styles.settingItem}>
-          <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Tumman teeman valinta</Text>
+        <View style={styles.settingItem}>
+          <Text style={styles.label}>Tumman teeman valinta</Text>
           <Switch value={isDarkTheme} onValueChange={setIsDarkTheme} />
         </View>
 
         {/* Tavutuksen valinta */}
-        <View style={isDarkTheme ? styles.settingItemDark : styles.settingItem}>
-          <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Tavutus</Text>
+        <View style={styles.settingItem}>
+          <Text style={styles.label}>Tavutus</Text>
           <Switch value={taskSyllabification} onValueChange={() => setTaskSyllabification(!taskSyllabification)} />
         </View>
 
         {/* Tehtävien lukeminen */}
-        <View style={isDarkTheme ? styles.settingItemDark : styles.settingItem}>
-          <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Tehtävien lukeminen</Text>
+        <View style={styles.settingItem}>
+          <Text style={styles.label}>Tehtävien lukeminen</Text>
           <Switch value={taskReading} onValueChange={() => setTaskReading(!taskReading)} />
         </View>
 
         {/* Taustamusiikin päälle/pois */}
-        <View style={isDarkTheme ? styles.settingItemDark : styles.settingItem}>
-          <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Taustamusiikki</Text>
+        <View style={styles.settingItem}>
+          <Text style={styles.label}>Taustamusiikki</Text>
           <Switch value={isMusicPlaying} onValueChange={setIsMusicPlaying} />
         </View>
 
         {/* Taustamusiikin voimakkuus */}
-        <View style={isDarkTheme ? styles.settingItemColumnDark : styles.settingItemColumn}>
-          <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Taustamusiikin voimakkuus</Text>
+        <View style={styles.settingItemColumn}>
+          <Text style={styles.label}>Taustamusiikin voimakkuus</Text>
           <SliderComponent
             style={styles.slider}
             maximumTrackTintColor="#FF0000" //Punainen
@@ -176,8 +183,8 @@ export default function Settings({ onBack }) {
         </View>
 
         {/* Peliäänet */}
-        <View style={isDarkTheme ? styles.settingItemDark : styles.settingItem}>
-          <Text style={[styles.label, { color: isDarkTheme ? '#fff' : '#000' }]}>Peliäänet</Text>
+        <View style={styles.settingItem}>
+          <Text style={styles.label}>Peliäänet</Text>
           <Switch value={gameSounds} onValueChange={() => setGameSounds(!gameSounds)} />
             
         </View>
@@ -185,7 +192,6 @@ export default function Settings({ onBack }) {
         {/* Sovelluksen sammuttaminen */}
         <Button title="Sammuta sovellus" onPress={handleCloseApp} />
       </View>
-      </ScrollView>
       </SafeAreaView>
     </ImageBackground>
   );

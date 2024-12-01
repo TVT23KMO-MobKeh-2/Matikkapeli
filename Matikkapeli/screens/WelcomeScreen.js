@@ -1,21 +1,28 @@
 import { View, Text, TextInput, Pressable, ImageBackground, } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import styles, {getBGImage} from '../styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserCreation from '../components/UserCreation';
 import { deleteUserDataFromDatabase, recieveProfileByEmail } from '../firebase/Functions'; // Import your function
 import { Alert } from 'react-native';
+
+import createStyles from "../styles";
 import { useTheme } from '../components/ThemeContext';
+import { light, dark } from '../assets/themeColors'; 
+import { getBGImage } from '../components/backgrounds';
 
 
 export default function WelcomeScreen({ navigation }) {
-    const { isDarkTheme } = useTheme();
     const [email, setEmail] = useState('');
     const [inputEmail, setInputEmail] = useState(''); // State for holding input email
     const [isCreatingUser, setIsCreatingUser] = useState(false);
     const [isSearchMode, setIsSearchMode] = useState(false); // State to toggle search mode
     const [profileData, setProfileData] = useState(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    
+    const { isDarkTheme } = useTheme();
+    const theme = isDarkTheme ? dark : light; 
+    const styles = createStyles(theme);  
+    const bgIndex = 0; 
 
     const getData = async () => {
         try {
@@ -110,7 +117,7 @@ export default function WelcomeScreen({ navigation }) {
     if (email) {
         return (
             <ImageBackground 
-            source={getBGImage(isDarkTheme)} 
+            source={getBGImage(isDarkTheme, bgIndex)} 
             style={styles.background} 
             resizeMode="cover"
           >

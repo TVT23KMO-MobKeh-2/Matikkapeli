@@ -1,17 +1,22 @@
 import React, { useContext, useState } from "react";
 import { View, Text, Image, TouchableOpacity, Modal } from "react-native";
 import { ScoreContext } from "./ScoreContext";
-import styles from "../styles";
 import Timer from "./Timer";
 
 import { Ionicons } from "@expo/vector-icons";  // Make sure this is imported
 import { useNavigation } from '@react-navigation/native';
-import ProfileScreen from "../screens/ProfileScreen";
-import SelectProfile from "../screens/SelectProfile";
-import { isDarkTheme } from "./ThemeContext";
+
+import createStyles from "../styles";
+import { useTheme } from '../components/ThemeContext';
+import { light, dark } from '../assets/themeColors'; 
+
 
 const TopBarComponent = ({ customStyle }) => {
   const navigation = useNavigation();  // Use navigation hook to navigate
+  
+  const { isDarkTheme } = useTheme();
+  const theme = isDarkTheme ? dark : light; 
+  const styles = createStyles(theme);
 
   // Function to handle the settings button press
   const handleSettingsPress = () => {
@@ -20,7 +25,7 @@ const TopBarComponent = ({ customStyle }) => {
   };
 
 
-  const { imageID, playerName, career, playerLevel, totalXp } = useContext(ScoreContext);
+  const { imageID, playerName, career, playerLevel } = useContext(ScoreContext);
   const [timerModalVisible, setTimerModalVisible] = useState(false);
   const [timerStarted, setTimerStarted] = useState(false);
   //const navigation = useNavigation();
@@ -86,7 +91,7 @@ const TopBarComponent = ({ customStyle }) => {
 
       {/* Settings Button */}
       <TouchableOpacity onPress={handleSettingsPress} style={styles.settingsButton}>
-        <Ionicons name="settings-outline" size={32} color="black" />
+        <Ionicons name="settings-outline" size={32} color={isDarkTheme ? "white" : "black"}/>
       </TouchableOpacity>
 
       {/* Timer Modal */}

@@ -2,14 +2,17 @@ import { View, Pressable, Image, ImageBackground, Text } from 'react-native';
 import React, { useEffect, useState, useContext } from 'react';
 import { FontAwesome5 } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Corrected import
-import styles, {getBGImage} from '../styles';
-import { useTheme } from '../components/ThemeContext';
 import ProfileScreen from './ProfileScreen';
 import CreateProfile from './CreateProfile';
 import {collection, query, where, getDocs  } from 'firebase/firestore';
 import { firestore } from '../firebase/Config';
 import { ScoreContext } from '../components/ScoreContext';
 import { recievePlayerStatsFromDatabase, savePlayerStatsToDatabase } from '../firebase/Functions';
+
+import createStyles from "../styles";
+import { useTheme } from '../components/ThemeContext';
+import { light, dark } from '../assets/themeColors'; 
+import { getBGImage } from '../components/backgrounds';
 
 const fetchCharactersDatabase = async (email) => {
   try {
@@ -50,7 +53,11 @@ export default function SelectProfile({ route, navigation }) {
   const [selectedCharacter, setSelectedCharacter] = useState(null);
   const [isCreatingProfile, setIsCreatingProfile] = useState(false);
   const { email, setEmail, playerName, setPlayerName, setImageID, setCareer, setPlayerLevel, savePlayerStatsToDatabase, updatePlayerStatsToDatabase, handleUpdatePlayerStatsToDatabase, setImageToNumberXp, setSoundToNumberXp, setComparisonXp, setBondsXp } = useContext(ScoreContext)
+
   const { isDarkTheme } = useTheme();
+  const theme = isDarkTheme ? dark : light; 
+  const styles = createStyles(theme);  
+  const bgIndex = 0; 
 
   useEffect(() => {
     if (characters && characters.length > 0) {
@@ -136,7 +143,7 @@ export default function SelectProfile({ route, navigation }) {
 
   return (
     <ImageBackground 
-    source={getBGImage(isDarkTheme)} 
+    source={getBGImage(isDarkTheme, bgIndex)} 
     style={styles.background} 
     resizeMode="cover"
     >

@@ -32,9 +32,6 @@ import { useFonts, ComicNeue_400Regular, ComicNeue_700Bold } from '@expo-google-
 const Stack = createStackNavigator();
 
 export default function App() {
-
-
-
   const [selectedTask, setSelectedTask] = useState(null);
   const [profileImage, setProfileImage] = useState(require('./assets/images/norsu.png')); // Oletusprofiilikuva
   const [isProfileScreen, setIsProfileScreen] = useState(false);
@@ -61,7 +58,10 @@ export default function App() {
                     <Stack.Navigator
                       initialRouteName="StartScreen"
                       screenOptions={{
-                        header: () => <TopBarComponent />, // Replaces default header with TopBarComponent
+                        header: () => <TopBarComponent />,
+                        headerStyle: {
+                          height: 60,
+                        } // Replaces default header with TopBarComponent
                       }}
                     >
                       <Stack.Screen name="StartScreen" component={StartScreen} />

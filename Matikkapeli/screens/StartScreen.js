@@ -2,15 +2,20 @@ import React from 'react';
 import { View, Text, StatusBar, ImageBackground, Pressable } from 'react-native';
 import { useTheme } from '../components/ThemeContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import styles, {getBGImage} from '../styles';
+import createStyles from '../styles';
+import { getBGImage } from '../components/backgrounds';
+import { light, dark } from '../assets/themeColors';
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 export default function StartScreen({ navigation }) {
   const { isDarkTheme } = useTheme();
+  const theme = isDarkTheme ? dark : light;
+  const bgIndex = 0; 
+  const styles = createStyles(theme);
 
   return (
     <ImageBackground 
-      source={getBGImage(isDarkTheme)} 
+      source={getBGImage(isDarkTheme, bgIndex)} 
       style={styles.background} 
       resizeMode="cover"
     >
@@ -21,7 +26,7 @@ export default function StartScreen({ navigation }) {
         translucent={true} 
       />
       <View style={styles.container}>
-        <Text style={[styles.title, { color: isDarkTheme ? '#fff' : '#000' }]}>
+        <Text style={styles.title}>
           Matikkapeli
         </Text>
 
