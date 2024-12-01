@@ -2,6 +2,30 @@ import { Alert } from 'react-native';
 
 import { addDoc, collection, firestore, PLAYERSTATS, PLAYERSETTINGS, where, query, getDocs, updateDoc, doc, deleteDoc } from '../firebase/Config';
 
+export async function isEmailUsed(email) {
+    try {
+        const emailQuery = query(
+            collection(firestore, PLAYERSTATS),
+            where("email", "==", email)
+        );
+        
+        const emailQuerySnapshot = await getDocs(emailQuery);
+
+        if (!emailQuerySnapshot.empty) {
+            // Email already exists
+            console.log("Email already exists in database.");
+            return true;  // Return true if email exists
+        }
+
+        console.log("Email is available.");
+        return false;  // Return false if email does not exist
+    } catch (error) {
+        console.error("Error checking email:", error);
+        Alert.alert("Virhe", "Sähköpostin tarkistaminen epäonnistui.");
+        return false;
+    }
+}
+
 export async function saveEmailToDatabase({email}) {
     try {
         const emailQuery = query(
