@@ -1,8 +1,9 @@
-import { View, Text, Pressable, Image } from 'react-native';
+import { View, Pressable, Image, ImageBackground, Text } from 'react-native';
 import React, { useEffect, useState, useContext } from 'react';
 import { FontAwesome5 } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Corrected import
-import styles from '../styles';
+import styles, {getBGImage} from '../styles';
+import { useTheme } from '../components/ThemeContext';
 import ProfileScreen from './ProfileScreen';
 import CreateProfile from './CreateProfile';
 import {collection, query, where, getDocs  } from 'firebase/firestore';
@@ -49,6 +50,7 @@ export default function SelectProfile({ route, navigation }) {
   const [selectedCharacter, setSelectedCharacter] = useState(null);
   const [isCreatingProfile, setIsCreatingProfile] = useState(false);
   const { email, setEmail, playerName, setPlayerName, setImageID, setCareer, setPlayerLevel, savePlayerStatsToDatabase, updatePlayerStatsToDatabase, handleUpdatePlayerStatsToDatabase, setImageToNumberXp, setSoundToNumberXp, setComparisonXp, setBondsXp } = useContext(ScoreContext)
+  const { isDarkTheme } = useTheme();
 
   useEffect(() => {
     if (characters && characters.length > 0) {
@@ -133,7 +135,13 @@ export default function SelectProfile({ route, navigation }) {
   }
 
   return (
-    <View style = {styles.container}>
+    <ImageBackground 
+    source={getBGImage(isDarkTheme)} 
+    style={styles.background} 
+    resizeMode="cover"
+    >
+    <View style = {[styles.container, {paddingTop: 0}]}>
+      <Text style={styles.title}>Valitse profiili</Text>
       <View style={styles.profileSelect}>
         {[...Array(4)].map((_, index) => {
           const character = characters[index];
@@ -155,5 +163,6 @@ export default function SelectProfile({ route, navigation }) {
         })}
       </View>
     </View>
+    </ImageBackground>
   );
 }

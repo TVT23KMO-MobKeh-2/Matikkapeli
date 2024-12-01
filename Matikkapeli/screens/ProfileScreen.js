@@ -1,9 +1,10 @@
-import { View, Text, Button, Image } from 'react-native'
-import styles from '../styles'
+import { View, Text, Button, Image, ImageBackground } from 'react-native'
+import styles, {getBGImage} from '../styles'
 import LevelBar from '../components/LevelBar'
 import { useNavigation } from '@react-navigation/native';  // Import the hook
 import { deletePlayerDataFromDatabase } from '../firebase/Functions';
 import React, { useState } from 'react';
+import { useTheme } from '../components/ThemeContext';
 
 const animalImages = {
     fox: require('../assets/proffox.png'),
@@ -20,6 +21,8 @@ export default function ProfileScreen({ character, onBack }) {
 
     const {email, imageID, playerName, career, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp } = character;
     const characterImage = animalImages[imageID];
+
+    const { isDarkTheme } = useTheme();
 
     const startGame = () => {
         console.log('Navigating to Animation with profile:', character);
@@ -44,16 +47,21 @@ export default function ProfileScreen({ character, onBack }) {
     };
 
     return (
-        <View style={styles.container}>
+        <ImageBackground 
+        source={getBGImage(isDarkTheme)} 
+        style={styles.background} 
+        resizeMode="cover"
+      >
+        <View style={[styles.container, {paddingTop: 0}]}>
             <View style={styles.profilebox}>
                 <Image
                     source={characterImage}
                     style={styles.profileImage}
                 />
                 <View>
-                    <Text>Nimi: {playerName}</Text>
-                    <Text>Ammatti: {career}</Text>
-                    <Text>Taso: {playerLevel}</Text>
+                    <Text style = {styles.label}>Nimi: {playerName}</Text>
+                    <Text style = {styles.label}>Ammatti: {career}</Text>
+                    <Text style = {styles.label}>Taso: {playerLevel}</Text>
                 </View>
             </View>
             <View style={styles.profileSelect}>
@@ -70,8 +78,7 @@ export default function ProfileScreen({ character, onBack }) {
                 disabled={isDeleting} 
                 color="red"
             />
-
-
         </View>
+    </ImageBackground>
     );
 }

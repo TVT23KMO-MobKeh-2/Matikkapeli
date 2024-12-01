@@ -1,5 +1,9 @@
 import { StyleSheet } from 'react-native';
 
+export const getBGImage = (isDarkTheme) => {
+  return isDarkTheme ? require('./assets/background3.png') : require('./assets/background2.jpg');
+}
+
 export default StyleSheet.create({
   //!!!!!!!!!!!!!! COMMON STYLES!!!!!!!!!!!!!!
   safeContainer: {
@@ -35,10 +39,10 @@ export default StyleSheet.create({
     fontFamily: 'ComicNeue_700Bold',
   },
   label2: {
-    fontSize: 30,
+    fontSize: 15,
     marginBottom: 20,
     textAlign: 'center',
-    fontFamily: 'ComicNeue_700Bold',
+    fontFamily: 'ComicNeue_400Regular',
   },
   buttonText: {
     color: '#000',
@@ -454,7 +458,6 @@ export default StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
     width: "100%"
   },
   comparisonGuideBigger: {
@@ -479,11 +482,16 @@ export default StyleSheet.create({
     backgroundColor: '#3bb143'
   },
   //!!!!!!!!!!!!!! PROFILE STYLES !!!!!!!!!!!!!!!
+  //
   profilebox: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-  },
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#3D843D',
+  }, //
   profileImage: {
     width: 100, // Adjust size as needed
     height: 100, // Adjust size as needed
@@ -491,32 +499,24 @@ export default StyleSheet.create({
     margin: 20,
     borderRadius: 20,
   },
-  //Profiilikuvan tyylit
-
-  //// ?????????????????????????????????????????????????????????????????????????????
-  //topBarContainer: {
-  //  flexDirection: 'row',
-  //  alignItems: 'center',
-  //  padding: 10,
-  //  backgroundColor: '#f8f8f8',
-  //},
-  //???????????????????????????????????????????????????????????????????????????????????
+  //??????????????/* NO ONE USES THIS
+  /*
   imageOptionsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
    marginTop: 20,
-  },
+  },/* NO ONE USES THIS
   imageOption: {
     padding: 10,
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 10,
-  },
+  },/* NO ONE USES THIS
   profileImageOption: {
     width: 50,
     height: 50,
     borderRadius: 25,
-  },
+  },*/
   chooseProfile:{
     alignItems: 'center',
     justifyContent:'center',
@@ -525,7 +525,7 @@ export default StyleSheet.create({
     width: 150,
     height: 150,
     backgroundColor: 'lightblue'
-  },
+  },//
   addIcon: {
     backgroundColor: 'orange',
     alignItems: 'center',
@@ -533,19 +533,23 @@ export default StyleSheet.create({
     width: 150,
     height: 150,
     borderRadius: 10
-  },
+  },//
   picProfile:{
     width: 150,
     height: 150,
     borderRadius: 10,
-  },
+  },//
   profileSelect: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'center',
-    margin: 10,
+    justifyContent: 'space-evenly',
+   // margin: 10,
     alignItems: 'center',
-  },
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    borderRadius: 5,
+    borderWidth: 2,
+    borderColor: '#3D843D',
+  }, /////////////////////////// Checked profile styles
   //Vasaroiden tausta
   iconBackground: {
     backgroundColor: '#f0f0f0', // Yhteinen taustaväri

@@ -1,10 +1,10 @@
 
-import { View, Text, Button, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, Button, TouchableWithoutFeedback, ImageBackground } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 import ModalComponent from '../components/ModalComponent';
 import * as Speech from 'expo-speech';
 import { ScoreContext } from '../components/ScoreContext';
-import styles from '../styles';
+import styles, {getBGImage} from '../styles';
 import { useTheme } from '../components/ThemeContext';
 import { useSoundSettings } from '../components/SoundSettingsContext';
 import { useTaskReading } from '../components/TaskReadingContext';
@@ -255,6 +255,11 @@ export default function Comparison({ onBack }) {
   };
 
   return (
+    <ImageBackground 
+      source={getBGImage(isDarkTheme)} 
+      style={styles.background} 
+      resizeMode="cover"
+    >
     <View style={styles.comparisonContainer}>
       <Text style={styles.title}>{syllabify("Vertailu")}</Text>
       <Text>comparisonXp: {comparisonXp}</Text>
@@ -292,5 +297,6 @@ export default function Comparison({ onBack }) {
         </TouchableWithoutFeedback>
       )}
     </View>
+    </ImageBackground>
   );
 }

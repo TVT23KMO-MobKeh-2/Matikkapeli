@@ -1,12 +1,15 @@
-import { View, Text, TextInput, Pressable } from 'react-native';
+import { View, Text, TextInput, Pressable, ImageBackground, } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import styles from '../styles';
+import styles, {getBGImage} from '../styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserCreation from '../components/UserCreation';
 import { deleteUserDataFromDatabase, recieveProfileByEmail } from '../firebase/Functions'; // Import your function
 import { Alert } from 'react-native';
+import { useTheme } from '../components/ThemeContext';
+
 
 export default function WelcomeScreen({ navigation }) {
+    const { isDarkTheme } = useTheme();
     const [email, setEmail] = useState('');
     const [inputEmail, setInputEmail] = useState(''); // State for holding input email
     const [isCreatingUser, setIsCreatingUser] = useState(false);
@@ -106,6 +109,11 @@ export default function WelcomeScreen({ navigation }) {
 
     if (email) {
         return (
+            <ImageBackground 
+            source={getBGImage(isDarkTheme)} 
+            style={styles.background} 
+            resizeMode="cover"
+          >
           <View style={styles.container}>
                 <Text style = {styles.title}>WelcomeScreen</Text>
                     <View style={styles.optionsContainer}>
@@ -132,6 +140,7 @@ export default function WelcomeScreen({ navigation }) {
                         </Pressable>
                     </View>
         </View>
+        </ImageBackground>
         );
     }
 
@@ -144,6 +153,11 @@ export default function WelcomeScreen({ navigation }) {
     }
 
     return (
+        <ImageBackground 
+        source={getBGImage(isDarkTheme)} 
+        style={styles.background} 
+        resizeMode="cover"
+      >
         <View style={styles.container}>
             <Text style = {styles.title}>WelcomeScreen</Text>
             
@@ -181,5 +195,6 @@ export default function WelcomeScreen({ navigation }) {
                 )}
             </View>
         </View>
+        </ImageBackground>
     );
 }

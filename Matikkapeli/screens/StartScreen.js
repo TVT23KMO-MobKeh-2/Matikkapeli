@@ -1,17 +1,16 @@
 import React from 'react';
-import { View, Text, Button, StatusBar, TouchableOpacity, ImageBackground, Pressable } from 'react-native';
+import { View, Text, StatusBar, ImageBackground, Pressable } from 'react-native';
 import { useTheme } from '../components/ThemeContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import styles from '../styles';
+import styles, {getBGImage} from '../styles';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 export default function StartScreen({ navigation }) {
   const { isDarkTheme } = useTheme();
-  const ImageBG = require('../assets/background2.jpg');
-  const ImageBGDark = require('../assets/background3.png');
 
   return (
     <ImageBackground 
-      source={isDarkTheme ? ImageBGDark : ImageBG} 
+      source={getBGImage(isDarkTheme)} 
       style={styles.background} 
       resizeMode="cover"
     >

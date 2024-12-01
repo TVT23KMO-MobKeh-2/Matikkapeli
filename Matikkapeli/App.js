@@ -2,7 +2,7 @@ import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { View, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, TouchableOpacity, ActivityIndicator, ImageBackground } from 'react-native';
 import { useState } from 'react';
 import { ThemeProvider } from './components/ThemeContext';
 import { ScoreProvider } from './components/ScoreContext';
@@ -27,6 +27,7 @@ import ProfileScreen from './screens/ProfileScreen';
 import CreateProfile from './screens/CreateProfile';
 import ModalComponent from './components/ModalComponent';
 import { useFonts, ComicNeue_400Regular, ComicNeue_700Bold } from '@expo-google-fonts/comic-neue';
+
 
 const Stack = createStackNavigator();
 

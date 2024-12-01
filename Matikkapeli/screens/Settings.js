@@ -7,7 +7,7 @@ import { useSoundSettings } from '../components/SoundSettingsContext'; //Peliä�
 import { useTaskReading } from '../components/TaskReadingContext'; //Tehtävien lukeminen
 import { useTaskSyllabification } from '../components/TaskSyllabificationContext'; //Tavutus
 import { useBackgroundMusic } from '../components/BackgroundMusicContext'; //Taustamusiikki
-import styles from '../styles';
+import styles, {getBGImage}  from '../styles';
 import { savePlayerSettingsToDatabase, updatePlayerSettingsToDatabase, recievePlayerSettingsFromDatabase } from '../firebase/Functions';
 
 export default function Settings({ onBack }) {
@@ -20,9 +20,6 @@ export default function Settings({ onBack }) {
   const { taskSyllabification, setTaskSyllabification } = useTaskSyllabification(); //Käytä tavutuksen kontekstia
   const { gameSounds, setGameSounds } = useSoundSettings();
   const { isMusicPlaying, setIsMusicPlaying, setMusicVolume, musicVolume } = useBackgroundMusic(); //Taustamusiikki
-
-  const ImageBG = require('../assets/background2.jpg');
-  const ImageBGDark = require('../assets/background3.png');
 
   //Sulkee sovelluksen Android-laitteilla
   const handleCloseApp = () => {
@@ -124,7 +121,7 @@ export default function Settings({ onBack }) {
 
   return (
     <ImageBackground 
-    source={isDarkTheme ? ImageBGDark : ImageBG} 
+    source={getBGImage(isDarkTheme)} 
     style={styles.background} 
     resizeMode="cover"
     >

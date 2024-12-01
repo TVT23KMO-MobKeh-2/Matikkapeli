@@ -1,8 +1,8 @@
-import { View, Text, StyleSheet, Button, TextInput, Image } from 'react-native'
+import { View, Text, StyleSheet, Button, TextInput, Image, ImageBackground } from 'react-native'
 import React, { useState } from 'react'
 import { Picker } from '@react-native-picker/picker'
-import styles from '../styles';
-
+import styles, {getBGImage} from '../styles';
+import { useTheme } from '../components/ThemeContext';
 
 
 export default function CreateProfile({ onCancel, onSave, email }) {
@@ -10,6 +10,8 @@ export default function CreateProfile({ onCancel, onSave, email }) {
     const [selectedAnimal, setSelectedAnimal] = useState();
     const [name, setName] = useState('');
     const [isSaving, setIsSaving] = useState(false);
+
+    const { isDarkTheme } = useTheme();
 
     const handleSave = async () => {
       if (!name || !selectedCareer || !selectedAnimal) {
@@ -60,18 +62,23 @@ export default function CreateProfile({ onCancel, onSave, email }) {
 
 
     return (
-        <View style={styles.container}>
+        <ImageBackground 
+        source={getBGImage(isDarkTheme)} 
+        style={styles.background} 
+        resizeMode="cover"
+        >
+        <View style={styles.optionsContainer}>
             {selectedAnimal && (
                     <View style={styles.imageContainer}>
                         <Image source={selectedAnimal.image} style={styles.image} />
                     </View>
                 )}
-            <Text style={styles.label}>Nimi</Text>
             <TextInput
                 style={styles.input}
                 placeholder='Kirjoita nimesi'
                 value={name}
-                onChangeText={(text) => setName(text)} />
+                onChangeText={(text) => setName(text)}
+                backgroundColor="white" />
             
             <View style={styles.pickerContainer}>
                 <View style={styles.pickerWrapper}>
@@ -79,7 +86,7 @@ export default function CreateProfile({ onCancel, onSave, email }) {
                         selectedValue={selectedAnimal}
                         onValueChange={(itemValue) => setSelectedAnimal(itemValue)}
                     >
-                        <Picker.Item label='Valitse eläin' value="" />
+                        <Picker.Item label='Valitse eläin' value=""/>
                         {animalOptions.map((option) => (
                             <Picker.Item key={option.value} label={option.label} value={option} />
                         ))}
@@ -106,5 +113,6 @@ export default function CreateProfile({ onCancel, onSave, email }) {
                 <Button title='Peruuta' onPress={onCancel} color='red' />
             </View>
         </View>
+        </ImageBackground>
     );
 }

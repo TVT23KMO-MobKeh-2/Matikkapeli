@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, Button, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, TouchableOpacity, Button, TouchableWithoutFeedback, ImageBackground } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Speech from 'expo-speech';
-import styles from '../styles';
+import styles, {getBGImage} from '../styles';
 import { ScoreContext } from '../components/ScoreContext';
 import { useTheme } from '../components/ThemeContext';
 import { useSoundSettings } from '../components/SoundSettingsContext';
@@ -163,7 +163,12 @@ export default function ImageToNumber({ onBack }) {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: isDarkTheme ? '#333' : '#fff' }]}>
+    <ImageBackground 
+    source={getBGImage(isDarkTheme)} 
+    style={styles.background} 
+    resizeMode="cover"
+    >
+    <View style={styles.container}>
       <Text style={[styles.title, { color: isDarkTheme ? '#fff' : '#000' }]}>{syllabify("Kuva numeroiksi")}</Text>
       <Text style={[styles.question, { color: isDarkTheme ? '#fff' : '#000' }]}>{questions[questionIndex]?.question}</Text>
       <View style={styles.iconContainer}>{renderIcons()}</View>
@@ -203,5 +208,6 @@ export default function ImageToNumber({ onBack }) {
         </TouchableWithoutFeedback>
       )}
     </View>
+    </ImageBackground>
   );
 }

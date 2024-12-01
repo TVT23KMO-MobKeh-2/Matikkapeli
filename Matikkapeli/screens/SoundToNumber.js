@@ -3,7 +3,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import * as Speech from 'expo-speech';
 import { StatusBar } from 'expo-status-bar';
 import { ScoreContext } from '../components/ScoreContext';
-import styles from '../styles';
+import styles, {getBGImage}  from '../styles';
 import { useNavigation } from '@react-navigation/native';
 import { useRoute } from '@react-navigation/native';
 import { useTaskSyllabification } from '../components/TaskSyllabificationContext';
@@ -28,8 +28,6 @@ export default function SoundToNumber({ onBack }) {
   const { syllabify, taskSyllabification, getFeedbackMessage } = useTaskSyllabification();
   const [gameEnded, setGameEnded] = useState(false);
   const [loading, setLoading] = useState(false);
-  const ImageBG = require('../assets/background2.jpg');
-  const ImageBGDark = require('../assets/background3.png');
 
   console.log('SoundToNumber profile:', profile);
   // Palautteen avaaminen ja sulkeminen
@@ -79,28 +77,19 @@ export default function SoundToNumber({ onBack }) {
   // Valitsee oikean numeron ja 3 muuta 0 - playerlevelin väliltä
   function generateOptions(correctNumber) {
     const max = typeof playerLevel === 'number' && playerLevel > 0 ? playerLevel : 10;
-    console.log('playerLevel:', playerLevel);
+    //console.log('playerLevel:', playerLevel);
     const options = [correctNumber];
     const possibleNumbers = Array.from({ length: max + 1 }, (_, i) => i);
     const remainingNumbers = possibleNumbers.filter(num => num !== correctNumber);
-    console.log('SoundToNumber remainingNumbers:', remainingNumbers);
+    //console.log('SoundToNumber remainingNumbers:', remainingNumbers);
     const randomOptions = remainingNumbers.sort(() => Math.random() - 0.5).slice(0, 3);
     options.push(...randomOptions);
-    console.log('Generated options:', options);
+    //console.log('Generated options:', options);
 
-    /*
-    while (options.length < 4) {
-      console.log('SoundToNumber options:', options);
-      const randomNum = generateRandomNumber(0, max);
-      if (!options.includes(randomNum)) {
-        options.push(randomNum);
-      }
-    }*/
-    console.log('WÄÄWÄÄ');
     return options.sort(() => Math.random() - 0.5);
   }
 
-  console.log('SoundToNumber options:WÄÄWÄÄ', options);
+  //console.log('SoundToNumber options:WÄÄWÄÄ', options);
 
   const handleSelect = async (selectedNumber) => {
     if (gameEnded) return;
@@ -124,13 +113,12 @@ export default function SoundToNumber({ onBack }) {
     }
     setLoading(false);
   };
- console.log('TÄÄLLÄKI')
+ //console.log('TÄÄLLÄKI')
   return (
-    <ImageBackground
-      source={isDarkTheme ? ImageBGDark : ImageBG}
-      style={styles.background}
-      resizeMode="cover"
-      
+    <ImageBackground 
+    source={getBGImage(isDarkTheme)} 
+    style={styles.background} 
+    resizeMode="cover"
     >
       <StatusBar
         barStyle={isDarkTheme ? 'light-content' : 'dark-content'}
@@ -138,10 +126,9 @@ export default function SoundToNumber({ onBack }) {
         translucent={true}
       />
       <View style={styles.container}>
-        {console.log('TÄÄLLÄ')}
         <Text style={[styles.title, { color: isDarkTheme ? '#fff' : '#000' }]}>Valitse oikea numero</Text>
         <TouchableOpacity style={styles.startButton} onPress={playNumber}>
-          <Text style={styles.buttonText}>{syllabify("Kuuntele numero 🔊")}Kuuntele numero 🔊</Text>
+          <Text style={styles.buttonText}>{syllabify("Kuuntele numero 🔊")}</Text>
         </TouchableOpacity>
         <View style={isDarkTheme ? styles.optionsContainerDark : styles.optionsContainer}>
           {options.map((option, index) => (
@@ -151,7 +138,7 @@ export default function SoundToNumber({ onBack }) {
               onPress={() => handleSelect(option)}
               disabled={loading}
             >
-              <Text style={styles.label2}>{option}</Text>
+              <Text style={styles.title}>{option}</Text>
             </TouchableOpacity>
           ))}
         </View>
