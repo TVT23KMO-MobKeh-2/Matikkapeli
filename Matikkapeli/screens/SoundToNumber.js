@@ -37,8 +37,6 @@ export default function SoundToNumber({ onBack }) {
   const styles = createStyles(theme);  
   const bgIndex = 2; 
  
-  console.log('SoundToNumber profile:', profile);
-  // Palautteen avaaminen ja sulkeminen
   useEffect(() => {
     if (questionsAnswered === 5) {
       Speech.stop();

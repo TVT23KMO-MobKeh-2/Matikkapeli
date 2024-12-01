@@ -1,5 +1,4 @@
 import { StyleSheet} from 'react-native';
-import {light, dark} from './assets/themeColors';
 
 //1. appwide styles: container, background, texts
 //2. top bar styles
@@ -564,12 +563,12 @@ image: {
       justifyContent: 'center',
       marginTop: 20,
       borderRadius: 10,
-    },
+    },/*
     checkButtonText: {
       color: 'white',
       fontSize: 16,
       fontFamily: 'ComicNeue_700Bold',
-    },
+    },*/
 });
 
 export default createStyles;

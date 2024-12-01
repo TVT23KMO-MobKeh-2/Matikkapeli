@@ -1,6 +1,5 @@
 import { View, Text, TextInput, Pressable, ImageBackground, Alert } from 'react-native';
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { saveEmailToDatabase, isEmailUsed } from '../firebase/Functions'; // Import the function
 import { useNavigation } from '@react-navigation/native';
