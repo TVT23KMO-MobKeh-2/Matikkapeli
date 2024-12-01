@@ -110,11 +110,11 @@ export default function CreateProfile({ onCancel, onSave, email }) {
 
 const styles = StyleSheet.create({
     container: {
-        width: 300,
+        width: '100%',
         padding: 20,
         alignItems: 'center',
         borderRadius: 10,
-        marginTop: 20,
+        marginTop: 200,
     },
     label: {
         fontSize: 16,

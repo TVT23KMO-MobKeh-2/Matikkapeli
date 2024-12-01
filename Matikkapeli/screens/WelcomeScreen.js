@@ -8,6 +8,8 @@ import { Alert } from 'react-native';
 
 export default function WelcomeScreen({ navigation }) {
     const [email, setEmail] = useState('');
+    const [playerName, setPlayerName] = useState('')
+    const [imageID, setImageID] = useState('')
     const [inputEmail, setInputEmail] = useState(''); // State for holding input email
     const [isCreatingUser, setIsCreatingUser] = useState(false);
     const [isSearchMode, setIsSearchMode] = useState(false); // State to toggle search mode
@@ -16,10 +18,27 @@ export default function WelcomeScreen({ navigation }) {
 
     const getData = async () => {
         try {
-            const value = await AsyncStorage.getItem('email');
-            if (value !== null) {
-                console.log('Sähköposti haettu AsyncStorage:sta:', value);
-                setEmail(value);
+            const emailValue = await AsyncStorage.getItem('email');
+            if (emailValue !== null) {
+                console.log('Sähköposti haettu AsyncStorage:sta:', emailValue);
+                setEmail(emailValue);
+
+            } else {
+                console.log('Ei löytynyt sähköpostia AsyncStorage:sta');
+            }
+            const nameValue = await AsyncStorage.getItem('playername');
+            if (nameValue !== null) {
+                console.log('Sähköposti haettu AsyncStorage:sta:', nameValue);
+                setPlayerName(nameValue);
+
+            } else {
+                console.log('Ei löytynyt sähköpostia AsyncStorage:sta');
+            }
+            const imageValue = await AsyncStorage.getItem('imageID');
+            if (imageValue !== null) {
+                console.log('Sähköposti haettu AsyncStorage:sta:', imageValue);
+                setImageID(imageValue);
+
             } else {
                 console.log('Ei löytynyt sähköpostia AsyncStorage:sta');
             }
@@ -31,7 +50,12 @@ export default function WelcomeScreen({ navigation }) {
     const clearemail = async () => {
         try {
             await AsyncStorage.removeItem('email');
+            await AsyncStorage.removeItem('playerName');
+            await AsyncStorage.removeItem('imageID');
+
             setEmail('');
+            setPlayerName('');
+            setImageID('');
         } catch (e) {
             console.error('Virhe tietojen poistamisessa');
         }
@@ -91,9 +115,9 @@ export default function WelcomeScreen({ navigation }) {
             Alert.alert("Virhe", "Sähköpostiosoite on pakollinen.");
         }
     };
-    
-    
-    
+
+
+
 
     const toggleSearchMode = () => {
         setIsSearchMode(!isSearchMode); // Toggle the search mode on/off
@@ -106,7 +130,7 @@ export default function WelcomeScreen({ navigation }) {
 
     if (email) {
         return (
-          <View style={styles.container}>
+            <View style={styles.container}>
                 <Text>WelcomeScreen</Text>
                 <View style={styles.buttonContainer}>
                     <Text>Hei, {email}</Text>
@@ -120,11 +144,11 @@ export default function WelcomeScreen({ navigation }) {
                         color="red"
                     />
                     <Button
-                title={isDeleting ? 'Poistetaan...' : 'Poista tunnus'}
-                onPress={deletemail}
-                disabled={isDeleting} 
-                color="darkred"// Disable button during deletion
-            />
+                        title={isDeleting ? 'Poistetaan...' : 'Poista tunnus'}
+                        onPress={deletemail}
+                        disabled={isDeleting}
+                        color="darkred"// Disable button during deletion
+                    />
                 </View>
             </View>
         );
