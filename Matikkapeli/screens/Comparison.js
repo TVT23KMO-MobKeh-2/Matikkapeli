@@ -212,8 +212,8 @@ export default function Comparison({ onBack }) {
   const renderGuide = () => {
     //Tallennetaan muuttujaan teksti sen perusteella, etsitäänkö suurempaa ja tavutetaanko teksti
     const guideText = lookingForBigger
-      ? "Valitse yhtäsuuri tai suurempi"
-      : "Valitse yhtäsuuri tai pienempi";
+      ? "Valitse yhtäsuuri (=) tai suurempi"
+      : "Valitse yhtäsuuri (=) tai pienempi";
 
     // Käytetään syllabify-funktiota kontekstista tavutukseen
     const displayText = taskSyllabification ? syllabify(guideText) : guideText;
@@ -287,13 +287,15 @@ export default function Comparison({ onBack }) {
               <Text>Bonds: {bondsXp}/40</Text>
               <View style={styles.buttonContainer}>
                 <Button
-                  title="Seuraava tehtävä odottaa"
+                  title={syllabify("Seuraava tehtävä odottaa")}
                   onPress={() => {
                     handleContinueGame();
                     setShowFeedback(false)
                   }}
                 />
-                <Button title="Lopeta peli" onPress={() => {
+                <Button
+                  title={syllabify("Lopeta peli")} 
+                  onPress={() => {
                   handleEndGame();
                   setShowFeedback(false)
                 }} />
