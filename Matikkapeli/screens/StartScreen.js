@@ -1,17 +1,21 @@
 import React from 'react';
-import { View, Text, Button, StatusBar, TouchableOpacity, ImageBackground } from 'react-native';
+import { View, Text, StatusBar, ImageBackground, Pressable } from 'react-native';
 import { useTheme } from '../components/ThemeContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import styles from '../styles';
+import createStyles from '../styles';
+import { getBGImage } from '../components/backgrounds';
+import { light, dark } from '../assets/themeColors';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 export default function StartScreen({ navigation }) {
   const { isDarkTheme } = useTheme();
-  const ImageBG = require('../assets/background2.jpg');
-  const ImageBGDark = require('../assets/background3.png');
+  const theme = isDarkTheme ? dark : light;
+  const bgIndex = 0; 
+  const styles = createStyles(theme);
 
   return (
     <ImageBackground 
-      source={isDarkTheme ? ImageBGDark : ImageBG} 
+      source={getBGImage(isDarkTheme, bgIndex)} 
       style={styles.background} 
       resizeMode="cover"
     >
@@ -22,13 +26,14 @@ export default function StartScreen({ navigation }) {
         translucent={true} 
       />
       <View style={styles.container}>
-        <Text style={[styles.title, { color: isDarkTheme ? '#fff' : '#000' }]}>
-          Valitse tehtävä:
+        <Text style={styles.title}>
+          Matikkapeli
         </Text>
 
-        <View style={styles.buttonContainer}>
-          <Button onPress={() => navigation.navigate('Welcome')} title="Aloita peli" />
-
+        <View style={styles.startButton}>
+          <Pressable onPress={() => navigation.navigate('Welcome')}>
+            <Text style={styles.buttonText}>Aloita peli</Text>
+          </Pressable>
         </View>
       </View>
     </SafeAreaView>

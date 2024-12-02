@@ -1,7 +1,11 @@
-import { View, Text, StyleSheet, Button, TextInput, Image } from 'react-native'
+import { View, Text, StyleSheet, Button, TextInput, Image, ImageBackground } from 'react-native'
 import React, { useState } from 'react'
 import { Picker } from '@react-native-picker/picker'
 
+import createStyles from "../styles";
+import { useTheme } from '../components/ThemeContext';
+import { light, dark } from '../assets/themeColors'; 
+import { getBGImage } from '../components/backgrounds';
 
 
 export default function CreateProfile({ onCancel, onSave, email }) {
@@ -9,6 +13,11 @@ export default function CreateProfile({ onCancel, onSave, email }) {
     const [selectedAnimal, setSelectedAnimal] = useState();
     const [name, setName] = useState('');
     const [isSaving, setIsSaving] = useState(false);
+
+    const { isDarkTheme } = useTheme();
+    const theme = isDarkTheme ? dark : light; 
+    const styles = createStyles(theme);  
+    const bgIndex = 0;
 
     const handleSave = async () => {
       if (!name || !selectedCareer || !selectedAnimal) {
@@ -59,18 +68,23 @@ export default function CreateProfile({ onCancel, onSave, email }) {
 
 
     return (
-        <View style={styles.container}>
+        <ImageBackground 
+        source={getBGImage(isDarkTheme, bgIndex)} 
+        style={styles.background} 
+        resizeMode="cover"
+        >
+        <View style={styles.optionsContainer}>
             {selectedAnimal && (
                     <View style={styles.imageContainer}>
                         <Image source={selectedAnimal.image} style={styles.image} />
                     </View>
                 )}
-            <Text style={styles.label}>Nimi</Text>
             <TextInput
                 style={styles.input}
                 placeholder='Kirjoita nimesi'
                 value={name}
-                onChangeText={(text) => setName(text)} />
+                onChangeText={(text) => setName(text)}
+                backgroundColor="white" />
             
             <View style={styles.pickerContainer}>
                 <View style={styles.pickerWrapper}>
@@ -78,7 +92,7 @@ export default function CreateProfile({ onCancel, onSave, email }) {
                         selectedValue={selectedAnimal}
                         onValueChange={(itemValue) => setSelectedAnimal(itemValue)}
                     >
-                        <Picker.Item label='Valitse eläin' value="" />
+                        <Picker.Item label='Valitse eläin' value=""/>
                         {animalOptions.map((option) => (
                             <Picker.Item key={option.value} label={option.label} value={option} />
                         ))}
@@ -105,57 +119,6 @@ export default function CreateProfile({ onCancel, onSave, email }) {
                 <Button title='Peruuta' onPress={onCancel} color='red' />
             </View>
         </View>
+        </ImageBackground>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        width: '100%',
-        padding: 20,
-        alignItems: 'center',
-        borderRadius: 10,
-        marginTop: 200,
-    },
-    label: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        marginBottom: 10,
-        alignSelf: 'flex-start'
-    },
-    input: {
-        width: '100%',
-        height: 40,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 5,
-        marginBottom: 20,
-        paddingHorizontal: 10,
-    },
-    pickerContainer: {
-        width: '100%',
-    },
-
-    pickerWrapper: {
-        width: '100%',
-        marginBottom: 20,
-    },
-    picker: {
-        height: 50,
-    },
-
-    imageContainer: {
-        marginTop: 20,
-        alignItems: 'center',
-    },
-    image: {
-        width: 100,
-        height: 100,
-    },
-    buttonContainer: {
-        marginTop: 20,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: '100%'
-    }
-
-})

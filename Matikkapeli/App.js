@@ -2,7 +2,7 @@ import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { View, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, TouchableOpacity, ActivityIndicator, ImageBackground } from 'react-native';
 import { useState } from 'react';
 import { ThemeProvider } from './components/ThemeContext';
 import { ScoreProvider } from './components/ScoreContext';
@@ -28,12 +28,10 @@ import CreateProfile from './screens/CreateProfile';
 import ModalComponent from './components/ModalComponent';
 import { useFonts, ComicNeue_400Regular, ComicNeue_700Bold } from '@expo-google-fonts/comic-neue';
 
+
 const Stack = createStackNavigator();
 
 export default function App() {
-
-
-
   const [selectedTask, setSelectedTask] = useState(null);
   const [profileImage, setProfileImage] = useState(require('./assets/images/norsu.png')); // Oletusprofiilikuva
   const [isProfileScreen, setIsProfileScreen] = useState(false);
@@ -60,14 +58,25 @@ export default function App() {
                     <Stack.Navigator
                       initialRouteName="StartScreen"
                       screenOptions={{
-                        header: () => <TopBarComponent />, // Replaces default header with TopBarComponent
+                        header: () => <TopBarComponent />,
+                        headerStyle: {
+                          height: 60,
+                        } // Replaces default header with TopBarComponent
                       }}
                     >
                       <Stack.Screen name="StartScreen" component={StartScreen} />
-                      <Stack.Screen name="Settings" component={Settings} />
+                      <Stack.Screen
+                      name="Settings"
+                      component={Settings}
+                      options={{ headerShown: false }}
+                    />
                       <Stack.Screen name="Welcome" component={WelcomeScreen} />
                       <Stack.Screen name="UserCreation" component={UserCreation} />
-                      <Stack.Screen name="SelectProfile" component={SelectProfile} />
+                      <Stack.Screen
+                      name="SelectProfile"
+                      component={SelectProfile}
+                      options={{ headerShown: false }}
+                    />
                       <Stack.Screen name="CreateProfile" component={CreateProfile} />
                       <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
                       <Stack.Screen name="Animation" component={Animation} />

@@ -1,9 +1,13 @@
-import { View, Text, Button, Image, Alert } from 'react-native'
-import styles from '../styles'
+import { View, Text, Button, Image, ImageBackground, Alert } from 'react-native'
 import LevelBar from '../components/LevelBar'
 import { useNavigation } from '@react-navigation/native';  // Import the hook
 import { deletePlayerDataFromDatabase } from '../firebase/Functions';
 import React, { useState } from 'react';
+
+import createStyles from "../styles";
+import { useTheme } from '../components/ThemeContext';
+import { light, dark } from '../assets/themeColors'; 
+import { getBGImage } from '../components/backgrounds';
 
 const animalImages = {
     fox: require('../assets/proffox.png'),
@@ -32,6 +36,10 @@ export default function ProfileScreen({ route, navigation }) {
     const {email, imageID, playerName, career, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp } = character;
     const characterImage = animalImages[imageID];
 
+    const { isDarkTheme } = useTheme();
+    const theme = isDarkTheme ? dark : light; 
+    const styles = createStyles(theme);  
+    const bgIndex = 0;    
 
     const startGame = () => {
         console.log('Navigating to Animation with profile:', character);
@@ -76,16 +84,21 @@ export default function ProfileScreen({ route, navigation }) {
     };
 
     return (
-        <View style={styles.container}>
+        <ImageBackground 
+        source={getBGImage(isDarkTheme, bgIndex)} 
+        style={styles.background} 
+        resizeMode="cover"
+      >
+        <View style={[styles.container, {paddingTop: 0}]}>
             <View style={styles.profilebox}>
                 <Image
                     source={characterImage}
                     style={styles.profileImage}
                 />
                 <View>
-                    <Text>Nimi: {playerName}</Text>
-                    <Text>Ammatti: {career}</Text>
-                    <Text>Taso: {playerLevel}</Text>
+                    <Text style = {styles.label}>Nimi: {playerName}</Text>
+                    <Text style = {styles.label}>Ammatti: {career}</Text>
+                    <Text style = {styles.label}>Taso: {playerLevel}</Text>
                 </View>
             </View>
             <View style={styles.profileSelect}>
@@ -102,8 +115,7 @@ export default function ProfileScreen({ route, navigation }) {
                 disabled={isDeleting} 
                 color="red"
             />
-
-
         </View>
+    </ImageBackground>
     );
 }

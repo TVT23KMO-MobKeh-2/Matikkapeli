@@ -2,15 +2,18 @@ import { View, Text, Button, TouchableOpacity, ImageBackground, TouchableWithout
 import React, { useState, useContext, useEffect } from 'react';
 import * as Speech from 'expo-speech';
 import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScoreContext } from '../components/ScoreContext';
-import styles from '../styles';
 import { useNavigation } from '@react-navigation/native';
 import { useRoute } from '@react-navigation/native';
 import { useTaskSyllabification } from '../components/TaskSyllabificationContext';
-import { useTheme } from '../components/ThemeContext';
 import { useSoundSettings } from '../components/SoundSettingsContext';
 import { useTaskReading } from '../components/TaskReadingContext';
+
+import createStyles from "../styles";
+import { useTheme } from '../components/ThemeContext';
+import { light, dark } from '../assets/themeColors'; 
+import { getBGImage } from '../components/backgrounds';
+
 
 export default function SoundToNumber({ onBack }) {
   const route = useRoute();
@@ -21,7 +24,6 @@ export default function SoundToNumber({ onBack }) {
   const { playerLevel, incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, totalXp } = useContext(ScoreContext);
   const [points, setPoints] = useState(0);
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
-  const { isDarkTheme } = useTheme();
   const { gameSounds, playSound } = useSoundSettings(); // Haetaan playSound suoraan kontekstista
   const { taskReading } = useTaskReading();
   const [number, setNumber] = useState(() => generateRandomNumber(0, playerLevel || 10));
@@ -29,10 +31,12 @@ export default function SoundToNumber({ onBack }) {
   const { syllabify, taskSyllabification, getFeedbackMessage } = useTaskSyllabification();
   const [gameEnded, setGameEnded] = useState(false);
   const [loading, setLoading] = useState(false);
-  const ImageBG = require('../assets/background2.jpg');
-  const ImageBGDark = require('../assets/background3.png');
 
-  // Palautteen avaaminen ja sulkeminen
+  const { isDarkTheme } = useTheme();
+  const theme = isDarkTheme ? dark : light; 
+  const styles = createStyles(theme);  
+  const bgIndex = 2; 
+ 
   useEffect(() => {
     if (questionsAnswered === 5) {
       Speech.stop();
@@ -79,15 +83,19 @@ export default function SoundToNumber({ onBack }) {
   // Valitsee oikean numeron ja 3 muuta 0 - playerlevelin väliltä
   function generateOptions(correctNumber) {
     const max = typeof playerLevel === 'number' && playerLevel > 0 ? playerLevel : 10;
+    //console.log('playerLevel:', playerLevel);
     const options = [correctNumber];
-    while (options.length < 4) {
-      const randomNum = generateRandomNumber(0, max);
-      if (!options.includes(randomNum)) {
-        options.push(randomNum);
-      }
-    }
+    const possibleNumbers = Array.from({ length: max + 1 }, (_, i) => i);
+    const remainingNumbers = possibleNumbers.filter(num => num !== correctNumber);
+    //console.log('SoundToNumber remainingNumbers:', remainingNumbers);
+    const randomOptions = remainingNumbers.sort(() => Math.random() - 0.5).slice(0, 3);
+    options.push(...randomOptions);
+    //console.log('Generated options:', options);
+
     return options.sort(() => Math.random() - 0.5);
   }
+
+  //console.log('SoundToNumber options:WÄÄWÄÄ', options);
 
   const handleSelect = async (selectedNumber) => {
     if (gameEnded) return;
@@ -111,12 +119,12 @@ export default function SoundToNumber({ onBack }) {
     }
     setLoading(false);
   };
-
+ //console.log('TÄÄLLÄKI')
   return (
-    <ImageBackground
-      source={isDarkTheme ? ImageBGDark : ImageBG}
-      style={styles.background}
-      resizeMode="cover"
+    <ImageBackground 
+    source={getBGImage(isDarkTheme, bgIndex)} 
+    style={styles.background} 
+    resizeMode="cover"
     >
       <StatusBar
         barStyle={isDarkTheme ? 'light-content' : 'dark-content'}
@@ -124,11 +132,11 @@ export default function SoundToNumber({ onBack }) {
         translucent={true}
       />
       <View style={styles.container}>
-        <Text style={[styles.title, { color: isDarkTheme ? '#fff' : '#000' }]}>Valitse oikea numero</Text>
+        <Text style={styles.title}>Valitse oikea numero</Text>
         <TouchableOpacity style={styles.startButton} onPress={playNumber}>
-          <Text style={styles.buttonText}>{syllabify("Kuuntele numero 🔊")}Kuuntele numero 🔊</Text>
+          <Text style={styles.buttonText}>{syllabify("Kuuntele numero 🔊")}</Text>
         </TouchableOpacity>
-        <View style={isDarkTheme ? styles.optionsContainerDark : styles.optionsContainer}>
+        <View style={styles.optionsContainer}>
           {options.map((option, index) => (
             <TouchableOpacity
               key={index}
@@ -139,8 +147,9 @@ export default function SoundToNumber({ onBack }) {
               <Text style={styles.label2}>{option}</Text>
             </TouchableOpacity>
           ))}
-        </View>
+          </View>
       </View>
+      
       {showFeedback && (
         <TouchableWithoutFeedback>
           <View style={styles.overlayInstruction}>

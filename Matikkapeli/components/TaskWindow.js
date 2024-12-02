@@ -1,18 +1,23 @@
 import { View, Text, Pressable, ImageBackground, Image, StyleSheet } from 'react-native';
-import styles from '../styles';
 import { ScoreContext } from '../components/ScoreContext';
 import React, { useContext } from 'react'
 
+import createStyles from "../styles";
+import { useTheme } from '../components/ThemeContext';
+import { light, dark } from '../assets/themeColors'; 
+
 
 export default function TaskWindow({ taskVisible, setTaskVisible, navigation, profile}) {
+    const { isDarkTheme } = useTheme();
+    const styles = createStyles(isDarkTheme ? dark : light);
+
     const backgroundImage = require('../assets/sign2.png'); 
     const apple = require('../assets/apple2.png'); 
     const note = require('../assets/note1.png');
     const bond = require('../assets/bond2.png');
     const conv = require('../assets/conv1.png');
     const {imageToNumberXp, soundToNumberXp, playerLevel, } = useContext(ScoreContext);
-
-
+    
     if (!taskVisible) return null;
 
     const isDivisibleByFive = (imageToNumberXp % (5 * playerLevel) === 0) && (soundToNumberXp % (5 * playerLevel) === 0)
@@ -22,9 +27,10 @@ export default function TaskWindow({ taskVisible, setTaskVisible, navigation, pr
             <ImageBackground 
                 source={backgroundImage} 
                 style={styles.backgroundImage} 
-                resizeMode="cover">
+                resizeMode="cover"
+                pointerEvents="box-none">
                 <View style={styles.content}>
-                    <View style={styles.grid}>
+                    <View style={styles.grid} >
                         <Text>{profile.playername}</Text>
                         <Pressable 
                             style={styles.taskContainer}
@@ -38,6 +44,7 @@ export default function TaskWindow({ taskVisible, setTaskVisible, navigation, pr
                             style={styles.taskContainer}
                             onPress={() => { 
                                 navigation.navigate('SoundToNumbers', { profile });
+                                console.log('profileeee', profile);
                                 setTaskVisible(false); 
                             }}>
                             <Image source={note} style={styles.taskImage} />
@@ -51,6 +58,7 @@ export default function TaskWindow({ taskVisible, setTaskVisible, navigation, pr
                                 setTaskVisible(false); 
                             }}>
                             <Image source={conv} style={styles.taskImage} />
+                    
                         </Pressable>
                         )}
                         {imageToNumberXp >= 15 && soundToNumberXp >= 15 && playerLevel >= 3 && isDivisibleByFive && (

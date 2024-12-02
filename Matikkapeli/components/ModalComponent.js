@@ -1,6 +1,5 @@
 import { View, Text, Modal, Button } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
-import styles from '../styles';
 import * as Speech from 'expo-speech';
 import { ScoreContext } from './ScoreContext';
 import { useTaskReading } from '../components/TaskReadingContext';
@@ -8,9 +7,16 @@ import { useTaskSyllabification } from '../components/TaskSyllabificationContext
 import { useNavigation } from '@react-navigation/native';
 import { useRoute } from '@react-navigation/native';
 
+import createStyles from "../styles";
+import { useTheme } from '../components/ThemeContext';
+import { light, dark } from '../assets/themeColors';
+
 export default function ModalComponent({ onBack, isVisible}) {
     const route = useRoute();
     const { profile } = route.params;
+
+    const { isDarkTheme } = useTheme();
+    const styles = createStyles(isDarkTheme ? dark : light);
 
     useEffect(() => {
         if (isVisible) {
