@@ -14,7 +14,7 @@ export function TaskSyllabificationProvider({ children }) {
     const syllables = {
       // ImageToNumber.js
       "Kuva numeroiksi": "KU-VA NU-ME-ROIK-SI",
-      "Montako vasaraa näet näytöllä?": "MON-TA-KO VA-SA-RAA NÄ-ET NÄY-TÖL-LÄ?",
+      "Montako esinettä näet näytöllä?": "MON-TA-KO VA-SA-RAA NÄ-ET NÄY-TÖL-LÄ?",
 
       // Comparison.js
       "Vertailu": "VER-TAI-LU",
@@ -29,7 +29,7 @@ export function TaskSyllabificationProvider({ children }) {
       // Bonds.js
       "Hajonta": "HA-JON-TA",
       "Täydennä puuttuva luku niin, että laatikoiden luvut ovat yhteensä yhtä paljon kuin pallon luku.":
-        "TÄY-DEN-NÄ PUUT-TU-VA LU-KU NÄIN, ET-TÄ LAA-TIKOIDEN LU-VUT O-VAT YH-TEENSÄ YH-TÄ PAL-JON KUIN PAL-LON LU-KU.",
+        "TÄY-DEN-NÄ PUUT-TU-VA LU-KU NIIN, ET-TÄ LAA-TIKOIDEN LU-VUT O-VAT YH-TEENSÄ YH-TÄ PAL-JON KUIN PAL-LON LU-KU.",
       "Aloita": "A-LOI-TA",
       "Täydennä puuttuva luku.": "TÄY-DEN-NÄ PUUT-TU-VA LU-KU.",
       "Tarkista": "TAR-KIS-TA",

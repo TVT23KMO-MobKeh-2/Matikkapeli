@@ -136,7 +136,7 @@ export default function SoundToNumber({ onBack }) {
         <TouchableOpacity style={styles.startButton} onPress={playNumber}>
           <Text style={styles.buttonText}>{syllabify("Kuuntele numero 🔊")}</Text>
         </TouchableOpacity>
-        <View style={styles.optionsContainer}>
+        <View style={styles.gameOptionsContainer}>
           {options.map((option, index) => (
             <TouchableOpacity
               key={index}

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Button, TextInput, Image, ImageBackground } from 'react-native'
+import { View, Text, StyleSheet, Button, TextInput, Image, ImageBackground, Pressable } from 'react-native'
 import React, { useState } from 'react'
 import { Picker } from '@react-native-picker/picker'
 
@@ -109,15 +109,16 @@ export default function CreateProfile({ onCancel, onSave, email }) {
                     </Picker>
                 </View>
             </View>
-
-            <View style={styles.buttonContainer}>    
-                <Button
-                    title={isSaving ? 'Tallennetaan...' : 'Tallenna'}
-                    onPress={handleSave}
-                    disabled={isSaving || !name || !selectedCareer || !selectedAnimal}
-                />
-                <Button title='Peruuta' onPress={onCancel} color='red' />
-            </View>
+            <View style={styles.buttonContainer}>
+                            <Pressable onPress={handleSave} disabled={isSaving || !name || !selectedCareer || !selectedAnimal}
+                                style={[styles.startButton, { backgroundColor: 'lightblue' }]}>
+                                <Text style={styles.buttonText}>{isSaving ? 'Tallennetaan...' : 'Tallenna'}</Text>
+                            </Pressable>
+                            <Pressable onPress={onCancel}
+                                style={[styles.startButton, { backgroundColor: 'red' }]}>
+                                <Text style={styles.buttonText}>Peruuta</Text>
+                            </Pressable>
+                        </View>
         </View>
         </ImageBackground>
     );

@@ -414,6 +414,20 @@ image: {
     elevation: 4,
   },
   optionsContainer: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems:'center',
+    marginVertical: 10,
+    backgroundColor: theme.settingbg,
+    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: theme.bordercolor,
+    width: '80%',
+    shadowColor: '#00000',
+    elevation: 4,
+    padding: 20,
+  },
+  gameOptionsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
@@ -425,6 +439,7 @@ image: {
     width: '80%',
     shadowColor: '#00000',
     elevation: 4,
+    padding: 20,
   },
   optionWrapper: {
     width: '40%',
@@ -455,20 +470,25 @@ image: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
+    alignItems: 'center',
+    width: '80%',
+    height: '30%',
+    backgroundColor: theme.iconbg,
+    borderRadius: 12,
+    borderWidth: 1, // Lisää reunus (valinnainen)
+    borderColor: '#ccc',
+    position: 'relative',
   },
   icon: {
-    margin: 10,
+    margin: 5,
   },
   iconBackground: {
-    backgroundColor: theme.iconbg, // Yhteinen taustaväri
+    margin: 40,
     padding: 10, // Tila vasaroiden ympärillä
-    borderRadius: 12, // Pyöristetyt kulmat
     flexDirection: 'row', // Ikonit samalle riville
     flexWrap: 'wrap', // Siirry seuraavalle riville, jos tila ei riitä
     justifyContent: 'center', // Keskitetään ikonit vaakasuunnassa
     alignItems: 'center', // Keskitetään ikonit pystysuunnassa
-    borderWidth: 1, // Lisää reunus (valinnainen)
-    borderColor: '#ccc', // Reunuksen väri (valinnainen)
   }, 
   //!!!!!!!! COMPARISON  !!!!!!!!!!
   comparisonGuideBigger: {
@@ -556,7 +576,7 @@ image: {
       fontFamily: 'ComicNeue_700Bold',
     },
     checkButton: {
-      backgroundColor: '#CD5C5C',
+      backgroundColor: '#6abded',
       paddingVertical: 10,
       paddingHorizontal: 20,
       alignItems: 'center',

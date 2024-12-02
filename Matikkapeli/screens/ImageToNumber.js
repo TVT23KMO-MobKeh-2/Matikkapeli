@@ -43,12 +43,16 @@ export default function ImageToNumber({ onBack }) {
   // Generoi kysymyksiä pelille
   const generateQuestions = () => {
     const questions = [];
+    let lastIconCount = null
+
     for (let i = 0; i < 5; i++) {
-      const iconCount = Math.min(random(0, profile?.playerLevel || 1), 10); // Satunnainen määrä vasaroita
+      const minLevel = Math.max(0, profile?.playerLevel - 2)
+      const iconCount = Math.min(random(minLevel, profile?.playerLevel || 1), 10); // Satunnainen määrä vasaroita
+      const options = Array.from({ length: profile.playerLevel - minLevel + 1 }, (_, i) => minLevel + i)
       questions.push({
-        question: `Montako vasaraa näet näytöllä?`, // Kysymyksen teksti
+        question: `Montako esinettä näet näytöllä?`, // Kysymyksen teksti
         iconCount,
-        options: Array.from({ length: 11 }, (_, i) => i), // Vaihtoehdot
+        options, // Vaihtoehdot
       });
     }
     return questions;
@@ -120,31 +124,53 @@ export default function ImageToNumber({ onBack }) {
     if (taskReading) {
       Speech.stop(); // Lopeta mahdollinen edellinen puhe
       Speech.speak(currentQuestion.question, {
-        onDone: () => setIsSpeechFinished(true), // Merkitään puhe valmiiksi
+      onDone: () => setIsSpeechFinished(true),
+       // Merkitään puhe valmiiksi
       });
     } else {
       setIsSpeechFinished(true); // Jos puhe ei ole käytössä, aseta heti valmiiksi
     }
+
+
   }, [questionIndex, questions, gameEnded, taskReading]);
 
+  const careerIcon  = {
+    Lääkäri: "stethoscope",
+    Automekaanikko: "oil",
+    Rakentaja: "hammer",
+    Kauppias: "cart-variant",
+    Ohjelmoija: "laptop",
+    Opettaja: "lead-pencil",
+  }
+    
+ 
+
   // Renderöi nykyisen kysymyksen ikonit
-  const renderIcons = () => (
-    <View style={styles.iconBackground}>
+  const renderIcons = () => {
+    const career = profile?.career
+    const iconName = careerIcon[career] || "apple-alt"
+
+
+      return (
+        <View style={styles.iconBackground}>
       {Array.from({ length: questions[questionIndex].iconCount }).map((_, index) => (
         <MaterialCommunityIcons
           key={index}
-          name="hammer"
+          name={iconName}
           size={40}
           color="#4CAF50"
           style={styles.icon}
         />
       ))}
     </View>
-  );
+      )
+    }
+    
+  
 
   // Renderöi vastausvaihtoehdot nykyiseen kysymykseen
   const renderOptions = () => (
-    <View style={styles.optionsContainer}>
+    <View style={styles.gameOptionsContainer}>
       {questions[questionIndex].options.map((option, index) => (
         <View key={index} style={styles.optionWrapper}>
           <TouchableOpacity

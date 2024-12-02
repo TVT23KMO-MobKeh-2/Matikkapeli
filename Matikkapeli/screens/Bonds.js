@@ -13,7 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import createStyles from "../styles";
 import { useTheme } from '../components/ThemeContext';
-import { light, dark } from '../assets/themeColors'; 
+import { light, dark } from '../assets/themeColors';
 import { getBGImage } from '../components/backgrounds';
 
 // Satunnaisen arvon generointi annetulla alueella
@@ -35,7 +35,7 @@ export default function Bonds({ onBack }) {
   }, [profile]);
 
   // Pelin aloitustaso ja muut tilamuuttujat
-  const levelData = profile ? profile.playerLevel : 0;
+  const levelData = profile.playerLevel;
   const [leftBox, setLeftBox] = useState(0);  // Vasemman laatikon arvo
   const [rightBox, setRightBox] = useState(0);  // Oikean laatikon arvo
   const [witchBox, setWitchBox] = useState(random(0, 1));  // Tieto siitä, kummassa laatikossa on puuttuva luku
@@ -54,9 +54,11 @@ export default function Bonds({ onBack }) {
   const { syllabify, taskSyllabification, getFeedbackMessage } = useTaskSyllabification();  // Käytetäänkö tavutusta
   const [isTaskChanging, setIsTaskChanging] = useState(false)
   const [isButtonClicked, setIsButtonClicked] = useState(false)
+  const [instructionReading, setInstructionReading] = useState(true)
 
-  const theme = isDarkTheme ? dark : light; 
-  const styles = createStyles(theme);  
+
+  const theme = isDarkTheme ? dark : light;
+  const styles = createStyles(theme);
   const bgIndex = 4;
 
 
@@ -145,16 +147,37 @@ export default function Bonds({ onBack }) {
     navigation.navigate('SelectProfile', { profile });
   };
 
-  return (
-    <ImageBackground 
-      source={getBGImage(isDarkTheme, bgIndex)} 
-      style={styles.background} 
-      resizeMode="cover"
-    >
-      <View style={styles.container}>
-        <View style={styles.tehtcont}>
+
+  useEffect(() => {
+    // Ensure previous speech is stopped before starting new speech
+    Speech.stop();
+  
+    if (taskReading && instructionReading) {
+      // Speak the full task instruction when both taskReading and instructionReading are true
+      Speech.speak("Täydennä puuttuva luku niin, että laatikoiden luvut ovat yhteensä yhtä paljon kuin pallon luku.");
+  // Prevent repeated instructions
+    } else if (!instructionReading) {
+      // If instructionReading is false, speak the shorter instruction
+      Speech.speak("Täydennä puuttuva luku.");
+    }
+  }, [taskReading, instructionReading]); // Runs when either taskReading or instructionReading changes
+  
+
+
+return (
+  <ImageBackground
+    source={getBGImage(isDarkTheme, bgIndex)}
+    style={styles.background}
+    resizeMode="cover"
+  >
+    <View style={styles.container}>
+      <View style={styles.tehtcont}>
         {instructionVisibility && (
-          <TouchableWithoutFeedback>
+          <TouchableWithoutFeedback
+            onPress={() => {
+              setInstructionVisibility(false);
+              handleInstructionSpeak();
+            }}>
             <View style={styles.overlayInstruction}>
               <View style={styles.instructionWindow}>
                 <Text style={styles.title}>{syllabify("Hajonta")}</Text>
@@ -165,7 +188,7 @@ export default function Bonds({ onBack }) {
                 </Text>
                 <View style={styles.buttonContainer}>
 
-                  <Button title={syllabify("Aloita")} onPress={() => setInstructionVisibility(false)} />
+                  <Button title={syllabify("Aloita")} onPress={() => {setInstructionReading(false); setInstructionVisibility(false)} } />
 
                 </View>
               </View>
@@ -184,7 +207,7 @@ export default function Bonds({ onBack }) {
         </Svg>
 
         <View style={styles.circle}>
-          <Text style={[styles.numbertext, {color: 'white'}]}>{levelData}</Text>
+          <Text style={[styles.numbertext, { color: 'white' }]}>{levelData}</Text>
         </View>
 
         <View style={styles.numbers}>
@@ -254,9 +277,9 @@ export default function Bonds({ onBack }) {
             </View>
           </TouchableWithoutFeedback>
         )}
-        </View>
       </View>
-    </ImageBackground>
-  );
+    </View>
+  </ImageBackground>
+);
 
 }
