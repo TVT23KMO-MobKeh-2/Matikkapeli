@@ -81,7 +81,7 @@ export default function CreateProfile({ onCancel, onSave, email }) {
                 )}
             <TextInput
                 style={styles.input}
-                placeholder='Kirjoita nimesi'
+                placeholder='KIRJOITA NIMESI'
                 value={name}
                 onChangeText={(text) => setName(text)}
                 backgroundColor="white" />
@@ -92,7 +92,7 @@ export default function CreateProfile({ onCancel, onSave, email }) {
                         selectedValue={selectedAnimal}
                         onValueChange={(itemValue) => setSelectedAnimal(itemValue)}
                     >
-                        <Picker.Item label='Valitse eläin' value=""/>
+                        <Picker.Item label='VALITSE ELÄIN' value=""/>
                         {animalOptions.map((option) => (
                             <Picker.Item key={option.value} label={option.label} value={option} />
                         ))}
@@ -102,7 +102,7 @@ export default function CreateProfile({ onCancel, onSave, email }) {
                         selectedValue={selectedCareer}
                         onValueChange={(itemValue) => setSelectedCareer(itemValue)}
                     >
-                        <Picker.Item label='Valitse ammatti' value="" />
+                        <Picker.Item label='VALITSE AMMATTI' value="" />
                         {careerOptions.map((option) => (
                             <Picker.Item key={option.value} label={option.label} value={option} />
                         ))}
@@ -112,7 +112,7 @@ export default function CreateProfile({ onCancel, onSave, email }) {
 
             <View style={styles.buttonContainer}>    
                 <Button
-                    title={isSaving ? 'Tallennetaan...' : 'Tallenna'}
+                    title={isSaving ? 'TALLENNETAAN...' : 'TALLENNA'}
                     onPress={handleSave}
                     disabled={isSaving || !name || !selectedCareer || !selectedAnimal}
                 />
