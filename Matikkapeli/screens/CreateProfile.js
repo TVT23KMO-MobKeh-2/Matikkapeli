@@ -51,19 +51,19 @@ export default function CreateProfile({ onCancel, onSave, email }) {
     };
 
     const careerOptions = [
-        { label: 'Lääkäri', value: "doctor" },
-        { label: 'Automekaanikko', value: "mechanic" },
-        { label: 'Rakentaja', value: "builder" },
-        { label: 'Kauppias', value: "vendor" },
-        { label: 'Ohjelmoija', value: "programmer" },
-        { label: 'Opettaja', value: "teacher" },
+        { label: 'LÄÄKÄRI', value: "doctor" },
+        { label: 'AUTOMEKAANIKKO', value: "mechanic" },
+        { label: 'RAKENTAJA', value: "builder" },
+        { label: 'KAUPPIAS', value: "vendor" },
+        { label: 'OHJELMOIJA', value: "programmer" },
+        { label: 'OPETTAJA', value: "teacher" },
     ]
 
     const animalOptions = [
-        { label: 'Kettu', value: 'fox', image: require('../assets/proffox.png') },
-        { label: 'Karhu', value: 'bear', image: require('../assets/profbear.png') },
-        { label: 'Pupu', value: 'rabbit', image: require('../assets/profrabbit.png') },
-        { label: 'Susi', value: 'wolf', image: require('../assets/profwolf.png') },
+        { label: 'KETTU', value: 'fox', image: require('../assets/proffox.png') },
+        { label: 'KARHU', value: 'bear', image: require('../assets/profbear.png') },
+        { label: 'PUPU', value: 'rabbit', image: require('../assets/profrabbit.png') },
+        { label: 'SUSI', value: 'wolf', image: require('../assets/profwolf.png') },
     ]
 
 
