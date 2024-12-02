@@ -148,7 +148,7 @@ export default function ImageToNumber({ onBack }) {
   // Renderöi nykyisen kysymyksen ikonit
   const renderIcons = () => {
     const career = profile?.career
-    const iconName = careerIcon[career] || "apple-alt"
+    const iconName = careerIcon[career] || "stocking"
 
 
       return (
