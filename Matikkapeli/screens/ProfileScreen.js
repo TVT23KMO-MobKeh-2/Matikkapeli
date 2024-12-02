@@ -68,7 +68,7 @@ export default function ProfileScreen({ route, navigation }) {
             console.log('Deleting profile...');
             await deletePlayerDataFromDatabase({ email, playerName });
             clearProfile()
-            Alert.alert('Poisto onnistuis', 'Profiili poistettu onnistuneesti');
+            Alert.alert('Poisto onnistui', 'Profiili poistettu onnistuneesti');
             console.log('Profile deleted, navigating to SelectProfile');
             
             // Debugging Navigation
@@ -96,9 +96,9 @@ export default function ProfileScreen({ route, navigation }) {
                     style={styles.profileImage}
                 />
                 <View>
-                    <Text style = {styles.label}>Nimi: {playerName}</Text>
-                    <Text style = {styles.label}>Ammatti: {career}</Text>
-                    <Text style = {styles.label}>Taso: {playerLevel}</Text>
+                    <Text style = {styles.label}>NIMI: {playerName}</Text>
+                    <Text style = {styles.label}>AMMATTI: {career}</Text>
+                    <Text style = {styles.label}>TASO: {playerLevel}</Text>
                 </View>
             </View>
             <View style={styles.profileSelect}>
@@ -107,10 +107,10 @@ export default function ProfileScreen({ route, navigation }) {
                 <LevelBar progress={comparisonXp} label={"Vertailu"} />
                 <LevelBar progress={bondsXp} label={"Hajonta"} />
             </View>
-            <Button title='Aloita peli' onPress={startGame}></Button>
-            <Button title='Palaa takaisin' onPress={goBack} />
+            <Button title='ALOITA PELI' onPress={startGame}></Button>
+            <Button title='PALAA TAKAISIN' onPress={goBack} />
             <Button
-                title={isDeleting ? 'Poistetaan...' : 'Poista profiili'}
+                title={isDeleting ? 'POISTETAAN...' : 'POISTA PROFIILI'}
                 onPress={handleDeleteProfile}
                 disabled={isDeleting} 
                 color="red"
