@@ -27,12 +27,12 @@ export default function StartScreen({ navigation }) {
       />
       <View style={styles.container}>
         <Text style={styles.title}>
-          Matikkapeli
+          MATIKKAPOLKU
         </Text>
 
         <View style={styles.startButton}>
           <Pressable onPress={() => navigation.navigate('Welcome')}>
-            <Text style={styles.buttonText}>Aloita peli</Text>
+            <Text style={styles.buttonText}>ALOITA PELI</Text>
           </Pressable>
         </View>
       </View>
