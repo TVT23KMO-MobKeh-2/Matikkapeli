@@ -75,7 +75,7 @@ export default function TaskWindow({ taskVisible, setTaskVisible, navigation, pr
                     </View>
 
                     <Pressable onPress={() => setTaskVisible(false)}>
-                        <Text style={styles.closeText}>Sulje</Text>
+                        <Text style={styles.closeText}>SULJE</Text>
                     </Pressable>
                 </View>
             </ImageBackground>
