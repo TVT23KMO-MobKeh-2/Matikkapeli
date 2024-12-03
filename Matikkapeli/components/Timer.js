@@ -17,7 +17,7 @@ const Timer = ({ closeModal, onTimerStart, onTimerEnd }) => {
   const [isTimerActive, setIsTimerActive] = useState(false);
   const [timeSelectionModalVisible, setTimeSelectionModalVisible] = useState(true);
   const [stopTimerModalVisible, setStopTimerModalVisible] = useState(false);
-  const [ syllabify ] = useTaskSyllabification()
+  const { syllabify } = useTaskSyllabification()
   
   // Timer logiikka
   useEffect(() => {
@@ -83,7 +83,7 @@ const Timer = ({ closeModal, onTimerStart, onTimerEnd }) => {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalText}>{syllabify("Valitse aika:")</Text>
+            <Text style={styles.modalText}>{syllabify("Valitse aika:")}</Text>
             <TouchableOpacity onPress={() => startTimer(1)}>
               <Text style={styles.modalButton}>1 {syllabify("minuuttia")}</Text>
             </TouchableOpacity>
