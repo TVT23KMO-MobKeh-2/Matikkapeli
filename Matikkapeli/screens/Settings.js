@@ -21,7 +21,7 @@ export default function Settings({ onBack }) {
   const { isDarkTheme, setIsDarkTheme } = useTheme();
 
   const { taskReading, setTaskReading } = useTaskReading();
-  const { taskSyllabification, setTaskSyllabification } = useTaskSyllabification(); //Käytä tavutuksen kontekstia
+  const { syllabify, taskSyllabification, setTaskSyllabification } = useTaskSyllabification(); //Käytä tavutuksen kontekstia
   const { gameSounds, setGameSounds } = useSoundSettings();
   const { isMusicPlaying, setIsMusicPlaying, setMusicVolume, musicVolume } = useBackgroundMusic(); //Taustamusiikki
 
@@ -140,35 +140,35 @@ export default function Settings({ onBack }) {
         translucent={true} 
       />
       <View style={styles.container}>
-        <Text style={styles.title}>Asetukset</Text>
+        <Text style={styles.title}>{syllabify("Asetukset")}</Text>
 
         {/* Teeman valinta */}
         <View style={styles.settingItem}>
-          <Text style={styles.label}>Tumman teeman valinta</Text>
+          <Text style={styles.label}>{syllabify("Tumman teeman valinta")}</Text>
           <Switch value={isDarkTheme} onValueChange={setIsDarkTheme} />
         </View>
 
         {/* Tavutuksen valinta */}
         <View style={styles.settingItem}>
-          <Text style={styles.label}>Tavutus</Text>
+          <Text style={styles.label}>{syllabify("Tavutus")}</Text>
           <Switch value={taskSyllabification} onValueChange={() => setTaskSyllabification(!taskSyllabification)} />
         </View>
 
         {/* Tehtävien lukeminen */}
         <View style={styles.settingItem}>
-          <Text style={styles.label}>Tehtävien lukeminen</Text>
+          <Text style={styles.label}>{syllabify("Tehtävien lukeminen")}</Text>
           <Switch value={taskReading} onValueChange={() => setTaskReading(!taskReading)} />
         </View>
 
         {/* Taustamusiikin päälle/pois */}
         <View style={styles.settingItem}>
-          <Text style={styles.label}>Taustamusiikki</Text>
+          <Text style={styles.label}>{syllabify("Taustamusiikki")}</Text>
           <Switch value={isMusicPlaying} onValueChange={setIsMusicPlaying} />
         </View>
 
         {/* Taustamusiikin voimakkuus */}
         <View style={styles.settingItemColumn}>
-          <Text style={styles.label}>Taustamusiikin voimakkuus</Text>
+          <Text style={styles.label}>{syllabify("Taustamusiikin voimakkuus")}</Text>
           <SliderComponent
             style={styles.slider}
             maximumTrackTintColor="#FF0000" //Punainen
@@ -184,13 +184,13 @@ export default function Settings({ onBack }) {
 
         {/* Peliäänet */}
         <View style={styles.settingItem}>
-          <Text style={styles.label}>Peliäänet</Text>
+          <Text style={styles.label}>{syllabify("Peliäänet")}</Text>
           <Switch value={gameSounds} onValueChange={() => setGameSounds(!gameSounds)} />
             
         </View>
 
         {/* Sovelluksen sammuttaminen */}
-        <Button title="Sammuta sovellus" onPress={handleCloseApp} />
+        <Button title={syllabify("Sammuta sovellus")} onPress={handleCloseApp} />
       </View>
       </SafeAreaView>
     </ImageBackground>

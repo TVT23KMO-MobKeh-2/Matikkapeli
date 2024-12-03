@@ -31,7 +31,7 @@ export default function UserCreation({ onNavigate }) {
             // Check if the email is already used
             const emailInUse = await isEmailUsed(email);
             if (emailInUse) {
-                Alert.alert("Virhe", "Tämä sähköposti on jo käytössä.");
+                Alert.alert("Virhe", "Tämä käyttäjätunnus on jo käytössä.");
                 setIsSaving(false);
                 return;
             }
@@ -61,18 +61,18 @@ export default function UserCreation({ onNavigate }) {
         >
         <View style = {styles.container}>
             <View style={styles.optionsContainer}>
-            <Text style={styles.label}>Käyttäjätunnus</Text>
+            <Text style={styles.label}>KÄYTTÄJÄTUNNUS</Text>
             <TextInput
                 style={[styles.input, {backgroundColor: 'white'}]}
-                placeholder="Kirjoita tunnus"
+                placeholder="KIRJOITA KÄYTTÄJÄTUNNUS"
                 value={email}
                 onChangeText={(text) => setEmail(text)}
             />
                 <Pressable style={[styles.startButton, {backgroundColor: 'green'}]} onPress={handleSave} disabled={isSaving}>
-                    <Text style={styles.buttonText}>{isSaving ? 'Tallennetaan...' : 'Tallenna'}</Text>
+                    <Text style={styles.buttonText}>{isSaving ? 'TALLENETAAN...' : 'TALLENNA'}</Text>
                 </Pressable>
                 <Pressable style={[styles.startButton, {backgroundColor: 'darkred'}]} onPress={() => navigation.goBack()}>
-                    <Text style={styles.buttonText}>Peruuta</Text>
+                    <Text style={styles.buttonText}>PERUUTA</Text>
                 </Pressable>
             </View>
         </View>

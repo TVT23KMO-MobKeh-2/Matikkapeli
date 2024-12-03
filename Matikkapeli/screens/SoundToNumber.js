@@ -132,7 +132,7 @@ export default function SoundToNumber({ onBack }) {
         translucent={true}
       />
       <View style={styles.container}>
-        <Text style={styles.title}>Valitse oikea numero</Text>
+        <Text style={styles.title}>{syllabify("Valitse oikea numero")}</Text>
         <TouchableOpacity style={styles.startButton} onPress={playNumber}>
           <Text style={styles.buttonText}>{syllabify("Kuuntele numero 🔊")}</Text>
         </TouchableOpacity>
@@ -164,7 +164,7 @@ export default function SoundToNumber({ onBack }) {
               <Text>Bonds: {bondsXp}/40</Text>
               <View style={styles.buttonContainer}>
                 <Button
-                  title="Seuraava tehtävä odottaa"
+                  title={syllabify("Seuraava tehtävä odottaa")}
                   onPress={() => {
                     handleContinueGame();
                     setGameEnded(false);
@@ -172,7 +172,7 @@ export default function SoundToNumber({ onBack }) {
                   }}
                 />
                 <Button
-                  title="Lopeta peli"
+                  title={syllabify("Lopeta peli")}
                   onPress={() => {
                     handleEndGame();
                     setGameEnded(false);

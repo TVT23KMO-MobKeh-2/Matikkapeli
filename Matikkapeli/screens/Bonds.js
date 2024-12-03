@@ -239,13 +239,15 @@ export default function Bonds({ onBack }) {
                 <Text>Bonds: {bondsXp}/40</Text>
                 <View style={styles.buttonContainer}>
                   <Button
-                    title="Seuraava tehtävä odottaa"
+                    title={syllabify("Seuraava tehtävä odottaa")}
                     onPress={() => {
                       handleContinueGame();
                       setShowFeedback(false)
                     }}
                   />
-                  <Button title="Lopeta peli" onPress={() => {
+                  <Button
+                      title={syllabify("Lopeta peli")} 
+                      onPress={() => {
                     handleEndGame();
                     setShowFeedback(false)
                   }} />

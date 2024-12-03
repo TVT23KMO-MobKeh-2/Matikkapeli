@@ -196,7 +196,7 @@ export default function ImageToNumber({ onBack }) {
               <Text>Bonds: {bondsXp}/40</Text>
               <View style={styles.buttonContainer}>
                 <Button
-                  title="Seuraava tehtävä odottaa"
+                  title={syllabify("Seuraava tehtävä odottaa")}
                   onPress={() => {
                     handleContinueGame();
                     setGameEnded(false);
@@ -204,7 +204,7 @@ export default function ImageToNumber({ onBack }) {
                   }}
                 />
                 <Button
-                  title="Lopeta peli"
+                  title={syllabify("Lopeta peli")}
                   onPress={() => {
                     handleEndGame();
                     setGameEnded(false);

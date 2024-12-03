@@ -148,14 +148,14 @@ export default function WelcomeScreen({ navigation }) {
           <View style={styles.container}>
                 <Text style = {styles.title}>WelcomeScreen</Text>
                     <View style={styles.optionsContainer}>
-                    <Text style={styles.question}>Hei, {email}</Text>
+                    <Text style={styles.question}>HEI, {email}</Text>
                         <Pressable onPress={() => navigation.navigate('SelectProfile', { email: email })}
                             style={styles.startButton}>
-                            <Text style={styles.buttonText}>Valitse profiili</Text>
+                            <Text style={styles.buttonText}>VALITSE PROFIILI</Text>
                         </Pressable>
                         <Pressable onPress={(clearemail)}
                             style={[styles.startButton, {backgroundColor: 'red'}]}>
-                            <Text style={styles.buttonText}> Poista tunnus puhelimen muistista</Text>
+                            <Text style={styles.buttonText}> POISTA TUNNUS PUHELIMEN MUISTISTA</Text>
                         </Pressable>
                         <Pressable onPress={(deletemail)}
                             disabled={isDeleting} 
@@ -166,7 +166,7 @@ export default function WelcomeScreen({ navigation }) {
                                     },
                             ]}>
                             <Text style={styles.buttonText}>
-                            {isDeleting ? 'Poistetaan...' : 'Poista tunnus tietokannasta'}
+                            {isDeleting ? 'POISTETAAN...' : 'POISTA TUNNUS TIETOKANNASTA'}
                             </Text>
                         </Pressable>
                     </View>
@@ -193,34 +193,34 @@ export default function WelcomeScreen({ navigation }) {
             <Text style = {styles.title}>WelcomeScreen</Text>
             
             <View style={styles.optionsContainer}>
-             <Text style={styles.question}>Tervetuloa!</Text>
+             <Text style={styles.question}>TERVETULOA!</Text>
                {isSearchMode ? (
                     <>
                         <TextInput
                             style={[styles.input, {backgroundColor: 'white'}]}
-                            placeholder="Syötä sähköposti"
+                            placeholder="SYÖTÄ KÄYTTÄJÄTUNNUS"
                             value={inputEmail}
                             onChangeText={setInputEmail}
                             keyboardType="email-address"
                         />
                         <Pressable onPress={handleSearchProfile}
                             style={[styles.startButton, {backgroundColor: 'green'}]}>
-                            <Text style={styles.buttonText}>Hae profiilit</Text>
+                            <Text style={styles.buttonText}>HAE PROFIILIT</Text>
                         </Pressable>
                         <Pressable onPress={toggleSearchMode}
                             style={[styles.startButton, {backgroundColor: 'darkred'}]}>
-                            <Text style={styles.buttonText}>Peruuta</Text>
+                            <Text style={styles.buttonText}>PERUUTA</Text>
                         </Pressable>
                     </>
                 ) : (
                     <>
                         <Pressable onPress={toggleSearchMode}// Open input field for email
                             style={styles.startButton}>
-                            <Text style={styles.buttonText}>Hae profiili sähköpostilla</Text>
+                            <Text style={styles.buttonText}>HAE PROFIILI KÄYTTÄJÄTUNNUKSELLA</Text>
                         </Pressable>
                         <Pressable onPress={() => setIsCreatingUser(true)}
                             style={styles.startButton}>
-                            <Text style={styles.buttonText}>Luo tunnus ja ensimmäinen profiili</Text>
+                            <Text style={styles.buttonText}>LUO TUNNUS JA ENSIMMÄINEN PROFIILI</Text>
                         </Pressable>
                     </>
                 )}
