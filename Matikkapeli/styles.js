@@ -258,6 +258,7 @@ const createStyles = (theme) => StyleSheet.create({
     width: '90%',
     zIndex: 4,
   },
+
   foxImage: {
     width: 150, // Adjust size as needed
     height: 250, // Adjust size as needed
@@ -317,6 +318,7 @@ const createStyles = (theme) => StyleSheet.create({
     borderRadius: 10,
     borderWidth: 2,
     borderColor: theme.bordercolor,
+    marginBottom: 20,
   }, 
   profileImage: {
     width: 100, // Adjust size as needed
@@ -589,6 +591,35 @@ image: {
       fontSize: 16,
       fontFamily: 'ComicNeue_700Bold',
     },*/
+
+    //!!!!!!!!!! Levelbar tyyli !!!!!!!!!!!!!
+    progressContainer:{
+        width: '100%',
+        height: 20,
+        backgroundColor: '#e0e0e0',
+        borderRadius: 10,
+        overflow: 'hidden',
+        marginBottom: 10,
+    },
+    progressBar:{
+        height: '100%',
+        backgroundColor: '#76c7c0',
+        borderRadius: 10,
+    },
+    scaleContainer:{
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%',
+    },
+    scaleText:{
+        fontSize: 12,
+        fontWeight: 'bold',
+        color: '#333'
+    },
+    levelImage: {
+        width: 40,
+        height: 40,
+    },
 });
 
 export default createStyles;

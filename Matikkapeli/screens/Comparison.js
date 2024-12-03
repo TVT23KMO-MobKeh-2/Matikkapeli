@@ -1,5 +1,5 @@
 
-import { View, Text, Button, TouchableWithoutFeedback, ImageBackground } from 'react-native';
+import { View, Text, Pressable, TouchableWithoutFeedback, ImageBackground } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 import ModalComponent from '../components/ModalComponent';
 import * as Speech from 'expo-speech';
@@ -10,7 +10,7 @@ import { useTaskSyllabification } from '../components/TaskSyllabificationContext
 import { Audio } from 'expo-av';
 import { useNavigation } from '@react-navigation/native';
 import { useRoute } from '@react-navigation/native';
-
+import LevelBar from '../components/LevelBar'
 import createStyles from "../styles";
 import { useTheme } from '../components/ThemeContext';
 import { light, dark } from '../assets/themeColors'; 
@@ -281,23 +281,28 @@ export default function Comparison({ onBack }) {
               <Text style={styles.title}>Pistetaulu</Text>
               <Text>Level: {playerLevel}/10</Text>
               <Text>Kokonaispisteet: {totalXp}/190</Text>
-              <Text>ImageToNumbers: {imageToNumberXp}/50</Text>
-              <Text>SoundToNumbers: {soundToNumberXp}/50</Text>
-              <Text>Comparison: {comparisonXp}/50</Text>
-              <Text>Bonds: {bondsXp}/40</Text>
+              <View style={styles.profileSelect}>
+                    <LevelBar progress={imageToNumberXp} label={"Kuvat numeroiksi"} />
+                    <LevelBar progress={soundToNumberXp} label={"Äänestä numeroiksi"} />
+                    <LevelBar progress={comparisonXp} label={"Vertailu"} />
+                    <LevelBar progress={bondsXp} label={"Hajonta"} />
+                </View>
               <View style={styles.buttonContainer}>
-                <Button
-                  title="Seuraava tehtävä odottaa"
-                  onPress={() => {
-                    handleContinueGame();
-                    setShowFeedback(false)
-                  }}
-                />
-                <Button title="Lopeta peli" onPress={() => {
-                  handleEndGame();
-                  setShowFeedback(false)
-                }} />
-              </View>
+                    <Pressable onPress={() => { 
+                      handleContinueGame(); 
+                      setShowFeedback(false)}}
+                      style={[styles.startButton, { backgroundColor: 'lightblue' }]}
+                      >
+                      <Text style={styles.buttonText}>{syllabify("SEURAAVA TEHTÄVÄ ODOTTAA")}</Text>
+                    </Pressable>
+                    <Pressable onPress={() => { 
+                      handleEndGame(); 
+                      setShowFeedback(false) }}
+                      style={[styles.startButton, { backgroundColor: 'darkred' }]}
+                      >
+                      <Text style={[styles.buttonText, {color: 'white'}]}>{syllabify("LOPETA PELI")}</Text>
+                    </Pressable>
+                  </View>
             </View>
           </View>
         </TouchableWithoutFeedback>

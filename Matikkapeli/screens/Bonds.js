@@ -10,7 +10,7 @@ import { useTaskReading } from '../components/TaskReadingContext';
 import { useTaskSyllabification } from '../components/TaskSyllabificationContext';
 import { useRoute } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
-
+import LevelBar from '../components/LevelBar'
 import createStyles from "../styles";
 import { useTheme } from '../components/ThemeContext';
 import { light, dark } from '../assets/themeColors';
@@ -35,7 +35,7 @@ export default function Bonds({ onBack }) {
   }, [profile]);
 
   // Pelin aloitustaso ja muut tilamuuttujat
-  const levelData = profile.playerLevel;
+  
   const [leftBox, setLeftBox] = useState(0);  // Vasemman laatikon arvo
   const [rightBox, setRightBox] = useState(0);  // Oikean laatikon arvo
   const [witchBox, setWitchBox] = useState(random(0, 1));  // Tieto siitä, kummassa laatikossa on puuttuva luku
@@ -55,6 +55,7 @@ export default function Bonds({ onBack }) {
   const [isTaskChanging, setIsTaskChanging] = useState(false)
   const [isButtonClicked, setIsButtonClicked] = useState(false)
   const [instructionReading, setInstructionReading] = useState(true)
+  const levelData = playerLevel;
 
 
   const theme = isDarkTheme ? dark : light;
@@ -151,135 +152,146 @@ export default function Bonds({ onBack }) {
   useEffect(() => {
     // Ensure previous speech is stopped before starting new speech
     Speech.stop();
-  
+
     if (taskReading && instructionReading) {
       // Speak the full task instruction when both taskReading and instructionReading are true
       Speech.speak("Täydennä puuttuva luku niin, että laatikoiden luvut ovat yhteensä yhtä paljon kuin pallon luku.");
-  // Prevent repeated instructions
+      // Prevent repeated instructions
     } else if (!instructionReading) {
       // If instructionReading is false, speak the shorter instruction
       Speech.speak("Täydennä puuttuva luku.");
     }
   }, [taskReading, instructionReading]); // Runs when either taskReading or instructionReading changes
-  
 
 
-return (
-  <ImageBackground
-    source={getBGImage(isDarkTheme, bgIndex)}
-    style={styles.background}
-    resizeMode="cover"
-  >
-    <View style={styles.container}>
-      <View style={styles.tehtcont}>
-        {instructionVisibility && (
-          <TouchableWithoutFeedback
-            onPress={() => {
-              setInstructionVisibility(false);
-              handleInstructionSpeak();
-            }}>
-            <View style={styles.overlayInstruction}>
-              <View style={styles.instructionWindow}>
-                <Text style={styles.title}>{syllabify("Hajonta")}</Text>
-                <Text>
-                  {syllabify(
-                    "Täydennä puuttuva luku niin, että laatikoiden luvut ovat yhteensä yhtä paljon kuin pallon luku."
-                  )}
-                </Text>
-                <View style={styles.buttonContainer}>
 
-                  <Button title={syllabify("Aloita")} onPress={() => {setInstructionReading(false); setInstructionVisibility(false)} } />
-
+  return (
+    <ImageBackground
+      source={getBGImage(isDarkTheme, bgIndex)}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <View style={styles.container}>
+        <View style={styles.tehtcont}>
+          {instructionVisibility && (
+            <TouchableWithoutFeedback
+              onPress={() => {
+                setInstructionVisibility(false);
+                handleInstructionSpeak();
+              }}>
+              <View style={styles.overlayInstruction}>
+                <View style={styles.instructionWindow}>
+                  <Text style={styles.title}>{syllabify("Hajonta")}</Text>
+                  <Text>
+                    {syllabify(
+                      "Täydennä puuttuva luku niin, että laatikoiden luvut ovat yhteensä yhtä paljon kuin pallon luku."
+                    )}
+                  </Text>
+                  <View style={styles.buttonContainer}>
+                    <Pressable onPress={() => { 
+                      setInstructionReading(false); 
+                      setInstructionVisibility(false) 
+                    }}
+                      style={styles.startButton}>
+                      <Text style={styles.buttonText}>{syllabify("Aloita")}</Text>
+                    </Pressable>
+                  </View>
                 </View>
               </View>
+            </TouchableWithoutFeedback>
+          )}
+          <View style={styles.taskbox}>
+
+            <Text style={styles.title}>{syllabify("Täydennä puuttuva luku.")}</Text>
+
+          </View>
+
+          <Svg height="300" width="300" style={styles.lineContainer}>
+            <Line x1="150" y1="100" x2="70" y2="230" stroke="black" strokeWidth="5" />
+            <Line x1="150" y1="100" x2="230" y2="230" stroke="black" strokeWidth="5" />
+          </Svg>
+
+          <View style={styles.circle}>
+            <Text style={[styles.numbertext, { color: 'white' }]}>{levelData}</Text>
+          </View>
+
+          <View style={styles.numbers}>
+            <View style={styles.number1}>
+              {witchBox === 0 ? (
+                <TextInput
+                  style={styles.numbertext}
+                  value={inputValue1}
+                  onChangeText={setInputValue1}
+                  keyboardType="numeric"
+                  autoFocus={true}
+                  maxLength={2}
+                />
+              ) : (
+                <Text style={styles.numbertext}>{leftBox}</Text>
+              )}
             </View>
-          </TouchableWithoutFeedback>
-        )}
-        <View style={styles.taskbox}>
-
-          <Text style={styles.title}>{syllabify("Täydennä puuttuva luku.")}</Text>
-
-        </View>
-
-        <Svg height="300" width="300" style={styles.lineContainer}>
-          <Line x1="150" y1="100" x2="70" y2="230" stroke="black" strokeWidth="5" />
-          <Line x1="150" y1="100" x2="230" y2="230" stroke="black" strokeWidth="5" />
-        </Svg>
-
-        <View style={styles.circle}>
-          <Text style={[styles.numbertext, { color: 'white' }]}>{levelData}</Text>
-        </View>
-
-        <View style={styles.numbers}>
-          <View style={styles.number1}>
-            {witchBox === 0 ? (
-              <TextInput
-                style={styles.numbertext}
-                value={inputValue1}
-                onChangeText={setInputValue1}
-                keyboardType="numeric"
-                autoFocus={true}
-                maxLength={2}
-              />
-            ) : (
-              <Text style={styles.numbertext}>{leftBox}</Text>
-            )}
+            <View style={styles.number2}>
+              {witchBox === 1 ? (
+                <TextInput
+                  style={styles.numbertext}
+                  value={inputValue2}
+                  onChangeText={setInputValue2}
+                  keyboardType="numeric"
+                  autoFocus={true}
+                  maxLength={2}
+                />
+              ) : (
+                <Text style={styles.numbertext}>{rightBox}</Text>
+              )}
+            </View>
           </View>
-          <View style={styles.number2}>
-            {witchBox === 1 ? (
-              <TextInput
-                style={styles.numbertext}
-                value={inputValue2}
-                onChangeText={setInputValue2}
-                keyboardType="numeric"
-                autoFocus={true}
-                maxLength={2}
-              />
-            ) : (
-              <Text style={styles.numbertext}>{rightBox}</Text>
-            )}
-          </View>
-        </View>
 
-        <Pressable
-          onPress={checkAnswer}
-          style={[styles.checkButton, isButtonDisabled ? styles.disabledButton : null]}
-          disabled={isButtonDisabled}>
-          <Text style={styles.buttonText}>{syllabify("Tarkista")}</Text>
-        </Pressable>
+          <Pressable
+            onPress={checkAnswer}
+            style={[styles.checkButton, isButtonDisabled ? styles.disabledButton : null]}
+            disabled={isButtonDisabled}>
+            <Text style={styles.buttonText}>{syllabify("TARKISTA")}</Text>
+          </Pressable>
 
-        {showFeedback && (
-          <TouchableWithoutFeedback>
-            <View style={styles.overlayInstruction}>
-              <View style={styles.instructionWindow}>
-                <Text >{getFeedbackMessage(points)}</Text>
-                <Text style={styles.title}>Pistetaulu</Text>
-                <Text>Level: {playerLevel}/10</Text>
-                <Text>Kokonaispisteet: {totalXp}/190</Text>
-                <Text>ImageToNumbers: {imageToNumberXp}/50</Text>
-                <Text>SoundToNumbers: {soundToNumberXp}/50</Text>
-                <Text>Comparison: {comparisonXp}/50</Text>
-                <Text>Bonds: {bondsXp}/40</Text>
-                <View style={styles.buttonContainer}>
-                  <Button
-                    title="Seuraava tehtävä odottaa"
-                    onPress={() => {
+          {showFeedback && (
+            <TouchableWithoutFeedback>
+              <View style={styles.overlayInstruction}>
+                <View style={styles.instructionWindow}>
+                  <Text >{getFeedbackMessage(points)}</Text>
+                  <Text style={styles.title}>Pistetaulu</Text>
+                  <Text>Level: {playerLevel}/10</Text>
+                  <Text>Kokonaispisteet: {totalXp}/190</Text>
+                  <View style={styles.profileSelect}>
+                    <LevelBar progress={imageToNumberXp} label={"Kuvat numeroiksi"} />
+                    <LevelBar progress={soundToNumberXp} label={"Äänestä numeroiksi"} />
+                    <LevelBar progress={comparisonXp} label={"Vertailu"} />
+                    <LevelBar progress={bondsXp} label={"Hajonta"} />
+                </View>
+                  <View style={styles.buttonContainer}>
+                    <Pressable onPress={() => { 
                       handleContinueGame();
                       setShowFeedback(false)
                     }}
-                  />
-                  <Button title="Lopeta peli" onPress={() => {
-                    handleEndGame();
-                    setShowFeedback(false)
-                  }} />
+                      style={[styles.startButton, { backgroundColor: 'lightblue' }]}
+                      >
+                      <Text style={styles.buttonText}>{syllabify("SEURAAVA TEHTÄVÄ ODOTTAA")}</Text>
+                    </Pressable>
+                    <Pressable onPress={() => { 
+                      handleEndGame(); 
+                      setShowFeedback(false) 
+                    }}
+                      style={[styles.startButton, { backgroundColor: 'darkred' }]}
+                      >
+                      <Text style={[styles.buttonText, {color: 'white'}]}>{syllabify("LOPETA PELI")}</Text>
+                    </Pressable>
+                  </View>
                 </View>
               </View>
-            </View>
-          </TouchableWithoutFeedback>
-        )}
+            </TouchableWithoutFeedback>
+          )}
+        </View>
       </View>
-    </View>
-  </ImageBackground>
-);
+    </ImageBackground>
+  );
 
 }

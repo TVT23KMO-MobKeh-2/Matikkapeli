@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, Switch, StatusBar, BackHandler, ImageBackground, Alert} from 'react-native';
+import { View, Text, Pressable, Switch, StatusBar, BackHandler, ImageBackground, Alert } from 'react-native';
 import SliderComponent from '@react-native-community/slider';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSoundSettings } from '../components/SoundSettingsContext'; //Peliäänet on/off
@@ -10,7 +10,7 @@ import { savePlayerSettingsToDatabase, updatePlayerSettingsToDatabase, recievePl
 
 import createStyles from "../styles";
 import { useTheme } from '../components/ThemeContext';
-import { light, dark } from '../assets/themeColors'; 
+import { light, dark } from '../assets/themeColors';
 import { getBGImage } from '../components/backgrounds';
 
 export default function Settings({ onBack }) {
@@ -21,13 +21,13 @@ export default function Settings({ onBack }) {
   const { isDarkTheme, setIsDarkTheme } = useTheme();
 
   const { taskReading, setTaskReading } = useTaskReading();
-  const { taskSyllabification, setTaskSyllabification } = useTaskSyllabification(); //Käytä tavutuksen kontekstia
+  const { syllabify, taskSyllabification, setTaskSyllabification } = useTaskSyllabification(); //Käytä tavutuksen kontekstia
   const { gameSounds, setGameSounds } = useSoundSettings();
   const { isMusicPlaying, setIsMusicPlaying, setMusicVolume, musicVolume } = useBackgroundMusic(); //Taustamusiikki
 
-  const theme = isDarkTheme ? dark : light; 
-  const styles = createStyles(theme);  
-  const bgIndex = 0;  
+  const theme = isDarkTheme ? dark : light;
+  const styles = createStyles(theme);
+  const bgIndex = 0;
 
   //Sulkee sovelluksen Android-laitteilla
   const handleCloseApp = () => {
@@ -128,70 +128,75 @@ export default function Settings({ onBack }) {
   ]);
 
   return (
-    <ImageBackground 
-    source={getBGImage(isDarkTheme, bgIndex)} 
-    style={styles.background} 
-    resizeMode="cover"
+    <ImageBackground
+      source={getBGImage(isDarkTheme, bgIndex)}
+      style={styles.background}
+      resizeMode="cover"
     >
-    <SafeAreaView style={styles.safeContainer}>
-      <StatusBar 
-        barStyle={isDarkTheme ? 'light-content' : 'dark-content'} 
-        backgroundColor="transparent" 
-        translucent={true} 
-      />
-      <View style={styles.container}>
-        <Text style={styles.title}>Asetukset</Text>
+      <SafeAreaView style={styles.safeContainer}>
+        <StatusBar
+          barStyle={isDarkTheme ? 'light-content' : 'dark-content'}
+          backgroundColor="transparent"
+          translucent={true}
+        />
+        <View style={styles.container}>
+          <Text style={styles.title}>Asetukset</Text>
 
-        {/* Teeman valinta */}
-        <View style={styles.settingItem}>
-          <Text style={styles.label}>Tumman teeman valinta</Text>
-          <Switch value={isDarkTheme} onValueChange={setIsDarkTheme} />
+          {/* Teeman valinta */}
+          <View style={styles.settingItem}>
+            <Text style={styles.label}>Tumman teeman valinta</Text>
+            <Switch value={isDarkTheme} onValueChange={setIsDarkTheme} />
+          </View>
+
+          {/* Tavutuksen valinta */}
+          <View style={styles.settingItem}>
+            <Text style={styles.label}>Tavutus</Text>
+            <Switch value={taskSyllabification} onValueChange={() => setTaskSyllabification(!taskSyllabification)} />
+          </View>
+
+          {/* Tehtävien lukeminen */}
+          <View style={styles.settingItem}>
+            <Text style={styles.label}>Tehtävien lukeminen</Text>
+            <Switch value={taskReading} onValueChange={() => setTaskReading(!taskReading)} />
+          </View>
+
+          {/* Taustamusiikin päälle/pois */}
+          <View style={styles.settingItem}>
+            <Text style={styles.label}>Taustamusiikki</Text>
+            <Switch value={isMusicPlaying} onValueChange={setIsMusicPlaying} />
+          </View>
+
+          {/* Taustamusiikin voimakkuus */}
+          <View style={styles.settingItemColumn}>
+            <Text style={styles.label}>Taustamusiikin voimakkuus</Text>
+            <SliderComponent
+              style={styles.slider}
+              maximumTrackTintColor="#FF0000" //Punainen
+              minimumTrackTintColor="#FF004F" //Punainen
+              thumbTintColor="#006400"
+              value={musicVolume}
+              onValueChange={setMusicVolume}
+              minimumValue={0}
+              maximumValue={1}
+              step={0.1}
+            />
+          </View>
+
+          {/* Peliäänet */}
+          <View style={styles.settingItem}>
+            <Text style={styles.label}>Peliäänet</Text>
+            <Switch value={gameSounds} onValueChange={() => setGameSounds(!gameSounds)} />
+
+          </View>
+          {/* Sovelluksen sammuttaminen */}
+          <View style={styles.buttonContainer}>
+            <Pressable onPress={handleCloseApp}
+              style={[styles.startButton, { backgroundColor: 'darkred' }]}
+            >
+              <Text style={[styles.buttonText, {color: 'white'}]}>{syllabify("Sammuta sovellus")}</Text>
+            </Pressable>
+          </View>
         </View>
-
-        {/* Tavutuksen valinta */}
-        <View style={styles.settingItem}>
-          <Text style={styles.label}>Tavutus</Text>
-          <Switch value={taskSyllabification} onValueChange={() => setTaskSyllabification(!taskSyllabification)} />
-        </View>
-
-        {/* Tehtävien lukeminen */}
-        <View style={styles.settingItem}>
-          <Text style={styles.label}>Tehtävien lukeminen</Text>
-          <Switch value={taskReading} onValueChange={() => setTaskReading(!taskReading)} />
-        </View>
-
-        {/* Taustamusiikin päälle/pois */}
-        <View style={styles.settingItem}>
-          <Text style={styles.label}>Taustamusiikki</Text>
-          <Switch value={isMusicPlaying} onValueChange={setIsMusicPlaying} />
-        </View>
-
-        {/* Taustamusiikin voimakkuus */}
-        <View style={styles.settingItemColumn}>
-          <Text style={styles.label}>Taustamusiikin voimakkuus</Text>
-          <SliderComponent
-            style={styles.slider}
-            maximumTrackTintColor="#FF0000" //Punainen
-            minimumTrackTintColor="#FF004F" //Punainen
-            thumbTintColor="#006400"
-            value={musicVolume}
-            onValueChange={setMusicVolume}
-            minimumValue={0}
-            maximumValue={1}
-            step={0.1}
-          />
-        </View>
-
-        {/* Peliäänet */}
-        <View style={styles.settingItem}>
-          <Text style={styles.label}>Peliäänet</Text>
-          <Switch value={gameSounds} onValueChange={() => setGameSounds(!gameSounds)} />
-            
-        </View>
-
-        {/* Sovelluksen sammuttaminen */}
-        <Button title="Sammuta sovellus" onPress={handleCloseApp} />
-      </View>
       </SafeAreaView>
     </ImageBackground>
   );

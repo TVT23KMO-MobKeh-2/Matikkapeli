@@ -24,6 +24,7 @@ export default function ProfileScreen({ route, navigation }) {
     const { character } = route.params;
     const [setPlayerName] = useState('')
     const [setImageID] = useState('')
+    const [setPlayerLevel] = useState(1);
 
     if (!character) {
         return (
@@ -40,6 +41,9 @@ export default function ProfileScreen({ route, navigation }) {
     const theme = isDarkTheme ? dark : light;
     const styles = createStyles(theme);
     const bgIndex = 0;
+    
+
+    const resetTrigger = playerLevel;
 
     const startGame = () => {
         console.log('Navigating to Animation with profile:', character);
@@ -107,7 +111,7 @@ export default function ProfileScreen({ route, navigation }) {
                     <LevelBar progress={comparisonXp} label={"Vertailu"} />
                     <LevelBar progress={bondsXp} label={"Hajonta"} />
                 </View>
-                <View style={styles.buttonContainer}>
+                <View style={styles.buttonContainer1}>
                     <Pressable onPress={startGame}
                         style={styles.startButton}>
                         <Text style={styles.buttonText}>Aloita peli</Text>

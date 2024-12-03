@@ -1,4 +1,4 @@
-import { View, Text, Button, TouchableOpacity, ImageBackground, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, Pressable, TouchableOpacity, ImageBackground, TouchableWithoutFeedback } from 'react-native';
 import React, { useState, useContext, useEffect } from 'react';
 import * as Speech from 'expo-speech';
 import { StatusBar } from 'expo-status-bar';
@@ -8,10 +8,10 @@ import { useRoute } from '@react-navigation/native';
 import { useTaskSyllabification } from '../components/TaskSyllabificationContext';
 import { useSoundSettings } from '../components/SoundSettingsContext';
 import { useTaskReading } from '../components/TaskReadingContext';
-
+import LevelBar from '../components/LevelBar'
 import createStyles from "../styles";
 import { useTheme } from '../components/ThemeContext';
-import { light, dark } from '../assets/themeColors'; 
+import { light, dark } from '../assets/themeColors';
 import { getBGImage } from '../components/backgrounds';
 
 
@@ -33,10 +33,10 @@ export default function SoundToNumber({ onBack }) {
   const [loading, setLoading] = useState(false);
 
   const { isDarkTheme } = useTheme();
-  const theme = isDarkTheme ? dark : light; 
-  const styles = createStyles(theme);  
-  const bgIndex = 2; 
- 
+  const theme = isDarkTheme ? dark : light;
+  const styles = createStyles(theme);
+  const bgIndex = 2;
+
   useEffect(() => {
     if (questionsAnswered === 5) {
       Speech.stop();
@@ -119,12 +119,12 @@ export default function SoundToNumber({ onBack }) {
     }
     setLoading(false);
   };
- //console.log('TÄÄLLÄKI')
+  //console.log('TÄÄLLÄKI')
   return (
-    <ImageBackground 
-    source={getBGImage(isDarkTheme, bgIndex)} 
-    style={styles.background} 
-    resizeMode="cover"
+    <ImageBackground
+      source={getBGImage(isDarkTheme, bgIndex)}
+      style={styles.background}
+      resizeMode="cover"
     >
       <StatusBar
         barStyle={isDarkTheme ? 'light-content' : 'dark-content'}
@@ -147,9 +147,9 @@ export default function SoundToNumber({ onBack }) {
               <Text style={styles.label2}>{option}</Text>
             </TouchableOpacity>
           ))}
-          </View>
+        </View>
       </View>
-      
+
       {showFeedback && (
         <TouchableWithoutFeedback>
           <View style={styles.overlayInstruction}>
@@ -158,27 +158,29 @@ export default function SoundToNumber({ onBack }) {
               <Text style={styles.title}>Pistetaulu</Text>
               <Text>Level: {playerLevel}/10</Text>
               <Text>Kokonaispisteet: {totalXp}/190</Text>
-              <Text>ImageToNumbers: {imageToNumberXp}/50</Text>
-              <Text>SoundToNumbers: {soundToNumberXp}/50</Text>
-              <Text>Comparison: {comparisonXp}/50</Text>
-              <Text>Bonds: {bondsXp}/40</Text>
+              <View style={styles.profileSelect}>
+                    <LevelBar progress={imageToNumberXp} label={"Kuvat numeroiksi"} />
+                    <LevelBar progress={soundToNumberXp} label={"Äänestä numeroiksi"} />
+                    <LevelBar progress={comparisonXp} label={"Vertailu"} />
+                    <LevelBar progress={bondsXp} label={"Hajonta"} />
+                </View>
               <View style={styles.buttonContainer}>
-                <Button
-                  title="Seuraava tehtävä odottaa"
-                  onPress={() => {
-                    handleContinueGame();
-                    setGameEnded(false);
-                    setShowFeedback(false);
-                  }}
-                />
-                <Button
-                  title="Lopeta peli"
-                  onPress={() => {
-                    handleEndGame();
-                    setGameEnded(false);
-                    setShowFeedback(false);
-                  }}
-                />
+                <Pressable onPress={() => { 
+                  handleContinueGame();
+                  setGameEnded(false); 
+                  setShowFeedback(false) }}
+                  style={[styles.startButton, { backgroundColor: 'lightblue' }]}
+                >
+                  <Text style={styles.buttonText}>{syllabify("SEURAAVA TEHTÄVÄ ODOTTAA")}</Text>
+                </Pressable>
+                <Pressable onPress={() => { 
+                  handleEndGame();
+                  setGameEnded(false); 
+                  setShowFeedback(false) }}
+                  style={[styles.startButton, { backgroundColor: 'darkred' }]}
+                >
+                  <Text style={[styles.buttonText, {color: 'white'}]}>{syllabify("LOPETA PELI")}</Text>
+                </Pressable>
               </View>
             </View>
           </View>

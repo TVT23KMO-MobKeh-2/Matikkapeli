@@ -1,5 +1,5 @@
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
-import { View, Text, ImageBackground, Button } from 'react-native'
+import { View, Text, ImageBackground, Button, Pressable } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import TaskWindow from '../components/TaskWindow'
 import { Image } from 'expo-image';
