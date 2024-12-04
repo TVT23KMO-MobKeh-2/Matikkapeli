@@ -66,6 +66,7 @@ export default function SoundToNumber({ onBack }) {
 
   // Pelin logiikka
   useEffect(() => {
+    console.log('SoundToNumber useEffect');
     if (number !== null) {
       setOptions(generateOptions(number));
     }
