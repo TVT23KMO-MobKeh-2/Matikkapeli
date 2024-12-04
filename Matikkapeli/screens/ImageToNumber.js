@@ -60,13 +60,13 @@ export default function ImageToNumber({ onBack }) {
 
   // Alustetaan kysymykset ja nollataan kysymysindeksi
   useEffect(() => {
-    if (showFeedback) return; // Älä alusta, jos palautetta näytetään
+    if (showFeedback || gameActive) return; // Älä alusta, jos palautetta näytetään
 
-    if (!showFeedback && !gameEnded) {
+    /*if (!showFeedback && !gameEnded) {
     console.log('wawawa')
     setQuestions(generateQuestions());
     setQuestionIndex(0); // Nollaa kysymysindeksi, kun peli alkaa
-    }
+    }*/
   }, [showFeedback, gameEnded]);
 
   // Tarkistetaan, onko peli päättynyt (5 kysymystä vastattu)
@@ -86,11 +86,9 @@ export default function ImageToNumber({ onBack }) {
     setAnswered(true); // Lukitse vastaukset, kun ensimmäinen valinta tehty
     const currentQuestion = questions[questionIndex];
     const isCorrect = selectedAnswer === currentQuestion.iconCount;
-    console.log('isCorrect')
     // Palaute puheena
     const responseMessage = isCorrect ? "Oikein!" : "Yritetään uudelleen!";
     if (taskReading) {
-      console.log('speaking', responseMessage)
       Speech.speak(responseMessage);
     }
 
@@ -112,20 +110,12 @@ export default function ImageToNumber({ onBack }) {
 
   const handleBack = () => {
     setGameActive(false);
-    console.log('handleBack')
     setShowFeedback(false);
     setQuestionsAnswered(0);
     setPoints(0);
     handleUpdatePlayerStatsToDatabase();
     Speech.stop();
   };
-
-  useEffect(() => {
-    if (!gameActive || gameEnded) {
-      Speech.stop();
-      return;
-    }
-  })
 
   // Puheen hallinta ja valmistuminen
   useEffect(() => {
@@ -138,9 +128,8 @@ export default function ImageToNumber({ onBack }) {
     setAnswered(false);
     setIsSpeechFinished(false); // Resetoi puhevalmiuden tila
 
-    if (taskReading) {
+    if (taskReading && gameActive) {
       Speech.stop(); // Lopeta mahdollinen edellinen puhe
-      console.log('speaking', currentQuestion.question)
       Speech.speak(currentQuestion.question, {
         onDone: () => setIsSpeechFinished(true), // Merkitään puhe valmiiksi
       });
