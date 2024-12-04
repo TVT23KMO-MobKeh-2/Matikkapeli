@@ -96,7 +96,7 @@ export default function ImageToNumber({ onBack }) {
     setTimeout(() => {
       setQuestionIndex((prevIndex) => (prevIndex + 1) % questions.length);
       setAnswered(false); // Nollaa vastauksen tila seuraavaa kysymystä varten
-    }, 3000);
+    }, 1000);
 
     // Päivitä pisteet ja vastattujen kysymysten määrä
     if (isCorrect) {
@@ -225,7 +225,6 @@ export default function ImageToNumber({ onBack }) {
                 <View style={styles.buttonContainer}>
                   <Pressable onPress={() => { 
                     handleContinueGame(); 
-                    setGameEnded(false);
                     setShowFeedback(false) }}
                     style={[styles.startButton, { backgroundColor: 'lightblue' }]}
                   >
@@ -233,7 +232,7 @@ export default function ImageToNumber({ onBack }) {
                   </Pressable>
                   <Pressable onPress={() => { 
                     handleEndGame(); 
-                    setGameEnded(false);
+
                     setShowFeedback(false) }}
                     style={[styles.startButton, { backgroundColor: 'darkred' }]}
                   >
