@@ -79,7 +79,7 @@ export default function App() {
                     />
                       <Stack.Screen name="CreateProfile" component={CreateProfile} />
                       <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
-                      <Stack.Screen name="Animation" component={Animation} />
+                      <Stack.Screen name="Animation" component={Animation} options={{ headerShown: false }}/>
                       <Stack.Screen name="ImageToNumbers" component={ImageToNumber} />
                       <Stack.Screen name="SoundToNumbers" component={SoundToNumber} />
                       <Stack.Screen name="Bonds" component={Bonds} />

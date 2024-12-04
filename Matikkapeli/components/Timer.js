@@ -5,7 +5,7 @@ import * as Speech from "expo-speech";
 import createStyles from "../styles";
 import { useTheme } from '../components/ThemeContext';
 import { light, dark } from '../assets/themeColors'; 
-
+import { useTaskSyllabification } from "./TaskSyllabificationContext"
 
 const Timer = ({ closeModal, onTimerStart, onTimerEnd }) => {
   const { isDarkTheme } = useTheme();
@@ -17,7 +17,8 @@ const Timer = ({ closeModal, onTimerStart, onTimerEnd }) => {
   const [isTimerActive, setIsTimerActive] = useState(false);
   const [timeSelectionModalVisible, setTimeSelectionModalVisible] = useState(true);
   const [stopTimerModalVisible, setStopTimerModalVisible] = useState(false);
-
+  const { syllabify } = useTaskSyllabification()
+  
   // Timer logiikka
   useEffect(() => {
     let timerInterval;
@@ -82,27 +83,27 @@ const Timer = ({ closeModal, onTimerStart, onTimerEnd }) => {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalText}>Valitse aika:</Text>
+            <Text style={styles.modalText}>{syllabify("Valitse aika:")}</Text>
             <TouchableOpacity onPress={() => startTimer(1)}>
-              <Text style={styles.modalButton}>1 minuutti</Text>
+              <Text style={styles.modalButton}>1 {syllabify("minuuttia")}</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => startTimer(2)}>
-              <Text style={styles.modalButton}>2 minuuttia</Text>
+              <Text style={styles.modalButton}>2 {syllabify("minuuttia")}</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => startTimer(15)}>
-              <Text style={styles.modalButton}>15 minuuttia</Text>
+              <Text style={styles.modalButton}>15 {syllabify("minuuttia")}</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => startTimer(30)}>
-              <Text style={styles.modalButton}>30 minuuttia</Text>
+              <Text style={styles.modalButton}>30 {syllabify("minuuttia")}</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => startTimer(45)}>
-              <Text style={styles.modalButton}>45 minuuttia</Text>
+              <Text style={styles.modalButton}>45 {syllabify("minuuttia")}</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => startTimer(60)}>
-              <Text style={styles.modalButton}>60 minuuttia</Text>
+              <Text style={styles.modalButton}>60 {syllabify("minuuttia")}</Text>
             </TouchableOpacity>
             <TouchableOpacity style= {styles.startButton} onPress={closeTimerSelectionModal}>
-              <Text style={styles.buttonText}>Sulje</Text>
+              <Text style={styles.buttonText}>{syllabify("Sulje")}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -124,12 +125,12 @@ const Timer = ({ closeModal, onTimerStart, onTimerEnd }) => {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalText}>Oletko varma, että haluat pysäyttää ajastimen?</Text>
+            <Text style={styles.modalText}>{syllabify("Oletko varma, että haluat pysäyttää ajastimen?")}</Text>
             <TouchableOpacity onPress={() => { stopTimer(); closeModal(); }}>
-              <Text style={styles.modalButton}>Kyllä, pysäytä</Text>
+              <Text style={styles.modalButton}>{syllabify("Kyllä, pysäytä")}</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={closeStopTimerModal}>
-              <Text style={styles.modalButton}>Ei, jatka</Text>
+              <Text style={styles.modalButton}>{syllabify("Ei, jatka")}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -145,10 +146,10 @@ const Timer = ({ closeModal, onTimerStart, onTimerEnd }) => {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalText}>
-              Olet pelannut {selectedTime} minuuttia. Olisiko aika tauolle?
+          {syllabify("Olet pelannut ")}{selectedTime}{syllabify(" minuuttia. Olisiko aika tauolle?")}
             </Text>
             <TouchableOpacity onPress={handleClose}>
-              <Text style={styles.modalButton}>Sulje</Text>
+              <Text style={styles.modalButton}>{syllabify("Sulje")}</Text>
             </TouchableOpacity>
           </View>
         </View>

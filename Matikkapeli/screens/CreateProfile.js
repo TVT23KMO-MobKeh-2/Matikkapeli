@@ -51,19 +51,19 @@ export default function CreateProfile({ onCancel, onSave, email }) {
     };
 
     const careerOptions = [
-        { label: 'Lääkäri', value: "doctor" },
-        { label: 'Automekaanikko', value: "mechanic" },
-        { label: 'Rakentaja', value: "builder" },
-        { label: 'Kauppias', value: "vendor" },
-        { label: 'Ohjelmoija', value: "programmer" },
-        { label: 'Opettaja', value: "teacher" },
+        { label: 'LÄÄKÄRI', value: "doctor" },
+        { label: 'AUTOMEKAANIKKO', value: "mechanic" },
+        { label: 'RAKENTAJA', value: "builder" },
+        { label: 'KAUPPIAS', value: "vendor" },
+        { label: 'OHJELMOIJA', value: "programmer" },
+        { label: 'OPETTAJA', value: "teacher" },
     ]
 
     const animalOptions = [
-        { label: 'Kettu', value: 'fox', image: require('../assets/proffox.png') },
-        { label: 'Karhu', value: 'bear', image: require('../assets/profbear.png') },
-        { label: 'Pupu', value: 'rabbit', image: require('../assets/profrabbit.png') },
-        { label: 'Susi', value: 'wolf', image: require('../assets/profwolf.png') },
+        { label: 'KETTU', value: 'fox', image: require('../assets/proffox.png') },
+        { label: 'KARHU', value: 'bear', image: require('../assets/profbear.png') },
+        { label: 'PUPU', value: 'rabbit', image: require('../assets/profrabbit.png') },
+        { label: 'SUSI', value: 'wolf', image: require('../assets/profwolf.png') },
     ]
 
 
@@ -81,7 +81,7 @@ export default function CreateProfile({ onCancel, onSave, email }) {
                 )}
             <TextInput
                 style={styles.input}
-                placeholder='Kirjoita nimesi'
+                placeholder='KIRJOITA NIMESI'
                 value={name}
                 onChangeText={(text) => setName(text)}
                 backgroundColor="white" />
@@ -92,7 +92,7 @@ export default function CreateProfile({ onCancel, onSave, email }) {
                         selectedValue={selectedAnimal}
                         onValueChange={(itemValue) => setSelectedAnimal(itemValue)}
                     >
-                        <Picker.Item label='Valitse eläin' value=""/>
+                        <Picker.Item label='VALITSE ELÄIN' value=""/>
                         {animalOptions.map((option) => (
                             <Picker.Item key={option.value} label={option.label} value={option} />
                         ))}
@@ -102,7 +102,7 @@ export default function CreateProfile({ onCancel, onSave, email }) {
                         selectedValue={selectedCareer}
                         onValueChange={(itemValue) => setSelectedCareer(itemValue)}
                     >
-                        <Picker.Item label='Valitse ammatti' value="" />
+                        <Picker.Item label='VALITSE AMMATTI' value="" />
                         {careerOptions.map((option) => (
                             <Picker.Item key={option.value} label={option.label} value={option} />
                         ))}
@@ -112,13 +112,13 @@ export default function CreateProfile({ onCancel, onSave, email }) {
             <View style={styles.buttonContainer}>
                             <Pressable onPress={handleSave} disabled={isSaving || !name || !selectedCareer || !selectedAnimal}
                                 style={[styles.startButton, { backgroundColor: 'lightblue' }]}>
-                                <Text style={styles.buttonText}>{isSaving ? 'Tallennetaan...' : 'Tallenna'}</Text>
+                                <Text style={styles.buttonText}>{isSaving ? 'TALLENNETAAN...' : 'TALLENNA'}</Text>
                             </Pressable>
                             <Pressable onPress={onCancel}
                                 style={[styles.startButton, { backgroundColor: 'red' }]}>
                                 <Text style={styles.buttonText}>Peruuta</Text>
                             </Pressable>
-                        </View>
+            </View>
         </View>
         </ImageBackground>
     );

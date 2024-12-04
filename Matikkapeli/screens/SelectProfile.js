@@ -184,7 +184,7 @@ export default function SelectProfile({ route, navigation }) {
     resizeMode="cover"
     >
     <View style = {[styles.container, {paddingTop: 0}]}>
-      <Text style={styles.title}>Valitse profiili</Text>
+      <Text style={styles.title}>VALITSE PROFIILI</Text>
       <View style={styles.profileSelect}>
         {[...Array(4)].map((_, index) => {
           const character = characters[index];

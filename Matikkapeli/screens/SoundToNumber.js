@@ -132,7 +132,7 @@ export default function SoundToNumber({ onBack }) {
         translucent={true}
       />
       <View style={styles.container}>
-        <Text style={styles.title}>Valitse oikea numero</Text>
+        <Text style={styles.title}>{syllabify("Valitse oikea numero")}</Text>
         <TouchableOpacity style={styles.startButton} onPress={playNumber}>
           <Text style={styles.buttonText}>{syllabify("Kuuntele numero 🔊")}</Text>
         </TouchableOpacity>

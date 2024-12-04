@@ -18,13 +18,13 @@ export function TaskSyllabificationProvider({ children }) {
 
       // Comparison.js
       "Vertailu": "VER-TAI-LU",
-      "Valitse yhtäsuuri tai suurempi": "VA-LIT-SE YH-TÄ-SUU-RI TAI SUU-REM-PI",
-      "Valitse yhtäsuuri tai pienempi": "VA-LIT-SE YH-TÄ-SUU-RI TAI PIE-NEM-PI",
+      "Valitse yhtäsuuri (=) tai suurempi": "VA-LIT-SE YH-TÄ-SUU-RI (=) TAI SUU-REM-PI",
+      "Valitse yhtäsuuri (=) tai pienempi": "VA-LIT-SE YH-TÄ-SUU-RI (=) TAI PIE-NEM-PI",
 
       // SoundToNumber.js
+      "Valitse oikea numero": "VA-LIT-SE OI-KE-A NU-ME-RO",
       "Ääni numeroiksi": "ÄÄ-NI NU-ME-ROIK-SI",
       "Kuuntele numero 🔊": "KUUN-TE-LE NU-ME-RO 🔊",
-
 
       // Bonds.js
       "Hajonta": "HA-JON-TA",
@@ -33,6 +33,31 @@ export function TaskSyllabificationProvider({ children }) {
       "Aloita": "A-LOI-TA",
       "Täydennä puuttuva luku.": "TÄY-DEN-NÄ PUUT-TU-VA LU-KU.",
       "Tarkista": "TAR-KIS-TA",
+          
+      // Settings.js
+      "Asetukset":"A-SE-TUK-SET",
+      "Tumman teeman valinta":"TUM-MAN TEE-MAN VA-LIN-TA",
+      "Tavutus":"TA-VU-TUS",
+      "Tehtävien lukeminen":"TEH-TÄ-VI-EN LU-KE-MI-NEN",
+      "Taustamusiikki":"TAUS-TA-MU-SIIK-KI",
+      "Taustamusiikin voimakkuus":"TAUS-TA-MU-SII-KIN VOI-MAK-KUUS",
+      "Peliäänet":"PE-LI-ÄÄ-NET",
+      "Sammuta sovellus":"SAM-MU-TA SO-VEL-LUS",
+      
+      // Timer.js
+      "Valitse aika:":"VA-LIT-SE AI-KA",
+      "minuuttia":"MI-NUUT-TI-A",
+      "Sulje":"SUL-JE",
+      "Oletko varma, että haluat pysäyttää ajastimen?":"O-LET-KO VAR-MA, ET-TÄ HA-LU-AT PY-SÄYT-TÄÄ A-JAS-TI-MEN?",
+      "Kyllä, pysäytä":"",
+      "Ei, jatka":"",
+      "Olet pelannut ":"O-LET PE-LAN-NUT ",
+      " minuuttia. Olisiko aika tauolle?":" MI-NUUT-TIA. O-LI-SI-KO AI-KA TAU-OL-LE?",
+      "Sulje":"SUL-JE",
+      
+      //FeedBack
+      "Seuraava tehtävä odottaa": "SEU-RAA-VA TEH-TÄ-VÄ O-DOT-TAA",
+      "Lopeta peli": "LO-PE-TA PE-LI",
     };
 
     // Jos tavutustoiminto ei ole käytössä, palautetaan alkuperäinen teksti
