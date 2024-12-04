@@ -69,7 +69,7 @@ const createStyles = (theme) => StyleSheet.create({
     color: theme.text,
   },
   buttonText: {
-    fontSize: 18,
+    fontSize: 14,
     fontFamily: 'ComicNeue_700Bold',
     textAlign: 'center',
     color: theme.text,
@@ -253,7 +253,10 @@ const createStyles = (theme) => StyleSheet.create({
   buttonContainer1: {
     flexDirection: 'row',
     position: 'absolute',
-    bottom: 50,
+    alignItems: 'center',
+    justifyContent:'center',
+    bottom: 40,
+    left: 8,
     justifyContent: 'space-between',
     width: '90%',
     zIndex: 4,
@@ -547,7 +550,6 @@ image: {
       backgroundColor: '#36BA98',
       justifyContent: 'center',
       alignItems: 'center',
-      margin: 20,
       zIndex: 2,
     },
     numbers: {
@@ -578,19 +580,19 @@ image: {
       fontFamily: 'ComicNeue_700Bold',
     },
     checkButton: {
-      backgroundColor: '#6abded',
-      paddingVertical: 10,
-      paddingHorizontal: 20,
+      backgroundColor: 'green',
+      paddingVertical: 20,
+      paddingHorizontal: 30,
       alignItems: 'center',
       justifyContent: 'center',
       marginTop: 20,
       borderRadius: 10,
-    },/*
+    },
     checkButtonText: {
       color: 'white',
-      fontSize: 16,
+      fontSize: 18,
       fontFamily: 'ComicNeue_700Bold',
-    },*/
+    },
 
     //!!!!!!!!!! Levelbar tyyli !!!!!!!!!!!!!
     progressContainer:{

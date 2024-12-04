@@ -135,19 +135,19 @@ export default function ImageToNumber({ onBack }) {
   }, [questionIndex, questions, gameEnded, taskReading]);
 
   const careerIcon = {
-    Lääkäri: "stethoscope",
-    Automekaanikko: "oil",
-    Rakentaja: "hammer",
-    Kauppias: "cart-variant",
-    Ohjelmoija: "laptop",
-    Opettaja: "lead-pencil",
+    LÄÄKÄRI: "stethoscope",
+    AUTOMEKAANIKKO: "oil",
+    RAKENTAJA: "hammer",
+    KAUPPIAS: "cart-variant",
+    OHJELMOIJA: "laptop",
+    OPETTAJA: "lead-pencil",
   }
 
 
 
   // Renderöi nykyisen kysymyksen ikonit
   const renderIcons = () => {
-    const career = profile?.career
+    const career = profile.career
     const iconName = careerIcon[career] || "stocking"
 
 

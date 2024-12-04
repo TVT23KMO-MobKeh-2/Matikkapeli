@@ -1,5 +1,5 @@
 
-import { View, Text, Button, StyleSheet, TextInput, ImageBackground, TouchableWithoutFeedback, ScrollView, Pressable } from 'react-native'
+import { View, Text, Button, StyleSheet, TextInput, ImageBackground, TouchableWithoutFeedback, ScrollView, Pressable, Keyboard } from 'react-native'
 import React, { useState, useEffect, useContext } from 'react'
 import Svg, { Line } from 'react-native-svg';
 import { Audio } from 'expo-av';
@@ -15,6 +15,7 @@ import createStyles from "../styles";
 import { useTheme } from '../components/ThemeContext';
 import { light, dark } from '../assets/themeColors';
 import { getBGImage } from '../components/backgrounds';
+import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from 'react-native-reanimated';
 
 // Satunnaisen arvon generointi annetulla alueella
 function random(min, max) {
@@ -22,6 +23,7 @@ function random(min, max) {
 }
 
 export default function Bonds({ onBack }) {
+
   const route = useRoute();
   const { profile } = route.params;
   const navigation = useNavigation()
@@ -35,7 +37,7 @@ export default function Bonds({ onBack }) {
   }, [profile]);
 
   // Pelin aloitustaso ja muut tilamuuttujat
-  
+
   const [leftBox, setLeftBox] = useState(0);  // Vasemman laatikon arvo
   const [rightBox, setRightBox] = useState(0);  // Oikean laatikon arvo
   const [witchBox, setWitchBox] = useState(random(0, 1));  // Tieto siitä, kummassa laatikossa on puuttuva luku
@@ -56,6 +58,10 @@ export default function Bonds({ onBack }) {
   const [isButtonClicked, setIsButtonClicked] = useState(false)
   const [instructionReading, setInstructionReading] = useState(true)
   const levelData = playerLevel;
+  const [lastLeftBox, setLastLeftBox] = useState(null);
+  const [lastRightBox, setLastRightBox] = useState(null);
+  const opacity = useSharedValue(0);
+
 
 
   const theme = isDarkTheme ? dark : light;
@@ -63,22 +69,33 @@ export default function Bonds({ onBack }) {
   const bgIndex = 4;
 
 
-  // Äänitiedostot oikein ja väärin vastauksille
-  //const imagaBG = require('../assets/view6.png')  // Taustakuva
 
   // Funktio, joka generoi uuden pelitason (arvot vasemmalle ja oikealle laatikolle)
   const generateNewLevel = () => {
-    setIsTaskChanging(true)
-    const newLeftBox = random(0, levelData);  // Arvotaan vasemman laatikon arvo
-    const newRightBox = levelData - newLeftBox;  // Lasketaan oikean laatikon arvo
+    setIsTaskChanging(true);
+
+    let newLeftBox, newRightBox, newWitchBox;
+
+    // Ensure the new values are different from the last ones
+    do {
+      newLeftBox = random(0, levelData);  // Randomly generate new value for left box
+      newRightBox = levelData - newLeftBox;  // Calculate right box based on left box  // Randomly determine which box has the missing value
+    } while (newLeftBox === lastLeftBox && newRightBox === lastRightBox);
+
+    // Update the state with the new values
     setLeftBox(newLeftBox);
     setRightBox(newRightBox);
-    setWitchBox(random(0, 1));  // Arvotaan, kummassa laatikossa on puuttuva luku
-    setInputValue1('');  // Tyhjennetään syötekenttä
-    setInputValue2('');  // Tyhjennetään syötekenttä
+    setInputValue1('');  // Reset user input for left box
+    setInputValue2('');  // Reset user input for right box
+
+    // Store the current values for future comparison
+    setLastLeftBox(newLeftBox);
+    setLastRightBox(newRightBox);
+
+    // Reset task-changing state after a short delay
     setTimeout(() => {
-      setIsTaskChanging(false)
-    }, 2000)
+      setIsTaskChanging(false);
+    }, 1000);
   };
 
   // Efekti, joka käynnistää tason generoinnin heti, kun pelin taso muuttuu
@@ -89,6 +106,7 @@ export default function Bonds({ onBack }) {
   // Tehtävän tarkistus (tarkistaa onko käyttäjän vastaus oikein)
   useEffect(() => {
     if (questionsAnswered === 5) {
+      Keyboard.dismiss();
       setShowFeedback(true);  // Näytetään feedback-ikkuna, kun 5 kysymystä on vastattu
       // Lisätään XP-pisteet
       incrementXp(points, "bonds");
@@ -163,6 +181,16 @@ export default function Bonds({ onBack }) {
     }
   }, [taskReading, instructionReading]); // Runs when either taskReading or instructionReading changes
 
+  useEffect(() => {
+    opacity.value = withTiming(1, { duration: 500, easing: Easing.ease });
+  }, []);
+
+  // Animated style to be applied to elements
+  const animatedStyles = useAnimatedStyle(() => {
+    return {
+      opacity: opacity.value,
+    };
+  });
 
 
   return (
@@ -188,9 +216,9 @@ export default function Bonds({ onBack }) {
                     )}
                   </Text>
                   <View style={styles.buttonContainer}>
-                    <Pressable onPress={() => { 
-                      setInstructionReading(false); 
-                      setInstructionVisibility(false) 
+                    <Pressable onPress={() => {
+                      setInstructionReading(false);
+                      setInstructionVisibility(false)
                     }}
                       style={styles.startButton}>
                       <Text style={styles.buttonText}>{syllabify("Aloita")}</Text>
@@ -206,6 +234,7 @@ export default function Bonds({ onBack }) {
 
           </View>
 
+
           <Svg height="300" width="300" style={styles.lineContainer}>
             <Line x1="150" y1="100" x2="70" y2="230" stroke="black" strokeWidth="5" />
             <Line x1="150" y1="100" x2="230" y2="230" stroke="black" strokeWidth="5" />
@@ -214,8 +243,7 @@ export default function Bonds({ onBack }) {
           <View style={styles.circle}>
             <Text style={[styles.numbertext, { color: 'white' }]}>{levelData}</Text>
           </View>
-
-          <View style={styles.numbers}>
+          <Animated.View style={[animatedStyles, styles.numbers]}>
             <View style={styles.number1}>
               {witchBox === 0 ? (
                 <TextInput
@@ -244,14 +272,16 @@ export default function Bonds({ onBack }) {
                 <Text style={styles.numbertext}>{rightBox}</Text>
               )}
             </View>
-          </View>
+          </Animated.View>
 
-          <Pressable
-            onPress={checkAnswer}
-            style={[styles.checkButton, isButtonDisabled ? styles.disabledButton : null]}
-            disabled={isButtonDisabled}>
-            <Text style={styles.buttonText}>{syllabify("TARKISTA")}</Text>
-          </Pressable>
+          <View style={styles.buttonContainer}>
+            <Pressable
+              onPress={checkAnswer}
+              style={[styles.checkButton, isButtonDisabled ? styles.disabledButton : null]}
+              disabled={isButtonDisabled}>
+              <Text style={styles.checkButtonText}>{syllabify("TARKISTA")}</Text>
+            </Pressable>
+          </View>
 
           {showFeedback && (
             <TouchableWithoutFeedback>
@@ -266,23 +296,23 @@ export default function Bonds({ onBack }) {
                     <LevelBar progress={soundToNumberXp} label={"Äänestä numeroiksi"} />
                     <LevelBar progress={comparisonXp} label={"Vertailu"} />
                     <LevelBar progress={bondsXp} label={"Hajonta"} />
-                </View>
+                  </View>
                   <View style={styles.buttonContainer}>
-                    <Pressable onPress={() => { 
+                    <Pressable onPress={() => {
                       handleContinueGame();
                       setShowFeedback(false)
                     }}
                       style={[styles.startButton, { backgroundColor: 'lightblue' }]}
-                      >
+                    >
                       <Text style={styles.buttonText}>{syllabify("SEURAAVA TEHTÄVÄ ODOTTAA")}</Text>
                     </Pressable>
-                    <Pressable onPress={() => { 
-                      handleEndGame(); 
-                      setShowFeedback(false) 
+                    <Pressable onPress={() => {
+                      handleEndGame();
+                      setShowFeedback(false)
                     }}
                       style={[styles.startButton, { backgroundColor: 'darkred' }]}
-                      >
-                      <Text style={[styles.buttonText, {color: 'white'}]}>{syllabify("LOPETA PELI")}</Text>
+                    >
+                      <Text style={[styles.buttonText, { color: 'white' }]}>{syllabify("LOPETA PELI")}</Text>
                     </Pressable>
                   </View>
                 </View>
@@ -291,7 +321,7 @@ export default function Bonds({ onBack }) {
           )}
         </View>
       </View>
-    </ImageBackground>
+    </ImageBackground >
   );
 
 }

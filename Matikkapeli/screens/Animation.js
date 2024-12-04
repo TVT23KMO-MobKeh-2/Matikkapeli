@@ -13,10 +13,10 @@ export default function Animation({ route, onBack, navigation }) {
     const backgroundImageFront = require('../assets/Pixel-art-front-sign_full.png')
     const translateX = useSharedValue(750)
     const imageWidth = 2250
-    const [isMoving, setIsMoving] = useState(false)
+    const [isMoving, setIsMoving] = useState(true)
     const stopImage = require('../assets/foxwalking1.png')
     const movingImage = require('../assets/foxwalking.gif')
-    const [isGifVisible, setIsGifVisible] = useState(false)
+    const [isGifVisible, setIsGifVisible] = useState(true)
     const [taskVisible, setTaskVisible] = useState(false)
     const { profile } = route.params;
     console.log('Received profile data:', profile);
