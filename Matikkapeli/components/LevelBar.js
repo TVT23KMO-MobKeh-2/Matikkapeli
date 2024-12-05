@@ -1,129 +1,110 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native'; 
 import React, { useEffect, useState, useRef } from 'react';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { Image } from 'expo-image';
+
+const milestones = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
+
+const levelImages = {
+    0: require('../assets/purkki.png'),
+    1: require('../assets/purkki1.png'),
+    2: require('../assets/purkki2.png'),
+    3: require('../assets/purkki3.png'),
+    4: require('../assets/purkki4.png'),
+    5: require('../assets/purkki5.png'),
+    6: require('../assets/purkki6.png'),
+    7: require('../assets/purkki7.png'),
+    8: require('../assets/purkki8.png'),
+    9: require('../assets/purkki9.png'),
+    10: require('../assets/purkki10.png'),
+};
+
+const levelGifs = {
+    5: require('../assets/purkki.gif'),
+    10: require('../assets/purkki1.gif'),
+    15: require('../assets/purkki3.gif'),
+    20: require('../assets/purkki4.gif'),
+    25: require('../assets/purkki5.gif'),
+    30: require('../assets/purkki6.gif'),
+    35: require('../assets/purkki7.gif'),
+    40: require('../assets/purkki8.gif'),
+    45: require('../assets/purkki9.gif'),
+    50: require('../assets/purkki10.gif'),
+};
 
 export default function LevelBar({ progress, label, playerLevel, gameType }) {
     const progressWidth = useSharedValue(0);
     const [gifVisible, setGifVisible] = useState(false);
     const [levelImage, setLevelImage] = useState(null);
     const gifTimer = useRef(null); // Keep the gif timer reference
+    const lastPointRef = useRef({ imageToNumber: 0, soundToNumber: 0, comparison: 0, bonds: 0 });
 
-    // Use refs to keep track of last points without triggering re-renders
-    const imageLastPointRef = useRef(0);
-    const soundLastPointRef = useRef(0);
-    const comparisonLastPointRef = useRef(0);
-    const bondsLastPointRef = useRef(0);
+    const normalizeProgress = (progress, playerLevel) => {
+        return gameType === "bonds"
+            ? playerLevel < 3
+                ? 0
+                : Math.min(((progress - (playerLevel - 3) * 5) / 5) * 100, 100)
+            : Math.min(((progress - (playerLevel - 1) * 5) / 5) * 100, 100);
+    };
+
+    const updateMilestoneImage = (milestone, gameType) => {
+        const newImage = gifVisible ? levelGifs[milestone] : levelImages[Math.floor(milestone / 5)];
+        if (newImage !== levelImage) {
+            setLevelImage(newImage); // Only set image if it has changed
+            console.log(`Updating image: gifVisible = ${gifVisible}, newImage = ${newImage}`);
+        }
+    };
+
+    const handleMilestoneGif = (milestone, gameType) => {
+        if (lastPointRef.current[gameType] < progress) {
+            if (milestones.includes(milestone)) {
+                console.log(`Milestone reached: ${milestone}, GameType: ${gameType}, Progress: ${progress}`);
+    
+                // Set the GIF visibility to true, and set the GIF image immediately
+                setGifVisible(true);
+    
+                // Delay the update of the levelImage until the gifVisible state has updated
+                setTimeout(() => {
+                    setLevelImage(levelGifs[milestone] || levelImages[0]);
+                    console.log(`GIF Visible: ${gifVisible}, Setting image: ${levelGifs[milestone] || levelImages[0]}`);
+                }, 50); // Small delay to allow gifVisible state to apply
+    
+                // Hide the GIF after 2 seconds and set the static image
+                clearTimeout(gifTimer.current);
+                gifTimer.current = setTimeout(() => {
+                    setGifVisible(false); // Hide the GIF
+                    setLevelImage(levelImages[Math.floor(milestone / 5)] || levelImages[0]); // Set the static image
+                    console.log(`GIF Hidden after 2 seconds, setting static image: ${levelImages[Math.floor(milestone / 5)]}`);
+                }, 2000); // 2 seconds duration for GIF
+            }
+            lastPointRef.current[gameType] = progress;
+        }
+    };
+    
+    
 
     useEffect(() => {
-        // Normalize progress to stay between 0 and 100
-        const normalizedProgress =
-            gameType === "bonds"
-                ? Math.min(((progress - (playerLevel - 3) * 5) / 5) * 100, 100)
-                : Math.min(((progress - (playerLevel - 1) * 5) / 5) * 100, 100);
-
-        console.log(`Normalized Progress for ${gameType}: ${normalizedProgress}`);
+        const normalizedProgress = normalizeProgress(progress, playerLevel);
         progressWidth.value = withTiming(normalizedProgress, { duration: 500 });
 
-        // Determine the current milestone
-        const milestone = Math.floor(progress / 5) * 5; // Get the nearest multiple of 5 below or equal to progress
-        console.log(`Milestone for ${gameType}: ${milestone}`);
+        const milestone = Math.floor(progress / 5) * 5;
+        console.log(`Milestone for ${gameType}: ${milestone}, Progress: ${progress}, PlayerLevel: ${playerLevel}`);
 
-        // Track the GIF visibility and milestones for each game type
-        if (gameType === "imageToNumber" && imageLastPointRef.current < progress) {
-            console.log(`GIF triggered for 'imageToNumber' at progress: ${progress}, last point: ${imageLastPointRef.current}`);
-            setGifVisible(true);
-            if (gifTimer.current) clearTimeout(gifTimer.current); // Clear any existing timer
-            gifTimer.current = setTimeout(() => {
-                console.log(`Hiding GIF for 'imageToNumber' at progress: ${progress}`);
-                setGifVisible(false); // Hide the GIF after the timeout
-            }, 2000);
-            // Update last point for 'imageToNumber' using ref
-            imageLastPointRef.current = progress;
-        }
-
-        if (gameType === "soundToNumber" && soundLastPointRef.current < progress) {
-            console.log(`GIF triggered for 'soundToNumber' at progress: ${progress}, last point: ${soundLastPointRef.current}`);
-            setGifVisible(true);
-            if (gifTimer.current) clearTimeout(gifTimer.current);
-            gifTimer.current = setTimeout(() => {
-                console.log(`Hiding GIF for 'soundToNumber' at progress: ${progress}`);
-                setGifVisible(false);
-            }, 2000);
-            // Update last point for 'soundToNumber' using ref
-            soundLastPointRef.current = progress;
-        }
-
-        if (gameType === "comparison" && comparisonLastPointRef.current < progress) {
-            console.log(`GIF triggered for 'comparison' at progress: ${progress}, last point: ${comparisonLastPointRef.current}`);
-            setGifVisible(true);
-            if (gifTimer.current) clearTimeout(gifTimer.current);
-            gifTimer.current = setTimeout(() => {
-                console.log(`Hiding GIF for 'comparison' at progress: ${progress}`);
-                setGifVisible(false);
-            }, 2000);
-            // Update last point for 'comparison' using ref
-            comparisonLastPointRef.current = progress;
-        }
-
-        if (gameType === "bonds" && bondsLastPointRef.current < progress) {
-            console.log(`GIF triggered for 'bonds' at progress: ${progress}, last point: ${bondsLastPointRef.current}`);
-            setGifVisible(true);
-            if (gifTimer.current) clearTimeout(gifTimer.current);
-            gifTimer.current = setTimeout(() => {
-                console.log(`Hiding GIF for 'bonds' at progress: ${progress}`);
-                setGifVisible(false);
-            }, 2000);
-            // Update last point for 'bonds' using ref
-            bondsLastPointRef.current = progress;
-        }
-
-        // Define level images and gifs
-        const levelImages = {
-            0: require('../assets/purkki.png'),
-            1: require('../assets/purkki1.png'),
-            2: require('../assets/purkki2.png'),
-            3: require('../assets/purkki3.png'),
-            4: require('../assets/purkki4.png'),
-            5: require('../assets/purkki5.png'),
-            6: require('../assets/purkki6.png'),
-            7: require('../assets/purkki7.png'),
-            8: require('../assets/purkki8.png'),
-            9: require('../assets/purkki9.png'),
-            10: require('../assets/purkki10.png'),
-        };
-
-        const levelGifs = {
-            5: require('../assets/purkki.gif'),
-            10: require('../assets/purkki1.gif'),
-            15: require('../assets/purkki3.gif'),
-            20: require('../assets/purkki4.gif'),
-            25: require('../assets/purkki5.gif'),
-            30: require('../assets/purkki6.gif'),
-            35: require('../assets/purkki7.gif'),
-            40: require('../assets/purkki8.gif'),
-            45: require('../assets/purkki9.gif'),
-            50: require('../assets/purkki10.gif'),
-        };
-
-        if (gifVisible) {
-            setLevelImage(levelGifs[milestone] || levelImages[0]);
-            console.log(`GIF visible for milestone: ${milestone}, setting image: ${levelGifs[milestone] || levelImages[0]}`);
-        } else {
-            const level = Math.floor(progress / 5);
-            setLevelImage(levelImages[level] || levelImages[0]);
-            console.log(`GIF hidden for milestone: ${milestone}, setting image: ${levelImages[level] || levelImages[0]}`);
-        }
-    }, [
-        progress,
-        gifVisible,
-        gameType,
-        playerLevel
-    ]);
+        handleMilestoneGif(milestone, gameType);
+        updateMilestoneImage(milestone, gameType);
+    }, [progress, gameType, playerLevel]);
 
     const progressStyle = useAnimatedStyle(() => ({
         width: `${progressWidth.value}%`,
     }));
+
+    useEffect(() => {
+        return () => {
+            if (gifTimer.current) {
+                clearTimeout(gifTimer.current); // Clean up timer on unmount
+            }
+        };
+    }, []);
 
     return (
         <View style={styles.container}>
@@ -200,6 +181,6 @@ const styles = StyleSheet.create({
     levelImage: {
         width: 40,
         height: 70,
-        padding: 10,
+        resizeMode: 'contain',
     },
 });
