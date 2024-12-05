@@ -44,7 +44,6 @@ export default function TaskWindow({ taskVisible, setTaskVisible, navigation, pr
                             style={styles.taskContainer}
                             onPress={() => { 
                                 navigation.navigate('SoundToNumbers', { profile });
-                                console.log('profileeee', profile);
                                 setTaskVisible(false); 
                             }}>
                             <Image source={note} style={styles.taskImage} />

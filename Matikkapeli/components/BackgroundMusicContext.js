@@ -36,6 +36,16 @@ export const BackgroundMusicProvider = ({ children }) => {
     }
   };
 
+  //Äänenvoimakkuuden päivitys
+  const setSmoothVolume = async (targetVolume) => {
+    if (!sound) return;
+
+    const { volume: currentVolume } = await sound.getStatusAsync();
+    if (Math.abs(currentVolume - targetVolume) > 0.01) { //Vältetään turhia päivityksiä
+      await sound.setVolumeAsync(targetVolume);
+    }
+  };
+
   //Lataa musiikki aina, kun tila muuttuu
   useEffect(() => {
     if (isMusicPlaying) {
@@ -45,16 +55,19 @@ export const BackgroundMusicProvider = ({ children }) => {
     }
   }, [isMusicPlaying]);
 
-  //Päivitä äänenvoimakkuus ilman että musiikki alkaa alusta
-  useEffect(() => {
-    if (sound) {
-      sound
-        .setVolumeAsync(musicVolume)
-        .catch((error) => console.error('Äänenvoimakkuuden asettaminen epäonnistui:', error));
-    }
-  }, [musicVolume]);
+  //Äänenvoimakkuuden säätäminen liu'utettaessa
+  const handleVolumeChange = (value) => {
+    setMusicVolume(value);
+    setSmoothVolume(value); //Päivitetään äänenvoimakkuus reaaliaikaisesti liu'utettaessa
+  };
 
-  //Pura äänitiedoston resurssit, kun komponentti poistetaan
+  //Kutsutaan, kun liu'utus on valmis
+  const handleSlidingComplete = (value) => {
+    setMusicVolume(value);
+    setSmoothVolume(value); //Tallenetaan äänenvoimakkuus
+  };
+
+  //Puretaan äänitiedoston resurssit, kun komponentti poistetaan
   useEffect(() => {
     return () => {
       if (sound) {
@@ -70,6 +83,8 @@ export const BackgroundMusicProvider = ({ children }) => {
         setIsMusicPlaying,
         musicVolume,
         setMusicVolume,
+        handleVolumeChange, //Palautetaan handleVolumeChange
+        handleSlidingComplete, //Palautetaan handleSlidingComplete
       }}
     >
       {children}

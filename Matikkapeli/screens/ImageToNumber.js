@@ -28,6 +28,7 @@ export default function ImageToNumber({ onBack }) {
   const { gameSounds, volume, playSound } = useSoundSettings(); // Käytetään ääniasetuksia ja kontekstin playSound-funktiota
   const { taskReading } = useTaskReading(); // Käytetään tehtävänlukukontekstia
   const { syllabify, taskSyllabification, getFeedbackMessage } = useTaskSyllabification(); // Käytetään tavutuskontekstia
+  const [gameActive, setGameActive] = useState(true);
 
   const { isDarkTheme } = useTheme();
   const theme = isDarkTheme ? dark : light;
@@ -48,6 +49,7 @@ export default function ImageToNumber({ onBack }) {
       const minLevel = Math.max(0, playerLevel - 2)
       const iconCount = Math.min(random(minLevel, playerLevel || 1), 10); // Satunnainen määrä vasaroita
       const options = Array.from({ length: playerLevel - minLevel + 1 }, (_, i) => minLevel + i)
+      console.log('iconCount')
       questions.push({
         question: `Montako esinettä näet näytöllä?`, // Kysymyksen teksti
         iconCount,
@@ -58,17 +60,23 @@ export default function ImageToNumber({ onBack }) {
     return questions;
   };
 
-  const [questions, setQuestions] = useState(generateQuestions());
+  const [questions, setQuestions]  = useState(() => generateQuestions());
 
   // Alustetaan kysymykset ja nollataan kysymysindeksi
   useEffect(() => {
+    if (showFeedback || gameActive) return; // Älä alusta, jos palautetta näytetään
+
+    /*if (!showFeedback && !gameEnded) {
+    console.log('wawawa')
     setQuestions(generateQuestions());
     setQuestionIndex(0); // Nollaa kysymysindeksi, kun peli alkaa
-  }, []);
+    }*/
+  }, [showFeedback, gameEnded]);
 
   // Tarkistetaan, onko peli päättynyt (5 kysymystä vastattu)
   useEffect(() => {
     if (questionsAnswered === 5) {
+      Speech.stop(); // Lopeta mahdollinen puhe
       incrementXp(points, "imageToNumber"); // Päivitetään XP
       setGameEnded(true);
       setShowFeedback(true);
@@ -82,7 +90,6 @@ export default function ImageToNumber({ onBack }) {
     setAnswered(true); // Lukitse vastaukset, kun ensimmäinen valinta tehty
     const currentQuestion = questions[questionIndex];
     const isCorrect = selectedAnswer === currentQuestion.iconCount;
-
     // Palaute puheena
     const responseMessage = isCorrect ? "Oikein!" : "Yritetään uudelleen!";
     if (taskReading) {
@@ -106,22 +113,26 @@ export default function ImageToNumber({ onBack }) {
   };
 
   const handleBack = () => {
-    Speech.stop(); // Lopeta mahdollinen puhe
+    setGameActive(false);
     setShowFeedback(false);
     setQuestionsAnswered(0);
     setPoints(0);
     handleUpdatePlayerStatsToDatabase();
+    Speech.stop();
   };
 
   // Puheen hallinta ja valmistuminen
   useEffect(() => {
-    if (gameEnded) return; // Ei uusia kysymyksiä, jos peli on ohi
+    if (gameEnded) { 
+      Speech.stop(); // Lopeta mahdollinen puhe, jos peli on ohi
+      setIsSpeechFinished(false)
+      return;} // Ei uusia kysymyksiä, jos peli on ohi
 
     const currentQuestion = questions[questionIndex];
     setAnswered(false);
     setIsSpeechFinished(false); // Resetoi puhevalmiuden tila
 
-    if (taskReading) {
+    if (taskReading && gameActive) {
       Speech.stop(); // Lopeta mahdollinen edellinen puhe
       Speech.speak(currentQuestion.question, {
         onDone: () => setIsSpeechFinished(true),
@@ -201,6 +212,7 @@ export default function ImageToNumber({ onBack }) {
       style={styles.background}
       resizeMode="cover"
     >
+
       <View style={styles.container}>
         <View style={styles.tehtcont}>
           <Text style={styles.title}>{syllabify("Kuva numeroiksi")}</Text>
@@ -225,6 +237,7 @@ export default function ImageToNumber({ onBack }) {
                 <View style={styles.buttonContainer}>
                   <Pressable onPress={() => { 
                     handleContinueGame(); 
+                    setGameEnded(false);
                     setShowFeedback(false) }}
                     style={[styles.startButton, { backgroundColor: 'lightblue' }]}
                   >
@@ -232,7 +245,7 @@ export default function ImageToNumber({ onBack }) {
                   </Pressable>
                   <Pressable onPress={() => { 
                     handleEndGame(); 
-
+                    setGameEnded(false);
                     setShowFeedback(false) }}
                     style={[styles.startButton, { backgroundColor: 'darkred' }]}
                   >

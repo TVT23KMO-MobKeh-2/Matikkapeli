@@ -23,7 +23,7 @@ export default function Settings({ onBack }) {
   const { taskReading, setTaskReading } = useTaskReading();
   const { syllabify, taskSyllabification, setTaskSyllabification } = useTaskSyllabification(); //Käytä tavutuksen kontekstia
   const { gameSounds, setGameSounds } = useSoundSettings();
-  const { isMusicPlaying, setIsMusicPlaying, setMusicVolume, musicVolume } = useBackgroundMusic(); //Taustamusiikki
+  const { isMusicPlaying, setIsMusicPlaying, setMusicVolume, musicVolume, handleSlidingComplete } = useBackgroundMusic(); //Taustamusiikki
 
   const theme = isDarkTheme ? dark : light;
   const styles = createStyles(theme);
@@ -168,20 +168,22 @@ export default function Settings({ onBack }) {
         </View>
 
         {/* Taustamusiikin voimakkuus */}
-        <View style={styles.settingItemColumn}>
-          <Text style={styles.label}>{syllabify("Taustamusiikin voimakkuus")}</Text>
-          <SliderComponent
-            style={styles.slider}
-            maximumTrackTintColor="#FF0000" //Punainen
-            minimumTrackTintColor="#FF004F" //Punainen
-            thumbTintColor="#006400"
-            value={musicVolume}
-            onValueChange={setMusicVolume}
-            minimumValue={0}
-            maximumValue={1}
-            step={0.1}
-          />
-        </View>
+          <View style={styles.settingItemColumn}>
+            <Text style={styles.label}>{syllabify("Taustamusiikin voimakkuus")}</Text>
+            <SliderComponent
+              style={styles.slider}
+              maximumTrackTintColor="#FF0000" //Punainen
+              minimumTrackTintColor="#FF004F" //Punainen
+              thumbTintColor="#006400"
+              value={musicVolume}
+              onValueChange={() => {}} //Ei muuta äänenvoimakkuutta liu'utettaessa
+              onSlidingComplete={handleSlidingComplete} //Päivittää äänenvoimakkuuden liu'utuksen lopussa
+              minimumValue={0}
+              maximumValue={1}
+              step={0.1}
+            />
+          </View>
+
 
         {/* Peliäänet */}
         <View style={styles.settingItem}>
