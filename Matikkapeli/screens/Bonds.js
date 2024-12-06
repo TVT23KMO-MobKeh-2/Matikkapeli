@@ -1,5 +1,5 @@
 
-import { View, Text, Button, StyleSheet, TextInput, ImageBackground, TouchableWithoutFeedback, ScrollView, Pressable } from 'react-native'
+import { View, Text, Button, StyleSheet, TextInput, ImageBackground, TouchableWithoutFeedback, ScrollView, Pressable, Keyboard } from 'react-native'
 import React, { useState, useEffect, useContext } from 'react'
 import Svg, { Line } from 'react-native-svg';
 import { Audio } from 'expo-av';
@@ -10,11 +10,12 @@ import { useTaskReading } from '../components/TaskReadingContext';
 import { useTaskSyllabification } from '../components/TaskSyllabificationContext';
 import { useRoute } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
-
+import LevelBar from '../components/LevelBar'
 import createStyles from "../styles";
 import { useTheme } from '../components/ThemeContext';
-import { light, dark } from '../assets/themeColors'; 
+import { light, dark } from '../assets/themeColors';
 import { getBGImage } from '../components/backgrounds';
+import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from 'react-native-reanimated';
 
 // Satunnaisen arvon generointi annetulla alueella
 function random(min, max) {
@@ -22,6 +23,7 @@ function random(min, max) {
 }
 
 export default function Bonds({ onBack }) {
+
   const route = useRoute();
   const { profile } = route.params;
   const navigation = useNavigation()
@@ -35,7 +37,7 @@ export default function Bonds({ onBack }) {
   }, [profile]);
 
   // Pelin aloitustaso ja muut tilamuuttujat
-  const levelData = profile ? profile.playerLevel : 0;
+
   const [leftBox, setLeftBox] = useState(0);  // Vasemman laatikon arvo
   const [rightBox, setRightBox] = useState(0);  // Oikean laatikon arvo
   const [witchBox, setWitchBox] = useState(random(0, 1));  // Tieto siitä, kummassa laatikossa on puuttuva luku
@@ -54,28 +56,46 @@ export default function Bonds({ onBack }) {
   const { syllabify, taskSyllabification, getFeedbackMessage } = useTaskSyllabification();  // Käytetäänkö tavutusta
   const [isTaskChanging, setIsTaskChanging] = useState(false)
   const [isButtonClicked, setIsButtonClicked] = useState(false)
+  const [instructionReading, setInstructionReading] = useState(true)
+  const levelData = playerLevel;
+  const [lastLeftBox, setLastLeftBox] = useState(null);
+  const [lastRightBox, setLastRightBox] = useState(null);
+  const opacity = useSharedValue(0);
 
-  const theme = isDarkTheme ? dark : light; 
-  const styles = createStyles(theme);  
+
+
+  const theme = isDarkTheme ? dark : light;
+  const styles = createStyles(theme);
   const bgIndex = 4;
 
 
-  // Äänitiedostot oikein ja väärin vastauksille
-  //const imagaBG = require('../assets/view6.png')  // Taustakuva
 
   // Funktio, joka generoi uuden pelitason (arvot vasemmalle ja oikealle laatikolle)
   const generateNewLevel = () => {
-    setIsTaskChanging(true)
-    const newLeftBox = random(0, levelData);  // Arvotaan vasemman laatikon arvo
-    const newRightBox = levelData - newLeftBox;  // Lasketaan oikean laatikon arvo
+    setIsTaskChanging(true);
+
+    let newLeftBox, newRightBox, newWitchBox;
+
+    // Ensure the new values are different from the last ones
+    do {
+      newLeftBox = random(0, levelData);  // Randomly generate new value for left box
+      newRightBox = levelData - newLeftBox;  // Calculate right box based on left box  // Randomly determine which box has the missing value
+    } while (newLeftBox === lastLeftBox && newRightBox === lastRightBox);
+
+    // Update the state with the new values
     setLeftBox(newLeftBox);
     setRightBox(newRightBox);
-    setWitchBox(random(0, 1));  // Arvotaan, kummassa laatikossa on puuttuva luku
-    setInputValue1('');  // Tyhjennetään syötekenttä
-    setInputValue2('');  // Tyhjennetään syötekenttä
+    setInputValue1('');  // Reset user input for left box
+    setInputValue2('');  // Reset user input for right box
+
+    // Store the current values for future comparison
+    setLastLeftBox(newLeftBox);
+    setLastRightBox(newRightBox);
+
+    // Reset task-changing state after a short delay
     setTimeout(() => {
-      setIsTaskChanging(false)
-    }, 2000)
+      setIsTaskChanging(false);
+    }, 1000);
   };
 
   // Efekti, joka käynnistää tason generoinnin heti, kun pelin taso muuttuu
@@ -86,6 +106,7 @@ export default function Bonds({ onBack }) {
   // Tehtävän tarkistus (tarkistaa onko käyttäjän vastaus oikein)
   useEffect(() => {
     if (questionsAnswered === 5) {
+      Keyboard.dismiss();
       setShowFeedback(true);  // Näytetään feedback-ikkuna, kun 5 kysymystä on vastattu
       // Lisätään XP-pisteet
       incrementXp(points, "bonds");
@@ -145,120 +166,162 @@ export default function Bonds({ onBack }) {
     navigation.navigate('SelectProfile', { profile });
   };
 
+
+  useEffect(() => {
+    // Ensure previous speech is stopped before starting new speech
+    Speech.stop();
+
+    if (taskReading && instructionReading) {
+      // Speak the full task instruction when both taskReading and instructionReading are true
+      Speech.speak("Täydennä puuttuva luku niin, että laatikoiden luvut ovat yhteensä yhtä paljon kuin pallon luku.");
+      // Prevent repeated instructions
+    } else if (!instructionReading) {
+      // If instructionReading is false, speak the shorter instruction
+      Speech.speak("Täydennä puuttuva luku.");
+    }
+  }, [taskReading, instructionReading]); // Runs when either taskReading or instructionReading changes
+
+  useEffect(() => {
+    opacity.value = withTiming(1, { duration: 500, easing: Easing.ease });
+  }, []);
+
+  // Animated style to be applied to elements
+  const animatedStyles = useAnimatedStyle(() => {
+    return {
+      opacity: opacity.value,
+    };
+  });
+
+
   return (
-    <ImageBackground 
-      source={getBGImage(isDarkTheme, bgIndex)} 
-      style={styles.background} 
+    <ImageBackground
+      source={getBGImage(isDarkTheme, bgIndex)}
+      style={styles.background}
       resizeMode="cover"
     >
       <View style={styles.container}>
         <View style={styles.tehtcont}>
-        {instructionVisibility && (
-          <TouchableWithoutFeedback>
-            <View style={styles.overlayInstruction}>
-              <View style={styles.instructionWindow}>
-                <Text style={styles.title}>{syllabify("Hajonta")}</Text>
-                <Text>
-                  {syllabify(
-                    "Täydennä puuttuva luku niin, että laatikoiden luvut ovat yhteensä yhtä paljon kuin pallon luku."
-                  )}
-                </Text>
-                <View style={styles.buttonContainer}>
-
-                  <Button title={syllabify("Aloita")} onPress={() => setInstructionVisibility(false)} />
-
+          {instructionVisibility && (
+            <TouchableWithoutFeedback
+              onPress={() => {
+                setInstructionVisibility(false);
+                handleInstructionSpeak();
+              }}>
+              <View style={styles.overlayInstruction}>
+                <View style={styles.instructionWindow}>
+                  <Text style={styles.title}>{syllabify("Hajonta")}</Text>
+                  <Text>
+                    {syllabify(
+                      "Täydennä puuttuva luku niin, että laatikoiden luvut ovat yhteensä yhtä paljon kuin pallon luku."
+                    )}
+                  </Text>
+                  <View style={styles.buttonContainer}>
+                    <Pressable onPress={() => {
+                      setInstructionReading(false);
+                      setInstructionVisibility(false)
+                    }}
+                      style={styles.startButton}>
+                      <Text style={styles.buttonText}>{syllabify("Aloita")}</Text>
+                    </Pressable>
+                  </View>
                 </View>
               </View>
+            </TouchableWithoutFeedback>
+          )}
+          <View style={styles.taskbox}>
+
+            <Text style={styles.title}>{syllabify("Täydennä puuttuva luku.")}</Text>
+
+          </View>
+
+
+          <Svg height="300" width="300" style={styles.lineContainer}>
+            <Line x1="150" y1="100" x2="70" y2="230" stroke="black" strokeWidth="5" />
+            <Line x1="150" y1="100" x2="230" y2="230" stroke="black" strokeWidth="5" />
+          </Svg>
+
+          <View style={styles.circle}>
+            <Text style={[styles.numbertext, { color: 'white' }]}>{levelData}</Text>
+          </View>
+          <Animated.View style={[animatedStyles, styles.numbers]}>
+            <View style={styles.number1}>
+              {witchBox === 0 ? (
+                <TextInput
+                  style={styles.numbertext}
+                  value={inputValue1}
+                  onChangeText={setInputValue1}
+                  keyboardType="numeric"
+                  autoFocus={true}
+                  maxLength={2}
+                />
+              ) : (
+                <Text style={styles.numbertext}>{leftBox}</Text>
+              )}
             </View>
-          </TouchableWithoutFeedback>
-        )}
-        <View style={styles.taskbox}>
+            <View style={styles.number2}>
+              {witchBox === 1 ? (
+                <TextInput
+                  style={styles.numbertext}
+                  value={inputValue2}
+                  onChangeText={setInputValue2}
+                  keyboardType="numeric"
+                  autoFocus={true}
+                  maxLength={2}
+                />
+              ) : (
+                <Text style={styles.numbertext}>{rightBox}</Text>
+              )}
+            </View>
+          </Animated.View>
 
-          <Text style={styles.title}>{syllabify("Täydennä puuttuva luku.")}</Text>
-
-        </View>
-
-        <Svg height="300" width="300" style={styles.lineContainer}>
-          <Line x1="150" y1="100" x2="70" y2="230" stroke="black" strokeWidth="5" />
-          <Line x1="150" y1="100" x2="230" y2="230" stroke="black" strokeWidth="5" />
-        </Svg>
-
-        <View style={styles.circle}>
-          <Text style={[styles.numbertext, {color: 'white'}]}>{levelData}</Text>
-        </View>
-
-        <View style={styles.numbers}>
-          <View style={styles.number1}>
-            {witchBox === 0 ? (
-              <TextInput
-                style={styles.numbertext}
-                value={inputValue1}
-                onChangeText={setInputValue1}
-                keyboardType="numeric"
-                autoFocus={true}
-                maxLength={2}
-              />
-            ) : (
-              <Text style={styles.numbertext}>{leftBox}</Text>
-            )}
+          <View style={styles.buttonContainer}>
+            <Pressable
+              onPress={checkAnswer}
+              style={[styles.checkButton, isButtonDisabled ? styles.disabledButton : null]}
+              disabled={isButtonDisabled}>
+              <Text style={styles.checkButtonText}>{syllabify("TARKISTA")}</Text>
+            </Pressable>
           </View>
-          <View style={styles.number2}>
-            {witchBox === 1 ? (
-              <TextInput
-                style={styles.numbertext}
-                value={inputValue2}
-                onChangeText={setInputValue2}
-                keyboardType="numeric"
-                autoFocus={true}
-                maxLength={2}
-              />
-            ) : (
-              <Text style={styles.numbertext}>{rightBox}</Text>
-            )}
-          </View>
-        </View>
 
-        <Pressable
-          onPress={checkAnswer}
-          style={[styles.checkButton, isButtonDisabled ? styles.disabledButton : null]}
-          disabled={isButtonDisabled}>
-          <Text style={styles.buttonText}>{syllabify("Tarkista")}</Text>
-        </Pressable>
-
-        {showFeedback && (
-          <TouchableWithoutFeedback>
-            <View style={styles.overlayInstruction}>
-              <View style={styles.instructionWindow}>
-                <Text >{getFeedbackMessage(points)}</Text>
-                <Text style={styles.title}>Pistetaulu</Text>
-                <Text>Level: {playerLevel}/10</Text>
-                <Text>Kokonaispisteet: {totalXp}/190</Text>
-                <Text>ImageToNumbers: {imageToNumberXp}/50</Text>
-                <Text>SoundToNumbers: {soundToNumberXp}/50</Text>
-                <Text>Comparison: {comparisonXp}/50</Text>
-                <Text>Bonds: {bondsXp}/40</Text>
-                <View style={styles.buttonContainer}>
-                  <Button
-                    title={syllabify("Seuraava tehtävä odottaa")}
-                    onPress={() => {
+          {showFeedback && (
+            <TouchableWithoutFeedback>
+              <View style={styles.overlayInstruction}>
+                <View style={styles.instructionWindow}>
+                  <Text >{getFeedbackMessage(points)}</Text>
+                  <Text style={styles.title}>Pistetaulu</Text>
+                  <Text>Level: {playerLevel}/10</Text>
+                  <Text>Kokonaispisteet: {totalXp}/190</Text>
+                  <View style={styles.profileSelect}>
+                  <LevelBar progress={imageToNumberXp} label={"Kuvat numeroiksi"} playerLevel={playerLevel} gameType={"imageToNumber"} caller={"bonds"} />
+                    <LevelBar progress={soundToNumberXp} label={"Äänestä numeroiksi"} playerLevel={playerLevel} gameType={"soundToNumber"} caller={"bonds"}/>
+                    <LevelBar progress={comparisonXp} label={"Vertailu"} playerLevel={playerLevel} gameType={"comparison"} caller={"bonds"}/>
+                    <LevelBar progress={bondsXp} label={"Hajonta"} playerLevel={playerLevel} gameType={"bonds"} caller={"bonds"}/>
+                  </View>
+                  <View style={styles.buttonContainer}>
+                    <Pressable onPress={() => {
                       handleContinueGame();
                       setShowFeedback(false)
                     }}
-                  />
-                  <Button
-                      title={syllabify("Lopeta peli")} 
-                      onPress={() => {
-                    handleEndGame();
-                    setShowFeedback(false)
-                  }} />
+                      style={[styles.startButton, { backgroundColor: 'lightblue' }]}
+                    >
+                      <Text style={styles.buttonText}>{syllabify("SEURAAVA TEHTÄVÄ ODOTTAA")}</Text>
+                    </Pressable>
+                    <Pressable onPress={() => {
+                      handleEndGame();
+                      setShowFeedback(false)
+                    }}
+                      style={[styles.startButton, { backgroundColor: 'darkred' }]}
+                    >
+                      <Text style={[styles.buttonText, { color: 'white' }]}>{syllabify("LOPETA PELI")}</Text>
+                    </Pressable>
+                  </View>
                 </View>
               </View>
-            </View>
-          </TouchableWithoutFeedback>
-        )}
+            </TouchableWithoutFeedback>
+          )}
         </View>
       </View>
-    </ImageBackground>
+    </ImageBackground >
   );
 
 }

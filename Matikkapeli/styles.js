@@ -69,7 +69,7 @@ const createStyles = (theme) => StyleSheet.create({
     color: theme.text,
   },
   buttonText: {
-    fontSize: 18,
+    fontSize: 14,
     fontFamily: 'ComicNeue_700Bold',
     textAlign: 'center',
     color: theme.text,
@@ -253,11 +253,15 @@ const createStyles = (theme) => StyleSheet.create({
   buttonContainer1: {
     flexDirection: 'row',
     position: 'absolute',
-    bottom: 50,
+    alignItems: 'center',
+    justifyContent:'center',
+    bottom: 40,
+    left: 8,
     justifyContent: 'space-between',
     width: '90%',
     zIndex: 4,
   },
+
   foxImage: {
     width: 150, // Adjust size as needed
     height: 250, // Adjust size as needed
@@ -317,6 +321,7 @@ const createStyles = (theme) => StyleSheet.create({
     borderRadius: 10,
     borderWidth: 2,
     borderColor: theme.bordercolor,
+    marginBottom: 20,
   }, 
   profileImage: {
     width: 100, // Adjust size as needed
@@ -414,6 +419,20 @@ image: {
     elevation: 4,
   },
   optionsContainer: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems:'center',
+    marginVertical: 10,
+    backgroundColor: theme.settingbg,
+    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: theme.bordercolor,
+    width: '80%',
+    shadowColor: '#00000',
+    elevation: 4,
+    padding: 20,
+  },
+  gameOptionsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
@@ -425,6 +444,7 @@ image: {
     width: '80%',
     shadowColor: '#00000',
     elevation: 4,
+    padding: 20,
   },
   optionWrapper: {
     width: '40%',
@@ -455,20 +475,25 @@ image: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
+    alignItems: 'center',
+    width: '80%',
+    height: '30%',
+    backgroundColor: theme.iconbg,
+    borderRadius: 12,
+    borderWidth: 1, // Lisää reunus (valinnainen)
+    borderColor: '#ccc',
+    position: 'relative',
   },
   icon: {
-    margin: 10,
+    margin: 5,
   },
   iconBackground: {
-    backgroundColor: theme.iconbg, // Yhteinen taustaväri
+    margin: 40,
     padding: 10, // Tila vasaroiden ympärillä
-    borderRadius: 12, // Pyöristetyt kulmat
     flexDirection: 'row', // Ikonit samalle riville
     flexWrap: 'wrap', // Siirry seuraavalle riville, jos tila ei riitä
     justifyContent: 'center', // Keskitetään ikonit vaakasuunnassa
     alignItems: 'center', // Keskitetään ikonit pystysuunnassa
-    borderWidth: 1, // Lisää reunus (valinnainen)
-    borderColor: '#ccc', // Reunuksen väri (valinnainen)
   }, 
   //!!!!!!!! COMPARISON  !!!!!!!!!!
   comparisonGuideBigger: {
@@ -525,7 +550,6 @@ image: {
       backgroundColor: '#36BA98',
       justifyContent: 'center',
       alignItems: 'center',
-      margin: 20,
       zIndex: 2,
     },
     numbers: {
@@ -556,19 +580,48 @@ image: {
       fontFamily: 'ComicNeue_700Bold',
     },
     checkButton: {
-      backgroundColor: '#CD5C5C',
-      paddingVertical: 10,
-      paddingHorizontal: 20,
+      backgroundColor: 'green',
+      paddingVertical: 20,
+      paddingHorizontal: 30,
       alignItems: 'center',
       justifyContent: 'center',
       marginTop: 20,
       borderRadius: 10,
-    },/*
+    },
     checkButtonText: {
       color: 'white',
-      fontSize: 16,
+      fontSize: 18,
       fontFamily: 'ComicNeue_700Bold',
-    },*/
+    },
+
+    //!!!!!!!!!! Levelbar tyyli !!!!!!!!!!!!!
+    progressContainer:{
+        width: '100%',
+        height: 20,
+        backgroundColor: '#e0e0e0',
+        borderRadius: 10,
+        overflow: 'hidden',
+        marginBottom: 10,
+    },
+    progressBar:{
+        height: '100%',
+        backgroundColor: '#76c7c0',
+        borderRadius: 10,
+    },
+    scaleContainer:{
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%',
+    },
+    scaleText:{
+        fontSize: 12,
+        fontWeight: 'bold',
+        color: '#333'
+    },
+    levelImage: {
+        width: 40,
+        height: 40,
+    },
 });
 
 export default createStyles;

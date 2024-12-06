@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, Switch, StatusBar, BackHandler, ImageBackground, Alert } from 'react-native';
+import { View, Text, Pressable, Switch, StatusBar, BackHandler, ImageBackground, Alert } from 'react-native';
 import SliderComponent from '@react-native-community/slider';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -198,10 +198,15 @@ export default function Settings({ onBack }) {
             <Text style={styles.label}>{syllabify("Peliäänet")}</Text>
             <Switch value={gameSounds} onValueChange={() => setGameSounds(!gameSounds)} />
           </View>
-
-          {/* Sovelluksen sammuttaminen */}
-          <Button title={syllabify("Sammuta sovellus")} onPress={handleCloseApp} />
-        </View>
+        {/* Sovelluksen sammuttaminen */}
+        <View style={styles.buttonContainer}>
+            <Pressable onPress={handleCloseApp}
+              style={[styles.startButton, { backgroundColor: 'darkred' }]}
+            >
+              <Text style={[styles.buttonText, {color: 'white'}]}>{syllabify("Sammuta sovellus")}</Text>
+            </Pressable>
+          </View>
+      </View>
       </SafeAreaView>
     </ImageBackground>
   );

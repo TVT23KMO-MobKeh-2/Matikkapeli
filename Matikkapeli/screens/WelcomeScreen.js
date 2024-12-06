@@ -7,7 +7,7 @@ import { Alert } from 'react-native';
 
 import createStyles from "../styles";
 import { useTheme } from '../components/ThemeContext';
-import { light, dark } from '../assets/themeColors'; 
+import { light, dark } from '../assets/themeColors';
 import { getBGImage } from '../components/backgrounds';
 
 
@@ -20,11 +20,11 @@ export default function WelcomeScreen({ navigation }) {
     const [isSearchMode, setIsSearchMode] = useState(false); // State to toggle search mode
     const [profileData, setProfileData] = useState(null);
     const [isDeleting, setIsDeleting] = useState(false);
-    
+
     const { isDarkTheme } = useTheme();
-    const theme = isDarkTheme ? dark : light; 
-    const styles = createStyles(theme);  
-    const bgIndex = 0; 
+    const theme = isDarkTheme ? dark : light;
+    const styles = createStyles(theme);
+    const bgIndex = 0;
 
     const getData = async () => {
         try {
@@ -140,13 +140,13 @@ export default function WelcomeScreen({ navigation }) {
 
     if (email) {
         return (
-            <ImageBackground 
-            source={getBGImage(isDarkTheme, bgIndex)} 
-            style={styles.background} 
-            resizeMode="cover"
-          >
-          <View style={styles.container}>
-                <Text style = {styles.title}>WelcomeScreen</Text>
+            <ImageBackground
+                source={getBGImage(isDarkTheme, bgIndex)}
+                style={styles.background}
+                resizeMode="cover"
+            >
+                <View style={styles.container}>
+                    <Text style={styles.title}>Matikkapolku</Text>
                     <View style={styles.optionsContainer}>
                     <Text style={styles.question}>HEI, {email}</Text>
                         <Pressable onPress={() => navigation.navigate('SelectProfile', { email: email })}
@@ -155,7 +155,7 @@ export default function WelcomeScreen({ navigation }) {
                         </Pressable>
                         <Pressable onPress={(clearemail)}
                             style={[styles.startButton, {backgroundColor: 'red'}]}>
-                            <Text style={styles.buttonText}> POISTA TUNNUS PUHELIMEN MUISTISTA</Text>
+                            <Text style={styles.buttonText}> KIRJAUDU ULOS</Text>
                         </Pressable>
                         <Pressable onPress={(deletemail)}
                             disabled={isDeleting} 
@@ -170,8 +170,8 @@ export default function WelcomeScreen({ navigation }) {
                             </Text>
                         </Pressable>
                     </View>
-        </View>
-        </ImageBackground>
+                </View>
+            </ImageBackground>
         );
     }
 
@@ -224,8 +224,8 @@ export default function WelcomeScreen({ navigation }) {
                         </Pressable>
                     </>
                 )}
+                </View>
             </View>
-        </View>
         </ImageBackground>
     );
 }

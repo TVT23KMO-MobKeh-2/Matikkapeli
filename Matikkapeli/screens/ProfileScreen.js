@@ -1,4 +1,4 @@
-import { View, Text, Button, Image, ImageBackground, Alert } from 'react-native'
+import { View, Text, Button, Image, ImageBackground, Alert, Pressable } from 'react-native'
 import LevelBar from '../components/LevelBar'
 import { useNavigation } from '@react-navigation/native';  // Import the hook
 import { deletePlayerDataFromDatabase } from '../firebase/Functions';
@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 
 import createStyles from "../styles";
 import { useTheme } from '../components/ThemeContext';
-import { light, dark } from '../assets/themeColors'; 
+import { light, dark } from '../assets/themeColors';
 import { getBGImage } from '../components/backgrounds';
 
 const animalImages = {
@@ -19,27 +19,31 @@ const animalImages = {
 
 
 export default function ProfileScreen({ route, navigation }) {
-  // Get the navigation prop using the hook
+    // Get the navigation prop using the hook
     const [isDeleting, setIsDeleting] = useState(false);
     const { character } = route.params;
     const [setPlayerName] = useState('')
     const [setImageID] = useState('')
+    const [setPlayerLevel] = useState(1);
 
     if (!character) {
         return (
-          <View style={styles.container}>
-            <Text>No character found.</Text>
-          </View>
+            <View style={styles.container}>
+                <Text>No character found.</Text>
+            </View>
         );
-      }
+    }
 
-    const {email, imageID, playerName, career, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp } = character;
+    const { email, imageID, playerName, career, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp } = character;
     const characterImage = animalImages[imageID];
 
     const { isDarkTheme } = useTheme();
-    const theme = isDarkTheme ? dark : light; 
-    const styles = createStyles(theme);  
-    const bgIndex = 0;    
+    const theme = isDarkTheme ? dark : light;
+    const styles = createStyles(theme);
+    const bgIndex = 0;
+    
+
+    const resetTrigger = playerLevel;
 
     const startGame = () => {
         console.log('Navigating to Animation with profile:', character);
@@ -48,7 +52,7 @@ export default function ProfileScreen({ route, navigation }) {
 
     const goBack = () => {
         navigation.navigate('SelectProfile', { email: email });  // Goes back to the previous screen
-      };
+    };
 
     const clearProfile = async () => {
         try {
@@ -58,11 +62,11 @@ export default function ProfileScreen({ route, navigation }) {
             setPlayerName('');
             setImageID('');
         } catch (e) {
-            console.error('Virhe tietojen poistamisessa');
+            
         }
     }
 
-      const handleDeleteProfile = async () => {
+    const handleDeleteProfile = async () => {
         setIsDeleting(true); // Set loading state
         try {
             console.log('Deleting profile...');
@@ -70,7 +74,7 @@ export default function ProfileScreen({ route, navigation }) {
             clearProfile()
             Alert.alert('Poisto onnistui', 'Profiili poistettu onnistuneesti');
             console.log('Profile deleted, navigating to SelectProfile');
-            
+
             // Debugging Navigation
             console.log('Navigating to SelectProfile with email:', email);
             navigation.navigate('SelectProfile', { email: email });
@@ -84,38 +88,52 @@ export default function ProfileScreen({ route, navigation }) {
     };
 
     return (
-        <ImageBackground 
-        source={getBGImage(isDarkTheme, bgIndex)} 
-        style={styles.background} 
-        resizeMode="cover"
-      >
-        <View style={[styles.container, {paddingTop: 0}]}>
-            <View style={styles.profilebox}>
-                <Image
-                    source={characterImage}
-                    style={styles.profileImage}
-                />
-                <View>
-                    <Text style = {styles.label}>NIMI: {playerName}</Text>
-                    <Text style = {styles.label}>AMMATTI: {career}</Text>
-                    <Text style = {styles.label}>TASO: {playerLevel}</Text>
+        <ImageBackground
+            source={getBGImage(isDarkTheme, bgIndex)}
+            style={styles.background}
+            resizeMode="cover"
+        >
+            <View style={[styles.container, { paddingTop: 0 }]}>
+                <View style={styles.profilebox}>
+                    <Image
+                        source={characterImage}
+                        style={styles.profileImage}
+                    />
+                    <View>
+                        <Text style={styles.label}>Nimi: {playerName}</Text>
+                        <Text style={styles.label}>Ammatti: {career}</Text>
+                        <Text style={styles.label}>Taso: {playerLevel}</Text>
+                    </View>
+                </View>
+                <View style={styles.profileSelect}>
+                <LevelBar progress={imageToNumberXp} label={"Kuvat numeroiksi"} playerLevel={playerLevel} gameType={"imageToNumber"} caller={"profile"}/>
+                    <LevelBar progress={soundToNumberXp} label={"Äänestä numeroiksi"} playerLevel={playerLevel} gameType={"soundToNumber"} caller={"profile"}/>
+                    <LevelBar progress={comparisonXp} label={"Vertailu"} playerLevel={playerLevel} gameType={"comparison"} caller={"profile"}/>
+                    <LevelBar progress={bondsXp} label={"Hajonta"} playerLevel={playerLevel} gameType={"bonds"} caller={"profile"}/>
+                </View>
+                <View style={styles.buttonContainer1}>
+                    <Pressable onPress={startGame}
+                        style={styles.startButton}>
+                        <Text style={styles.buttonText}>ALOITA PELI</Text>
+                    </Pressable>
+                    <Pressable onPress={goBack}
+                        style={[styles.startButton, { backgroundColor: 'lightblue' }]}>
+                        <Text style={styles.buttonText}>PALAA TAKAISIN</Text>
+                    </Pressable>
+                    <Pressable onPress={handleDeleteProfile}
+                        disabled={isDeleting}
+                        style={[styles.startButton,
+                        {
+                            backgroundColor: isDeleting ? 'gray' : 'darkred',
+                            opacity: isDeleting ? 0.6 : 1,
+                        },
+                        ]}>
+                        <Text style={[styles.buttonText, {color: 'white'}]}>
+                            {isDeleting ? 'POISTETAAN...' : 'POISTA PROFIILI'}
+                        </Text>
+                    </Pressable>
                 </View>
             </View>
-            <View style={styles.profileSelect}>
-                <LevelBar progress={imageToNumberXp} label={"Kuvat numeroiksi"} />
-                <LevelBar progress={soundToNumberXp} label={"Äänestä numeroiksi"} />
-                <LevelBar progress={comparisonXp} label={"Vertailu"} />
-                <LevelBar progress={bondsXp} label={"Hajonta"} />
-            </View>
-            <Button title='ALOITA PELI' onPress={startGame}></Button>
-            <Button title='PALAA TAKAISIN' onPress={goBack} />
-            <Button
-                title={isDeleting ? 'POISTETAAN...' : 'POISTA PROFIILI'}
-                onPress={handleDeleteProfile}
-                disabled={isDeleting} 
-                color="red"
-            />
-        </View>
-    </ImageBackground>
+        </ImageBackground>
     );
 }

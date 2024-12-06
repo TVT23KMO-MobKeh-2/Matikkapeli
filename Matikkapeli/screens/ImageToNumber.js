@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, Button, TouchableWithoutFeedback, ImageBackground } from 'react-native';
+import { View, Text, TouchableOpacity, Pressable, TouchableWithoutFeedback, ImageBackground } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Speech from 'expo-speech';
 import { ScoreContext } from '../components/ScoreContext';
@@ -7,10 +7,10 @@ import { useSoundSettings } from '../components/SoundSettingsContext';
 import { useTaskReading } from '../components/TaskReadingContext';
 import { useTaskSyllabification } from '../components/TaskSyllabificationContext';
 import { useNavigation, useRoute } from '@react-navigation/native';
-
+import LevelBar from '../components/LevelBar'
 import createStyles from "../styles";
 import { useTheme } from '../components/ThemeContext';
-import { light, dark } from '../assets/themeColors'; 
+import { light, dark } from '../assets/themeColors';
 import { getBGImage } from '../components/backgrounds';
 
 // Funktio, joka generoi satunnaisen luvun väliltä min ja max
@@ -31,9 +31,9 @@ export default function ImageToNumber({ onBack }) {
   const [gameActive, setGameActive] = useState(true);
 
   const { isDarkTheme } = useTheme();
-  const theme = isDarkTheme ? dark : light; 
-  const styles = createStyles(theme);  
-  const bgIndex = 1;  
+  const theme = isDarkTheme ? dark : light;
+  const styles = createStyles(theme);
+  const bgIndex = 1;
 
   const [questionIndex, setQuestionIndex] = useState(0); // Nykyinen kysymyksen indeksi
   const [answered, setAnswered] = useState(false); // Onko kysymykseen vastattu
@@ -44,14 +44,18 @@ export default function ImageToNumber({ onBack }) {
   // Generoi kysymyksiä pelille
   const generateQuestions = () => {
     const questions = [];
+
     for (let i = 0; i < 5; i++) {
-      const iconCount = Math.min(random(0, profile?.playerLevel || 1), 10); // Satunnainen määrä vasaroita
+      const minLevel = Math.max(0, playerLevel - 2)
+      const iconCount = Math.min(random(minLevel, playerLevel || 1), 10); // Satunnainen määrä vasaroita
+      const options = Array.from({ length: playerLevel - minLevel + 1 }, (_, i) => minLevel + i)
       console.log('iconCount')
       questions.push({
-        question: `Montako vasaraa näet näytöllä?`, // Kysymyksen teksti
+        question: `Montako esinettä näet näytöllä?`, // Kysymyksen teksti
         iconCount,
-        options: Array.from({ length: 11 }, (_, i) => i), // Vaihtoehdot
+        options, // Vaihtoehdot
       });
+      
     }
     return questions;
   };
@@ -131,31 +135,53 @@ export default function ImageToNumber({ onBack }) {
     if (taskReading && gameActive) {
       Speech.stop(); // Lopeta mahdollinen edellinen puhe
       Speech.speak(currentQuestion.question, {
-        onDone: () => setIsSpeechFinished(true), // Merkitään puhe valmiiksi
+        onDone: () => setIsSpeechFinished(true),
+        // Merkitään puhe valmiiksi
       });
     } else {
       setIsSpeechFinished(true); // Jos puhe ei ole käytössä, aseta heti valmiiksi
     }
+
+
   }, [questionIndex, questions, gameEnded, taskReading]);
 
+  const careerIcon = {
+    LÄÄKÄRI: "stethoscope",
+    AUTOMEKAANIKKO: "oil",
+    RAKENTAJA: "hammer",
+    KAUPPIAS: "cart-variant",
+    OHJELMOIJA: "laptop",
+    OPETTAJA: "lead-pencil",
+  }
+
+
+
   // Renderöi nykyisen kysymyksen ikonit
-  const renderIcons = () => (
-    <View style={styles.iconBackground}>
-      {Array.from({ length: questions[questionIndex].iconCount }).map((_, index) => (
-        <MaterialCommunityIcons
-          key={index}
-          name="hammer"
-          size={40}
-          color="#4CAF50"
-          style={styles.icon}
-        />
-      ))}
-    </View>
-  );
+  const renderIcons = () => {
+    const career = profile.career
+    const iconName = careerIcon[career] || "stocking"
+
+
+    return (
+      <View style={styles.iconBackground}>
+        {Array.from({ length: questions[questionIndex].iconCount }).map((_, index) => (
+          <MaterialCommunityIcons
+            key={index}
+            name={iconName}
+            size={40}
+            color="#4CAF50"
+            style={styles.icon}
+          />
+        ))}
+      </View>
+    )
+  }
+
+
 
   // Renderöi vastausvaihtoehdot nykyiseen kysymykseen
   const renderOptions = () => (
-    <View style={styles.optionsContainer}>
+    <View style={styles.gameOptionsContainer}>
       {questions[questionIndex].options.map((option, index) => (
         <View key={index} style={styles.optionWrapper}>
           <TouchableOpacity
@@ -181,54 +207,56 @@ export default function ImageToNumber({ onBack }) {
   };
 
   return (
-    <ImageBackground 
-    source={getBGImage(isDarkTheme, bgIndex)} 
-    style={styles.background} 
-    resizeMode="cover"
+    <ImageBackground
+      source={getBGImage(isDarkTheme, bgIndex)}
+      style={styles.background}
+      resizeMode="cover"
     >
-    <View style={styles.container}>
-      <View style={styles.tehtcont}>
-      <Text style={styles.title}>{syllabify("Kuva numeroiksi")}</Text>
-      <Text style={styles.question}>{questions[questionIndex]?.question}</Text>
-      <View style={styles.iconContainer}>{renderIcons()}</View>
-      {renderOptions()}
-      </View>
-      {showFeedback && (
-        <TouchableWithoutFeedback>
-          <View style={styles.overlayInstruction}>
-            <View style={styles.instructionWindow}>
-              <Text>{getFeedbackMessage(points)}</Text>
-              <Text style={styles.title}>Pistetaulu</Text>
-              <Text>Level: {playerLevel}/10</Text>
-              <Text>Kokonaispisteet: {totalXp}/190</Text>
-              <Text>ImageToNumbers: {imageToNumberXp}/50</Text>
-              <Text>SoundToNumbers: {soundToNumberXp}/50</Text>
-              <Text>Comparison: {comparisonXp}/50</Text>
-              <Text>Bonds: {bondsXp}/40</Text>
-              <View style={styles.buttonContainer}>
-                <Button
-                  title={syllabify("Seuraava tehtävä odottaa")}
-                  onPress={() => {
-                    Speech.stop();
+
+      <View style={styles.container}>
+        <View style={styles.tehtcont}>
+          <Text style={styles.title}>{syllabify("Kuva numeroiksi")}</Text>
+          <Text style={styles.question}>{questions[questionIndex]?.question}</Text>
+          <View style={styles.iconContainer}>{renderIcons()}</View>
+          {renderOptions()}
+        </View>
+        {showFeedback && (
+          <TouchableWithoutFeedback>
+            <View style={styles.overlayInstruction}>
+              <View style={styles.instructionWindow}>
+                <Text>{getFeedbackMessage(points)}</Text>
+                <Text style={styles.title}>Pistetaulu</Text>
+                <Text>Level: {playerLevel}/10</Text>
+                <Text>Kokonaispisteet: {totalXp}/190</Text>
+                <View style={styles.profileSelect}>
+                    <LevelBar progress={imageToNumberXp} label={"Kuvat numeroiksi"} playerLevel={playerLevel} gameType={"imageToNumber"} caller={"imageToNumber"} />
+                    <LevelBar progress={soundToNumberXp} label={"Äänestä numeroiksi"} playerLevel={playerLevel} gameType={"soundToNumber"} caller={"imageToNumber"} />
+                    <LevelBar progress={comparisonXp} label={"Vertailu"} playerLevel={playerLevel} gameType={"comparison"} caller={"imageToNumber"} />
+                    <LevelBar progress={bondsXp} label={"Hajonta"} playerLevel={playerLevel} gameType={"bonds"} caller={"imageToNumber"} />
+                </View>
+                <View style={styles.buttonContainer}>
+                  <Pressable onPress={() => { 
+                    handleContinueGame(); 
                     setGameEnded(false);
-                    setShowFeedback(false);
-                    handleContinueGame();
-                  }}
-                />
-                <Button
-                  title={syllabify("Lopeta peli")}
-                  onPress={() => {
-                    handleEndGame();
+                    setShowFeedback(false) }}
+                    style={[styles.startButton, { backgroundColor: 'lightblue' }]}
+                  >
+                    <Text style={styles.buttonText}>{syllabify("SEURAAVA TEHTÄVÄ ODOTTAA")}</Text>
+                  </Pressable>
+                  <Pressable onPress={() => { 
+                    handleEndGame(); 
                     setGameEnded(false);
-                    setShowFeedback(false);
-                  }}
-                />
+                    setShowFeedback(false) }}
+                    style={[styles.startButton, { backgroundColor: 'darkred' }]}
+                  >
+                   <Text style={[styles.buttonText, {color: 'white'}]}>{syllabify("LOPETA PELI")}</Text>
+                  </Pressable>
+                </View>
               </View>
             </View>
-          </View>
-        </TouchableWithoutFeedback>
-      )}
-    </View>
+          </TouchableWithoutFeedback>
+        )}
+      </View>
     </ImageBackground>
   );
 }
