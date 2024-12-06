@@ -282,10 +282,10 @@ export default function Comparison({ onBack }) {
               <Text>Level: {playerLevel}/10</Text>
               <Text>Kokonaispisteet: {totalXp}/190</Text>
               <View style={styles.profileSelect}>
-              <LevelBar progress={imageToNumberXp} label={"Kuvat numeroiksi"} playerLevel={playerLevel} gameType={"imageToNumber"}/>
-                    <LevelBar progress={soundToNumberXp} label={"Äänestä numeroiksi"} playerLevel={playerLevel} gameType={"soundToNumber"}/>
-                    <LevelBar progress={comparisonXp} label={"Vertailu"} playerLevel={playerLevel} gameType={"comparison"}/>
-                    <LevelBar progress={bondsXp} label={"Hajonta"} playerLevel={playerLevel} gameType={"bonds"} />
+              <LevelBar progress={imageToNumberXp} label={"Kuvat numeroiksi"} playerLevel={playerLevel} gameType={"imageToNumber"} caller={"comparison"}/>
+                    <LevelBar progress={soundToNumberXp} label={"Äänestä numeroiksi"} playerLevel={playerLevel} gameType={"soundToNumber"} caller={"comparison"}/>
+                    <LevelBar progress={comparisonXp} label={"Vertailu"} playerLevel={playerLevel} gameType={"comparison"} caller={"comparison"}/>
+                    <LevelBar progress={bondsXp} label={"Hajonta"} playerLevel={playerLevel} gameType={"bonds"} caller={"comparison"}/>
                 </View>
               <View style={styles.buttonContainer}>
                     <Pressable onPress={() => { 

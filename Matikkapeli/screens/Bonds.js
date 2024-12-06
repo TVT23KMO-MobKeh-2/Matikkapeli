@@ -292,10 +292,10 @@ export default function Bonds({ onBack }) {
                   <Text>Level: {playerLevel}/10</Text>
                   <Text>Kokonaispisteet: {totalXp}/190</Text>
                   <View style={styles.profileSelect}>
-                  <LevelBar progress={imageToNumberXp} label={"Kuvat numeroiksi"} playerLevel={playerLevel} gameType={"imageToNumber"}/>
-                    <LevelBar progress={soundToNumberXp} label={"Äänestä numeroiksi"} playerLevel={playerLevel} gameType={"soundToNumber"}/>
-                    <LevelBar progress={comparisonXp} label={"Vertailu"} playerLevel={playerLevel} gameType={"comparison"}/>
-                    <LevelBar progress={bondsXp} label={"Hajonta"} playerLevel={playerLevel} gameType={"bonds"} />
+                  <LevelBar progress={imageToNumberXp} label={"Kuvat numeroiksi"} playerLevel={playerLevel} gameType={"imageToNumber"} caller={"bonds"} />
+                    <LevelBar progress={soundToNumberXp} label={"Äänestä numeroiksi"} playerLevel={playerLevel} gameType={"soundToNumber"} caller={"bonds"}/>
+                    <LevelBar progress={comparisonXp} label={"Vertailu"} playerLevel={playerLevel} gameType={"comparison"} caller={"bonds"}/>
+                    <LevelBar progress={bondsXp} label={"Hajonta"} playerLevel={playerLevel} gameType={"bonds"} caller={"bonds"}/>
                   </View>
                   <View style={styles.buttonContainer}>
                     <Pressable onPress={() => {
