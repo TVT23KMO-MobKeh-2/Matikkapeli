@@ -14,21 +14,35 @@ export default function LevelBar({ progress, label, playerLevel, gameType, calle
 
     const levelImages = {
         0: require('../assets/purkki.png'),
-        1: require('../assets/purkki1.png'),
-        2: require('../assets/purkki2.png'),
-        3: require('../assets/purkki3.png'),
-        4: require('../assets/purkki4.png'),
-        5: require('../assets/purkki5.png'),
-        6: require('../assets/purkki6.png'),
-        7: require('../assets/purkki7.png'),
-        8: require('../assets/purkki8.png'),
-        9: require('../assets/purkki9.png'),
-        10: require('../assets/purkki10.png'),
+        5: require('../assets/purkki1.png'),
+        10: require('../assets/purkki2.png'),
+        15: require('../assets/purkki3.png'),
+        20: require('../assets/purkki4.png'),
+        25: require('../assets/purkki5.png'),
+        30: require('../assets/purkki6.png'),
+        35: require('../assets/purkki7.png'),
+        40: require('../assets/purkki8.png'),
+        45: require('../assets/purkki9.png'),
+        50: require('../assets/purkki10.png'),
     };
+
+    const progressRanges = [
+        { min: 0, max: 4, image: levelImages[0] },
+        { min: 5, max: 9, image: levelImages[5] },
+        { min: 10, max: 14, image: levelImages[10] },
+        { min: 15, max: 19, image: levelImages[15] },
+        { min: 20, max: 24, image: levelImages[20] },
+        { min: 25, max: 29, image: levelImages[25] },
+        { min: 30, max: 34, image: levelImages[30] },
+        { min: 35, max: 39, image: levelImages[35] },
+        { min: 40, max: 44, image: levelImages[40] },
+        { min: 45, max: 49, image: levelImages[45] },
+        { min: 50, max: 50, image: levelImages[50] },
+    ];
     
     const levelGifs = {
-        5: require('../assets/purkki.gif'),
-        10: require('../assets/purkki1.gif'),
+        5: require('../assets/purkki1.gif'),
+        10: require('../assets/purkki2.gif'),
         15: require('../assets/purkki3.gif'),
         20: require('../assets/purkki4.gif'),
         25: require('../assets/purkki5.gif'),
@@ -48,11 +62,17 @@ export default function LevelBar({ progress, label, playerLevel, gameType, calle
             : Math.min(((progress - (playerLevel - 1) * 5) / 5) * 100, 100);
     };
 
-    const updateMilestoneImage = (milestone) => {
-        console.log(`updateMilestoneImage: milestone=${milestone}, gifVisible=${gifVisible}`);
-        const newImage = gifVisible ? levelGifs[milestone] : levelImages[Math.floor(milestone / 5)];
-        if (newImage !== levelImage) {
-            setLevelImage(newImage); 
+    const updateMilestoneImage = (progress) => {
+        console.log(`updateMilestoneImage: progress=${progress}, gifVisible=${gifVisible}`);
+    
+        // Find the correct range based on the progress
+        const range = progressRanges.find(range => progress >= range.min && progress <= range.max);
+        
+        if (range) {
+            const newImage = gifVisible ? levelGifs[range.min] : range.image;
+            if (newImage !== levelImage) {
+                setLevelImage(newImage); 
+            }
         }
     };
 
@@ -69,7 +89,7 @@ export default function LevelBar({ progress, label, playerLevel, gameType, calle
                 clearTimeout(gifTimer.current);
                 gifTimer.current = setTimeout(() => {
                     setGifVisible(false);
-                    setLevelImage(levelImages[Math.floor(milestone / 5)] || levelImages[0]);
+                    setLevelImage(levelImages[milestone] || levelImages[0]);
                 }, 2000);
             }
 
@@ -82,7 +102,7 @@ export default function LevelBar({ progress, label, playerLevel, gameType, calle
         const normalizedProgress = normalizeProgress(progress, playerLevel);
         progressWidth.value = withTiming(normalizedProgress, { duration: 500 });
 
-        const milestone = Math.floor(progress / 5) * 5;
+        const milestone = progress ;
 
         handleMilestoneGif(milestone);
         updateMilestoneImage(milestone);
@@ -126,7 +146,7 @@ export default function LevelBar({ progress, label, playerLevel, gameType, calle
 
 const styles = StyleSheet.create({
     container: {
-        width: '80%',
+        width: '70%',
         alignItems: 'center',
         marginTop: 20,
     },
@@ -153,7 +173,6 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     imageContainer: {
-        marginLeft: 20,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -173,8 +192,9 @@ const styles = StyleSheet.create({
         color: '#333',
     },
     levelImage: {
-        width: 40,
-        height: 70,
-        resizeMode: 'contain',
+        width: 80,
+        height: 90,
+        bottom: -15, // Ensures the static image stays in place
+        position: 'absolute'
     },
 });
