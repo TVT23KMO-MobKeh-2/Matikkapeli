@@ -165,7 +165,7 @@ export default function WelcomeScreen({ navigation }) {
                                         opacity: isDeleting ? 0.6 : 1, 
                                     },
                             ]}>
-                            <Text style={styles.buttonText}>
+                            <Text style={[styles.buttonText, {color: 'white'}]}>
                             {isDeleting ? 'POISTETAAN...' : 'POISTA TUNNUS TIETOKANNASTA'}
                             </Text>
                         </Pressable>
@@ -204,12 +204,12 @@ export default function WelcomeScreen({ navigation }) {
                             keyboardType="email-address"
                         />
                         <Pressable onPress={handleSearchProfile}
-                            style={[styles.startButton, {backgroundColor: 'green'}]}>
+                            style={styles.startButton}>
                             <Text style={styles.buttonText}>HAE PROFIILIT</Text>
                         </Pressable>
                         <Pressable onPress={toggleSearchMode}
                             style={[styles.startButton, {backgroundColor: 'darkred'}]}>
-                            <Text style={styles.buttonText}>PERUUTA</Text>
+                            <Text style={[styles.buttonText, {color: 'white'}]}>PERUUTA</Text>
                         </Pressable>
                     </>
                 ) : (
