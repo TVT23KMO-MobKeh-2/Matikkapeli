@@ -2,7 +2,7 @@ import { View, Text, TextInput, Pressable, ImageBackground, } from 'react-native
 import React, { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserCreation from '../components/UserCreation';
-import { deleteUserDataFromDatabase, recieveProfileByEmail } from '../firebase/Functions'; // Import your function
+import { deleteUserDataFromDatabase, logout, recieveProfileByEmail, isEmailUsed, loginWithEmailPassword } from '../firebase/Functions'; // Import your function
 import { Alert } from 'react-native';
 
 import createStyles from "../styles";
@@ -16,10 +16,12 @@ export default function WelcomeScreen({ navigation }) {
     const [playerName, setPlayerName] = useState('')
     const [imageID, setImageID] = useState('')
     const [inputEmail, setInputEmail] = useState(''); // State for holding input email
+    const [inputPassword, setInputPassword] = useState('');
     const [isCreatingUser, setIsCreatingUser] = useState(false);
     const [isSearchMode, setIsSearchMode] = useState(false); // State to toggle search mode
     const [profileData, setProfileData] = useState(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isLoginMode, setIsLoginMode] = useState(false);
 
     const { isDarkTheme } = useTheme();
     const theme = isDarkTheme ? dark : light;
@@ -66,6 +68,7 @@ export default function WelcomeScreen({ navigation }) {
             setEmail('');
             setPlayerName('');
             setImageID('');
+            await logout();
         } catch (e) {
             console.error('Virhe tietojen poistamisessa');
         }
@@ -130,6 +133,27 @@ export default function WelcomeScreen({ navigation }) {
     const toggleSearchMode = () => {
         setIsSearchMode(!isSearchMode); // Toggle the search mode on/off
         setInputEmail(''); // Clear input when toggling
+    };
+
+    const handleLogin = async () => {
+        if (inputEmail && inputPassword) {
+            try {
+                console.log("Logging in with Email:", inputEmail);
+                
+                await loginWithEmailPassword(inputEmail, inputPassword);
+
+                console.log('Email found:', inputEmail);
+
+                await AsyncStorage.setItem('email', inputEmail);
+                navigation.navigate('SelectProfile', { email: inputEmail }); 
+    
+            } catch (error) {
+                console.error("Error during login", error);
+                Alert.alert("Virhe", "Profiilin hakeminen ei onnistunut. Yritä myöhemmin uudestaan.");
+            }
+        } else {
+            Alert.alert("Virhe", "Sähköpostiosoite on pakollinen.");
+        }
     };
 
     useEffect(() => {
@@ -216,11 +240,38 @@ export default function WelcomeScreen({ navigation }) {
                             style={styles.startButton}>
                             <Text style={styles.buttonText}>HAE PROFIILI KÄYTTÄJÄTUNNUKSELLA</Text>
                         </Pressable>
+                        <Pressable onPress={() => setIsLoginMode(true)} style={styles.startButton}>
+                            <Text style={styles.buttonText}>KIRJAUDU SISÄÄN</Text>
+                        </Pressable>
                         <Pressable onPress={() => setIsCreatingUser(true)}
                             style={styles.startButton}>
                             <Text style={styles.buttonText}>LUO TUNNUS JA ENSIMMÄINEN PROFIILI</Text>
                         </Pressable>
                     </>
+                )}
+                {isLoginMode && (
+                <>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Sähköpostiosoite"
+                    value={inputEmail}
+                    onChangeText={setInputEmail}
+                    keyboardType="email-address"
+                />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Salasana"
+                    value={inputPassword}
+                    onChangeText={setInputPassword}
+                    secureTextEntry
+                />
+                <Pressable onPress={handleLogin} style={styles.startButton}>
+                     <Text style={styles.buttonText}>KIRJAUDU SISÄÄN</Text>
+                </Pressable>
+                <Pressable onPress={() => setIsLoginMode(false)} style={styles.startButton}>
+                     <Text style={styles.buttonText}>PERUUTA</Text>
+                </Pressable>
+                </>
                 )}
                 </View>
             </View>

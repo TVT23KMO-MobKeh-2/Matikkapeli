@@ -64,7 +64,7 @@ export async function loginWithEmailPassword(email, password) {
 
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        console.log('User logged in:', userCredential.user);
+        //console.log('User logged in:', userCredential.user);
     } catch (error) {
         console.error('Error during login:', error.message);
         Alert.alert('Virhe', 'Sisäänkirjautuminen epäonnistui: ' + error.message);
