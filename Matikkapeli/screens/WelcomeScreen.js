@@ -139,7 +139,7 @@ export default function WelcomeScreen({ navigation }) {
         if (inputEmail && inputPassword) {
             try {
                 console.log("Logging in with Email:", inputEmail);
-                
+
                 await loginWithEmailPassword(inputEmail, inputPassword);
 
                 console.log('Email found:', inputEmail);
@@ -236,17 +236,20 @@ export default function WelcomeScreen({ navigation }) {
                     </>
                 ) : (
                     <>
-                        <Pressable onPress={toggleSearchMode}// Open input field for email
-                            style={styles.startButton}>
-                            <Text style={styles.buttonText}>HAE PROFIILI KÄYTTÄJÄTUNNUKSELLA</Text>
-                        </Pressable>
-                        <Pressable onPress={() => setIsLoginMode(true)} style={styles.startButton}>
-                            <Text style={styles.buttonText}>KIRJAUDU SISÄÄN</Text>
-                        </Pressable>
-                        <Pressable onPress={() => setIsCreatingUser(true)}
-                            style={styles.startButton}>
-                            <Text style={styles.buttonText}>LUO TUNNUS JA ENSIMMÄINEN PROFIILI</Text>
-                        </Pressable>
+                        {/* Hide these buttons when loginMode is true */}
+                        {!isLoginMode && (
+                            <>
+                                <Pressable onPress={toggleSearchMode} style={styles.startButton}>
+                                    <Text style={styles.buttonText}>HAE PROFIILI KÄYTTÄJÄTUNNUKSELLA</Text>
+                                </Pressable>
+                                <Pressable onPress={() => setIsLoginMode(true)} style={styles.startButton}>
+                                    <Text style={styles.buttonText}>KIRJAUDU SISÄÄN</Text>
+                                </Pressable>
+                                <Pressable onPress={() => setIsCreatingUser(true)} style={styles.startButton}>
+                                    <Text style={styles.buttonText}>LUO TUNNUS JA ENSIMMÄINEN PROFIILI</Text>
+                                </Pressable>
+                            </>
+                        )}
                     </>
                 )}
                 {isLoginMode && (
