@@ -16,7 +16,9 @@ import { useTheme } from '../components/ThemeContext';
 import { light, dark } from '../assets/themeColors';
 import { getBGImage } from '../components/backgrounds';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from 'react-native-reanimated';
-
+import Ionicons from '@expo/vector-icons/Ionicons';
+import Entypo from '@expo/vector-icons/Entypo';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 // Satunnaisen arvon generointi annetulla alueella
 function random(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -25,7 +27,6 @@ function random(min, max) {
 export default function Bonds({ onBack }) {
 
   const navigation = useNavigation()
-
 
   // Pelin aloitustaso ja muut tilamuuttujat
 
@@ -211,8 +212,10 @@ export default function Bonds({ onBack }) {
                       setInstructionReading(false);
                       setInstructionVisibility(false)
                     }}
-                      style={styles.startButton}>
-                      <Text style={styles.buttonText}>{syllabify("Aloita")}</Text>
+                      style={[styles.startButton, styles.blueButton]}>
+                      <View style={styles.nextGame}>
+                    <Ionicons name="game-controller" size={24} color={isDarkTheme ? "white" : "black"}/>
+                    </View>
                     </Pressable>
                   </View>
                 </View>
@@ -270,7 +273,7 @@ export default function Bonds({ onBack }) {
               onPress={checkAnswer}
               style={[styles.checkButton, isButtonDisabled ? styles.disabledButton : null]}
               disabled={isButtonDisabled}>
-              <Text style={styles.checkButtonText}>{syllabify("TARKISTA")}</Text>
+              <Entypo name="check" size={24} color={isDarkTheme ? "white" : "black"} />
             </Pressable>
           </View>
 
@@ -289,22 +292,25 @@ export default function Bonds({ onBack }) {
                     <LevelBar progress={bondsXp} label={syllabify("Hajonta")} playerLevel={playerLevel} gameType={"bonds"} caller={"bonds"} />
                   </View>
                   <View style={styles.buttonContainer}>
-                    <Pressable onPress={() => {
-                      handleContinueGame();
-                      setShowFeedback(false)
-                    }}
-                      style={[styles.startButton, { backgroundColor: 'lightblue' }]}
-                    >
-                      <Text style={styles.buttonText}>{syllabify("SEURAAVA TEHTÄVÄ ODOTTAA")}</Text>
-                    </Pressable>
-                    <Pressable onPress={() => {
-                      handleEndGame();
-                      setShowFeedback(false)
-                    }}
-                      style={[styles.startButton, { backgroundColor: 'darkred' }]}
-                    >
-                      <Text style={[styles.buttonText, { color: 'white' }]}>{syllabify("LOPETA PELI")}</Text>
-                    </Pressable>
+                  <Pressable onPress={() => {
+                    handleContinueGame();
+                    setShowFeedback(false)
+                  }}
+                    style={[styles.startButton, styles.blueButton]}
+                  >
+                    <View style={styles.nextGame}>
+                    <Ionicons name="game-controller" size={24} color="black" />
+                    <MaterialIcons name="navigate-next" size={24} color="black" />
+                    </View>
+                  </Pressable>
+                  <Pressable onPress={() => {
+                    handleEndGame();
+                    setShowFeedback(false)
+                  }}
+                    style={[styles.startButton, styles.redButton]}
+                  >
+                    <Ionicons name="exit" size={24} color="white" />
+                  </Pressable>
                   </View>
                 </View>
               </View>

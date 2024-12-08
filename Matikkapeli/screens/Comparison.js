@@ -15,6 +15,9 @@ import createStyles from "../styles";
 import { useTheme } from '../components/ThemeContext';
 import { light, dark } from '../assets/themeColors';
 import { getBGImage } from '../components/backgrounds';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 export default function Comparison({ onBack }) {
   const navigation = useNavigation()
@@ -297,17 +300,20 @@ export default function Comparison({ onBack }) {
                     handleContinueGame();
                     setShowFeedback(false)
                   }}
-                    style={[styles.startButton, { backgroundColor: 'lightblue' }]}
+                    style={[styles.startButton, styles.blueButton]}
                   >
-                    <Text style={styles.buttonText}>{syllabify("SEURAAVA TEHTÄVÄ ODOTTAA")}</Text>
+                    <View style={styles.nextGame}>
+                    <Ionicons name="game-controller" size={24} color="black" />
+                    <MaterialIcons name="navigate-next" size={24} color="black" />
+                    </View>
                   </Pressable>
                   <Pressable onPress={() => {
                     handleEndGame();
                     setShowFeedback(false)
                   }}
-                    style={[styles.startButton, { backgroundColor: 'darkred' }]}
+                    style={[styles.startButton, styles.redButton]}
                   >
-                    <Text style={[styles.buttonText, { color: 'white' }]}>{syllabify("LOPETA PELI")}</Text>
+                    <Ionicons name="exit" size={24} color="white" />
                   </Pressable>
                 </View>
               </View>

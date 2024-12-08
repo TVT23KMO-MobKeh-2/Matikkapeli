@@ -13,6 +13,8 @@ import createStyles from "../styles";
 import { useTheme } from '../components/ThemeContext';
 import { light, dark } from '../assets/themeColors';
 import { getBGImage } from '../components/backgrounds';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 
 export default function SoundToNumber({ onBack }) {
@@ -36,13 +38,20 @@ export default function SoundToNumber({ onBack }) {
   const styles = createStyles(theme);
   const bgIndex = 2;
 
+
+
+
+
   useEffect(() => {
     if (questionsAnswered === 5) {
       Speech.stop();
       incrementXp(points, "soundToNumber");
       setShowFeedback(true);
       setGameEnded(true);
+    } else {
+      playNumber()
     }
+    
   }, [questionsAnswered]);
 
   const handleBack = () => {
@@ -133,7 +142,7 @@ export default function SoundToNumber({ onBack }) {
       />
       <View style={styles.container}>
         <Text style={styles.title}>{syllabify("Valitse oikea numero")}</Text>
-        <TouchableOpacity style={styles.startButton} onPress={playNumber}>
+        <TouchableOpacity style={[styles.startButton, styles.orangeButton]} onPress={playNumber}>
           <Text style={styles.buttonText}>{syllabify("Kuuntele numero 🔊")}</Text>
         </TouchableOpacity>
         <View style={styles.gameOptionsContainer}>
@@ -165,24 +174,25 @@ export default function SoundToNumber({ onBack }) {
                 <LevelBar progress={bondsXp} label={syllabify("Hajonta")} playerLevel={playerLevel} gameType={"bonds"} caller={"soundToNumber"} />
               </View>
               <View style={styles.buttonContainer}>
-                <Pressable onPress={() => {
-                  handleContinueGame();
-                  setGameEnded(false);
-                  setShowFeedback(false)
-                }}
-                  style={[styles.startButton, { backgroundColor: 'lightblue' }]}
-                >
-                  <Text style={styles.buttonText}>{syllabify("SEURAAVA TEHTÄVÄ ODOTTAA")}</Text>
-                </Pressable>
-                <Pressable onPress={() => {
-                  handleEndGame();
-                  setGameEnded(false);
-                  setShowFeedback(false)
-                }}
-                  style={[styles.startButton, { backgroundColor: 'darkred' }]}
-                >
-                  <Text style={[styles.buttonText, { color: 'white' }]}>{syllabify("LOPETA PELI")}</Text>
-                </Pressable>
+              <Pressable onPress={() => {
+                    handleContinueGame();
+                    setShowFeedback(false)
+                  }}
+                    style={[styles.startButton, styles.blueButton]}
+                  >
+                    <View style={styles.nextGame}>
+                    <Ionicons name="game-controller" size={24} color="black" />
+                    <MaterialIcons name="navigate-next" size={24} color="black" />
+                    </View>
+                  </Pressable>
+                  <Pressable onPress={() => {
+                    handleEndGame();
+                    setShowFeedback(false)
+                  }}
+                    style={[styles.startButton, styles.redButton]}
+                  >
+                    <Ionicons name="exit" size={24} color="white" />
+                  </Pressable>
               </View>
             </View>
           </View>

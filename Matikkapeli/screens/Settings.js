@@ -8,7 +8,7 @@ import { useTaskReading } from '../components/TaskReadingContext'; //Tehtävien 
 import { useTaskSyllabification } from '../components/TaskSyllabificationContext'; //Tavutus
 import { useBackgroundMusic } from '../components/BackgroundMusicContext'; //Taustamusiikki
 import { savePlayerSettingsToDatabase, updatePlayerSettingsToDatabase, recievePlayerSettingsFromDatabase } from '../firebase/Functions';
-
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import createStyles from "../styles";
 import { useTheme } from '../components/ThemeContext';
 import { light, dark } from '../assets/themeColors';
@@ -201,9 +201,9 @@ export default function Settings({ onBack }) {
         {/* Sovelluksen sammuttaminen */}
         <View style={styles.buttonContainer}>
             <Pressable onPress={handleCloseApp}
-              style={[styles.startButton, { backgroundColor: 'darkred' }]}
+              style={[styles.startButton, styles.redButton]}
             >
-              <Text style={[styles.buttonText, {color: 'white'}]}>{syllabify("Sammuta sovellus")}</Text>
+              <FontAwesome name="power-off" size={24} color="white" />
             </Pressable>
           </View>
       </View>

@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';  // Import the hook
 import { deletePlayerDataFromDatabase } from '../firebase/Functions';
 import React, { useState, useContext } from 'react';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { ScoreContext } from '../components/ScoreContext';
 
 import createStyles from "../styles";
@@ -20,6 +21,7 @@ const animalImages = {
 };
 
 export default function ProfileScreen() {
+    
     const navigation = useNavigation();
     const [isDeleting, setIsDeleting] = useState(false);
     const { handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, playerLevel, playerName, email, imageID, setImageID, career} = useContext(ScoreContext);
@@ -122,24 +124,26 @@ export default function ProfileScreen() {
                 </View>
                 <View style={styles.buttonContainer1}>
                     <Pressable onPress={startGame}
-                        style={styles.startButton}>
-                        <Text style={styles.buttonText}>ALOITA PELI</Text>
+                        style={[styles.startButton, styles.greenButton]}>
+                        <Ionicons name="game-controller" size={24} color={isDarkTheme ? "white" : "black"} />
                     </Pressable>
                     <Pressable onPress={goBack}
-                        style={styles.startButton}>
-                        <Text style={styles.buttonText}>PALAA TAKAISIN</Text>
+                        style={[styles.startButton, styles.blueButton]}>
+                        <Ionicons name="arrow-back-circle-outline" size={24} color={isDarkTheme ? "white" : "black"} />
                     </Pressable>
                     <Pressable onPress={handleDeleteProfile}
                         disabled={isDeleting}
-                        style={[styles.startButton,
+                        style={[styles.startButton, styles.redButton,
                         {
-                            backgroundColor: isDeleting ? 'gray' : 'darkred',
+                            backgroundColor: isDeleting ? 'gray' : styles.redButton.backgroundColor,
                             opacity: isDeleting ? 0.6 : 1,
                         },
                         ]}>
-                        <Text style={[styles.buttonText, { color: 'white' }]}>
-                            {isDeleting ? 'POISTETAAN...' : 'POISTA PROFIILI'}
-                        </Text>
+                            {isDeleting ? 
+                            <Text style={[styles.buttonText, { color: 'white' }]}>
+                            'POISTETAAN...'
+                        </Text> : <AntDesign name="deleteuser" size={24} color="white" />}
+
                     </Pressable>
                 </View>
                 {showImageSelection && (

@@ -12,6 +12,8 @@ import createStyles from "../styles";
 import { useTheme } from '../components/ThemeContext';
 import { light, dark } from '../assets/themeColors';
 import { getBGImage } from '../components/backgrounds';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 // Funktio, joka generoi satunnaisen luvun väliltä min ja max
 function random(min, max) {
@@ -185,7 +187,7 @@ export default function ImageToNumber({ onBack }) {
         <View key={index} style={styles.optionWrapper}>
           <TouchableOpacity
             onPress={() => handleAnswer(option)}
-            style={[styles.startButton, answered && styles.disabledButton]} // Estä painallus, jos on jo vastattu
+            style={[styles.startButton, styles.orangeButton, answered && styles.disabledButton]} // Estä painallus, jos on jo vastattu
             disabled={answered} // Estä painallus, jos on jo vastattu
           >
             <Text style={styles.buttonText}>{option}</Text>
@@ -234,23 +236,24 @@ export default function ImageToNumber({ onBack }) {
                   <LevelBar progress={bondsXp} label={syllabify("Hajonta")} playerLevel={playerLevel} gameType={"bonds"} caller={"imageToNumber"} />
                 </View>
                 <View style={styles.buttonContainer}>
-                  <Pressable onPress={() => {
+                <Pressable onPress={() => {
                     handleContinueGame();
-                    setGameEnded(false);
                     setShowFeedback(false)
                   }}
-                    style={[styles.startButton, { backgroundColor: 'lightblue' }]}
+                    style={[styles.startButton, styles.blueButton]}
                   >
-                    <Text style={styles.buttonText}>{syllabify("SEURAAVA TEHTÄVÄ ODOTTAA")}</Text>
+                    <View style={styles.nextGame}>
+                    <Ionicons name="game-controller" size={24} color="black" />
+                    <MaterialIcons name="navigate-next" size={24} color="black" />
+                    </View>
                   </Pressable>
                   <Pressable onPress={() => {
                     handleEndGame();
-                    setGameEnded(false);
                     setShowFeedback(false)
                   }}
-                    style={[styles.startButton, { backgroundColor: 'darkred' }]}
+                    style={[styles.startButton, styles.redButton]}
                   >
-                    <Text style={[styles.buttonText, { color: 'white' }]}>{syllabify("LOPETA PELI")}</Text>
+                    <Ionicons name="exit" size={24} color="white" />
                   </Pressable>
                 </View>
               </View>

@@ -302,14 +302,30 @@ const createStyles = (theme) => StyleSheet.create({
     marginTop: 30
   },
   taskContainer: {
-    width: '45%', // Each item takes almost half the width for 2 items in a row
+    width: '45%', 
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 10,
   },
+  buttonWrapper: {
+    margin: 5,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 50,       
+    padding: 2, 
+    borderWidth: 1,  
+},
+  imageWrapper: {
+    borderRadius: 50,
+    padding: 3,            
+    shadowColor: 'darkblue',        
+    shadowOffset: { width: 10, height: 10 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 5,
+},
   taskImage: {
     width: 60, // Adjust size as needed
     height: 60, // Adjust size as needed
+    borderRadius: 50, 
     resizeMode: 'contain',
   },
   //!!!!!!!!!!!!!! PROFILE STYLES !!!!!!!!!!!!!!!
@@ -459,7 +475,6 @@ image: {
 },
   //!!!!!!!!!!!!!! used pretty commonly !!!!!!!!!!!!!
   startButton: {
-    backgroundColor: theme.color,
     padding: 15,
     marginVertical: 5,
     marginHorizontal: 5,
@@ -471,6 +486,28 @@ image: {
     shadowColor: '#000',
     elevation: 4,
   },
+
+  orangeButton: {
+    backgroundColor: theme.color,
+  },
+
+  greenButton: {
+    backgroundColor: theme.color5,
+  },
+
+  redButton: {
+    backgroundColor: theme.color4,
+  },
+
+  blueButton: {
+    backgroundColor: theme.color3,
+  },
+
+
+  nextGame:{
+    flexDirection:'row'
+  },
+
   optionsContainer: {
     flexDirection: 'column',
     justifyContent: 'center',
