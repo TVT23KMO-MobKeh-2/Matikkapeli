@@ -55,12 +55,12 @@ export default function ImageToNumber({ onBack }) {
         iconCount,
         options, // Vaihtoehdot
       });
-      
+
     }
     return questions;
   };
 
-  const [questions, setQuestions]  = useState(() => generateQuestions());
+  const [questions, setQuestions] = useState(() => generateQuestions());
 
   // Alustetaan kysymykset ja nollataan kysymysindeksi
   useEffect(() => {
@@ -123,10 +123,11 @@ export default function ImageToNumber({ onBack }) {
 
   // Puheen hallinta ja valmistuminen
   useEffect(() => {
-    if (gameEnded) { 
+    if (gameEnded) {
       Speech.stop(); // Lopeta mahdollinen puhe, jos peli on ohi
       setIsSpeechFinished(false)
-      return;} // Ei uusia kysymyksiä, jos peli on ohi
+      return;
+    } // Ei uusia kysymyksiä, jos peli on ohi
 
     const currentQuestion = questions[questionIndex];
     setAnswered(false);
@@ -225,31 +226,33 @@ export default function ImageToNumber({ onBack }) {
             <View style={styles.overlayInstruction}>
               <View style={styles.instructionWindow}>
                 <Text>{getFeedbackMessage(points)}</Text>
-                <Text style={styles.title}>Pistetaulu</Text>
-                <Text>Level: {playerLevel}/10</Text>
-                <Text>Kokonaispisteet: {totalXp}/190</Text>
+                <Text style={styles.title}>{syllabify("Pistetaulu")}</Text>
+                <Text>{syllabify("Taso")}: {playerLevel}/10</Text>
+                <Text>{syllabify("Kokonaispisteet")}: {totalXp}/190</Text>
                 <View style={styles.profileSelect}>
-                    <LevelBar progress={imageToNumberXp} label={"Kuvat numeroiksi"} playerLevel={playerLevel} gameType={"imageToNumber"} caller={"imageToNumber"} />
-                    <LevelBar progress={soundToNumberXp} label={"Äänestä numeroiksi"} playerLevel={playerLevel} gameType={"soundToNumber"} caller={"imageToNumber"} />
-                    <LevelBar progress={comparisonXp} label={"Vertailu"} playerLevel={playerLevel} gameType={"comparison"} caller={"imageToNumber"} />
-                    <LevelBar progress={bondsXp} label={"Hajonta"} playerLevel={playerLevel} gameType={"bonds"} caller={"imageToNumber"} />
+                  <LevelBar progress={imageToNumberXp} label={syllabify("Kuvat numeroiksi")} playerLevel={playerLevel} gameType={"imageToNumber"} caller={"imageToNumber"} />
+                  <LevelBar progress={soundToNumberXp} label={syllabify("Äänestä numeroiksi")} playerLevel={playerLevel} gameType={"soundToNumber"} caller={"imageToNumber"} />
+                  <LevelBar progress={comparisonXp} label={syllabify("Vertailu")} playerLevel={playerLevel} gameType={"comparison"} caller={"imageToNumber"} />
+                  <LevelBar progress={bondsXp} label={syllabify("Hajonta")} playerLevel={playerLevel} gameType={"bonds"} caller={"imageToNumber"} />
                 </View>
                 <View style={styles.buttonContainer}>
-                  <Pressable onPress={() => { 
-                    handleContinueGame(); 
+                  <Pressable onPress={() => {
+                    handleContinueGame();
                     setGameEnded(false);
-                    setShowFeedback(false) }}
+                    setShowFeedback(false)
+                  }}
                     style={[styles.startButton, { backgroundColor: 'lightblue' }]}
                   >
                     <Text style={styles.buttonText}>{syllabify("SEURAAVA TEHTÄVÄ ODOTTAA")}</Text>
                   </Pressable>
-                  <Pressable onPress={() => { 
-                    handleEndGame(); 
+                  <Pressable onPress={() => {
+                    handleEndGame();
                     setGameEnded(false);
-                    setShowFeedback(false) }}
+                    setShowFeedback(false)
+                  }}
                     style={[styles.startButton, { backgroundColor: 'darkred' }]}
                   >
-                   <Text style={[styles.buttonText, {color: 'white'}]}>{syllabify("LOPETA PELI")}</Text>
+                    <Text style={[styles.buttonText, { color: 'white' }]}>{syllabify("LOPETA PELI")}</Text>
                   </Pressable>
                 </View>
               </View>
