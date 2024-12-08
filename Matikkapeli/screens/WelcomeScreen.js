@@ -68,7 +68,8 @@ export default function WelcomeScreen({ navigation }) {
             setEmail('');
             setPlayerName('');
             setImageID('');
-            await logout();
+            if (auth().currentUser)
+                await logout();
         } catch (e) {
             console.error('Virhe tietojen poistamisessa');
         }
