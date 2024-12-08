@@ -323,6 +323,25 @@ const createStyles = (theme) => StyleSheet.create({
     borderColor: theme.bordercolor,
     marginBottom: 20,
   }, 
+  profileImageContainer: {
+    position: 'relative'
+  },
+  changeProfileImage: {
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+    backgroundColor: 'blue',
+    borderRadius: 24,
+    width: 30,
+    height: 30,
+    justifyContent:'center',
+    alignItems: 'center'
+  },
+  changeIcon: {
+    margin: 0,
+    padding: 0,
+
+  },
   profileImage: {
     width: 100, // Adjust size as needed
     height: 100, // Adjust size as needed
@@ -330,6 +349,40 @@ const createStyles = (theme) => StyleSheet.create({
     margin: 20,
     borderRadius: 20,
   },
+  imageSelectionModal: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1000, // Ensure it's on top
+    backgroundColor: 'rgba(0, 0, 0, 0.4)', // Dark semi-transparent background to simulate a modal
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%',
+},
+overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+},
+imageSelectionContainer: {
+    margin: 10,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 20,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    zIndex: 1001,
+},
+imageSelection: {
+    width: 100,
+    height: 100,
+    marginBottom: 10,
+    marginRight: 10,
+},
   chooseProfile:{
     alignItems: 'center',
     justifyContent:'center',

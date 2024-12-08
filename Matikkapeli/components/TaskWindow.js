@@ -7,7 +7,7 @@ import { useTheme } from '../components/ThemeContext';
 import { light, dark } from '../assets/themeColors'; 
 
 
-export default function TaskWindow({ taskVisible, setTaskVisible, navigation, profile}) {
+export default function TaskWindow({ taskVisible, setTaskVisible, navigation }) {
     const { isDarkTheme } = useTheme();
     const styles = createStyles(isDarkTheme ? dark : light);
 
@@ -16,7 +16,7 @@ export default function TaskWindow({ taskVisible, setTaskVisible, navigation, pr
     const note = require('../assets/note1.png');
     const bond = require('../assets/bond2.png');
     const conv = require('../assets/conv1.png');
-    const {imageToNumberXp, soundToNumberXp, playerLevel, } = useContext(ScoreContext);
+    const { imageToNumberXp, soundToNumberXp, playerLevel, playerName } = useContext(ScoreContext);
     
     if (!taskVisible) return null;
 
@@ -31,11 +31,10 @@ export default function TaskWindow({ taskVisible, setTaskVisible, navigation, pr
                 pointerEvents="box-none">
                 <View style={styles.content}>
                     <View style={styles.grid} >
-                        <Text>{profile.playername}</Text>
                         <Pressable 
                             style={styles.taskContainer}
                             onPress={() => { 
-                                navigation.navigate('ImageToNumbers', { profile });
+                                navigation.navigate('ImageToNumbers');
                                 setTaskVisible(false); 
                             }}>
                             <Image source={apple} style={styles.taskImage} />
@@ -43,7 +42,7 @@ export default function TaskWindow({ taskVisible, setTaskVisible, navigation, pr
                         <Pressable 
                             style={styles.taskContainer}
                             onPress={() => { 
-                                navigation.navigate('SoundToNumbers', { profile });
+                                navigation.navigate('SoundToNumbers');
                                 setTaskVisible(false); 
                             }}>
                             <Image source={note} style={styles.taskImage} />
@@ -53,7 +52,7 @@ export default function TaskWindow({ taskVisible, setTaskVisible, navigation, pr
                             <Pressable 
                              style={styles.taskContainer}
                             onPress={() => { 
-                                navigation.navigate('ComparisonOperators', { profile });
+                                navigation.navigate('ComparisonOperators');
                                 setTaskVisible(false); 
                             }}>
                             <Image source={conv} style={styles.taskImage} />
@@ -64,7 +63,7 @@ export default function TaskWindow({ taskVisible, setTaskVisible, navigation, pr
                            <Pressable 
                             style={styles.taskContainer}
                             onPress={() => { 
-                                navigation.navigate('Bonds', { profile });
+                                navigation.navigate('Bonds');
                                 setTaskVisible(false);
                             }}>
                             <Image source={bond} style={styles.taskImage} />

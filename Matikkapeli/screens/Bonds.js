@@ -24,17 +24,8 @@ function random(min, max) {
 
 export default function Bonds({ onBack }) {
 
-  const route = useRoute();
-  const { profile } = route.params;
   const navigation = useNavigation()
 
-  useEffect(() => {
-    if (profile) {
-      console.log("Bonds:", profile);
-    } else {
-      console.log("Profile is undefined or null");
-    }
-  }, [profile]);
 
   // Pelin aloitustaso ja muut tilamuuttujat
 
@@ -45,7 +36,7 @@ export default function Bonds({ onBack }) {
   const [inputValue2, setInputValue2] = useState('');  // Käyttäjän syöte oikeaan laatikkoon
   const [sound, setSound] = useState();  // Äänet, joita toistetaan vastauksen perusteella
   const [doneTasks, setDoneTasks] = useState(0);  // Tavoitteena on vastata oikein 5 kysymykseen
-  const { incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, playerLevel, totalXp } = useContext(ScoreContext);  // Pelin pistetilanne ja XP:n käsittely
+  const { incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, playerLevel, totalXp, email } = useContext(ScoreContext);  // Pelin pistetilanne ja XP:n käsittely
   const [questionsAnswered, setQuestionsAnswered] = useState(0)
   const [points, setPoints] = useState(0)
   const [instructionVisibility, setInstructionVisibility] = useState(true);  // Näytetäänkö ohjeet pelin alussa
@@ -157,13 +148,13 @@ export default function Bonds({ onBack }) {
 
   const handleContinueGame = () => {
     handleBack(); // Actually call handleBack
-    navigation.navigate('Animation', { profile });
+    navigation.navigate('Animation');
   };
 
 
   const handleEndGame = () => {
     handleBack(); // Actually call handleBack
-    navigation.navigate('SelectProfile', { profile });
+    navigation.navigate('SelectProfile', { email });
   };
 
 

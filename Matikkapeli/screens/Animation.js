@@ -1,8 +1,9 @@
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import { View, Text, ImageBackground, Button, Pressable } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import TaskWindow from '../components/TaskWindow'
 import { Image } from 'expo-image';
+import { ScoreContext } from '../components/ScoreContext';
 
 import createStyles from "../styles";
 import { useTheme } from '../components/ThemeContext';
@@ -22,7 +23,7 @@ const animalGif = {
     wolf: require('../assets/wolf.gif'),
 };
 
-export default function Animation({ route, onBack, navigation }) {
+export default function Animation({ onBack, navigation }) {
     const backgroundImageBack = require('../assets/Pixel-art-back_full.png')
     const backgroundImageFront = require('../assets/Pixel-art-front-sign_full.png')
     const translateX = useSharedValue(750)
@@ -30,9 +31,7 @@ export default function Animation({ route, onBack, navigation }) {
     const [isMoving, setIsMoving] = useState(true)
     const [isGifVisible, setIsGifVisible] = useState(true)
     const [taskVisible, setTaskVisible] = useState(false)
-    const { profile } = route.params;
-    const { imageID } = profile;
-    console.log('Received profile data:', profile);
+    const { imageID } = useContext(ScoreContext);
     const characterGif = animalGif[imageID]
     const characterImage = animalImage[imageID]
     const [isLoading, setIsLoading] = useState(true);
@@ -41,21 +40,14 @@ export default function Animation({ route, onBack, navigation }) {
     const styles = createStyles(isDarkTheme ? dark : light);
 
     useEffect(() => {
-        // Simulate a delay to ensure profile is ready (can replace with actual data-check logic)
+        // Simulate a delay to ensure profile is ready
         const timer = setTimeout(() => {
-            setIsLoading(false);
+            setIsGifVisible(true);
         }, 500); // Adjust time if needed
 
         return () => clearTimeout(timer); // Cleanup on unmount
-    }, [profile]);
+    }, []);
 
-    useEffect(() => {
-        if (!profile) {
-            console.error('No profile data received in Animation screen');
-        } else {
-            console.log('Profile data received in Animation:', profile);
-        }
-    }, [profile]);
 
     const handlePress = () => {
         setIsMoving(true); 
@@ -119,7 +111,6 @@ export default function Animation({ route, onBack, navigation }) {
             {taskVisible && <TaskWindow
                 taskVisible={taskVisible}
                 setTaskVisible={setTaskVisible}
-                profile={profile}
                 navigation={navigation}
             />}
 

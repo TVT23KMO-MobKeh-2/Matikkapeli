@@ -17,11 +17,10 @@ import { getBGImage } from '../components/backgrounds';
 
 export default function SoundToNumber({ onBack }) {
   const route = useRoute();
-  const { profile } = route.params;
   const navigation = useNavigation();
 
   const [showFeedback, setShowFeedback] = useState(false);
-  const { playerLevel, incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, totalXp } = useContext(ScoreContext);
+  const { playerLevel, incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, totalXp, email } = useContext(ScoreContext);
   const [points, setPoints] = useState(0);
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
   const { gameSounds, playSound } = useSoundSettings(); // Haetaan playSound suoraan kontekstista
@@ -56,12 +55,12 @@ export default function SoundToNumber({ onBack }) {
 
   const handleContinueGame = () => {
     handleBack();
-    navigation.navigate('Animation', { profile });
+    navigation.navigate('Animation');
   };
 
   const handleEndGame = () => {
     handleBack();
-    navigation.navigate('SelectProfile', { profile });
+    navigation.navigate('SelectProfile', { email });
   };
 
   // Pelin logiikka

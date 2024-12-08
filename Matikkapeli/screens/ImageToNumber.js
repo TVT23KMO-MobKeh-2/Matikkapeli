@@ -20,11 +20,10 @@ function random(min, max) {
 
 export default function ImageToNumber({ onBack }) {
   const route = useRoute();
-  const { profile } = route.params;
   const navigation = useNavigation();
   const [points, setPoints] = useState(0);
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
-  const { incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, playerLevel, totalXp } = useContext(ScoreContext);
+  const { incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, playerLevel, totalXp, career, email } = useContext(ScoreContext);
   const { gameSounds, volume, playSound } = useSoundSettings(); // Käytetään ääniasetuksia ja kontekstin playSound-funktiota
   const { taskReading } = useTaskReading(); // Käytetään tehtävänlukukontekstia
   const { syllabify, taskSyllabification, getFeedbackMessage } = useTaskSyllabification(); // Käytetään tavutuskontekstia
@@ -159,7 +158,6 @@ export default function ImageToNumber({ onBack }) {
 
   // Renderöi nykyisen kysymyksen ikonit
   const renderIcons = () => {
-    const career = profile.career
     const iconName = careerIcon[career] || "stocking"
 
 
@@ -199,12 +197,12 @@ export default function ImageToNumber({ onBack }) {
 
   const handleContinueGame = () => {
     handleBack();
-    navigation.navigate('Animation', { profile });
+    navigation.navigate('Animation');
   };
 
   const handleEndGame = () => {
     handleBack();
-    navigation.navigate('SelectProfile', { profile });
+    navigation.navigate('SelectProfile', { email });
   };
 
   return (

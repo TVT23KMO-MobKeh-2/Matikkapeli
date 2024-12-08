@@ -17,8 +17,6 @@ import { light, dark } from '../assets/themeColors';
 import { getBGImage } from '../components/backgrounds';
 
 export default function Comparison({ onBack }) {
-  const route = useRoute();
-  const { profile } = route.params;
   const navigation = useNavigation()
   const [showFeedback, setShowFeedback] = useState(false)
 
@@ -31,7 +29,7 @@ export default function Comparison({ onBack }) {
   const { syllabify, taskSyllabification, getFeedbackMessage } = useTaskSyllabification();
   const [points, setPoints] = useState(0)
   const [questionsAnswered, setQuestionsAnswered] = useState(0)
-  const { playerLevel, incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, totalXp } = useContext(ScoreContext)
+  const { playerLevel, incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, totalXp, email } = useContext(ScoreContext)
   const [isLevelNumberFirstComparable, setIsLevelNumberFirstComparable] = useState(true) // Määrittää, esitetäänkö tason mukainen numero vertailussa ensimmäisenä (true) vai toisena (false)
   const [isComparableEquation, setIsComparableEquation] = useState(false) // Määrittää, onko vertailtavana yhtälö vai satunnaisluku (true = yhtälö, false = satunnaisluku)
   const [randomNumber, setRandomNumber] = useState(0) // Vertailtavaksi arvottu satunnaisluku, käytetään yksittäisissä lukuvertailutehtävissä
@@ -259,12 +257,12 @@ export default function Comparison({ onBack }) {
 
   const handleContinueGame = () => {
     handleBack(); // Actually call handleBack
-    navigation.navigate('Animation', { profile });
+    navigation.navigate('Animation');
   };
 
   const handleEndGame = () => {
     handleBack(); // Actually call handleBack
-    navigation.navigate('SelectProfile', { profile });
+    navigation.navigate('SelectProfile', { email });
   };
 
   return (
