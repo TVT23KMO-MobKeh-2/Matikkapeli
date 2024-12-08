@@ -230,7 +230,7 @@ const createStyles = (theme) => StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  foxContainer: {
+  characterContainer: {
     position: 'absolute',
     bottom: 25, // Position the fox a little above the bottom
     left: -150, // Start from the left side
@@ -262,9 +262,9 @@ const createStyles = (theme) => StyleSheet.create({
     zIndex: 4,
   },
 
-  foxImage: {
-    width: 150, // Adjust size as needed
-    height: 250, // Adjust size as needed
+  characterImage: {
+    width: 170, // Adjust size as needed
+    height: 270, // Adjust size as needed
   },
   backgroundImage: {
     flex: 1,

@@ -8,21 +8,46 @@ import createStyles from "../styles";
 import { useTheme } from '../components/ThemeContext';
 import { light, dark } from '../assets/themeColors';
 
+const animalImage = {
+    fox: require('../assets/fox.png'),
+    bear: require('../assets/bear.png'),
+    rabbit: require('../assets/rabbit.png'),
+    wolf: require('../assets/wolf.png'),
+};
+
+const animalGif = {
+    fox: require('../assets/fox.gif'),
+    bear: require('../assets/bear.gif'),
+    rabbit: require('../assets/rabbit.gif'),
+    wolf: require('../assets/wolf.gif'),
+};
+
 export default function Animation({ route, onBack, navigation }) {
     const backgroundImageBack = require('../assets/Pixel-art-back_full.png')
     const backgroundImageFront = require('../assets/Pixel-art-front-sign_full.png')
     const translateX = useSharedValue(750)
     const imageWidth = 2250
     const [isMoving, setIsMoving] = useState(true)
-    const stopImage = require('../assets/foxwalking1.png')
-    const movingImage = require('../assets/foxwalking.gif')
     const [isGifVisible, setIsGifVisible] = useState(true)
     const [taskVisible, setTaskVisible] = useState(false)
     const { profile } = route.params;
+    const { imageID } = profile;
     console.log('Received profile data:', profile);
+    const characterGif = animalGif[imageID]
+    const characterImage = animalImage[imageID]
+    const [isLoading, setIsLoading] = useState(true);
 
     const { isDarkTheme } = useTheme();
     const styles = createStyles(isDarkTheme ? dark : light);
+
+    useEffect(() => {
+        // Simulate a delay to ensure profile is ready (can replace with actual data-check logic)
+        const timer = setTimeout(() => {
+            setIsLoading(false);
+        }, 500); // Adjust time if needed
+
+        return () => clearTimeout(timer); // Cleanup on unmount
+    }, [profile]);
 
     useEffect(() => {
         if (!profile) {
@@ -47,7 +72,7 @@ export default function Animation({ route, onBack, navigation }) {
 
     useEffect(() => {
         if (isMoving) {
-            translateX.value = withTiming(-850, { duration: 7000 }, () => {
+            translateX.value = withTiming(-800, { duration: 7000 }, () => {
                 runOnJS(setIsGifVisible)(false)
                 runOnJS(setTaskVisible)(true)
             })
@@ -73,13 +98,13 @@ export default function Animation({ route, onBack, navigation }) {
 
                 {!isGifVisible && (
                     <Image
-                        source={stopImage}
-                        style={[styles.foxContainer, styles.foxImage]} />
+                        source={characterImage}
+                        style={[styles.characterContainer, styles.characterImage]} />
                 )}
                 {isGifVisible && (
                     <Image
-                        source={movingImage}
-                        style={[styles.foxContainer, styles.foxImage]}
+                        source={characterGif}
+                        style={[styles.characterContainer, styles.characterImage]}
                     />
                 )}
             </View>
