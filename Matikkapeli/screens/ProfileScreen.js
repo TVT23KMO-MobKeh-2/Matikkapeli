@@ -117,7 +117,7 @@ export default function ProfileScreen({ route, navigation }) {
                         <Text style={styles.buttonText}>ALOITA PELI</Text>
                     </Pressable>
                     <Pressable onPress={goBack}
-                        style={[styles.startButton, { backgroundColor: 'lightblue' }]}>
+                        style={styles.startButton}>
                         <Text style={styles.buttonText}>PALAA TAKAISIN</Text>
                     </Pressable>
                     <Pressable onPress={handleDeleteProfile}

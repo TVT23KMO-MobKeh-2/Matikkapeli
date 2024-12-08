@@ -97,11 +97,11 @@ export default function UserCreation({ onNavigate }) {
                 onChangeText={(text) => setPassword(text)}
                 secureTextEntry={true}
             />
-                <Pressable style={[styles.startButton, {backgroundColor: 'green'}]} onPress={handleSave} disabled={isSaving}>
+                <Pressable style={[styles.startButton, {backgroundColor: 'lightblue'}]} onPress={handleSave} disabled={isSaving}>
                     <Text style={styles.buttonText}>{isSaving ? 'TALLENETAAN...' : 'TALLENNA'}</Text>
                 </Pressable>
                 <Pressable style={[styles.startButton, {backgroundColor: 'darkred'}]} onPress={() => navigation.goBack()}>
-                    <Text style={styles.buttonText}>PERUUTA</Text>
+                    <Text style={[styles.buttonText, {color: 'white'}]}>PERUUTA</Text>
                 </Pressable>
             </View>
         </View>
