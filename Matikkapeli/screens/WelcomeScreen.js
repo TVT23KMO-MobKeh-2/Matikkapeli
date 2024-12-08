@@ -139,20 +139,26 @@ export default function WelcomeScreen({ navigation }) {
         if (inputEmail && inputPassword) {
             try {
                 console.log("Logging in with Email:", inputEmail);
-
-                await loginWithEmailPassword(inputEmail, inputPassword);
-
-                console.log('Email found:', inputEmail);
-
-                await AsyncStorage.setItem('email', inputEmail);
-                navigation.navigate('SelectProfile', { email: inputEmail }); 
     
+                // Try logging in with email and password
+                const userCredential = await loginWithEmailPassword(inputEmail, inputPassword);
+                if (userCredential) {
+                    console.log('Email found:', inputEmail);
+
+                    await AsyncStorage.setItem('email', inputEmail);
+                    // Navigate to SelectProfile ONLY if login is successful
+                    userCredential.user.email = inputEmail;
+                    navigation.navigate('SelectProfile', { email: inputEmail });
+                } else {
+                    throw new Error("Login failed, no user found");
+                }
             } catch (error) {
+                // Handle errors that occur during login
                 console.error("Error during login", error);
-                Alert.alert("Virhe", "Profiilin hakeminen ei onnistunut. Yritä myöhemmin uudestaan.");
+                Alert.alert("Virhe", "Sisäänkirjautuminen epäonnistui. Tarkista sähköpostiosoite ja salasana.");
             }
         } else {
-            Alert.alert("Virhe", "Sähköpostiosoite on pakollinen.");
+            Alert.alert("Virhe", "Sähköpostiosoite ja salasana ovat pakollisia.");
         }
     };
 

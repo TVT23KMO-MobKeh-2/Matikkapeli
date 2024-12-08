@@ -64,10 +64,27 @@ export async function loginWithEmailPassword(email, password) {
 
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        //console.log('User logged in:', userCredential.user);
+        // User is logged in, handle the success (you can log user details if needed)
+        console.log('User logged in:', userCredential.user);
+        return userCredential;
     } catch (error) {
         console.error('Error during login:', error.message);
-        Alert.alert('Virhe', 'Sisäänkirjautuminen epäonnistui: ' + error.message);
+        
+        // Check the error code and show appropriate message
+        if (error.code === 'auth/wrong-password') {
+            Alert.alert('Virhe', 'Salasana on väärin. Yritä uudelleen.');
+        } else if (error.code === 'auth/user-not-found') {
+            Alert.alert('Virhe', 'Käyttäjää ei löydy tällä sähköpostiosoitteella.');
+        } else if (error.code === 'auth/invalid-credential') {
+            Alert.alert('Virhe', 'Sähköposti tai salasana väärin. Yritä uudelleen.');
+        } 
+        else if (error.code === 'auth/invalid-email') {
+            Alert.alert('Virhe', 'Sähköpostiosoite ei ole kelvollinen.');
+        } else {
+            // For other types of errors, display the error message
+            Alert.alert('Virhe', 'Sisäänkirjautuminen epäonnistui: ' + error.message);
+        }
+        return null;
     }
 }
 
