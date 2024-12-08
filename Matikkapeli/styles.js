@@ -261,7 +261,6 @@ const createStyles = (theme) => StyleSheet.create({
     width: '90%',
     zIndex: 4,
   },
-
   foxImage: {
     width: 150, // Adjust size as needed
     height: 250, // Adjust size as needed

@@ -1,6 +1,8 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, addDoc, getDocs, updateDoc, where, query, doc, deleteDoc } from "firebase/firestore";
 import ENV from "../env";
+import { getAuth, initializeAuth, getReactNativePersistence } from 'firebase/auth';
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 
 const firebaseConfig = {
     apiKey: ENV.FIREBASE_API_KEY,
@@ -11,12 +13,16 @@ const firebaseConfig = {
     appId: ENV.FIREBASE_APP_ID
   };
 
-  initializeApp(firebaseConfig)
+  const app = initializeApp(firebaseConfig)
 
   const firestore = getFirestore()
 
   const PLAYERSTATS = 'playerstats'
   const PLAYERSETTINGS = 'playersettings';
+
+  const auth = initializeAuth(app, {
+    persistence: getReactNativePersistence(ReactNativeAsyncStorage),
+  });
 
   export {
     firestore,
@@ -29,5 +35,6 @@ const firebaseConfig = {
     getDocs,
     updateDoc,
     doc,
-    deleteDoc
+    deleteDoc,
+    auth
   }

@@ -1,6 +1,7 @@
 import { Alert } from 'react-native';
 
-import { addDoc, collection, firestore, PLAYERSTATS, PLAYERSETTINGS, where, query, getDocs, updateDoc, doc, deleteDoc } from '../firebase/Config';
+import { addDoc, collection, firestore, PLAYERSTATS, PLAYERSETTINGS, where, query, getDocs, updateDoc, doc, deleteDoc, auth } from '../firebase/Config';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, deleteUser  } from 'firebase/auth';
 
 export async function isEmailUsed(email) {
     try {
@@ -46,7 +47,40 @@ export async function saveEmailToDatabase({email}) {
     }
 }
 
+export async function signUpWithEmailPassword(email, password) {
+    const auth = getAuth();
 
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        //console.log('User registered:', userCredential.user);
+    } catch (error) {
+        console.error('Error during sign up:', error.message);
+        Alert.alert('Virhe', 'Rekisteröityminen epäonnistui: ' + error.message);
+    }
+}
+
+export async function loginWithEmailPassword(email, password) {
+    const auth = getAuth();
+
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        console.log('User logged in:', userCredential.user);
+    } catch (error) {
+        console.error('Error during login:', error.message);
+        Alert.alert('Virhe', 'Sisäänkirjautuminen epäonnistui: ' + error.message);
+    }
+}
+
+export async function logout() {
+    const auth = getAuth();
+
+    try {
+        await signOut(auth);
+        console.log('User logged out');
+    } catch (error) {
+        console.error('Error during logout:', error.message);
+    }
+}
 
 // Funktio pelaajatietojen tallennukseen tietokantaan pelin alussa
 export async function savePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career }){
@@ -307,6 +341,7 @@ export async function deletePlayerDataFromDatabase({ email, playerName }) {
     } catch (error) {
         console.error('Virhe pelaajatietojen poistamisessa: ', error);
     }
+    
 }
 
 export async function deleteUserDataFromDatabase({ email }) {
@@ -340,9 +375,16 @@ export async function deleteUserDataFromDatabase({ email }) {
         }
 
         console.log('Kaikki käyttäjän tiedot poistettu onnistuneesti');
+        const auth = getAuth();
+        const user = auth.currentUser;
+        if (user) {
+                await deleteUser(user); // Delete the user from Firebase Authentication
+                console.log('Pelaajan autentikointi poistettu onnistuneesti');
+        } else {
+            console.log('Pelaajaa ei löytynyt autentikoinnista');
+        }
     } catch (error) {
-        console.error('Virhe käyttäjän tietojen poistamisessa: ', error);
+        console.error('Virhe pelaajatietojen poistamisessa: ', error);
     }
 }
-
 

@@ -38,19 +38,19 @@ export default function WelcomeScreen({ navigation }) {
             }
             const nameValue = await AsyncStorage.getItem('playername');
             if (nameValue !== null) {
-                console.log('Sähköposti haettu AsyncStorage:sta:', nameValue);
+                console.log('playername haettu AsyncStorage:sta:', nameValue);
                 setPlayerName(nameValue);
 
             } else {
-                console.log('Ei löytynyt sähköpostia AsyncStorage:sta');
+                console.log('Ei löytynyt Playername AsyncStorage:sta');
             }
             const imageValue = await AsyncStorage.getItem('imageID');
             if (imageValue !== null) {
-                console.log('Sähköposti haettu AsyncStorage:sta:', imageValue);
+                console.log('Image haettu AsyncStorage:sta:', imageValue);
                 setImageID(imageValue);
 
             } else {
-                console.log('Ei löytynyt sähköpostia AsyncStorage:sta');
+                console.log('Ei löytynyt Image AsyncStorage:sta');
             }
         } catch (e) {
             console.error('Virhe tietojen hakemisessa', e);
@@ -127,8 +127,6 @@ export default function WelcomeScreen({ navigation }) {
     };
 
 
-
-
     const toggleSearchMode = () => {
         setIsSearchMode(!isSearchMode); // Toggle the search mode on/off
         setInputEmail(''); // Clear input when toggling
@@ -137,7 +135,7 @@ export default function WelcomeScreen({ navigation }) {
     useEffect(() => {
         getData();
     }, []);
-
+    
     if (email) {
         return (
             <ImageBackground
