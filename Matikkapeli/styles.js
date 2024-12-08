@@ -1,4 +1,4 @@
-import { StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 
 //1. appwide styles: container, background, texts
 //2. top bar styles
@@ -11,8 +11,8 @@ import { StyleSheet} from 'react-native';
 //9. commonly used buttons and "containers" (like start button and "optionstyles".)
 //10. game exclusive styles
 //export default (theme) => StyleSheet.create({
-const createStyles = (theme) => StyleSheet.create({  
-//!!!!!!!!!!!!!! COMMON STYLES!!!!!!!!!!!!!!
+const createStyles = (theme) => StyleSheet.create({
+  //!!!!!!!!!!!!!! COMMON STYLES!!!!!!!!!!!!!!
   safeContainer: {
     flex: 1,
     width: '100%',
@@ -30,7 +30,7 @@ const createStyles = (theme) => StyleSheet.create({
     marginTop: 90, // Varmistaa, että tehtävä tulee keskelle
     flex: 1,
   },
-   background: {
+  background: {
     height: '100%',
     width: '100%',
     justifyContent: 'center',
@@ -51,9 +51,9 @@ const createStyles = (theme) => StyleSheet.create({
     fontSize: 18,
     marginRight: 10,
     marginBottom: 5,
-    fontFamily: 'ComicNeue_700Bold', 
+    fontFamily: 'ComicNeue_700Bold',
     color: theme.text,
-  },  
+  },
   question: {
     fontSize: 18,
     marginBottom: 10,
@@ -133,28 +133,28 @@ const createStyles = (theme) => StyleSheet.create({
     color: theme.text,
   },
   //!!!!!!!!SETTINGS EXCLUSIVE!!!!!!!!!!!!
- /* settingItemContainer: {
-    width: '100%',
-    paddingHorizontal: 10,
-    marginVertical: 10, 
-    alignItems: 'stretch', 
-  },*/
+  /* settingItemContainer: {
+     width: '100%',
+     paddingHorizontal: 10,
+     marginVertical: 10, 
+     alignItems: 'stretch', 
+   },*/
   settingItem: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginVertical: 5, 
+    marginVertical: 5,
     backgroundColor: theme.settingbg, // Pale green
     borderRadius: 8,
     borderColor: theme.bordercolor,
     borderWidth: 2,
-    padding: 10, 
+    padding: 10,
     width: '100%',
   },
   settingItemColumn: {
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginVertical: 5, 
+    marginVertical: 5,
     backgroundColor: theme.settingbg,
     padding: 10,
     borderRadius: 8,
@@ -224,7 +224,7 @@ const createStyles = (theme) => StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-//!!!!!! ANIMATION !!!!!!!!!
+  //!!!!!! ANIMATION !!!!!!!!!
   backgroundAnimation: {
     height: '100%',
     justifyContent: 'center',
@@ -254,7 +254,7 @@ const createStyles = (theme) => StyleSheet.create({
     flexDirection: 'row',
     position: 'absolute',
     alignItems: 'center',
-    justifyContent:'center',
+    justifyContent: 'center',
     bottom: 40,
     left: 8,
     justifyContent: 'space-between',
@@ -302,30 +302,30 @@ const createStyles = (theme) => StyleSheet.create({
     marginTop: 30
   },
   taskContainer: {
-    width: '45%', 
+    width: '45%',
     justifyContent: 'center',
     alignItems: 'center',
   },
   buttonWrapper: {
     margin: 5,
     backgroundColor: '#f0f0f0',
-    borderRadius: 50,       
-    padding: 2, 
-    borderWidth: 1,  
-},
+    borderRadius: 50,
+    padding: 2,
+    borderWidth: 1,
+  },
   imageWrapper: {
     borderRadius: 50,
-    padding: 3,            
-    shadowColor: 'darkblue',        
+    padding: 3,
+    shadowColor: 'darkblue',
     shadowOffset: { width: 10, height: 10 },
     shadowOpacity: 1,
     shadowRadius: 0,
     elevation: 5,
-},
+  },
   taskImage: {
     width: 60, // Adjust size as needed
     height: 60, // Adjust size as needed
-    borderRadius: 50, 
+    borderRadius: 50,
     resizeMode: 'contain',
   },
   //!!!!!!!!!!!!!! PROFILE STYLES !!!!!!!!!!!!!!!
@@ -338,7 +338,7 @@ const createStyles = (theme) => StyleSheet.create({
     borderWidth: 2,
     borderColor: theme.bordercolor,
     marginBottom: 20,
-  }, 
+  },
   profileImageContainer: {
     position: 'relative'
   },
@@ -350,7 +350,7 @@ const createStyles = (theme) => StyleSheet.create({
     borderRadius: 24,
     width: 30,
     height: 30,
-    justifyContent:'center',
+    justifyContent: 'center',
     alignItems: 'center'
   },
   changeIcon: {
@@ -365,43 +365,38 @@ const createStyles = (theme) => StyleSheet.create({
     margin: 20,
     borderRadius: 20,
   },
-  imageSelectionModal: {
+  imageSelectionContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    margin: 20,
+    backgroundColor: 'white',
     position: 'absolute',
-    top: 0,
+    borderRadius: 10,
+    padding: 20,
+    top: 100,
     left: 0,
     right: 0,
     zIndex: 1000, // Ensure it's on top
-    backgroundColor: 'rgba(0, 0, 0, 0.4)', // Dark semi-transparent background to simulate a modal
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    height: '100%',
-},
-overlay: {
+  },
+
+  imageSelection: {
+    width: 100,
+    height: 100,
+    marginBottom: 10,
+    marginRight: 10,
+  },
+  overlay: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-},
-imageSelectionContainer: {
-    margin: 10,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 20,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    zIndex: 1001,
-},
-imageSelection: {
-    width: 100,
-    height: 100,
-    marginBottom: 10,
-    marginRight: 10,
-},
-  chooseProfile:{
+  },
+  chooseProfile: {
     alignItems: 'center',
-    justifyContent:'center',
+    justifyContent: 'center',
     borderRadius: 10,
     margin: 10,
     width: 150,
@@ -416,7 +411,7 @@ imageSelection: {
     height: 150,
     borderRadius: 10
   },
-  picProfile:{
+  picProfile: {
     width: 150,
     height: 150,
     borderRadius: 10,
@@ -425,14 +420,14 @@ imageSelection: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-evenly',
-   // margin: 10,
+    // margin: 10,
     alignItems: 'center',
     backgroundColor: theme.topbarbg,
     borderRadius: 5,
     borderWidth: 2,
     borderColor: theme.bordercolor,
   },
- //SECOND INPUT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  //SECOND INPUT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   input: {
     width: '100%',
     height: 40,
@@ -441,38 +436,38 @@ imageSelection: {
     borderRadius: 5,
     marginBottom: 20,
     paddingHorizontal: 10,
-},
-pickerContainer: {
+  },
+  pickerContainer: {
     width: '100%',
-},
+  },
 
-pickerWrapper: {
+  pickerWrapper: {
     width: '100%',
     marginBottom: 20,
-},
-picker: {
+  },
+  picker: {
     height: 50,
-},
-pickerContainer: {
-  width: '100%',
-},
+  },
+  pickerContainer: {
+    width: '100%',
+  },
 
-pickerWrapper: {
-  width: '100%',
-  marginBottom: 20,
-},
-picker: {
-  height: 50,
-},
+  pickerWrapper: {
+    width: '100%',
+    marginBottom: 20,
+  },
+  picker: {
+    height: 50,
+  },
 
-imageContainer: {
-  marginTop: 20,
-  alignItems: 'center',
-},
-image: {
-  width: 100,
-  height: 100,
-},
+  imageContainer: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  image: {
+    width: 100,
+    height: 100,
+  },
   //!!!!!!!!!!!!!! used pretty commonly !!!!!!!!!!!!!
   startButton: {
     padding: 15,
@@ -504,14 +499,14 @@ image: {
   },
 
 
-  nextGame:{
-    flexDirection:'row'
+  nextGame: {
+    flexDirection: 'row'
   },
 
   optionsContainer: {
     flexDirection: 'column',
     justifyContent: 'center',
-    alignItems:'center',
+    alignItems: 'center',
     marginVertical: 10,
     backgroundColor: theme.settingbg,
     borderRadius: 8,
@@ -584,7 +579,7 @@ image: {
     flexWrap: 'wrap', // Siirry seuraavalle riville, jos tila ei riitä
     justifyContent: 'center', // Keskitetään ikonit vaakasuunnassa
     alignItems: 'center', // Keskitetään ikonit pystysuunnassa
-  }, 
+  },
   //!!!!!!!! COMPARISON  !!!!!!!!!!
   comparisonGuideBigger: {
     fontSize: 24,
@@ -593,7 +588,7 @@ image: {
     backgroundColor: theme.compbg, // Yellow
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: theme.combbord, 
+    borderColor: theme.combbord,
     fontFamily: 'ComicNeue_700Bold',
     color: theme.text,
   },
@@ -615,103 +610,103 @@ image: {
     textAlign: 'center',
     textAlignVertical: 'center',
     marginBottom: 16,
-    backgroundColor: theme.color2, 
+    backgroundColor: theme.color2,
     borderRadius: 10,
     borderWidth: 2,
     borderColor: theme.bordercolor3,
     fontFamily: 'ComicNeue_700Bold',
     color: theme.text,
   },
-    //!!!!!!!!!! HAJONTA TYYLIT !!!!!!!!!!!!!
-    lineContainer: {
-      position: 'absolute',
-      justifyContent: 'center',
-      alignItems: 'center',
-      zIndex: 1,
-    },
-    taskbox: {
-      marginTop: 10,
-      zIndex: 4,
-    },
-    circle: {
-      width: 100,
-      height: 100,
-      borderRadius: 50,
-      backgroundColor: '#36BA98',
-      justifyContent: 'center',
-      alignItems: 'center',
-      zIndex: 2,
-    },
-    numbers: {
-      flexDirection: 'row',
-      margin: 20,
-      zIndex: 3,
-    },
-    number1: {
-      width: 100,
-      height: 100,
-      backgroundColor: '#E9C46A',
-      justifyContent: 'center',
-      alignItems: 'center',
-      margin: 20,
-      borderRadius: 20,
-    },
-    number2: {
-      width: 100,
-      height: 100,
-      backgroundColor: '#F4A261',
-      justifyContent: 'center',
-      alignItems: 'center',
-      margin: 20,
-      borderRadius: 20,
-    },
-    numbertext: {
-      fontSize: 40,
-      fontFamily: 'ComicNeue_700Bold',
-    },
-    checkButton: {
-      backgroundColor: 'green',
-      paddingVertical: 20,
-      paddingHorizontal: 30,
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginTop: 20,
-      borderRadius: 10,
-    },
-    checkButtonText: {
-      color: 'white',
-      fontSize: 18,
-      fontFamily: 'ComicNeue_700Bold',
-    },
+  //!!!!!!!!!! HAJONTA TYYLIT !!!!!!!!!!!!!
+  lineContainer: {
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1,
+  },
+  taskbox: {
+    marginTop: 10,
+    zIndex: 4,
+  },
+  circle: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: '#36BA98',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 2,
+  },
+  numbers: {
+    flexDirection: 'row',
+    margin: 20,
+    zIndex: 3,
+  },
+  number1: {
+    width: 100,
+    height: 100,
+    backgroundColor: '#E9C46A',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 20,
+    borderRadius: 20,
+  },
+  number2: {
+    width: 100,
+    height: 100,
+    backgroundColor: '#F4A261',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 20,
+    borderRadius: 20,
+  },
+  numbertext: {
+    fontSize: 40,
+    fontFamily: 'ComicNeue_700Bold',
+  },
+  checkButton: {
+    backgroundColor: 'green',
+    paddingVertical: 20,
+    paddingHorizontal: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
+    borderRadius: 10,
+  },
+  checkButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontFamily: 'ComicNeue_700Bold',
+  },
 
-    //!!!!!!!!!! Levelbar tyyli !!!!!!!!!!!!!
-    progressContainer:{
-        width: '100%',
-        height: 20,
-        backgroundColor: '#e0e0e0',
-        borderRadius: 10,
-        overflow: 'hidden',
-        marginBottom: 10,
-    },
-    progressBar:{
-        height: '100%',
-        backgroundColor: '#76c7c0',
-        borderRadius: 10,
-    },
-    scaleContainer:{
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: '100%',
-    },
-    scaleText:{
-        fontSize: 12,
-        fontWeight: 'bold',
-        color: '#333'
-    },
-    levelImage: {
-        width: 40,
-        height: 40,
-    },
+  //!!!!!!!!!! Levelbar tyyli !!!!!!!!!!!!!
+  progressContainer: {
+    width: '100%',
+    height: 20,
+    backgroundColor: '#e0e0e0',
+    borderRadius: 10,
+    overflow: 'hidden',
+    marginBottom: 10,
+  },
+  progressBar: {
+    height: '100%',
+    backgroundColor: '#76c7c0',
+    borderRadius: 10,
+  },
+  scaleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  scaleText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#333'
+  },
+  levelImage: {
+    width: 40,
+    height: 40,
+  },
 });
 
 export default createStyles;
