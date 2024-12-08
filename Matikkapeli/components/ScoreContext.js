@@ -56,6 +56,9 @@ export const ScoreProvider = ({ children, profile = {} }) => {
         }
     }, [totalXp])
 
+    useEffect(() => {
+        updatePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career, docId })
+    }, [imageID])
     
     const handleUpdatePlayerStatsToDatabase = () => {
         console.log("Updating player stats to the database:", {

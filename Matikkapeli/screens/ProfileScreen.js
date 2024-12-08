@@ -35,19 +35,13 @@ export default function ProfileScreen() {
     const styles = createStyles(theme);
     const bgIndex = 0;
 
-    const handleImageSelect = async (image) => {
-        console.log('Selected Image:', image); // Log to check if this function is called
+    const handleImageSelect = (image) => {
+        console.log('Selected Image:', image); 
         const newImageID = Object.keys(animalImages).find(key => animalImages[key] === image);
         console.log('New image ID:', newImageID); // Debugging
         setImageID(newImageID);
-        try {
-            // Call handleUpdatePlayerStatsToDatabase here instead of direct update
-            await handleUpdatePlayerStatsToDatabase();
-            console.log('Closing the modal');
-            setShowImageSelection(false);
-        } catch (error) {
-            Alert.alert("Error", "Unable to update profile image. Try again.");
-        }
+        console.log('Closing the modal');
+        setShowImageSelection(false);
     };
 
     const startGame = () => {
