@@ -1,7 +1,6 @@
 
 import { View, Text, Pressable, TouchableWithoutFeedback, ImageBackground } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
-import ModalComponent from '../components/ModalComponent';
 import * as Speech from 'expo-speech';
 import { ScoreContext } from '../components/ScoreContext';
 import { useSoundSettings } from '../components/SoundSettingsContext';
@@ -213,15 +212,17 @@ export default function Comparison({ onBack }) {
     // Lisätään vastattu kysymys
     setQuestionsAnswered(prevQuestionsAnswered => prevQuestionsAnswered + 1)
     // Arvotaan uudet numerot seuraavaa tehtävää varten
-    drawNewNumbers()
+    if (questionsAnswered < 5) {
+      drawNewNumbers()
+    }
   }
 
   //Funktio ohjeen renderöintiä varten
   const renderGuide = () => {
     //Tallennetaan muuttujaan teksti sen perusteella, etsitäänkö suurempaa ja tavutetaanko teksti
     const guideText = lookingForBigger
-      ? "Valitse yhtäsuuri (=) tai suurempi"
-      : "Valitse yhtäsuuri (=) tai pienempi";
+      ? "Valitse yhtäsuuri (=) tai suurempi luku"
+      : "Valitse yhtäsuuri (=) tai pienempi luku";
 
     // Käytetään syllabify-funktiota kontekstista tavutukseen
     const displayText = taskSyllabification ? syllabify(guideText) : guideText;

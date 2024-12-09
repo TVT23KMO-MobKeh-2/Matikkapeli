@@ -53,7 +53,7 @@ export default function ImageToNumber({ onBack }) {
       const options = Array.from({ length: playerLevel - minLevel + 1 }, (_, i) => minLevel + i)
       console.log('iconCount')
       questions.push({
-        question: `Montako esinettä näet näytöllä?`, // Kysymyksen teksti
+        question: syllabify("Montako esinettä näet näytöllä?"), // Kysymyksen teksti
         iconCount,
         options, // Vaihtoehdot
       });
@@ -137,7 +137,7 @@ export default function ImageToNumber({ onBack }) {
 
     if (taskReading && gameActive) {
       Speech.stop(); // Lopeta mahdollinen edellinen puhe
-      Speech.speak(currentQuestion.question, {
+      Speech.speak("Montako esinettä näet näytöllä?", {
         onDone: () => setIsSpeechFinished(true),
         // Merkitään puhe valmiiksi
       });
