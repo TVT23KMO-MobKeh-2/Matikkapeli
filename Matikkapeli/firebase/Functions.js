@@ -83,7 +83,7 @@ export async function savePlayerStatsToDatabase({ email, playerName, playerLevel
             imageID: imageID,
             career: career,
             password: password
-        },console.log("Pelaajan tiedot tallennettu tietokantaan"))
+        },console.log("awda", password))
         console.log("Pelaajan tiedot tallennettu")
     } catch (error) {
         console.log("Virhe tallentaessa tietokantaan pelaajan tietoja:", error)
@@ -119,7 +119,7 @@ export async function updatePlayerStatsToDatabase({ email, playerName, playerLev
 }
 
 // Funktio pelaajatietojen hakuun tietokannasta
-export async function recievePlayerStatsFromDatabase({email, playerName, setImageToNumberXp, setSoundToNumberXp, setComparisonXp, setBondsXp, setPlayerLevel, setImageID, setCareer, setDocId}) {
+export async function recievePlayerStatsFromDatabase({email, playerName, setImageToNumberXp, setSoundToNumberXp, setComparisonXp, setBondsXp, setPlayerLevel, setImageID, setCareer, setPassword, setDocId}) {
     console.log("Haetaan tietoja sähköpostilla:", email, "ja nimellä:", playerName);
     try {
 
@@ -147,6 +147,7 @@ export async function recievePlayerStatsFromDatabase({email, playerName, setImag
             setPlayerLevel(data.playerLevel);
             setImageID(data.imageID);
             setCareer(data.career);
+            setPassword(data.password)
             // Tallennetaan documentin ID, jotta voidaan myöhemmin päivittää samaa dokumenttia.
             setDocId(doc.id);
         } else {
@@ -159,7 +160,7 @@ export async function recievePlayerStatsFromDatabase({email, playerName, setImag
 };
 
 // Funktio, joka hakee pelaajan profiilin pelkästään sähköpostin perusteella
-export async function recieveProfileByEmail({ email, setProfileData, setDocId }) {
+export async function recieveProfileByEmail({ email, password, setProfileData, setDocId }) {
     console.log("Haetaan profiilia sähköpostilla:", email);
     try {
         // Annetaan tiedot hakua varten

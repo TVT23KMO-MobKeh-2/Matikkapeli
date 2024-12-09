@@ -37,7 +37,7 @@ export default function CreateProfile({ onCancel, onSave, email, password }) {
         bondsXp: 0,
         imageID: selectedAnimal.value,
         career: selectedCareer.label,
-        password: password || '',
+        password: password || '', 
       };
 
       try {

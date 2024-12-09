@@ -31,7 +31,7 @@ export default function WelcomeScreen({ navigation }) {
         try {
             const emailValue = await AsyncStorage.getItem('email');
             if (emailValue !== null) {
-                console.log('Sähköposti haettu AsyncStorage:sta:', emailValue);
+              //  console.log('Sähköposti haettu AsyncStorage:sta:', emailValue);
                 setEmail(emailValue);
 
             } else {
@@ -89,37 +89,39 @@ export default function WelcomeScreen({ navigation }) {
     }
 
     const handleSearchProfile = async () => {
-        if (inputEmail) {
+        if (inputEmail && inputPassword) {
             try {
                 console.log("Searching with Email:", inputEmail);
-
-                // Call the function to retrieve profile by email
+    
+                // Temporary variable to hold retrieved profile data
+                let retrievedProfileData = null;
+                let docId = null;
+    
                 await recieveProfileByEmail({
                     email: inputEmail,
                     password: inputPassword,
                     setProfileData: (data) => {
-                        console.log("Profile data retrieved:", data);
-                        setProfileData(data); // Save the profile data in state
-                        // Save profile data to AsyncStorage
-                        AsyncStorage.setItem('email', inputEmail);
+            //            console.log("Profile data retrieved:", data);
+                        retrievedProfileData = data;
                     },
-                    setDocId: (docId) => {
-                        console.log("Profile document ID:", docId);
-                        AsyncStorage.setItem('profileDocId', docId);
+                    setDocId: (id) => {
+             //           console.log("Profile document ID:", id);
+                        docId = id; 
                     }
                 });
-
-                // Check if profileData exists
-                if (!profileData || Object.keys(profileData).length === 0) {
+    
+                if (!retrievedProfileData || Object.keys(retrievedProfileData).length === 0) {
                     console.log('Pelaajan profiilia ei löytynyt');
                     Alert.alert("Tunnusta ei löytynyt", "Profiilia ei löytynyt tietokannasta.");
-                    return; // Prevent navigation if profile is not found
+                    return; 
                 }
-
-                // If profile exists, save email and navigate
-                console.log('Haetaan profiilia sähköpostilla:', inputEmail);
+    
+            //    console.log('Haetaan profiilia sähköpostilla:', inputEmail);
+    
+                await AsyncStorage.setItem('email', inputEmail);
+                await AsyncStorage.setItem('profileDocId', docId);
+    
                 navigation.navigate('SelectProfile', { email: inputEmail });
-
             } catch (error) {
                 console.error("Error searching for profile", error);
                 Alert.alert("Virhe", "Profiilin hakeminen ei onnistunut. Yritä myöhemmin uudestaan.");
@@ -133,6 +135,7 @@ export default function WelcomeScreen({ navigation }) {
     const toggleSearchMode = () => {
         setIsSearchMode(!isSearchMode); // Toggle the search mode on/off
         setInputEmail(''); // Clear input when toggling
+        setInputPassword(''); // Clear password input when toggling
     };
 
     useEffect(() => {
@@ -224,7 +227,7 @@ export default function WelcomeScreen({ navigation }) {
                     <>
                         <Pressable onPress={toggleSearchMode}// Open input field for email
                             style={styles.startButton}>
-                            <Text style={styles.buttonText}>HAE PROFIILI KÄYTTÄJÄTUNNUKSELLA</Text>
+                            <Text style={styles.buttonText}>KIRJAUDU SISÄÄN</Text>
                         </Pressable>
                         <Pressable onPress={() => setIsCreatingUser(true)}
                             style={styles.startButton}>

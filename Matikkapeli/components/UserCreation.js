@@ -22,36 +22,30 @@ export default function UserCreation({ onNavigate }) {
 
     const handleSave = async () => {
         if (!email || !password) {
-            alert('Täytä kaikki kentät!');
+            Alert.alert('Virhe', 'Täytä kaikki kentät!');
             return;
         }
-
+    
         setIsSaving(true);
-
+    
         try {
-            // Check if the email is already used
             const emailInUse = await isEmailUsed(email);
             if (emailInUse) {
-                if (success) {
-                    // Navigate to profile selection if sign in is successful
-                    navigation.navigate('SelectProfile', { email: email });
-                } else {
-                    Alert.alert("Virhe", "Väärä sähköpostiosoite tai salasana.");
-                }
-            } else {
-                console.log('Sähköposti tallennettu AsyncStorage:een');
-                await AsyncStorage.setItem('email', email); // Store the email locally
-                await AsyncStorage.setItem('password', password); // Store the password locally
-
-                if (onNavigate) {
-                    onNavigate(); // If onNavigate is passed, call it
-                } else {
-                    navigation.navigate('SelectProfile', { email: email, password: password }); // Navigate to the next screen
-                }
+                Alert.alert('Virhe', 'Tämä käyttäjätunnus on jo käytössä.');
+                setIsSaving(false);
+                return;
             }
+    
+            // Store email and password in AsyncStorage
+            await AsyncStorage.setItem('email', email);
+            await AsyncStorage.setItem('password', password);
+    
+            console.log('Email and password saved to AsyncStorage.');
+            
+            navigation.navigate('SelectProfile', { email });
         } catch (error) {
-            console.error('Error handling profile:', error);
-            alert('Toiminto epäonnistui');
+            console.error('Error during user creation:', error);
+            Alert.alert('Virhe', 'Toiminto epäonnistui. Yritä uudelleen.');
         } finally {
             setIsSaving(false);
         }
@@ -77,7 +71,7 @@ export default function UserCreation({ onNavigate }) {
                 style={[styles.input, {backgroundColor: 'white'}]}
                 placeholder="KIRJOITA SALASANA"
                 value={password}
-                onChangeText={setPassword}
+                onChangeText={(text) => setPassword(text)}
                 secureTextEntry
             />
                 <Pressable style={[styles.startButton, {backgroundColor: 'lightblue'}]} onPress={handleSave} disabled={isSaving}>
