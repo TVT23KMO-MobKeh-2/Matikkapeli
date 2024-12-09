@@ -93,7 +93,7 @@ export async function savePlayerStatsToDatabase({ email, playerName, playerLevel
 }
 
 // Funktio pelaajan tietojen päivittämiseen tietokantaan
-export async function updatePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, docId, imageID, career, password }) {
+export async function updatePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, docId, imageID, career }) {
     try {
         console.log("Päivitetään tietoja tietokantaan, docId: ", docId)
         // Mitä päivitetään:
@@ -110,7 +110,6 @@ export async function updatePlayerStatsToDatabase({ email, playerName, playerLev
             bondsXp: bondsXp,
             imageID: imageID,
             career: career,
-            password: password
         });
 
         console.log("Pelaajan tiedot päivitetty tietokantaan");

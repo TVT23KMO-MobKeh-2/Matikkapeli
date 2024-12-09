@@ -98,6 +98,7 @@ export default function SelectProfile({ route, navigation }) {
         }
           if (storedPassword) {
           setPassword(storedPassword); // Set the password in the state
+          console.log(storedPassword, 'aaaaaaaaaa')
         } else {
           console.log('No email found in AsyncStorage');
         }
