@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { useTaskReading } from "./TaskReadingContext";
 import * as Speech from 'expo-speech';
 
@@ -14,12 +14,12 @@ export function TaskSyllabificationProvider({ children }) {
     const syllables = {
       // ImageToNumber.js
       "Kuva numeroiksi": "KU-VA NU-ME-ROIK-SI",
-      "Montako esinettä näet näytöllä?": "MON-TA-KO VA-SA-RAA NÄ-ET NÄY-TÖL-LÄ?",
+      "Montako esinettä näet näytöllä?": "MON-TA-KO ESI-NET-TÄ NÄ-ET NÄY-TÖL-LÄ?",
 
       // Comparison.js
       "Vertailu": "VER-TAI-LU",
-      "Valitse yhtäsuuri (=) tai suurempi": "VA-LIT-SE YH-TÄ-SUU-RI (=) TAI SUU-REM-PI",
-      "Valitse yhtäsuuri (=) tai pienempi": "VA-LIT-SE YH-TÄ-SUU-RI (=) TAI PIE-NEM-PI",
+      "Valitse yhtäsuuri (=) tai suurempi luku": "VA-LIT-SE YH-TÄ-SUU-RI (=) TAI SUU-REM-PI LU-KU",
+      "Valitse yhtäsuuri (=) tai pienempi luku": "VA-LIT-SE YH-TÄ-SUU-RI (=) TAI PIE-NEM-PI LU-KU",
 
       // SoundToNumber.js
       "Valitse oikea numero": "VA-LIT-SE OI-KE-A NU-ME-RO",
@@ -118,9 +118,12 @@ export function TaskSyllabificationProvider({ children }) {
 
   // Funktio palautteen hakemiseen
   const getFeedbackMessage = (points) => {
+    console.log("FeedbackMessagessa")
     const entry = feedbackMessages[points] || feedbackMessages.default;
     if(taskReading) {
+      console.log("Sammutetaan edellinen puhe")
       Speech.stop()
+      console.log("Puhutaan feedbackMessage")
       Speech.speak(feedbackMessages[points].spoken)
     }
     return taskSyllabification ? entry.syllabified : entry.default;
