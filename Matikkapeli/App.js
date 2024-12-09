@@ -25,7 +25,6 @@ import SelectProfile from './screens/SelectProfile';
 import UserCreation from './components/UserCreation';
 import ProfileScreen from './screens/ProfileScreen';
 import CreateProfile from './screens/CreateProfile';
-import ModalComponent from './components/ModalComponent';
 import { useFonts, ComicNeue_400Regular, ComicNeue_700Bold } from '@expo-google-fonts/comic-neue';
 
 
@@ -84,7 +83,6 @@ export default function App() {
                       <Stack.Screen name="SoundToNumbers" component={SoundToNumber} />
                       <Stack.Screen name="Bonds" component={Bonds} />
                       <Stack.Screen name="ComparisonOperators" component={Comparison} />
-                      <Stack.Screen name="ModalComponenet" component={ModalComponent} />
                     </Stack.Navigator>
                   </View>
                 </NavigationContainer>
