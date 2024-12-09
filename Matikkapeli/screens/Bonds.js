@@ -54,7 +54,7 @@ export default function Bonds({ onBack }) {
   const [lastRightBox, setLastRightBox] = useState(null);
   const opacity = useSharedValue(0);
 
-
+  console.log("Renderöidään bonds")
 
   const theme = isDarkTheme ? dark : light;
   const styles = createStyles(theme);
@@ -98,11 +98,17 @@ export default function Bonds({ onBack }) {
   // Tehtävän tarkistus (tarkistaa onko käyttäjän vastaus oikein)
   useEffect(() => {
     if (questionsAnswered === 5) {
-      Keyboard.dismiss();
-      setShowFeedback(true);  // Näytetään feedback-ikkuna, kun 5 kysymystä on vastattu
-      // Lisätään XP-pisteet
-      incrementXp(points, "bonds");
-      console.log("Bonds points: ", points)
+      const delay = 700; // Viive 0,5 sekuntia
+      const timer = setTimeout(() => {
+        setQuestionsAnswered(0);
+        Speech.stop(); // Lopeta mahdollinen puhe
+        incrementXp(points, "imageToNumber"); // Päivitetään XP
+        setGameEnded(true);
+        setShowFeedback(true);
+      }, delay);
+  
+      // Puhdistusfunktio ajastimen peruuttamiseksi
+      return () => clearTimeout(timer);
     }
   }, [questionsAnswered]);
 

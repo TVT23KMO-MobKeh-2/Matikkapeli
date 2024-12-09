@@ -38,20 +38,21 @@ export default function SoundToNumber({ onBack }) {
   const styles = createStyles(theme);
   const bgIndex = 2;
 
-
-
-
-
+  console.log("Renderöidään soundToNumber")
   useEffect(() => {
     if (questionsAnswered === 5) {
-      Speech.stop();
-      incrementXp(points, "soundToNumber");
-      setShowFeedback(true);
-      setGameEnded(true);
-    } else {
-      if (!gameEnded) {
-        playNumber();  // Only play the number if the game hasn't ended
-      }
+      const delay = 700; // Viive 0,5 sekuntia
+      const timer = setTimeout(() => {
+        setQuestionsAnswered(0);
+        Speech.stop(); // Lopeta mahdollinen puhe
+        incrementXp(points, "imageToNumber"); // Päivitetään XP
+        setGameEnded(true);
+        setShowFeedback(true);
+      }, delay);
+  
+      // Puhdistusfunktio ajastimen peruuttamiseksi
+      return () => clearTimeout(timer);
+
     }
   }, [questionsAnswered, gameEnded]); 
 
