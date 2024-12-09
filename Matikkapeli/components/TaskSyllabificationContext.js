@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { useTaskReading } from "./TaskReadingContext";
 import * as Speech from 'expo-speech';
 
@@ -12,14 +12,20 @@ export function TaskSyllabificationProvider({ children }) {
   // Kovakoodatut tavutukset
   const syllabify = (text) => {
     const syllables = {
+
+      //ProfileScreen.js
+      "Aloita peli" : "A-LOI-TA PE-LI",
+      "Takaisin": "TA-KAI-SIN",
+      "Poista": "POIS-TA",
+      
       // ImageToNumber.js
       "Kuva numeroiksi": "KU-VA NU-ME-ROIK-SI",
-      "Montako esinettä näet näytöllä?": "MON-TA-KO VA-SA-RAA NÄ-ET NÄY-TÖL-LÄ?",
+      "Montako esinettä näet näytöllä?": "MON-TA-KO E-SI-NET-TÄ NÄ-ET NÄY-TÖL-LÄ?",
 
       // Comparison.js
       "Vertailu": "VER-TAI-LU",
-      "Valitse yhtäsuuri (=) tai suurempi": "VA-LIT-SE YH-TÄ-SUU-RI (=) TAI SUU-REM-PI",
-      "Valitse yhtäsuuri (=) tai pienempi": "VA-LIT-SE YH-TÄ-SUU-RI (=) TAI PIE-NEM-PI",
+      "Valitse yhtäsuuri (=) tai suurempi luku": "VA-LIT-SE YH-TÄ-SUU-RI (=) TAI SUU-REM-PI LU-KU",
+      "Valitse yhtäsuuri (=) tai pienempi luku": "VA-LIT-SE YH-TÄ-SUU-RI (=) TAI PIE-NEM-PI LU-KU",
 
       // SoundToNumber.js
       "Valitse oikea numero": "VA-LIT-SE OI-KE-A NU-ME-RO",
@@ -42,7 +48,7 @@ export function TaskSyllabificationProvider({ children }) {
       "Taustamusiikki":"TAUS-TA-MU-SIIK-KI",
       "Taustamusiikin voimakkuus":"TAUS-TA-MU-SII-KIN VOI-MAK-KUUS",
       "Peliäänet":"PE-LI-ÄÄ-NET",
-      "Sammuta sovellus":"SAM-MU-TA SO-VEL-LUS",
+      "Sammuta":"SAM-MU-TA",
       
       // Timer.js
       "Valitse aika:":"VA-LIT-SE AI-KA",
@@ -64,8 +70,8 @@ export function TaskSyllabificationProvider({ children }) {
       "Vertailu":"VER-TAI-LU",
       "Hajonta":"HA-JON-TA",
       
-      "Seuraava tehtävä odottaa": "SEU-RAA-VA TEH-TÄ-VÄ O-DOT-TAA",
-      "Lopeta peli": "LO-PE-TA PE-LI",
+      "Jatketaan": "JAT-KE-TAAN",
+      "Lopeta": "LO-PE-TA",
     };
 
     // Jos tavutustoiminto ei ole käytössä, palautetaan alkuperäinen teksti
@@ -118,9 +124,12 @@ export function TaskSyllabificationProvider({ children }) {
 
   // Funktio palautteen hakemiseen
   const getFeedbackMessage = (points) => {
+    console.log("FeedbackMessagessa")
     const entry = feedbackMessages[points] || feedbackMessages.default;
     if(taskReading) {
+      console.log("Sammutetaan edellinen puhe")
       Speech.stop()
+      console.log("Puhutaan feedbackMessage")
       Speech.speak(feedbackMessages[points].spoken)
     }
     return taskSyllabification ? entry.syllabified : entry.default;

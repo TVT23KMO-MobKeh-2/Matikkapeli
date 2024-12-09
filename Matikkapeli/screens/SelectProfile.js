@@ -194,7 +194,10 @@ export default function SelectProfile({ route, navigation }) {
               }}
             >
               {character ? (
+                <>
                 <Image source={animalImages[character.imageID]} style={styles.picProfile} />
+                <Text style={styles.label}>{character.playerName}</Text>
+                </>
               ) : (
                 <View style={styles.addIcon}>
                   <FontAwesome5 name="plus" size={40} color="black" />

@@ -77,7 +77,7 @@ export default function UserCreation({ onNavigate }) {
                 <Pressable style={[styles.startButton, {backgroundColor: 'lightblue'}]} onPress={handleSave} disabled={isSaving}>
                     <Text style={styles.buttonText}>{isSaving ? 'TALLENETAAN...' : 'TALLENNA'}</Text>
                 </Pressable>
-                <Pressable style={[styles.startButton, {backgroundColor: 'darkred'}]} onPress={() => navigation.goBack()}>
+                <Pressable style={[styles.startButton, styles.redButton]} onPress={() => navigation.goBack()}>
                     <Text style={[styles.buttonText, {color: 'white'}]}>PERUUTA</Text>
                 </Pressable>
             </View>

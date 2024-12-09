@@ -102,7 +102,7 @@ const Timer = ({ closeModal, onTimerStart, onTimerEnd }) => {
             <TouchableOpacity onPress={() => startTimer(60)}>
               <Text style={styles.modalButton}>60 {syllabify("minuuttia")}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style= {styles.startButton} onPress={closeTimerSelectionModal}>
+            <TouchableOpacity style= {[styles.startButton, styles.orangeButton]} onPress={closeTimerSelectionModal}>
               <Text style={styles.buttonText}>{syllabify("Sulje")}</Text>
             </TouchableOpacity>
           </View>

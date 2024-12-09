@@ -1,7 +1,5 @@
-
 import { View, Text, Pressable, TouchableWithoutFeedback, ImageBackground } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
-import ModalComponent from '../components/ModalComponent';
 import * as Speech from 'expo-speech';
 import { ScoreContext } from '../components/ScoreContext';
 import { useSoundSettings } from '../components/SoundSettingsContext';
@@ -15,10 +13,14 @@ import createStyles from "../styles";
 import { useTheme } from '../components/ThemeContext';
 import { light, dark } from '../assets/themeColors';
 import { getBGImage } from '../components/backgrounds';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 export default function Comparison({ onBack }) {
+
+  console.log("Renderöidään comparison")
   const route = useRoute();
-  const { profile } = route.params;
   const navigation = useNavigation()
   const [showFeedback, setShowFeedback] = useState(false)
 
@@ -31,7 +33,7 @@ export default function Comparison({ onBack }) {
   const { syllabify, taskSyllabification, getFeedbackMessage } = useTaskSyllabification();
   const [points, setPoints] = useState(0)
   const [questionsAnswered, setQuestionsAnswered] = useState(0)
-  const { playerLevel, incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, totalXp } = useContext(ScoreContext)
+  const { playerLevel, incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, totalXp, email } = useContext(ScoreContext)
   const [isLevelNumberFirstComparable, setIsLevelNumberFirstComparable] = useState(true) // Määrittää, esitetäänkö tason mukainen numero vertailussa ensimmäisenä (true) vai toisena (false)
   const [isComparableEquation, setIsComparableEquation] = useState(false) // Määrittää, onko vertailtavana yhtälö vai satunnaisluku (true = yhtälö, false = satunnaisluku)
   const [randomNumber, setRandomNumber] = useState(0) // Vertailtavaksi arvottu satunnaisluku, käytetään yksittäisissä lukuvertailutehtävissä
@@ -52,7 +54,6 @@ export default function Comparison({ onBack }) {
 
   //Backin handleri
   const handleBack = () => {
-
     Speech.stop()
     setShowFeedback(false);
     setQuestionsAnswered(0);
@@ -71,13 +72,22 @@ export default function Comparison({ onBack }) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
 
+  // Arpoo satunnaislukuja annetulta väliltä (mukaan lukien minimi ja maksimi), kunnes numero on eri kuin nykyinen numero ja palauttaa sen
+  const drawUniqueRandomNumber = (min, max, currentNumber) => {
+    let newNumber;
+    do {
+      newNumber = drawRandomNumber(min, max);
+    } while (newNumber === currentNumber);
+    return newNumber;
+  }
+
   // Funktio uusien lukujen arpomista varten
   const drawNewNumbers = () => {
     // Keskeytetään mahdollinen edellinen puhe
     Speech.stop();
     // Arvotaan uusi satunnaisluku, jonka maksimiarvo riippuu comparisonXp:n arvosta
     console.log("Arvotaan uudet numerot")
-    setRandomNumber(drawRandomNumber(0, playerLevel));
+    setRandomNumber(drawUniqueRandomNumber(0, playerLevel, randomNumber));
 
     // Arvotaan, onko tason mukainen numero 1. vai 2. vertailtava
     setIsLevelNumberFirstComparable(drawRandomNumber(0, 1) === 1);
@@ -98,12 +108,12 @@ export default function Comparison({ onBack }) {
     if (drawRandomNumber(0, 1) === 1) {
       setLookingForBigger(true); // Haetaan isompaa
       if (taskReading) {
-        Speech.speak("Valitse yhtäsuuri tai suurempi."); //toistetaan tehtävänanto puheena
+        Speech.speak("Valitse yhtäsuuri tai suurempi luku."); //toistetaan tehtävänanto puheena
       }
     } else {
       setLookingForBigger(false); // Haetaan pienempää
       if (taskReading) {
-        Speech.speak("Valitse yhtäsuuri tai pienempi."); //toistetaan tehtävänanto puheena
+        Speech.speak("Valitse yhtäsuuri tai pienempi luku."); //toistetaan tehtävänanto puheena
       }
     }
   }
@@ -119,9 +129,9 @@ export default function Comparison({ onBack }) {
 
   //Funktio yhtälön muodostamiseen
   const generateEquation = (setIsAddition, setOperand1, setOperand2) => {
-    // Arvotaan kaksi lukua väliltä 0 - (comparisonXp * 0.1 + 1)
-    const first = drawRandomNumber(0, playerLevel)
-    const second = drawRandomNumber(0, playerLevel)
+    // Arvotaan kaksi lukua väliltä 0 - PlayerLevel
+    const first = drawUniqueRandomNumber(0, playerLevel, equationOperand1)
+    const second = drawUniqueRandomNumber(0, playerLevel, equationOperand2)
     console.log("Arvottiin numerot", first, second)
     // Alustetaan arvot
     setIsAddition(null);
@@ -212,15 +222,17 @@ export default function Comparison({ onBack }) {
     // Lisätään vastattu kysymys
     setQuestionsAnswered(prevQuestionsAnswered => prevQuestionsAnswered + 1)
     // Arvotaan uudet numerot seuraavaa tehtävää varten
-    drawNewNumbers()
+    if (questionsAnswered < 5) {
+      drawNewNumbers()
+    }
   }
 
   //Funktio ohjeen renderöintiä varten
   const renderGuide = () => {
     //Tallennetaan muuttujaan teksti sen perusteella, etsitäänkö suurempaa ja tavutetaanko teksti
     const guideText = lookingForBigger
-      ? "Valitse yhtäsuuri (=) tai suurempi"
-      : "Valitse yhtäsuuri (=) tai pienempi";
+      ? "Valitse yhtäsuuri (=) tai suurempi luku"
+      : "Valitse yhtäsuuri (=) tai pienempi luku";
 
     // Käytetään syllabify-funktiota kontekstista tavutukseen
     const displayText = taskSyllabification ? syllabify(guideText) : guideText;
@@ -259,12 +271,12 @@ export default function Comparison({ onBack }) {
 
   const handleContinueGame = () => {
     handleBack(); // Actually call handleBack
-    navigation.navigate('Animation', { profile });
+    navigation.navigate('Animation');
   };
 
   const handleEndGame = () => {
     handleBack(); // Actually call handleBack
-    navigation.navigate('SelectProfile', { profile });
+    navigation.navigate('SelectProfile', { email });
   };
 
   return (
@@ -275,7 +287,6 @@ export default function Comparison({ onBack }) {
     >
       <View style={styles.container}>
         <Text style={styles.title}>{syllabify("Vertailu")}</Text>
-        <Text>comparisonXp: {comparisonXp}</Text>
         {renderGuide()}
         {renderComparable(1)}
         <Text onPress={() => checkAnswer("equali")} style={styles.comparisonOptions} >=</Text>
@@ -299,17 +310,27 @@ export default function Comparison({ onBack }) {
                     handleContinueGame();
                     setShowFeedback(false)
                   }}
-                    style={[styles.startButton, { backgroundColor: 'lightblue' }]}
+                    style={[styles.startButton, styles.blueButton]}
                   >
-                    <Text style={styles.buttonText}>{syllabify("SEURAAVA TEHTÄVÄ ODOTTAA")}</Text>
+                    <Text style={styles.buttonText}>
+                      {syllabify("Jatketaan")}
+                    </Text>
+                    <View style={styles.nextGame}>
+                      <Ionicons name="game-controller" size={24} color={isDarkTheme ? "white" : "black"} />
+                      <MaterialIcons name="navigate-next" size={24} color={isDarkTheme ? "white" : "black"} />
+
+                    </View>
                   </Pressable>
                   <Pressable onPress={() => {
                     handleEndGame();
                     setShowFeedback(false)
                   }}
-                    style={[styles.startButton, { backgroundColor: 'darkred' }]}
+                    style={[styles.startButton, styles.redButton]}
                   >
-                    <Text style={[styles.buttonText, { color: 'white' }]}>{syllabify("LOPETA PELI")}</Text>
+                    <Text style={[styles.buttonText, { color: 'white' }]}>
+                      {syllabify("Lopeta")}
+                    </Text>
+                    <Ionicons name="exit" size={24} color="white" />
                   </Pressable>
                 </View>
               </View>

@@ -53,7 +53,7 @@ export default function CreateProfile({ onCancel, onSave, email, password }) {
 
     const careerOptions = [
         { label: 'LÄÄKÄRI', value: "doctor" },
-        { label: 'AUTOMEKAANIKKO', value: "mechanic" },
+        { label: 'MEKAANIKKO', value: "mechanic" },
         { label: 'RAKENTAJA', value: "builder" },
         { label: 'KAUPPIAS', value: "vendor" },
         { label: 'OHJELMOIJA', value: "programmer" },
@@ -112,11 +112,11 @@ export default function CreateProfile({ onCancel, onSave, email, password }) {
             </View>
             <View style={styles.buttonContainer}>
                             <Pressable onPress={handleSave} disabled={isSaving || !name || !selectedCareer || !selectedAnimal}
-                                style={[styles.startButton, { backgroundColor: 'lightblue' }]}>
+                                style={[styles.startButton, styles.blueButton]}>
                                 <Text style={styles.buttonText}>{isSaving ? 'TALLENNETAAN...' : 'TALLENNA'}</Text>
                             </Pressable>
                             <Pressable onPress={onCancel}
-                                style={[styles.startButton, { backgroundColor: 'red' }]}>
+                                style={[styles.startButton, styles.redButton]}>
                                 <Text style={styles.buttonText}>Peruuta</Text>
                             </Pressable>
             </View>
