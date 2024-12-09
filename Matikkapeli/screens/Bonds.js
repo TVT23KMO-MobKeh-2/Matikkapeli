@@ -16,7 +16,9 @@ import { useTheme } from '../components/ThemeContext';
 import { light, dark } from '../assets/themeColors';
 import { getBGImage } from '../components/backgrounds';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from 'react-native-reanimated';
-
+import Ionicons from '@expo/vector-icons/Ionicons';
+import Entypo from '@expo/vector-icons/Entypo';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 // Satunnaisen arvon generointi annetulla alueella
 function random(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -24,17 +26,7 @@ function random(min, max) {
 
 export default function Bonds({ onBack }) {
 
-  const route = useRoute();
-  const { profile } = route.params;
   const navigation = useNavigation()
-
-  useEffect(() => {
-    if (profile) {
-      console.log("Bonds:", profile);
-    } else {
-      console.log("Profile is undefined or null");
-    }
-  }, [profile]);
 
   // Pelin aloitustaso ja muut tilamuuttujat
 
@@ -45,7 +37,7 @@ export default function Bonds({ onBack }) {
   const [inputValue2, setInputValue2] = useState('');  // Käyttäjän syöte oikeaan laatikkoon
   const [sound, setSound] = useState();  // Äänet, joita toistetaan vastauksen perusteella
   const [doneTasks, setDoneTasks] = useState(0);  // Tavoitteena on vastata oikein 5 kysymykseen
-  const { incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, playerLevel, totalXp } = useContext(ScoreContext);  // Pelin pistetilanne ja XP:n käsittely
+  const { incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, playerLevel, totalXp, email } = useContext(ScoreContext);  // Pelin pistetilanne ja XP:n käsittely
   const [questionsAnswered, setQuestionsAnswered] = useState(0)
   const [points, setPoints] = useState(0)
   const [instructionVisibility, setInstructionVisibility] = useState(true);  // Näytetäänkö ohjeet pelin alussa
@@ -157,13 +149,13 @@ export default function Bonds({ onBack }) {
 
   const handleContinueGame = () => {
     handleBack(); // Actually call handleBack
-    navigation.navigate('Animation', { profile });
+    navigation.navigate('Animation');
   };
 
 
   const handleEndGame = () => {
     handleBack(); // Actually call handleBack
-    navigation.navigate('SelectProfile', { profile });
+    navigation.navigate('SelectProfile', { email });
   };
 
 
@@ -220,8 +212,14 @@ export default function Bonds({ onBack }) {
                       setInstructionReading(false);
                       setInstructionVisibility(false)
                     }}
-                      style={styles.startButton}>
-                      <Text style={styles.buttonText}>{syllabify("Aloita")}</Text>
+                      style={[styles.startButton, styles.blueButton]}>
+                        <Text style={styles.buttonText}>
+                    {syllabify("Aloita")}
+                        </Text>
+                      <View style={styles.nextGame}>
+                      
+                    <Ionicons name="game-controller" size={24} color={isDarkTheme ? "white" : "black"}/>
+                    </View>
                     </Pressable>
                   </View>
                 </View>
@@ -236,8 +234,8 @@ export default function Bonds({ onBack }) {
 
 
           <Svg height="300" width="300" style={styles.lineContainer}>
-            <Line x1="150" y1="100" x2="70" y2="230" stroke="black" strokeWidth="5" />
-            <Line x1="150" y1="100" x2="230" y2="230" stroke="black" strokeWidth="5" />
+            <Line x1="150" y1="90" x2="70" y2="230" stroke="black" strokeWidth="5" />
+            <Line x1="150" y1="90" x2="230" y2="230" stroke="black" strokeWidth="5" />
           </Svg>
 
           <View style={styles.circle}>
@@ -279,7 +277,10 @@ export default function Bonds({ onBack }) {
               onPress={checkAnswer}
               style={[styles.checkButton, isButtonDisabled ? styles.disabledButton : null]}
               disabled={isButtonDisabled}>
-              <Text style={styles.checkButtonText}>{syllabify("TARKISTA")}</Text>
+                <Text style={styles.buttonText}>
+                    {syllabify("Tarkista")}
+                        </Text>
+              <Entypo name="check" size={24} color={isDarkTheme ? "white" : "black"} />
             </Pressable>
           </View>
 
@@ -298,22 +299,32 @@ export default function Bonds({ onBack }) {
                     <LevelBar progress={bondsXp} label={syllabify("Hajonta")} playerLevel={playerLevel} gameType={"bonds"} caller={"bonds"} />
                   </View>
                   <View style={styles.buttonContainer}>
-                    <Pressable onPress={() => {
-                      handleContinueGame();
-                      setShowFeedback(false)
-                    }}
-                      style={[styles.startButton, { backgroundColor: 'lightblue' }]}
-                    >
-                      <Text style={styles.buttonText}>{syllabify("SEURAAVA TEHTÄVÄ ODOTTAA")}</Text>
-                    </Pressable>
-                    <Pressable onPress={() => {
-                      handleEndGame();
-                      setShowFeedback(false)
-                    }}
-                      style={[styles.startButton, { backgroundColor: 'darkred' }]}
-                    >
-                      <Text style={[styles.buttonText, { color: 'white' }]}>{syllabify("LOPETA PELI")}</Text>
-                    </Pressable>
+                  <Pressable onPress={() => {
+                    handleContinueGame();
+                    setShowFeedback(false)
+                  }}
+                    style={[styles.startButton, styles.blueButton]}
+                  >
+                    <Text style={styles.buttonText}>
+                            {syllabify("Jatketaan")}
+                        </Text>
+                    <View style={styles.nextGame}>
+                    <Ionicons name="game-controller" size={24} color={isDarkTheme ? "white" : "black"} />
+                    <MaterialIcons name="navigate-next" size={24} color={isDarkTheme ? "white" : "black"} />
+                    
+                    </View>
+                  </Pressable>
+                  <Pressable onPress={() => {
+                    handleEndGame();
+                    setShowFeedback(false)
+                  }}
+                    style={[styles.startButton, styles.redButton]}
+                  >
+                    <Text style={[styles.buttonText, {color: 'white'}]}>
+                    {syllabify("Lopeta")}
+                        </Text>
+                    <Ionicons name="exit" size={24} color="white" />
+                  </Pressable>
                   </View>
                 </View>
               </View>

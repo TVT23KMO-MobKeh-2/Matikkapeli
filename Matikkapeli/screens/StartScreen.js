@@ -30,7 +30,7 @@ export default function StartScreen({ navigation }) {
           MATIKKAPOLKU
         </Text>
 
-        <View style={styles.startButton}>
+        <View style={[styles.startButton, styles.orangeButton]}>
           <Pressable onPress={() => navigation.navigate('Welcome')}>
             <Text style={styles.buttonText}>ALOITA PELI</Text>
           </Pressable>

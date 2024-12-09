@@ -150,18 +150,18 @@ export default function WelcomeScreen({ navigation }) {
                     <View style={styles.optionsContainer}>
                     <Text style={styles.question}>HEI, {email}</Text>
                         <Pressable onPress={() => navigation.navigate('SelectProfile', { email: email })}
-                            style={styles.startButton}>
+                            style={[styles.startButton, styles.greenButton]}>
                             <Text style={styles.buttonText}>VALITSE PROFIILI</Text>
                         </Pressable>
                         <Pressable onPress={(clearemail)}
-                            style={[styles.startButton, {backgroundColor: 'red'}]}>
+                            style={[styles.startButton, styles.orangeButton]}>
                             <Text style={styles.buttonText}> KIRJAUDU ULOS</Text>
                         </Pressable>
                         <Pressable onPress={(deletemail)}
                             disabled={isDeleting} 
-                            style={[ styles.startButton,
+                            style={[ styles.startButton, styles.redButton,
                                     {
-                                        backgroundColor: isDeleting ? 'gray' : 'darkred', 
+                                        backgroundColor: isDeleting ? 'gray' : styles.redButton.backgroundColor, 
                                         opacity: isDeleting ? 0.6 : 1, 
                                     },
                             ]}>
@@ -204,7 +204,7 @@ export default function WelcomeScreen({ navigation }) {
                             keyboardType="email-address"
                         />
                         <Pressable onPress={handleSearchProfile}
-                            style={styles.startButton}>
+                            style={[styles.startButton, styles.blueButton]}>
                             <Text style={styles.buttonText}>HAE PROFIILIT</Text>
                         </Pressable>
                         <Pressable onPress={toggleSearchMode}
@@ -215,11 +215,11 @@ export default function WelcomeScreen({ navigation }) {
                 ) : (
                     <>
                         <Pressable onPress={toggleSearchMode}// Open input field for email
-                            style={styles.startButton}>
+                            style={[styles.startButton, styles.blueButton]}>
                             <Text style={styles.buttonText}>HAE PROFIILI KÄYTTÄJÄTUNNUKSELLA</Text>
                         </Pressable>
                         <Pressable onPress={() => setIsCreatingUser(true)}
-                            style={styles.startButton}>
+                            style={[styles.startButton, styles.orangeButton]}>
                             <Text style={styles.buttonText}>LUO TUNNUS JA ENSIMMÄINEN PROFIILI</Text>
                         </Pressable>
                     </>
