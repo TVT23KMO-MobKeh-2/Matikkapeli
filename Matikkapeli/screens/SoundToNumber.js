@@ -99,7 +99,7 @@ export default function SoundToNumber({ onBack }) {
     options.push(...randomOptions);
     //console.log('Generated options:', options);
 
-    return options.sort(() => Math.random() - 0.5);
+    return options.sort((a, b) => a - b);
   }
 
   //console.log('SoundToNumber options:WÄÄWÄÄ', options);
@@ -139,6 +139,7 @@ export default function SoundToNumber({ onBack }) {
         translucent={true}
       />
       <View style={styles.container}>
+        <View style={styles.tehtcont}>
         <Text style={styles.title}>{syllabify("Valitse oikea numero")}</Text>
         <TouchableOpacity style={[styles.startButton, styles.orangeButton]} onPress={playNumber}>
           <Text style={styles.buttonText}>{syllabify("Kuuntele numero 🔊")}</Text>
@@ -147,11 +148,11 @@ export default function SoundToNumber({ onBack }) {
           {options.map((option, index) => (
             <TouchableOpacity
               key={index}
-              style={[styles.number1, loading && { opacity: 0.5 }]}
+              style={[styles.startButton, {backgroundColor: theme.button}]}
               onPress={() => handleSelect(option)}
               disabled={loading}
             >
-              <Text style={styles.label2}>{option}</Text>
+              <Text style={styles.label}>{option}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -203,6 +204,7 @@ export default function SoundToNumber({ onBack }) {
           </View>
         </TouchableWithoutFeedback>
       )}
+    </View>
     </ImageBackground>
   );
 }

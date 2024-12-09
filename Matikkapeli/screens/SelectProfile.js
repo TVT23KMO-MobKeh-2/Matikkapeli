@@ -14,6 +14,7 @@ import { useTheme } from '../components/ThemeContext';
 import { light, dark } from '../assets/themeColors'; 
 import { getBGImage } from '../components/backgrounds';
 
+
 const fetchCharactersDatabase = async (email) => {
   try {
     console.log('Fetching characters for email:', email);
@@ -32,13 +33,13 @@ const fetchCharactersDatabase = async (email) => {
       ...doc.data(),
     }));
 
-    console.log('Fetched characters:', characters); // Debugging log to see fetched characters
     return characters;
   } catch (error) {
     console.error('Virhe noudaettaessa hahmotietoja', error);
     return [];
   }
 };
+
 
 const animalImages = {
   fox: require('../assets/proffox.png'),
@@ -48,32 +49,17 @@ const animalImages = {
 };
 
 export default function SelectProfile({ route, navigation }) {
-  const { showCreate } = route.params;
+  const { showCreate} = route.params;
   const [characters, setCharacters] = useState([]);
   const [selectedCharacter, setSelectedCharacter] = useState(null);
   const [isCreatingProfile, setIsCreatingProfile] = useState(false);
   const { email, setEmail, playerName, setPlayerName, setImageID, setCareer, setPlayerLevel, savePlayerStatsToDatabase, updatePlayerStatsToDatabase, handleUpdatePlayerStatsToDatabase, setImageToNumberXp, setSoundToNumberXp, setComparisonXp, setBondsXp } = useContext(ScoreContext)
-
+  const [password, setPassword] = useState(''); // Corrected initialization
+  
   const { isDarkTheme } = useTheme();
   const theme = isDarkTheme ? dark : light; 
   const styles = createStyles(theme);  
   const bgIndex = 0; 
-
-  useEffect(() => {
-    const loadEmail = async () => {
-      try {
-        const storedEmail = await AsyncStorage.getItem('email');
-        if (storedEmail) {
-          setEmail(storedEmail);
-        } else {
-          console.log('No email found');
-        }
-      } catch (error) {
-        console.error('Error fetching email from AsyncStorage', error);
-      }
-    };
-    loadEmail();
-  }, []);
 
   useEffect(() => {
     if (email) {
@@ -85,6 +71,7 @@ export default function SelectProfile({ route, navigation }) {
     }
   }, [email]);
   
+
   useEffect(() => {
     if (characters && characters.length > 0) {
       setEmail(selectedCharacter.email);
@@ -105,8 +92,13 @@ export default function SelectProfile({ route, navigation }) {
     const loadEmail = async () => {
       try {
         const storedEmail = await AsyncStorage.getItem('email'); // Get the email from AsyncStorage
+        const storedPassword = await AsyncStorage.getItem('password'); // Get the password from AsyncStorage
         if (storedEmail) {
           setEmail(storedEmail); // Set the email in the state
+        }
+          if (storedPassword) {
+          setPassword(storedPassword); // Set the password in the state
+          console.log(storedPassword, 'aaaaaaaaaa')
         } else {
           console.log('No email found in AsyncStorage');
         }
@@ -116,6 +108,7 @@ export default function SelectProfile({ route, navigation }) {
     };
     loadEmail();
   }, []);
+  
 
   useEffect(() => {
     const loadStoredProfile = async () => {
@@ -139,7 +132,6 @@ export default function SelectProfile({ route, navigation }) {
 
   // Log email to confirm it's being passed
   useEffect(() => {
-    console.log('SelectProfile loaded with email:', email);
   }, [email]);
   
 
@@ -173,6 +165,7 @@ export default function SelectProfile({ route, navigation }) {
         onCancel={() => setIsCreatingProfile(false)}
         onSave={handleNewProfile}
         email={email} 
+        password={password}
       />
     );
   }

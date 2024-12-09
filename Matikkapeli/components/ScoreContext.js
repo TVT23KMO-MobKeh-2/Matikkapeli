@@ -10,6 +10,7 @@ export const ScoreContext = createContext();
 export const ScoreProvider = ({ children, profile = {} }) => {
 
     const [email, setEmail] = useState(profile.email) //Tunnisteena, jos monta samannimistä Kallea
+    const [password, setPassword] = useState(profile.password)
     const [playerName, setPlayerName] = useState(profile.playerName)
     const [docId, setDocId] = useState(profile.id)
     // Pelaajan taso

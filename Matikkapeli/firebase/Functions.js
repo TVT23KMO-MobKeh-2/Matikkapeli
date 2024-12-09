@@ -1,6 +1,7 @@
 import { Alert } from 'react-native';
 
 import { addDoc, collection, firestore, PLAYERSTATS, PLAYERSETTINGS, where, query, getDocs, updateDoc, doc, deleteDoc } from '../firebase/Config';
+import * as Crypto from 'expo-crypto';
 
 export async function isEmailUsed(email) {
     try {
@@ -39,9 +40,13 @@ export async function saveEmailToDatabase({email}) {
             return;
         }
 
+        await addDoc(collection(firestore, PLAYERSTATS), {
+            email: email
+        });
+
         console.log("Email saved successfully with player name linked.");
     } catch (error) {
-        console.log("Error saving email:", error);
+        console.log("Error saving email and password:", error);
         Alert.alert("Virhe", "Sähköpostin tallentaminen ei onnistunut.");
     }
 }
@@ -49,12 +54,12 @@ export async function saveEmailToDatabase({email}) {
 
 
 // Funktio pelaajatietojen tallennukseen tietokantaan pelin alussa
-export async function savePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career }){
-    console.log("Saving player stats to database with:", { email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career })
+export async function savePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career, password }){
+    console.log("Saving player stats to database with:", { email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career, password })
     try {
         
-        await saveEmailToDatabase({email})
-
+        //await saveEmailToDatabase({email, password})
+        const hashedPassword = await Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, password)
         const q = query(
             collection(firestore, PLAYERSTATS),
             where("email", "==", email),
@@ -78,10 +83,12 @@ export async function savePlayerStatsToDatabase({ email, playerName, playerLevel
             bondsXp: bondsXp,
             imageID: imageID,
             career: career,
-        })
+            password: hashedPassword
+        },)
         console.log("Pelaajan tiedot tallennettu")
     } catch (error) {
         console.log("Virhe tallentaessa tietokantaan pelaajan tietoja:", error)
+        Alert.alert("Virhe", "Pelaajan tietojen tallentaminen ei onnistunut.")
     }
 }
 
@@ -102,7 +109,7 @@ export async function updatePlayerStatsToDatabase({ email, playerName, playerLev
             comparisonXp: comparisonXp,
             bondsXp: bondsXp,
             imageID: imageID,
-            career: career
+            career: career,
         });
 
         console.log("Pelaajan tiedot päivitetty tietokantaan");
@@ -139,12 +146,11 @@ export async function recievePlayerStatsFromDatabase({email, playerName, setImag
             setBondsXp(data.bondsXp);
             setPlayerLevel(data.playerLevel);
             setImageID(data.imageID);
-            setCareer(data.career)
+            setCareer(data.career);
             // Tallennetaan documentin ID, jotta voidaan myöhemmin päivittää samaa dokumenttia.
             setDocId(doc.id);
         } else {
             console.log("Pelaajan tietoja ei löytynyt.");
-            Alert.alert("Virhe:", "Pelaajan tietoja ei löytynyt")
         }
     } catch (error) {
         console.error("Virhe noudettaessa pelaajan tietoja:", error);
@@ -153,7 +159,7 @@ export async function recievePlayerStatsFromDatabase({email, playerName, setImag
 };
 
 // Funktio, joka hakee pelaajan profiilin pelkästään sähköpostin perusteella
-export async function recieveProfileByEmail({ email, setProfileData, setDocId }) {
+export async function recieveProfileByEmail({ email, password, setProfileData, setDocId }) {
     console.log("Haetaan profiilia sähköpostilla:", email);
     try {
         // Annetaan tiedot hakua varten
@@ -163,6 +169,7 @@ export async function recieveProfileByEmail({ email, setProfileData, setDocId })
         );
 
         const querySnapshot = await getDocs(q); // Suoritetaan kysely
+        const hashedPassword = await Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, password);
 
         if (!querySnapshot.empty) { // Jos kyselyllä löytyi tuloksia
             const doc = querySnapshot.docs[0]; // Haetaan ensimmäinen tulos
@@ -170,9 +177,16 @@ export async function recieveProfileByEmail({ email, setProfileData, setDocId })
             console.log("Löydetyt tiedot:", data);
             console.log("docId:", doc.id);
 
-            // Päivitetään tiedot tilamuuttujiin:
-            setProfileData(data);
-            setDocId(doc.id); // Tallennetaan documentin ID, jotta voidaan myöhemmin päivittää samaa dokumenttia
+            if (hashedPassword === data.password) { 
+                setProfileData(data);
+                setDocId(doc.id); 
+                console.log("Pelaajan profiili löytyi.");
+                return true;
+            } else {
+                console.log("Salasana ei täsmää.");
+                Alert.alert("Virhe:", "Salasana ei täsmää.");
+                return false;
+            }
         } else {
             console.log("Pelaajan profiilia ei löytynyt.");
             Alert.alert("Virhe:", "Pelaajan profiilia ei löytynyt");
@@ -344,5 +358,3 @@ export async function deleteUserDataFromDatabase({ email }) {
         console.error('Virhe käyttäjän tietojen poistamisessa: ', error);
     }
 }
-
-
