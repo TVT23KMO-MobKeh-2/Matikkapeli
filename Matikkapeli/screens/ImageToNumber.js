@@ -76,20 +76,14 @@ export default function ImageToNumber({ onBack }) {
     }*/
   }, [showFeedback, gameEnded]);
 
+
   // Tarkistetaan, onko peli päättynyt (5 kysymystä vastattu)
   useEffect(() => {
     if (questionsAnswered === 5) {
-      const delay = 700; // Viive 0,5 sekuntia
-      const timer = setTimeout(() => {
-        setQuestionsAnswered(0);
-        Speech.stop(); // Lopeta mahdollinen puhe
-        incrementXp(points, "imageToNumber"); // Päivitetään XP
-        setGameEnded(true);
-        setShowFeedback(true);
-      }, delay);
-  
-      // Puhdistusfunktio ajastimen peruuttamiseksi
-      return () => clearTimeout(timer);
+      Speech.stop(); // Lopeta mahdollinen puhe
+      incrementXp(points, "imageToNumber"); // Päivitetään XP
+      setGameEnded(true);
+      setShowFeedback(true);
     }
   }, [questionsAnswered]);
   
