@@ -1,4 +1,3 @@
-
 import { View, Text, Pressable, TouchableWithoutFeedback, ImageBackground } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 import * as Speech from 'expo-speech';
@@ -22,7 +21,6 @@ export default function Comparison({ onBack }) {
 
   console.log("Renderöidään comparison")
   const route = useRoute();
-  const { profile } = route.params;
   const navigation = useNavigation()
   const [showFeedback, setShowFeedback] = useState(false)
 
@@ -49,23 +47,13 @@ export default function Comparison({ onBack }) {
   //Koukku jolla tarkistetaan joko kierros päättyy.
   useEffect(() => {
     if (questionsAnswered === 5) {
-      const delay = 700; // Viive 0,5 sekuntia
-      const timer = setTimeout(() => {
-        setQuestionsAnswered(0);
-        Speech.stop(); // Lopeta mahdollinen puhe
-        incrementXp(points, "imageToNumber"); // Päivitetään XP
-        setGameEnded(true);
-        setShowFeedback(true);
-      }, delay);
-  
-      // Puhdistusfunktio ajastimen peruuttamiseksi
-      return () => clearTimeout(timer);
+      incrementXp(points, "comparison")
+      setShowFeedback(true)
     }
   }, [questionsAnswered]);
 
   //Backin handleri
   const handleBack = () => {
-
     Speech.stop()
     setShowFeedback(false);
     setQuestionsAnswered(0);
@@ -84,13 +72,22 @@ export default function Comparison({ onBack }) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
 
+  // Arpoo satunnaislukuja annetulta väliltä (mukaan lukien minimi ja maksimi), kunnes numero on eri kuin nykyinen numero ja palauttaa sen
+  const drawUniqueRandomNumber = (min, max, currentNumber) => {
+    let newNumber;
+    do {
+      newNumber = drawRandomNumber(min, max);
+    } while (newNumber === currentNumber);
+    return newNumber;
+  }
+
   // Funktio uusien lukujen arpomista varten
   const drawNewNumbers = () => {
     // Keskeytetään mahdollinen edellinen puhe
     Speech.stop();
     // Arvotaan uusi satunnaisluku, jonka maksimiarvo riippuu comparisonXp:n arvosta
     console.log("Arvotaan uudet numerot")
-    setRandomNumber(drawRandomNumber(0, playerLevel));
+    setRandomNumber(drawUniqueRandomNumber(0, playerLevel, randomNumber));
 
     // Arvotaan, onko tason mukainen numero 1. vai 2. vertailtava
     setIsLevelNumberFirstComparable(drawRandomNumber(0, 1) === 1);
@@ -111,12 +108,12 @@ export default function Comparison({ onBack }) {
     if (drawRandomNumber(0, 1) === 1) {
       setLookingForBigger(true); // Haetaan isompaa
       if (taskReading) {
-        Speech.speak("Valitse yhtäsuuri tai suurempi."); //toistetaan tehtävänanto puheena
+        Speech.speak("Valitse yhtäsuuri tai suurempi luku."); //toistetaan tehtävänanto puheena
       }
     } else {
       setLookingForBigger(false); // Haetaan pienempää
       if (taskReading) {
-        Speech.speak("Valitse yhtäsuuri tai pienempi."); //toistetaan tehtävänanto puheena
+        Speech.speak("Valitse yhtäsuuri tai pienempi luku."); //toistetaan tehtävänanto puheena
       }
     }
   }
@@ -132,9 +129,9 @@ export default function Comparison({ onBack }) {
 
   //Funktio yhtälön muodostamiseen
   const generateEquation = (setIsAddition, setOperand1, setOperand2) => {
-    // Arvotaan kaksi lukua väliltä 0 - (comparisonXp * 0.1 + 1)
-    const first = drawRandomNumber(0, playerLevel)
-    const second = drawRandomNumber(0, playerLevel)
+    // Arvotaan kaksi lukua väliltä 0 - PlayerLevel
+    const first = drawUniqueRandomNumber(0, playerLevel, equationOperand1)
+    const second = drawUniqueRandomNumber(0, playerLevel, equationOperand2)
     console.log("Arvottiin numerot", first, second)
     // Alustetaan arvot
     setIsAddition(null);
@@ -290,7 +287,6 @@ export default function Comparison({ onBack }) {
     >
       <View style={styles.container}>
         <Text style={styles.title}>{syllabify("Vertailu")}</Text>
-        <Text>comparisonXp: {comparisonXp}</Text>
         {renderGuide()}
         {renderComparable(1)}
         <Text onPress={() => checkAnswer("equali")} style={styles.comparisonOptions} >=</Text>
@@ -310,19 +306,19 @@ export default function Comparison({ onBack }) {
                   <LevelBar progress={bondsXp} label={syllabify("Hajonta")} playerLevel={playerLevel} gameType={"bonds"} caller={"comparison"} />
                 </View>
                 <View style={styles.buttonContainer}>
-                <Pressable onPress={() => {
+                  <Pressable onPress={() => {
                     handleContinueGame();
                     setShowFeedback(false)
                   }}
                     style={[styles.startButton, styles.blueButton]}
                   >
                     <Text style={styles.buttonText}>
-                            {syllabify("Jatketaan")}
-                        </Text>
+                      {syllabify("Jatketaan")}
+                    </Text>
                     <View style={styles.nextGame}>
-                    <Ionicons name="game-controller" size={24} color={isDarkTheme ? "white" : "black"} />
-                    <MaterialIcons name="navigate-next" size={24} color={isDarkTheme ? "white" : "black"} />
-                    
+                      <Ionicons name="game-controller" size={24} color={isDarkTheme ? "white" : "black"} />
+                      <MaterialIcons name="navigate-next" size={24} color={isDarkTheme ? "white" : "black"} />
+
                     </View>
                   </Pressable>
                   <Pressable onPress={() => {
@@ -331,9 +327,9 @@ export default function Comparison({ onBack }) {
                   }}
                     style={[styles.startButton, styles.redButton]}
                   >
-                    <Text style={[styles.buttonText, {color: 'white'}]}>
-                    {syllabify("Lopeta")}
-                        </Text>
+                    <Text style={[styles.buttonText, { color: 'white' }]}>
+                      {syllabify("Lopeta")}
+                    </Text>
                     <Ionicons name="exit" size={24} color="white" />
                   </Pressable>
                 </View>
