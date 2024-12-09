@@ -2,6 +2,10 @@ import { View, Text, StyleSheet } from 'react-native';
 import React, { useEffect, useState, useRef } from 'react';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { Image } from 'expo-image';
+import createStyles from "../styles";
+import { useTheme } from '../components/ThemeContext';
+import { light, dark } from '../assets/themeColors';
+import { getBGImage } from '../components/backgrounds';
 
 export default function LevelBar({ progress, label, playerLevel, gameType, caller }) {
     const progressWidth = useSharedValue(0);
@@ -10,6 +14,11 @@ export default function LevelBar({ progress, label, playerLevel, gameType, calle
     const gifTimer = useRef(null); 
     const lastPointRef = useRef({ imageToNumber: 0, soundToNumber: 0, comparison: 0, bonds: 0 });
 
+    const { isDarkTheme } = useTheme();
+    const theme = isDarkTheme ? dark : light;
+    const styles = createStyles(theme);
+    const bgIndex = 1;
+    
     const milestones = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
 
     const levelImages = {
@@ -121,7 +130,7 @@ export default function LevelBar({ progress, label, playerLevel, gameType, calle
     }, []);
 
     return (
-        <View style={styles.container}>
+        <View style={styles.levelBarcontainer}>
             <Text style={styles.label}>{label}</Text>
             <View style={styles.progressContainer}>
                 <View style={styles.barAndScaleContainer}>
@@ -144,57 +153,3 @@ export default function LevelBar({ progress, label, playerLevel, gameType, calle
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        width: '70%',
-        alignItems: 'center',
-        marginTop: 20,
-    },
-    label: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        marginBottom: 10,
-    },
-    progressContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        width: '100%',
-    },
-    barAndScaleContainer: {
-        flex: 1,
-        flexDirection: 'column',
-        marginRight: 40,
-    },
-    barContainer: {
-        height: 20,
-        backgroundColor: '#e0e0e0',
-        borderRadius: 10,
-        overflow: 'hidden',
-        marginBottom: 10,
-    },
-    imageContainer: {
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    progressBar: {
-        height: '100%',
-        backgroundColor: 'brown',
-        borderRadius: 10,
-    },
-    scaleContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: '100%',
-    },
-    scaleText: {
-        fontSize: 12,
-        fontWeight: 'bold',
-        color: '#333',
-    },
-    levelImage: {
-        width: 80,
-        height: 90,
-        bottom: -15, // Ensures the static image stays in place
-        position: 'absolute'
-    },
-});

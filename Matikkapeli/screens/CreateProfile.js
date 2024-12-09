@@ -52,7 +52,7 @@ export default function CreateProfile({ onCancel, onSave, email }) {
 
     const careerOptions = [
         { label: 'LÄÄKÄRI', value: "doctor" },
-        { label: 'AUTOMEKAANIKKO', value: "mechanic" },
+        { label: 'MEKAANIKKO', value: "mechanic" },
         { label: 'RAKENTAJA', value: "builder" },
         { label: 'KAUPPIAS', value: "vendor" },
         { label: 'OHJELMOIJA', value: "programmer" },

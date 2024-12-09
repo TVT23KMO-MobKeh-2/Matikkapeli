@@ -181,9 +181,13 @@ export default function SoundToNumber({ onBack }) {
                   }}
                     style={[styles.startButton, styles.blueButton]}
                   >
+                    <Text style={styles.buttonText}>
+                            {syllabify("Jatketaan")}
+                        </Text>
                     <View style={styles.nextGame}>
-                    <Ionicons name="game-controller" size={24} color="black" />
-                    <MaterialIcons name="navigate-next" size={24} color="black" />
+                    <Ionicons name="game-controller" size={24} color={isDarkTheme ? "white" : "black"} />
+                    <MaterialIcons name="navigate-next" size={24} color={isDarkTheme ? "white" : "black"} />
+                    
                     </View>
                   </Pressable>
                   <Pressable onPress={() => {
@@ -192,6 +196,9 @@ export default function SoundToNumber({ onBack }) {
                   }}
                     style={[styles.startButton, styles.redButton]}
                   >
+                    <Text style={styles.buttonText}>
+                    {syllabify("Lopeta")}
+                        </Text>
                     <Ionicons name="exit" size={24} color="white" />
                   </Pressable>
               </View>

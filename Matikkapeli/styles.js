@@ -412,8 +412,8 @@ const createStyles = (theme) => StyleSheet.create({
     borderRadius: 10
   },
   picProfile: {
-    width: 150,
-    height: 150,
+    width: 120,
+    height: 120,
     borderRadius: 10,
   },
   profileSelect: {
@@ -707,6 +707,56 @@ const createStyles = (theme) => StyleSheet.create({
     width: 40,
     height: 40,
   },
+
+  //Level bar
+  levelBarcontainer: {
+    width: '70%',
+    alignItems: 'center',
+    marginTop: 20,
+},
+
+progressContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+},
+barAndScaleContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    marginRight: 40,
+},
+barContainer: {
+    height: 20,
+    backgroundColor: '#e0e0e0',
+    borderRadius: 10,
+    overflow: 'hidden',
+    marginBottom: 10,
+},
+imageContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+},
+progressBar: {
+    height: '100%',
+    backgroundColor: 'brown',
+    borderRadius: 10,
+},
+scaleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+},
+scaleText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#333',
+},
+levelImage: {
+    width: 80,
+    height: 90,
+    bottom: -15, // Ensures the static image stays in place
+    position: 'absolute'
+},
 });
 
 export default createStyles;

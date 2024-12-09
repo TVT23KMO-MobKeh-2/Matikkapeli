@@ -296,15 +296,19 @@ export default function Comparison({ onBack }) {
                   <LevelBar progress={bondsXp} label={syllabify("Hajonta")} playerLevel={playerLevel} gameType={"bonds"} caller={"comparison"} />
                 </View>
                 <View style={styles.buttonContainer}>
-                  <Pressable onPress={() => {
+                <Pressable onPress={() => {
                     handleContinueGame();
                     setShowFeedback(false)
                   }}
                     style={[styles.startButton, styles.blueButton]}
                   >
+                    <Text style={styles.buttonText}>
+                            {syllabify("Jatketaan")}
+                        </Text>
                     <View style={styles.nextGame}>
-                    <Ionicons name="game-controller" size={24} color="black" />
-                    <MaterialIcons name="navigate-next" size={24} color="black" />
+                    <Ionicons name="game-controller" size={24} color={isDarkTheme ? "white" : "black"} />
+                    <MaterialIcons name="navigate-next" size={24} color={isDarkTheme ? "white" : "black"} />
+                    
                     </View>
                   </Pressable>
                   <Pressable onPress={() => {
@@ -313,6 +317,9 @@ export default function Comparison({ onBack }) {
                   }}
                     style={[styles.startButton, styles.redButton]}
                   >
+                    <Text style={[styles.buttonText, {color: 'white'}]}>
+                    {syllabify("Lopeta")}
+                        </Text>
                     <Ionicons name="exit" size={24} color="white" />
                   </Pressable>
                 </View>

@@ -213,7 +213,11 @@ export default function Bonds({ onBack }) {
                       setInstructionVisibility(false)
                     }}
                       style={[styles.startButton, styles.blueButton]}>
+                        <Text style={styles.buttonText}>
+                    {syllabify("Aloita")}
+                        </Text>
                       <View style={styles.nextGame}>
+                      
                     <Ionicons name="game-controller" size={24} color={isDarkTheme ? "white" : "black"}/>
                     </View>
                     </Pressable>
@@ -230,8 +234,8 @@ export default function Bonds({ onBack }) {
 
 
           <Svg height="300" width="300" style={styles.lineContainer}>
-            <Line x1="150" y1="100" x2="70" y2="230" stroke="black" strokeWidth="5" />
-            <Line x1="150" y1="100" x2="230" y2="230" stroke="black" strokeWidth="5" />
+            <Line x1="150" y1="90" x2="70" y2="230" stroke="black" strokeWidth="5" />
+            <Line x1="150" y1="90" x2="230" y2="230" stroke="black" strokeWidth="5" />
           </Svg>
 
           <View style={styles.circle}>
@@ -273,6 +277,9 @@ export default function Bonds({ onBack }) {
               onPress={checkAnswer}
               style={[styles.checkButton, isButtonDisabled ? styles.disabledButton : null]}
               disabled={isButtonDisabled}>
+                <Text style={styles.buttonText}>
+                    {syllabify("Tarkista")}
+                        </Text>
               <Entypo name="check" size={24} color={isDarkTheme ? "white" : "black"} />
             </Pressable>
           </View>
@@ -298,9 +305,13 @@ export default function Bonds({ onBack }) {
                   }}
                     style={[styles.startButton, styles.blueButton]}
                   >
+                    <Text style={styles.buttonText}>
+                            {syllabify("Jatketaan")}
+                        </Text>
                     <View style={styles.nextGame}>
-                    <Ionicons name="game-controller" size={24} color="black" />
-                    <MaterialIcons name="navigate-next" size={24} color="black" />
+                    <Ionicons name="game-controller" size={24} color={isDarkTheme ? "white" : "black"} />
+                    <MaterialIcons name="navigate-next" size={24} color={isDarkTheme ? "white" : "black"} />
+                    
                     </View>
                   </Pressable>
                   <Pressable onPress={() => {
@@ -309,6 +320,9 @@ export default function Bonds({ onBack }) {
                   }}
                     style={[styles.startButton, styles.redButton]}
                   >
+                    <Text style={[styles.buttonText, {color: 'white'}]}>
+                    {syllabify("Lopeta")}
+                        </Text>
                     <Ionicons name="exit" size={24} color="white" />
                   </Pressable>
                   </View>

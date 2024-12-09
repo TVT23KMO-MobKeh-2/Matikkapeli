@@ -4,6 +4,7 @@ import React, { useEffect, useState, useContext } from 'react'
 import TaskWindow from '../components/TaskWindow'
 import { Image } from 'expo-image';
 import { ScoreContext } from '../components/ScoreContext';
+import { BackHandler } from 'react-native';
 
 import createStyles from "../styles";
 import { useTheme } from '../components/ThemeContext';
@@ -38,6 +39,20 @@ export default function Animation({ onBack, navigation }) {
 
     const { isDarkTheme } = useTheme();
     const styles = createStyles(isDarkTheme ? dark : light);
+
+    useEffect(() => {
+        const backAction = () => {
+          navigation.replace('ProfileScreen'); // Korvaa nykyinen näkymä ProfileScreenillä
+          return true; // Estää oletus "takaisin"-navigoinnin
+        };
+      
+        const backHandler = BackHandler.addEventListener(
+          'hardwareBackPress',
+          backAction
+        );
+      
+        return () => backHandler.remove(); // Puhdista kuuntelija, kun komponentti unmountataan
+      }, [navigation]);
 
     useEffect(() => {
         // Simulate a delay to ensure profile is ready

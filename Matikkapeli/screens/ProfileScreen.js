@@ -6,6 +6,7 @@ import React, { useState, useContext } from 'react';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { ScoreContext } from '../components/ScoreContext';
+import { useTaskSyllabification } from '../components/TaskSyllabificationContext';
 
 import createStyles from "../styles";
 import { useTheme } from '../components/ThemeContext';
@@ -29,6 +30,7 @@ export default function ProfileScreen() {
     const [showImageSelection, setShowImageSelection] = useState(false);
 
     const characterImage = animalImages[imageID];
+    const { syllabify, taskSyllabification, getFeedbackMessage } = useTaskSyllabification();
 
     const { isDarkTheme } = useTheme();
     const theme = isDarkTheme ? dark : light;
@@ -112,19 +114,21 @@ export default function ProfileScreen() {
                     </View>
                 </View>
                 <View style={styles.profileSelect}>
-                    <LevelBar progress={imageToNumberXp} label={"KUVAT NUMEROIKSI"} playerLevel={playerLevel} gameType={"imageToNumber"} caller={"profile"} />
-                    <LevelBar progress={soundToNumberXp} label={"ÄÄNESTÄ NUMEROIKSI"} playerLevel={playerLevel} gameType={"soundToNumber"} caller={"profile"} />
+                    <LevelBar progress={imageToNumberXp} label={"MONTAKO"} playerLevel={playerLevel} gameType={"imageToNumber"} caller={"profile"} />
+                    <LevelBar progress={soundToNumberXp} label={"TUNNISTA"} playerLevel={playerLevel} gameType={"soundToNumber"} caller={"profile"} />
                     <LevelBar progress={comparisonXp} label={"VERTAILU"} playerLevel={playerLevel} gameType={"comparison"} caller={"profile"} />
                     <LevelBar progress={bondsXp} label={"HAJONTA"} playerLevel={playerLevel} gameType={"bonds"} caller={"profile"} />
                 </View>
                 <View style={styles.buttonContainer1}>
                     <Pressable onPress={startGame}
                         style={[styles.startButton, styles.greenButton]}>
-                        <Ionicons name="game-controller" size={24} color={isDarkTheme ? "white" : "black"} />
+                            <Text style={styles.buttonText}>{syllabify("Aloita peli")}</Text>
+                        <Ionicons name="game-controller" size={24} padding={4} color={isDarkTheme ? "white" : "black"} />
                     </Pressable>
                     <Pressable onPress={goBack}
                         style={[styles.startButton, styles.blueButton]}>
-                        <Ionicons name="arrow-back-circle-outline" size={24} color={isDarkTheme ? "white" : "black"} />
+                        <Text style={styles.buttonText}>{syllabify("Takaisin")}</Text>
+                        <Ionicons name="arrow-back-circle-outline" size={24} padding={4} color={isDarkTheme ? "white" : "black"} />
                     </Pressable>
                     <Pressable onPress={handleDeleteProfile}
                         disabled={isDeleting}
@@ -136,9 +140,12 @@ export default function ProfileScreen() {
                         ]}>
                             {isDeleting ? 
                             <Text style={[styles.buttonText, { color: 'white' }]}>
-                            'POISTETAAN...'
-                        </Text> : <AntDesign name="deleteuser" size={24} color="white" />}
-
+                            {syllabify("Poistetaan...")}
+                        </Text> : <Text style={[styles.buttonText, { color: 'white' }]}>
+                        {syllabify("Poista")}
+                        </Text>
+                        }
+                    <AntDesign name="delete" size={24} padding={4} color="white" />
                     </Pressable>
                 </View>
                 {showImageSelection && (

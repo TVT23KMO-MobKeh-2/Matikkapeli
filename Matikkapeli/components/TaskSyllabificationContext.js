@@ -12,9 +12,15 @@ export function TaskSyllabificationProvider({ children }) {
   // Kovakoodatut tavutukset
   const syllabify = (text) => {
     const syllables = {
+
+      //ProfileScreen.js
+      "Aloita peli" : "A-LOI-TA PE-LI",
+      "Takaisin": "TA-KAI-SIN",
+      "Poista": "POIS-TA",
+      
       // ImageToNumber.js
       "Kuva numeroiksi": "KU-VA NU-ME-ROIK-SI",
-      "Montako esinettä näet näytöllä?": "MON-TA-KO VA-SA-RAA NÄ-ET NÄY-TÖL-LÄ?",
+      "Montako esinettä näet näytöllä?": "MON-TA-KO E-SI-NET-TÄ NÄ-ET NÄY-TÖL-LÄ?",
 
       // Comparison.js
       "Vertailu": "VER-TAI-LU",
@@ -42,7 +48,7 @@ export function TaskSyllabificationProvider({ children }) {
       "Taustamusiikki":"TAUS-TA-MU-SIIK-KI",
       "Taustamusiikin voimakkuus":"TAUS-TA-MU-SII-KIN VOI-MAK-KUUS",
       "Peliäänet":"PE-LI-ÄÄ-NET",
-      "Sammuta sovellus":"SAM-MU-TA SO-VEL-LUS",
+      "Sammuta":"SAM-MU-TA",
       
       // Timer.js
       "Valitse aika:":"VA-LIT-SE AI-KA",
@@ -64,8 +70,8 @@ export function TaskSyllabificationProvider({ children }) {
       "Vertailu":"VER-TAI-LU",
       "Hajonta":"HA-JON-TA",
       
-      "Seuraava tehtävä odottaa": "SEU-RAA-VA TEH-TÄ-VÄ O-DOT-TAA",
-      "Lopeta peli": "LO-PE-TA PE-LI",
+      "Jatketaan": "JAT-KE-TAAN",
+      "Lopeta": "LO-PE-TA",
     };
 
     // Jos tavutustoiminto ei ole käytössä, palautetaan alkuperäinen teksti

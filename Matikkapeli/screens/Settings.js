@@ -203,6 +203,7 @@ export default function Settings({ onBack }) {
             <Pressable onPress={handleCloseApp}
               style={[styles.startButton, styles.redButton]}
             >
+              <Text style={styles.buttonText}>{syllabify("Sammuta")}</Text>
               <FontAwesome name="power-off" size={24} color="white" />
             </Pressable>
           </View>

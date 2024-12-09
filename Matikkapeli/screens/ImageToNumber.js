@@ -14,6 +14,7 @@ import { light, dark } from '../assets/themeColors';
 import { getBGImage } from '../components/backgrounds';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { BackHandler } from 'react-native';
 
 // Funktio, joka generoi satunnaisen luvun väliltä min ja max
 function random(min, max) {
@@ -149,7 +150,7 @@ export default function ImageToNumber({ onBack }) {
 
   const careerIcon = {
     LÄÄKÄRI: "stethoscope",
-    AUTOMEKAANIKKO: "oil",
+    MEKAANIKKO: "oil",
     RAKENTAJA: "hammer",
     KAUPPIAS: "cart-variant",
     OHJELMOIJA: "laptop",
@@ -242,9 +243,13 @@ export default function ImageToNumber({ onBack }) {
                   }}
                     style={[styles.startButton, styles.blueButton]}
                   >
+                    <Text style={styles.buttonText}>
+                            {syllabify("Jatketaan")}
+                        </Text>
                     <View style={styles.nextGame}>
-                    <Ionicons name="game-controller" size={24} color="black" />
-                    <MaterialIcons name="navigate-next" size={24} color="black" />
+                    <Ionicons name="game-controller" size={24} color={isDarkTheme ? "white" : "black"} />
+                    <MaterialIcons name="navigate-next" size={24} color={isDarkTheme ? "white" : "black"} />
+                    
                     </View>
                   </Pressable>
                   <Pressable onPress={() => {
@@ -253,6 +258,9 @@ export default function ImageToNumber({ onBack }) {
                   }}
                     style={[styles.startButton, styles.redButton]}
                   >
+                    <Text style={[styles.buttonText, {color: 'white'}]}>
+                    {syllabify("Lopeta")}
+                        </Text>
                     <Ionicons name="exit" size={24} color="white" />
                   </Pressable>
                 </View>
