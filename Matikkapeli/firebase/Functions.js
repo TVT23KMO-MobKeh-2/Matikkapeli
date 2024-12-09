@@ -1,7 +1,6 @@
 import { Alert } from 'react-native';
 
-import { addDoc, collection, firestore, PLAYERSTATS, PLAYERSETTINGS, where, query, getDocs, updateDoc, doc, deleteDoc, auth } from '../firebase/Config';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, deleteUser  } from 'firebase/auth';
+import { addDoc, collection, firestore, PLAYERSTATS, PLAYERSETTINGS, where, query, getDocs, updateDoc, doc, deleteDoc } from '../firebase/Config';
 
 export async function isEmailUsed(email) {
     try {
@@ -40,71 +39,25 @@ export async function saveEmailToDatabase({email}) {
             return;
         }
 
+        await addDoc(collection(firestore, PLAYERSTATS), {
+            email: email
+        });
+
         console.log("Email saved successfully with player name linked.");
     } catch (error) {
-        console.log("Error saving email:", error);
+        console.log("Error saving email and password:", error);
         Alert.alert("Virhe", "Sähköpostin tallentaminen ei onnistunut.");
     }
 }
 
-export async function signUpWithEmailPassword(email, password) {
-    const auth = getAuth();
 
-    try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        //console.log('User registered:', userCredential.user);
-    } catch (error) {
-        console.error('Error during sign up:', error.message);
-        Alert.alert('Virhe', 'Rekisteröityminen epäonnistui: ' + error.message);
-    }
-}
-
-export async function loginWithEmailPassword(email, password) {
-    const auth = getAuth();
-
-    try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        // User is logged in, handle the success (you can log user details if needed)
-        console.log('User logged in:', userCredential.user);
-        return userCredential;
-    } catch (error) {
-        console.error('Error during login:', error.message);
-        
-        // Check the error code and show appropriate message
-        if (error.code === 'auth/wrong-password') {
-            Alert.alert('Virhe', 'Salasana on väärin. Yritä uudelleen.');
-        } else if (error.code === 'auth/user-not-found') {
-            Alert.alert('Virhe', 'Käyttäjää ei löydy tällä sähköpostiosoitteella.');
-        } else if (error.code === 'auth/invalid-credential') {
-            Alert.alert('Virhe', 'Sähköposti tai salasana väärin. Yritä uudelleen.');
-        } 
-        else if (error.code === 'auth/invalid-email') {
-            Alert.alert('Virhe', 'Sähköpostiosoite ei ole kelvollinen.');
-        } else {
-            // For other types of errors, display the error message
-            Alert.alert('Virhe', 'Sisäänkirjautuminen epäonnistui: ' + error.message);
-        }
-        return null;
-    }
-}
-
-export async function logout() {
-    const auth = getAuth();
-
-    try {
-        await signOut(auth);
-        console.log('User logged out');
-    } catch (error) {
-        console.error('Error during logout:', error.message);
-    }
-}
 
 // Funktio pelaajatietojen tallennukseen tietokantaan pelin alussa
-export async function savePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career }){
-    console.log("Saving player stats to database with:", { email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career })
+export async function savePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career, password }){
+    console.log("Saving player stats to database with:", { email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career, password })
     try {
         
-        await saveEmailToDatabase({email})
+        //await saveEmailToDatabase({email, password})
 
         const q = query(
             collection(firestore, PLAYERSTATS),
@@ -129,15 +82,17 @@ export async function savePlayerStatsToDatabase({ email, playerName, playerLevel
             bondsXp: bondsXp,
             imageID: imageID,
             career: career,
-        })
+            password: password
+        },console.log("Pelaajan tiedot tallennettu tietokantaan"))
         console.log("Pelaajan tiedot tallennettu")
     } catch (error) {
         console.log("Virhe tallentaessa tietokantaan pelaajan tietoja:", error)
+        Alert.alert("Virhe", "Pelaajan tietojen tallentaminen ei onnistunut.")
     }
 }
 
 // Funktio pelaajan tietojen päivittämiseen tietokantaan
-export async function updatePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, docId, imageID, career }) {
+export async function updatePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, docId, imageID, career, password }) {
     try {
         console.log("Päivitetään tietoja tietokantaan, docId: ", docId)
         // Mitä päivitetään:
@@ -153,7 +108,8 @@ export async function updatePlayerStatsToDatabase({ email, playerName, playerLev
             comparisonXp: comparisonXp,
             bondsXp: bondsXp,
             imageID: imageID,
-            career: career
+            career: career,
+            password: password
         });
 
         console.log("Pelaajan tiedot päivitetty tietokantaan");
@@ -190,12 +146,11 @@ export async function recievePlayerStatsFromDatabase({email, playerName, setImag
             setBondsXp(data.bondsXp);
             setPlayerLevel(data.playerLevel);
             setImageID(data.imageID);
-            setCareer(data.career)
+            setCareer(data.career);
             // Tallennetaan documentin ID, jotta voidaan myöhemmin päivittää samaa dokumenttia.
             setDocId(doc.id);
         } else {
             console.log("Pelaajan tietoja ei löytynyt.");
-            Alert.alert("Virhe:", "Pelaajan tietoja ei löytynyt")
         }
     } catch (error) {
         console.error("Virhe noudettaessa pelaajan tietoja:", error);
@@ -221,9 +176,16 @@ export async function recieveProfileByEmail({ email, setProfileData, setDocId })
             console.log("Löydetyt tiedot:", data);
             console.log("docId:", doc.id);
 
-            // Päivitetään tiedot tilamuuttujiin:
-            setProfileData(data);
-            setDocId(doc.id); // Tallennetaan documentin ID, jotta voidaan myöhemmin päivittää samaa dokumenttia
+            if (password === data.password) {
+                setProfileData(data);
+                setDocId(doc.id); 
+                console.log("Pelaajan profiili löytyi.");
+                return true;
+            } else {
+                console.log("Salasana ei täsmää.");
+                Alert.alert("Virhe:", "Salasana ei täsmää.");
+                return false;
+            }
         } else {
             console.log("Pelaajan profiilia ei löytynyt.");
             Alert.alert("Virhe:", "Pelaajan profiilia ei löytynyt");
@@ -358,7 +320,6 @@ export async function deletePlayerDataFromDatabase({ email, playerName }) {
     } catch (error) {
         console.error('Virhe pelaajatietojen poistamisessa: ', error);
     }
-    
 }
 
 export async function deleteUserDataFromDatabase({ email }) {
@@ -392,16 +353,7 @@ export async function deleteUserDataFromDatabase({ email }) {
         }
 
         console.log('Kaikki käyttäjän tiedot poistettu onnistuneesti');
-        const auth = getAuth();
-        const user = auth.currentUser;
-        if (user) {
-                await deleteUser(user); // Delete the user from Firebase Authentication
-                console.log('Pelaajan autentikointi poistettu onnistuneesti');
-        } else {
-            console.log('Pelaajaa ei löytynyt autentikoinnista');
-        }
     } catch (error) {
-        console.error('Virhe pelaajatietojen poistamisessa: ', error);
+        console.error('Virhe käyttäjän tietojen poistamisessa: ', error);
     }
 }
-

@@ -52,6 +52,7 @@ export default function SelectProfile({ route, navigation }) {
   const [characters, setCharacters] = useState([]);
   const [selectedCharacter, setSelectedCharacter] = useState(null);
   const [isCreatingProfile, setIsCreatingProfile] = useState(false);
+  const [password, setPassword] = useState(''); // Added password state
   const { email, setEmail, playerName, setPlayerName, setImageID, setCareer, setPlayerLevel, savePlayerStatsToDatabase, updatePlayerStatsToDatabase, handleUpdatePlayerStatsToDatabase, setImageToNumberXp, setSoundToNumberXp, setComparisonXp, setBondsXp } = useContext(ScoreContext)
 
   const { isDarkTheme } = useTheme();
@@ -105,8 +106,10 @@ export default function SelectProfile({ route, navigation }) {
     const loadEmail = async () => {
       try {
         const storedEmail = await AsyncStorage.getItem('email'); // Get the email from AsyncStorage
+        const storedPassword = await AsyncStorage.getItem('password'); // Get the password from AsyncStorage
         if (storedEmail) {
           setEmail(storedEmail); // Set the email in the state
+          setPassword(storedPassword); // Set the password in the state
         } else {
           console.log('No email found in AsyncStorage');
         }
@@ -173,6 +176,7 @@ export default function SelectProfile({ route, navigation }) {
         onCancel={() => setIsCreatingProfile(false)}
         onSave={handleNewProfile}
         email={email} 
+        password={password}
       />
     );
   }

@@ -2,7 +2,7 @@ import { View, Text, TextInput, Pressable, ImageBackground, } from 'react-native
 import React, { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserCreation from '../components/UserCreation';
-import { deleteUserDataFromDatabase, logout, recieveProfileByEmail, isEmailUsed, loginWithEmailPassword } from '../firebase/Functions'; // Import your function
+import { deleteUserDataFromDatabase, recieveProfileByEmail } from '../firebase/Functions'; // Import your function
 import { Alert } from 'react-native';
 
 import createStyles from "../styles";
@@ -16,12 +16,11 @@ export default function WelcomeScreen({ navigation }) {
     const [playerName, setPlayerName] = useState('')
     const [imageID, setImageID] = useState('')
     const [inputEmail, setInputEmail] = useState(''); // State for holding input email
-    const [inputPassword, setInputPassword] = useState('');
     const [isCreatingUser, setIsCreatingUser] = useState(false);
     const [isSearchMode, setIsSearchMode] = useState(false); // State to toggle search mode
     const [profileData, setProfileData] = useState(null);
     const [isDeleting, setIsDeleting] = useState(false);
-    const [isLoginMode, setIsLoginMode] = useState(false);
+    const [inputPassword, setInputPassword] = useState('');
 
     const { isDarkTheme } = useTheme();
     const theme = isDarkTheme ? dark : light;
@@ -40,19 +39,19 @@ export default function WelcomeScreen({ navigation }) {
             }
             const nameValue = await AsyncStorage.getItem('playername');
             if (nameValue !== null) {
-                console.log('playername haettu AsyncStorage:sta:', nameValue);
+                console.log('Sähköposti haettu AsyncStorage:sta:', nameValue);
                 setPlayerName(nameValue);
 
             } else {
-                console.log('Ei löytynyt Playername AsyncStorage:sta');
+                console.log('Ei löytynyt sähköpostia AsyncStorage:sta');
             }
             const imageValue = await AsyncStorage.getItem('imageID');
             if (imageValue !== null) {
-                console.log('Image haettu AsyncStorage:sta:', imageValue);
+                console.log('Sähköposti haettu AsyncStorage:sta:', imageValue);
                 setImageID(imageValue);
 
             } else {
-                console.log('Ei löytynyt Image AsyncStorage:sta');
+                console.log('Ei löytynyt sähköpostia AsyncStorage:sta');
             }
         } catch (e) {
             console.error('Virhe tietojen hakemisessa', e);
@@ -64,12 +63,12 @@ export default function WelcomeScreen({ navigation }) {
             await AsyncStorage.removeItem('email');
             await AsyncStorage.removeItem('playerName');
             await AsyncStorage.removeItem('imageID');
+            await AsyncStorage.removeItem('password');
 
             setEmail('');
             setPlayerName('');
             setImageID('');
-            if (auth().currentUser)
-                await logout();
+            setInputPassword('');
         } catch (e) {
             console.error('Virhe tietojen poistamisessa');
         }
@@ -97,6 +96,7 @@ export default function WelcomeScreen({ navigation }) {
                 // Call the function to retrieve profile by email
                 await recieveProfileByEmail({
                     email: inputEmail,
+                    password: inputPassword,
                     setProfileData: (data) => {
                         console.log("Profile data retrieved:", data);
                         setProfileData(data); // Save the profile data in state
@@ -125,48 +125,20 @@ export default function WelcomeScreen({ navigation }) {
                 Alert.alert("Virhe", "Profiilin hakeminen ei onnistunut. Yritä myöhemmin uudestaan.");
             }
         } else {
-            console.log('No email entered');
-            Alert.alert("Virhe", "Sähköpostiosoite on pakollinen.");
+            console.log('No email or password entered');
+            Alert.alert("Virhe", "Sähköpostiosoite ja salasana on pakollinen.");
         }
     };
-
 
     const toggleSearchMode = () => {
         setIsSearchMode(!isSearchMode); // Toggle the search mode on/off
         setInputEmail(''); // Clear input when toggling
     };
 
-    const handleLogin = async () => {
-        if (inputEmail && inputPassword) {
-            try {
-                console.log("Logging in with Email:", inputEmail);
-    
-                // Try logging in with email and password
-                const userCredential = await loginWithEmailPassword(inputEmail, inputPassword);
-                if (userCredential) {
-                    console.log('Email found:', inputEmail);
-
-                    await AsyncStorage.setItem('email', inputEmail);
-                    // Navigate to SelectProfile ONLY if login is successful
-                    userCredential.user.email = inputEmail;
-                    navigation.navigate('SelectProfile', { email: inputEmail });
-                } else {
-                    throw new Error("Login failed, no user found");
-                }
-            } catch (error) {
-                // Handle errors that occur during login
-                console.error("Error during login", error);
-                Alert.alert("Virhe", "Sisäänkirjautuminen epäonnistui. Tarkista sähköpostiosoite ja salasana.");
-            }
-        } else {
-            Alert.alert("Virhe", "Sähköpostiosoite ja salasana ovat pakollisia.");
-        }
-    };
-
     useEffect(() => {
         getData();
     }, []);
-    
+
     if (email) {
         return (
             <ImageBackground
@@ -207,7 +179,7 @@ export default function WelcomeScreen({ navigation }) {
     if (isCreatingUser) {
         return (
             <UserCreation
-                onNavigate={() => navigation.navigate('SelectProfile', { email: email })}
+                onNavigate={() => navigation.navigate('SelectProfile', { email: email, password: password })}
             />
         );
     }
@@ -232,6 +204,13 @@ export default function WelcomeScreen({ navigation }) {
                             onChangeText={setInputEmail}
                             keyboardType="email-address"
                         />
+                        <TextInput
+                            style={[styles.input, {backgroundColor: 'white'}]}
+                            placeholder="SYÖTÄ SALASANA"
+                            value={inputPassword}
+                            onChangeText={setInputPassword}
+                            secureTextEntry
+                         />
                         <Pressable onPress={handleSearchProfile}
                             style={styles.startButton}>
                             <Text style={styles.buttonText}>HAE PROFIILIT</Text>
@@ -243,45 +222,15 @@ export default function WelcomeScreen({ navigation }) {
                     </>
                 ) : (
                     <>
-                        {/* Hide these buttons when loginMode is true */}
-                        {!isLoginMode && (
-                            <>
-                                <Pressable onPress={toggleSearchMode} style={styles.startButton}>
-                                    <Text style={styles.buttonText}>HAE PROFIILI KÄYTTÄJÄTUNNUKSELLA</Text>
-                                </Pressable>
-                                <Pressable onPress={() => setIsLoginMode(true)} style={styles.startButton}>
-                                    <Text style={styles.buttonText}>KIRJAUDU SISÄÄN</Text>
-                                </Pressable>
-                                <Pressable onPress={() => setIsCreatingUser(true)} style={styles.startButton}>
-                                    <Text style={styles.buttonText}>LUO TUNNUS JA ENSIMMÄINEN PROFIILI</Text>
-                                </Pressable>
-                            </>
-                        )}
+                        <Pressable onPress={toggleSearchMode}// Open input field for email
+                            style={styles.startButton}>
+                            <Text style={styles.buttonText}>HAE PROFIILI KÄYTTÄJÄTUNNUKSELLA</Text>
+                        </Pressable>
+                        <Pressable onPress={() => setIsCreatingUser(true)}
+                            style={styles.startButton}>
+                            <Text style={styles.buttonText}>LUO TUNNUS JA ENSIMMÄINEN PROFIILI</Text>
+                        </Pressable>
                     </>
-                )}
-                {isLoginMode && (
-                <>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Sähköpostiosoite"
-                    value={inputEmail}
-                    onChangeText={setInputEmail}
-                    keyboardType="email-address"
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Salasana"
-                    value={inputPassword}
-                    onChangeText={setInputPassword}
-                    secureTextEntry
-                />
-                <Pressable onPress={handleLogin} style={styles.startButton}>
-                     <Text style={styles.buttonText}>KIRJAUDU SISÄÄN</Text>
-                </Pressable>
-                <Pressable onPress={() => setIsLoginMode(false)} style={styles.startButton}>
-                     <Text style={styles.buttonText}>PERUUTA</Text>
-                </Pressable>
-                </>
                 )}
                 </View>
             </View>
