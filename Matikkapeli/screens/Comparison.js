@@ -13,7 +13,7 @@ import { useRoute } from '@react-navigation/native';
 import LevelBar from '../components/LevelBar'
 import createStyles from "../styles";
 import { useTheme } from '../components/ThemeContext';
-import { light, dark } from '../assets/themeColors'; 
+import { light, dark } from '../assets/themeColors';
 import { getBGImage } from '../components/backgrounds';
 
 export default function Comparison({ onBack }) {
@@ -76,7 +76,7 @@ export default function Comparison({ onBack }) {
     // Keskeytetään mahdollinen edellinen puhe
     Speech.stop();
     // Arvotaan uusi satunnaisluku, jonka maksimiarvo riippuu comparisonXp:n arvosta
-
+    console.log("Arvotaan uudet numerot")
     setRandomNumber(drawRandomNumber(0, playerLevel));
 
     // Arvotaan, onko tason mukainen numero 1. vai 2. vertailtava
@@ -85,11 +85,13 @@ export default function Comparison({ onBack }) {
     // Jos comparisonXp ylittää 10, arvotaan yhtälön tarve ja muodostetaan yhtälö tarvittaessa
     if (comparisonXp > 10) {
       if (drawRandomNumber(0, 1) === 1) {
+        console.log("vertailtavana yhtälö")
         setIsComparableEquation(true);
         generateEquation(setIsEquationAddition, setEquationOperand1, setEquationOperand2);
+      } else {
+        console.log("Vertailtavana satunnaisluku")
+        setIsComparableEquation(false);
       }
-    } else {
-      setIsComparableEquation(false);
     }
 
     // Arvotaan, etsitäänkö isompaa vai pienempää lukua
@@ -118,8 +120,13 @@ export default function Comparison({ onBack }) {
   //Funktio yhtälön muodostamiseen
   const generateEquation = (setIsAddition, setOperand1, setOperand2) => {
     // Arvotaan kaksi lukua väliltä 0 - (comparisonXp * 0.1 + 1)
-    const first = drawRandomNumber(0, comparisonXp * 0.1 + 1)
-    const second = drawRandomNumber(0, comparisonXp * 0.1 + 1)
+    const first = drawRandomNumber(0, playerLevel)
+    const second = drawRandomNumber(0, playerLevel)
+    console.log("Arvottiin numerot", first, second)
+    // Alustetaan arvot
+    setIsAddition(null);
+    setOperand1(0);
+    setOperand2(0);
 
     if (drawRandomNumber(0, 1) === 1) {
       // Jos arvottu luku on 1, asetetaan yhteenlasku, arvotut luvut ja true
@@ -261,53 +268,55 @@ export default function Comparison({ onBack }) {
   };
 
   return (
-    <ImageBackground 
-    source={getBGImage(isDarkTheme, bgIndex)} 
-    style={styles.background} 
+    <ImageBackground
+      source={getBGImage(isDarkTheme, bgIndex)}
+      style={styles.background}
       resizeMode="cover"
     >
-    <View style={styles.container}>
-      <Text style={styles.title}>{syllabify("Vertailu")}</Text>
-      <Text>comparisonXp: {comparisonXp}</Text>
-      {renderGuide()}
-      {renderComparable(1)}
-      <Text onPress={() => checkAnswer("equali")} style={styles.comparisonOptions} >=</Text>
-      {renderComparable(2)}
-      {showFeedback && (
-        <TouchableWithoutFeedback>
-          <View style={styles.overlayInstruction}>
-            <View style={styles.instructionWindow}>
-              <Text >{getFeedbackMessage(points)}</Text>
-              <Text style={styles.title}>Pistetaulu</Text>
-              <Text>Level: {playerLevel}/10</Text>
-              <Text>Kokonaispisteet: {totalXp}/190</Text>
-              <View style={styles.profileSelect}>
-              <LevelBar progress={imageToNumberXp} label={"Kuvat numeroiksi"} playerLevel={playerLevel} gameType={"imageToNumber"} caller={"comparison"}/>
-                    <LevelBar progress={soundToNumberXp} label={"Äänestä numeroiksi"} playerLevel={playerLevel} gameType={"soundToNumber"} caller={"comparison"}/>
-                    <LevelBar progress={comparisonXp} label={"Vertailu"} playerLevel={playerLevel} gameType={"comparison"} caller={"comparison"}/>
-                    <LevelBar progress={bondsXp} label={"Hajonta"} playerLevel={playerLevel} gameType={"bonds"} caller={"comparison"}/>
+      <View style={styles.container}>
+        <Text style={styles.title}>{syllabify("Vertailu")}</Text>
+        <Text>comparisonXp: {comparisonXp}</Text>
+        {renderGuide()}
+        {renderComparable(1)}
+        <Text onPress={() => checkAnswer("equali")} style={styles.comparisonOptions} >=</Text>
+        {renderComparable(2)}
+        {showFeedback && (
+          <TouchableWithoutFeedback>
+            <View style={styles.overlayInstruction}>
+              <View style={styles.instructionWindow}>
+                <Text >{getFeedbackMessage(points)}</Text>
+                <Text style={styles.title}>{syllabify("Pistetaulu")}</Text>
+                <Text>{syllabify("Taso")}: {playerLevel}/10</Text>
+                <Text>{syllabify("Kokonaispisteet")}: {totalXp}/190</Text>
+                <View style={styles.profileSelect}>
+                  <LevelBar progress={imageToNumberXp} label={syllabify("Kuvat numeroiksi")} playerLevel={playerLevel} gameType={"imageToNumber"} caller={"comparison"} />
+                  <LevelBar progress={soundToNumberXp} label={syllabify("Äänestä numeroiksi")} playerLevel={playerLevel} gameType={"soundToNumber"} caller={"comparison"} />
+                  <LevelBar progress={comparisonXp} label={syllabify("Vertailu")} playerLevel={playerLevel} gameType={"comparison"} caller={"comparison"} />
+                  <LevelBar progress={bondsXp} label={syllabify("Hajonta")} playerLevel={playerLevel} gameType={"bonds"} caller={"comparison"} />
                 </View>
-              <View style={styles.buttonContainer}>
-                    <Pressable onPress={() => { 
-                      handleContinueGame(); 
-                      setShowFeedback(false)}}
-                      style={[styles.startButton, { backgroundColor: 'lightblue' }]}
-                      >
-                      <Text style={styles.buttonText}>{syllabify("SEURAAVA TEHTÄVÄ ODOTTAA")}</Text>
-                    </Pressable>
-                    <Pressable onPress={() => { 
-                      handleEndGame(); 
-                      setShowFeedback(false) }}
-                      style={[styles.startButton, { backgroundColor: 'darkred' }]}
-                      >
-                      <Text style={[styles.buttonText, {color: 'white'}]}>{syllabify("LOPETA PELI")}</Text>
-                    </Pressable>
-                  </View>
+                <View style={styles.buttonContainer}>
+                  <Pressable onPress={() => {
+                    handleContinueGame();
+                    setShowFeedback(false)
+                  }}
+                    style={[styles.startButton, { backgroundColor: 'lightblue' }]}
+                  >
+                    <Text style={styles.buttonText}>{syllabify("SEURAAVA TEHTÄVÄ ODOTTAA")}</Text>
+                  </Pressable>
+                  <Pressable onPress={() => {
+                    handleEndGame();
+                    setShowFeedback(false)
+                  }}
+                    style={[styles.startButton, { backgroundColor: 'darkred' }]}
+                  >
+                    <Text style={[styles.buttonText, { color: 'white' }]}>{syllabify("LOPETA PELI")}</Text>
+                  </Pressable>
+                </View>
+              </View>
             </View>
-          </View>
-        </TouchableWithoutFeedback>
-      )}
-    </View>
+          </TouchableWithoutFeedback>
+        )}
+      </View>
     </ImageBackground>
   );
 }

@@ -56,6 +56,14 @@ export function TaskSyllabificationProvider({ children }) {
       "Sulje":"SUL-JE",
       
       //FeedBack
+      "Pistetaulu":"PIS-TE-TAU-LU",
+      "Taso":"TA-SO",
+      "Kokonaispisteet":"KO-KO-NAIS-PIS-TEET",
+      "Kuvat numeroiksi":"KU-VAT NU-ME-ROIK-SI",
+      "Äänestä numeroiksi":"ÄÄ-NES-TÄ NU-ME-ROIK-SI",
+      "Vertailu":"VER-TAI-LU",
+      "Hajonta":"HA-JON-TA",
+      
       "Seuraava tehtävä odottaa": "SEU-RAA-VA TEH-TÄ-VÄ O-DOT-TAA",
       "Lopeta peli": "LO-PE-TA PE-LI",
     };
