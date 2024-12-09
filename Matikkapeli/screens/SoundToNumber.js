@@ -49,10 +49,11 @@ export default function SoundToNumber({ onBack }) {
       setShowFeedback(true);
       setGameEnded(true);
     } else {
-      playNumber()
+      if (!gameEnded) {
+        playNumber();  // Only play the number if the game hasn't ended
+      }
     }
-    
-  }, [questionsAnswered]);
+  }, [questionsAnswered, gameEnded]); 
 
   const handleBack = () => {
     Speech.stop();

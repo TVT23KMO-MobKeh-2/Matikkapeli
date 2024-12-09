@@ -24,7 +24,7 @@ export default function ProfileScreen() {
     
     const navigation = useNavigation();
     const [isDeleting, setIsDeleting] = useState(false);
-    const { handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, playerLevel, playerName, email, imageID, setImageID, career} = useContext(ScoreContext);
+    const { handleUpdatePlayerImageToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, playerLevel, playerName, email, imageID, setImageID, career} = useContext(ScoreContext);
     const [selectedImage, setSelectedImage] = useState(animalImages[imageID])
     const [showImageSelection, setShowImageSelection] = useState(false);
 
@@ -39,6 +39,7 @@ export default function ProfileScreen() {
         console.log('Selected Image:', image); 
         const newImageID = Object.keys(animalImages).find(key => animalImages[key] === image);
         console.log('New image ID:', newImageID); // Debugging
+        handleUpdatePlayerImageToDatabase(newImageID);
         setImageID(newImageID);
         console.log('Closing the modal');
         setShowImageSelection(false);

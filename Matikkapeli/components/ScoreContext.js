@@ -56,10 +56,13 @@ export const ScoreProvider = ({ children, profile = {} }) => {
         }
     }, [totalXp])
 
-    useEffect(() => {
-        updatePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career, docId })
-    }, [imageID])
-    
+    const handleUpdatePlayerImageToDatabase = (newImageID) => {
+        console.log("Updating player stats to the database:", {
+            email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career, docId
+        });
+        updatePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID:newImageID, career, docId })
+    }
+  
     const handleUpdatePlayerStatsToDatabase = () => {
         console.log("Updating player stats to the database:", {
             email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career, docId
@@ -140,6 +143,7 @@ export const ScoreProvider = ({ children, profile = {} }) => {
                 savePlayerStatsToDatabase,
                 updatePlayerStatsToDatabase,
                 handleUpdatePlayerStatsToDatabase,
+                handleUpdatePlayerImageToDatabase,
 
                 // Tehtäväpisteet
                 imageToNumberXp,
