@@ -41,6 +41,7 @@ export default function ImageToNumber({ onBack }) {
   const [gameEnded, setGameEnded] = useState(false); // Onko peli päättynyt
   const [isSpeechFinished, setIsSpeechFinished] = useState(false); // Seurataan puheen valmistumista
 
+  console.log("Renderöidään imageToNumber")
   // Generoi kysymyksiä pelille
   const generateQuestions = () => {
     const questions = [];
@@ -76,12 +77,20 @@ export default function ImageToNumber({ onBack }) {
   // Tarkistetaan, onko peli päättynyt (5 kysymystä vastattu)
   useEffect(() => {
     if (questionsAnswered === 5) {
-      Speech.stop(); // Lopeta mahdollinen puhe
-      incrementXp(points, "imageToNumber"); // Päivitetään XP
-      setGameEnded(true);
-      setShowFeedback(true);
+      const delay = 700; // Viive 0,5 sekuntia
+      const timer = setTimeout(() => {
+        setQuestionsAnswered(0);
+        Speech.stop(); // Lopeta mahdollinen puhe
+        incrementXp(points, "imageToNumber"); // Päivitetään XP
+        setGameEnded(true);
+        setShowFeedback(true);
+      }, delay);
+  
+      // Puhdistusfunktio ajastimen peruuttamiseksi
+      return () => clearTimeout(timer);
     }
   }, [questionsAnswered]);
+  
 
   // Käyttäjän vastauksen käsittely
   const handleAnswer = async (selectedAnswer) => {
@@ -208,6 +217,7 @@ export default function ImageToNumber({ onBack }) {
   };
 
   return (
+
     <ImageBackground
       source={getBGImage(isDarkTheme, bgIndex)}
       style={styles.background}

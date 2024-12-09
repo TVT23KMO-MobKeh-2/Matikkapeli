@@ -16,6 +16,7 @@ import { light, dark } from '../assets/themeColors';
 import { getBGImage } from '../components/backgrounds';
 
 export default function Comparison({ onBack }) {
+  console.log("Renderöidään comparison")
   const route = useRoute();
   const { profile } = route.params;
   const navigation = useNavigation()
@@ -44,8 +45,17 @@ export default function Comparison({ onBack }) {
   //Koukku jolla tarkistetaan joko kierros päättyy.
   useEffect(() => {
     if (questionsAnswered === 5) {
-      incrementXp(points, "comparison")
-      setShowFeedback(true)
+      const delay = 700; // Viive 0,5 sekuntia
+      const timer = setTimeout(() => {
+        setQuestionsAnswered(0);
+        Speech.stop(); // Lopeta mahdollinen puhe
+        incrementXp(points, "imageToNumber"); // Päivitetään XP
+        setGameEnded(true);
+        setShowFeedback(true);
+      }, delay);
+  
+      // Puhdistusfunktio ajastimen peruuttamiseksi
+      return () => clearTimeout(timer);
     }
   }, [questionsAnswered]);
 
