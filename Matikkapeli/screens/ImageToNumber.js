@@ -12,6 +12,9 @@ import createStyles from "../styles";
 import { useTheme } from '../components/ThemeContext';
 import { light, dark } from '../assets/themeColors';
 import { getBGImage } from '../components/backgrounds';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { BackHandler } from 'react-native';
 
 // Funktio, joka generoi satunnaisen luvun väliltä min ja max
 function random(min, max) {
@@ -20,11 +23,10 @@ function random(min, max) {
 
 export default function ImageToNumber({ onBack }) {
   const route = useRoute();
-  const { profile } = route.params;
   const navigation = useNavigation();
   const [points, setPoints] = useState(0);
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
-  const { incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, playerLevel, totalXp } = useContext(ScoreContext);
+  const { incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, playerLevel, totalXp, career, email } = useContext(ScoreContext);
   const { gameSounds, volume, playSound } = useSoundSettings(); // Käytetään ääniasetuksia ja kontekstin playSound-funktiota
   const { taskReading } = useTaskReading(); // Käytetään tehtävänlukukontekstia
   const { syllabify, taskSyllabification, getFeedbackMessage } = useTaskSyllabification(); // Käytetään tavutuskontekstia
@@ -157,7 +159,7 @@ export default function ImageToNumber({ onBack }) {
 
   const careerIcon = {
     LÄÄKÄRI: "stethoscope",
-    AUTOMEKAANIKKO: "oil",
+    MEKAANIKKO: "oil",
     RAKENTAJA: "hammer",
     KAUPPIAS: "cart-variant",
     OHJELMOIJA: "laptop",
@@ -168,7 +170,6 @@ export default function ImageToNumber({ onBack }) {
 
   // Renderöi nykyisen kysymyksen ikonit
   const renderIcons = () => {
-    const career = profile.career
     const iconName = careerIcon[career] || "stocking"
 
 
@@ -196,7 +197,7 @@ export default function ImageToNumber({ onBack }) {
         <View key={index} style={styles.optionWrapper}>
           <TouchableOpacity
             onPress={() => handleAnswer(option)}
-            style={[styles.startButton, answered && styles.disabledButton]} // Estä painallus, jos on jo vastattu
+            style={[styles.startButton, styles.orangeButton, answered && styles.disabledButton]} // Estä painallus, jos on jo vastattu
             disabled={answered} // Estä painallus, jos on jo vastattu
           >
             <Text style={styles.buttonText}>{option}</Text>
@@ -208,12 +209,12 @@ export default function ImageToNumber({ onBack }) {
 
   const handleContinueGame = () => {
     handleBack();
-    navigation.navigate('Animation', { profile });
+    navigation.navigate('Animation');
   };
 
   const handleEndGame = () => {
     handleBack();
-    navigation.navigate('SelectProfile', { profile });
+    navigation.navigate('SelectProfile', { email });
   };
 
   return (
@@ -246,23 +247,31 @@ export default function ImageToNumber({ onBack }) {
                   <LevelBar progress={bondsXp} label={syllabify("Hajonta")} playerLevel={playerLevel} gameType={"bonds"} caller={"imageToNumber"} />
                 </View>
                 <View style={styles.buttonContainer}>
-                  <Pressable onPress={() => {
+                <Pressable onPress={() => {
                     handleContinueGame();
-                    setGameEnded(false);
                     setShowFeedback(false)
                   }}
-                    style={[styles.startButton, { backgroundColor: 'lightblue' }]}
+                    style={[styles.startButton, styles.blueButton]}
                   >
-                    <Text style={styles.buttonText}>{syllabify("SEURAAVA TEHTÄVÄ ODOTTAA")}</Text>
+                    <Text style={styles.buttonText}>
+                            {syllabify("Jatketaan")}
+                        </Text>
+                    <View style={styles.nextGame}>
+                    <Ionicons name="game-controller" size={24} color={isDarkTheme ? "white" : "black"} />
+                    <MaterialIcons name="navigate-next" size={24} color={isDarkTheme ? "white" : "black"} />
+                    
+                    </View>
                   </Pressable>
                   <Pressable onPress={() => {
                     handleEndGame();
-                    setGameEnded(false);
                     setShowFeedback(false)
                   }}
-                    style={[styles.startButton, { backgroundColor: 'darkred' }]}
+                    style={[styles.startButton, styles.redButton]}
                   >
-                    <Text style={[styles.buttonText, { color: 'white' }]}>{syllabify("LOPETA PELI")}</Text>
+                    <Text style={[styles.buttonText, {color: 'white'}]}>
+                    {syllabify("Lopeta")}
+                        </Text>
+                    <Ionicons name="exit" size={24} color="white" />
                   </Pressable>
                 </View>
               </View>

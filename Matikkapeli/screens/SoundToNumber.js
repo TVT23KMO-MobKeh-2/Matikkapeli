@@ -13,15 +13,16 @@ import createStyles from "../styles";
 import { useTheme } from '../components/ThemeContext';
 import { light, dark } from '../assets/themeColors';
 import { getBGImage } from '../components/backgrounds';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 
 export default function SoundToNumber({ onBack }) {
   const route = useRoute();
-  const { profile } = route.params;
   const navigation = useNavigation();
 
   const [showFeedback, setShowFeedback] = useState(false);
-  const { playerLevel, incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, totalXp } = useContext(ScoreContext);
+  const { playerLevel, incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, totalXp, email } = useContext(ScoreContext);
   const [points, setPoints] = useState(0);
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
   const { gameSounds, playSound } = useSoundSettings(); // Haetaan playSound suoraan kontekstista
@@ -36,6 +37,7 @@ export default function SoundToNumber({ onBack }) {
   const theme = isDarkTheme ? dark : light;
   const styles = createStyles(theme);
   const bgIndex = 2;
+
   console.log("Renderöidään soundToNumber")
   useEffect(() => {
     if (questionsAnswered === 5) {
@@ -50,8 +52,9 @@ export default function SoundToNumber({ onBack }) {
   
       // Puhdistusfunktio ajastimen peruuttamiseksi
       return () => clearTimeout(timer);
+
     }
-  }, [questionsAnswered]);
+  }, [questionsAnswered, gameEnded]); 
 
   const handleBack = () => {
     Speech.stop();
@@ -63,12 +66,12 @@ export default function SoundToNumber({ onBack }) {
 
   const handleContinueGame = () => {
     handleBack();
-    navigation.navigate('Animation', { profile });
+    navigation.navigate('Animation');
   };
 
   const handleEndGame = () => {
     handleBack();
-    navigation.navigate('SelectProfile', { profile });
+    navigation.navigate('SelectProfile', { email });
   };
 
   // Pelin logiikka
@@ -141,7 +144,7 @@ export default function SoundToNumber({ onBack }) {
       />
       <View style={styles.container}>
         <Text style={styles.title}>{syllabify("Valitse oikea numero")}</Text>
-        <TouchableOpacity style={styles.startButton} onPress={playNumber}>
+        <TouchableOpacity style={[styles.startButton, styles.orangeButton]} onPress={playNumber}>
           <Text style={styles.buttonText}>{syllabify("Kuuntele numero 🔊")}</Text>
         </TouchableOpacity>
         <View style={styles.gameOptionsContainer}>
@@ -173,24 +176,32 @@ export default function SoundToNumber({ onBack }) {
                 <LevelBar progress={bondsXp} label={syllabify("Hajonta")} playerLevel={playerLevel} gameType={"bonds"} caller={"soundToNumber"} />
               </View>
               <View style={styles.buttonContainer}>
-                <Pressable onPress={() => {
-                  handleContinueGame();
-                  setGameEnded(false);
-                  setShowFeedback(false)
-                }}
-                  style={[styles.startButton, { backgroundColor: 'lightblue' }]}
-                >
-                  <Text style={styles.buttonText}>{syllabify("SEURAAVA TEHTÄVÄ ODOTTAA")}</Text>
-                </Pressable>
-                <Pressable onPress={() => {
-                  handleEndGame();
-                  setGameEnded(false);
-                  setShowFeedback(false)
-                }}
-                  style={[styles.startButton, { backgroundColor: 'darkred' }]}
-                >
-                  <Text style={[styles.buttonText, { color: 'white' }]}>{syllabify("LOPETA PELI")}</Text>
-                </Pressable>
+              <Pressable onPress={() => {
+                    handleContinueGame();
+                    setShowFeedback(false)
+                  }}
+                    style={[styles.startButton, styles.blueButton]}
+                  >
+                    <Text style={styles.buttonText}>
+                            {syllabify("Jatketaan")}
+                        </Text>
+                    <View style={styles.nextGame}>
+                    <Ionicons name="game-controller" size={24} color={isDarkTheme ? "white" : "black"} />
+                    <MaterialIcons name="navigate-next" size={24} color={isDarkTheme ? "white" : "black"} />
+                    
+                    </View>
+                  </Pressable>
+                  <Pressable onPress={() => {
+                    handleEndGame();
+                    setShowFeedback(false)
+                  }}
+                    style={[styles.startButton, styles.redButton]}
+                  >
+                    <Text style={styles.buttonText}>
+                    {syllabify("Lopeta")}
+                        </Text>
+                    <Ionicons name="exit" size={24} color="white" />
+                  </Pressable>
               </View>
             </View>
           </View>

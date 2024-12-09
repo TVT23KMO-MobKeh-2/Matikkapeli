@@ -9,6 +9,9 @@ export const light = {
     bordercolor3: '#5F9EA0', // syaani
     color: '#F4A261', // Orange-ish
     color2: '#A3C1AD', // Light green
+    color3: '#D4EBF8',
+    color4: '#740938',
+    color5: '#A8CD89',
 
     text: '#000', // Musta
     button: '#E9C46A', // Yellow-ish
@@ -30,6 +33,9 @@ export const dark = {
     bordercolor3: '#A3C1AD', // Light green
     color: '#CD5C5C', // Dark red
     color2: '#5F9EA0', // syaani
+    color3: '#0A3981',
+    color4: '#740938',
+    color5: '#355F2E',
 
     text: '#fff', // Valkoinen
     button: '#E9C46A', // Yellow-ish
