@@ -8,7 +8,7 @@ import { light, dark } from '../assets/themeColors';
 import { getBGImage } from '../components/backgrounds';
 
 
-export default function CreateProfile({ onCancel, onSave, email }) {
+export default function CreateProfile({ onCancel, onSave, email, password }) {
     const [selectedCareer, setSelectedCareer] = useState();
     const [selectedAnimal, setSelectedAnimal] = useState();
     const [name, setName] = useState('');
@@ -37,6 +37,7 @@ export default function CreateProfile({ onCancel, onSave, email }) {
         bondsXp: 0,
         imageID: selectedAnimal.value,
         career: selectedCareer.label,
+        password: password || '', 
       };
 
       try {

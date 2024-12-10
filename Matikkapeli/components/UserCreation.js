@@ -1,7 +1,7 @@
 import { View, Text, TextInput, Pressable, ImageBackground, Alert } from 'react-native';
 import React, { useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { saveEmailToDatabase, isEmailUsed } from '../firebase/Functions'; // Import the function
+import { saveEmailToDatabase, isEmailUsed, recieveProfileByEmail} from '../firebase/Functions'; // Import the function
 import { useNavigation } from '@react-navigation/native';
 
 import createStyles from "../styles";
@@ -13,6 +13,7 @@ import { getBGImage } from '../components/backgrounds';
 export default function UserCreation({ onNavigate }) {
     const navigation = useNavigation();
     const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [isSaving, setIsSaving] = useState(false);
     const { isDarkTheme } = useTheme();
     const bgIndex = 0;
@@ -20,34 +21,31 @@ export default function UserCreation({ onNavigate }) {
     
 
     const handleSave = async () => {
-        if (!email) {
-            alert('Täytä kaikki kentät!');
+        if (!email || !password) {
+            Alert.alert('Virhe', 'Täytä kaikki kentät!');
             return;
         }
-
+    
         setIsSaving(true);
-
+    
         try {
-            // Check if the email is already used
             const emailInUse = await isEmailUsed(email);
             if (emailInUse) {
-                Alert.alert("Virhe", "Tämä käyttäjätunnus on jo käytössä.");
+                Alert.alert('Virhe', 'Tämä käyttäjätunnus on jo käytössä.');
                 setIsSaving(false);
                 return;
             }
-
-            console.log('Tallennetaan sähköposti AsyncStorage:een:', email);
-            await AsyncStorage.setItem('email', email); // Store the email locally
-
-            console.log('Sähköposti tallennettu AsyncStorage:een');
-            if (onNavigate) {
-                onNavigate(); // If onNavigate is passed, call it
-            } else {
-                navigation.navigate('SelectProfile', { email: email }); // Navigate to the next screen
-            }
+    
+            // Store email and password in AsyncStorage
+            await AsyncStorage.setItem('email', email);
+            await AsyncStorage.setItem('password', password);
+    
+            console.log('Email and password saved to AsyncStorage.');
+            
+            navigation.navigate('SelectProfile', { email });
         } catch (error) {
-            console.error('Error saving profile:', error);
-            alert('Profiilin tallennus epäonnistui');
+            console.error('Error during user creation:', error);
+            Alert.alert('Virhe', 'Toiminto epäonnistui. Yritä uudelleen.');
         } finally {
             setIsSaving(false);
         }
@@ -68,7 +66,15 @@ export default function UserCreation({ onNavigate }) {
                 value={email}
                 onChangeText={(text) => setEmail(text)}
             />
-                <Pressable style={[styles.startButton, styles.blueButton]} onPress={handleSave} disabled={isSaving}>
+            <Text style={styles.label}>SALASANA</Text>
+            <TextInput
+                style={[styles.input, {backgroundColor: 'white'}]}
+                placeholder="KIRJOITA SALASANA"
+                value={password}
+                onChangeText={(text) => setPassword(text)}
+                secureTextEntry
+            />
+                <Pressable style={[styles.startButton, {backgroundColor: 'lightblue'}]} onPress={handleSave} disabled={isSaving}>
                     <Text style={styles.buttonText}>{isSaving ? 'TALLENETAAN...' : 'TALLENNA'}</Text>
                 </Pressable>
                 <Pressable style={[styles.startButton, styles.redButton]} onPress={() => navigation.goBack()}>
