@@ -47,12 +47,17 @@ export default function ImageToNumber({ onBack }) {
   // Generoi kysymyksiä pelille
   const generateQuestions = () => {
     const questions = [];
-
+    let lastIconCount = null // muuttuja, johon tallennetaan edellinen arvo
     for (let i = 0; i < 5; i++) {
       const minLevel = Math.max(0, playerLevel - 2)
-      const iconCount = Math.min(random(minLevel, playerLevel || 1), 10); // Satunnainen määrä vasaroita
+      let iconCount = Math.min(random(minLevel, playerLevel || 1), 10); // Satunnainen määrä esineitä
+      //estetään että numero ei ole sama kuin edellinen
+      while (iconCount === lastIconCount) {
+        iconCount = Math.min(random(minLevel, playerLevel || 1), 10);
+      }
+      lastIconCount = iconCount; // asetetaan arvo myös muuttujaan
       const options = Array.from({ length: playerLevel - minLevel + 1 }, (_, i) => minLevel + i)
-      console.log('iconCount')
+      console.log('iconCount', iconCount)
       questions.push({
         question: syllabify("Montako esinettä näet näytöllä?"), // Kysymyksen teksti
         iconCount,
