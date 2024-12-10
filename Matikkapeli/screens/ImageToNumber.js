@@ -47,26 +47,56 @@ export default function ImageToNumber({ onBack }) {
   // Generoi kysymyksiä pelille
   const generateQuestions = () => {
     const questions = [];
-    let lastIconCount = null // muuttuja, johon tallennetaan edellinen arvo
-    for (let i = 0; i < 5; i++) {
-      const minLevel = Math.max(0, playerLevel - 2)
-      let iconCount = Math.min(random(minLevel, playerLevel || 1), 10); // Satunnainen määrä esineitä
-      //estetään että numero ei ole sama kuin edellinen
-      while (iconCount === lastIconCount) {
-        iconCount = Math.min(random(minLevel, playerLevel || 1), 10);
+    const minLevel = Math.max(0, playerLevel - 2);
+    // alustetaan iconCounts lista ja lisätään siihen kaksi kertaa playerLeveliä vastaava luku
+    let iconCounts = [playerLevel, playerLevel]
+    if (playerLevel === 1) {
+      iconCounts = Math.random() < 0.5 ? [1, 0, 1, 0, 1] : [0, 1, 0, 1, 0];
+    } else if (playerLevel === 2) {
+      const secondIcons = {
+        0: [2, 0, 2, 0, 2],
+        1: [2, 0, 2, 1, 2],
+        2: [2, 1, 2, 0, 2],
+        3: [2, 1, 2, 1, 2]
+      };
+      iconCounts = secondIcons[random(0, 3)]
+
+    } else {
+      let lastIconCount = playerLevel
+      // arvotaan kolme satunnaislukua minLevelin ja playerLevelin väliltä
+      for (let i = 0; i < 3; i++) {
+        let iconCount = Math.min(random(minLevel, playerLevel), 10);
+        //estetään että peräkkäin ei ole samoja lukuja
+        while (iconCount === lastIconCount) {
+          iconCount = Math.min(random(minLevel, playerLevel), 10);
+        }
+        lastIconCount = iconCount;
+        iconCounts.push(iconCount);
       }
-      lastIconCount = iconCount; // asetetaan arvo myös muuttujaan
+
+      //sekoitetaan lista niin, että playerlevelit on satunnaisilla paikoilla
+      for (let j = 0; j < iconCounts.length; j++) {
+        //valitaan listalta satunnaisIndeksi
+        const randomIndex = Math.floor(Math.random() * iconCounts.length);
+        //vaihdetaan indeksin ja randomindexin elementtien paikkoja
+        [iconCounts[j], iconCounts[randomIndex]] = [iconCounts[randomIndex], iconCounts[j]]
+      }
+    }
+
+    // lisätään luvut kysymyksien kanssa listalle
+    for (let i = 0; i < 5; i++) {
       const options = Array.from({ length: playerLevel - minLevel + 1 }, (_, i) => minLevel + i)
-      console.log('iconCount', iconCount)
+      console.log('iconCount', iconCounts[i])
       questions.push({
         question: syllabify("Montako esinettä näet näytöllä?"), // Kysymyksen teksti
-        iconCount,
+        iconCount: iconCounts[i],
         options, // Vaihtoehdot
       });
-
     }
     return questions;
-  };
+  }
+
+
 
   const [questions, setQuestions] = useState(() => generateQuestions());
 
@@ -91,7 +121,7 @@ export default function ImageToNumber({ onBack }) {
       setShowFeedback(true);
     }
   }, [questionsAnswered]);
-  
+
 
   // Käyttäjän vastauksen käsittely
   const handleAnswer = async (selectedAnswer) => {
@@ -246,19 +276,19 @@ export default function ImageToNumber({ onBack }) {
                   <LevelBar progress={bondsXp} label={syllabify("Hajonta")} playerLevel={playerLevel} gameType={"bonds"} caller={"imageToNumber"} />
                 </View>
                 <View style={styles.buttonContainer}>
-                <Pressable onPress={() => {
+                  <Pressable onPress={() => {
                     handleContinueGame();
                     setShowFeedback(false)
                   }}
                     style={[styles.startButton, styles.blueButton]}
                   >
                     <Text style={styles.buttonText}>
-                            {syllabify("Jatketaan")}
-                        </Text>
+                      {syllabify("Jatketaan")}
+                    </Text>
                     <View style={styles.nextGame}>
-                    <Ionicons name="game-controller" size={24} color={isDarkTheme ? "white" : "black"} />
-                    <MaterialIcons name="navigate-next" size={24} color={isDarkTheme ? "white" : "black"} />
-                    
+                      <Ionicons name="game-controller" size={24} color={isDarkTheme ? "white" : "black"} />
+                      <MaterialIcons name="navigate-next" size={24} color={isDarkTheme ? "white" : "black"} />
+
                     </View>
                   </Pressable>
                   <Pressable onPress={() => {
@@ -267,9 +297,9 @@ export default function ImageToNumber({ onBack }) {
                   }}
                     style={[styles.startButton, styles.redButton]}
                   >
-                    <Text style={[styles.buttonText, {color: 'white'}]}>
-                    {syllabify("Lopeta")}
-                        </Text>
+                    <Text style={[styles.buttonText, { color: 'white' }]}>
+                      {syllabify("Lopeta")}
+                    </Text>
                     <Ionicons name="exit" size={24} color="white" />
                   </Pressable>
                 </View>
