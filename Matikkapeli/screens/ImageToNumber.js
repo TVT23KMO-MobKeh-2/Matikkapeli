@@ -26,7 +26,7 @@ export default function ImageToNumber({ onBack }) {
   const navigation = useNavigation();
   const [points, setPoints] = useState(0);
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
-  const { incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, playerLevel, totalXp, career, email } = useContext(ScoreContext);
+  const { incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, playerLevel, totalXp, career, email, readFeedback } = useContext(ScoreContext);
   const { gameSounds, volume, playSound } = useSoundSettings(); // Käytetään ääniasetuksia ja kontekstin playSound-funktiota
   const { taskReading } = useTaskReading(); // Käytetään tehtävänlukukontekstia
   const { syllabify, taskSyllabification, getFeedbackMessage } = useTaskSyllabification(); // Käytetään tavutuskontekstia
@@ -95,12 +95,12 @@ export default function ImageToNumber({ onBack }) {
             [iconCounts[1], iconCounts[4]] = [iconCounts[4], iconCounts[1]];
             if (iconCounts[1] === iconCounts[2]) {//jos 2. ja 3. numero on samoja, vaihdetaan 3. ja 4. paikkaa
               [iconCounts[2], iconCounts[3] = iconCounts[3], iconCounts[2]]
-            } else if (iconCounts[2] === iconCounts[3]){//jos 3. ja 4. numero on samoja, vaihdetaan 2. ja 3. paikkaa
+            } else if (iconCounts[2] === iconCounts[3]) {//jos 3. ja 4. numero on samoja, vaihdetaan 2. ja 3. paikkaa
               [iconCounts[1], iconCounts[2] = iconCounts[2], iconCounts[1]]
             }
           },
           3: () => {//oxoxo 
-            [iconCounts[0], iconCounts[3]] = [iconCounts[3], iconCounts[0]]; 
+            [iconCounts[0], iconCounts[3]] = [iconCounts[3], iconCounts[0]];
           },
           4: () => {//oxoox
             [iconCounts[0], iconCounts[4]] = [iconCounts[4], iconCounts[0]];
@@ -140,21 +140,26 @@ export default function ImageToNumber({ onBack }) {
   const [questions, setQuestions] = useState(() => generateQuestions());
 
   // Alustetaan kysymykset ja nollataan kysymysindeksi
-  useEffect(() => {
-    if (showFeedback || gameActive) return; // Älä alusta, jos palautetta näytetään
+  //  useEffect(() => {
+  //    if (showFeedback || gameActive) return; // Älä alusta, jos palautetta näytetään
 
-    /*if (!showFeedback && !gameEnded) {
-    console.log('wawawa')
-    setQuestions(generateQuestions());
-    setQuestionIndex(0); // Nollaa kysymysindeksi, kun peli alkaa
-    }*/
-  }, [showFeedback, gameEnded]);
+  /*if (!showFeedback && !gameEnded) {
+  console.log('wawawa')
+  setQuestions(generateQuestions());
+  setQuestionIndex(0); // Nollaa kysymysindeksi, kun peli alkaa
+  }*/
+  //  }, [showFeedback, gameEnded]);
 
 
   // Tarkistetaan, onko peli päättynyt (5 kysymystä vastattu)
   useEffect(() => {
     if (questionsAnswered === 5) {
-      Speech.stop(); // Lopeta mahdollinen puhe
+      setGameActive(false);
+      if (taskReading) {
+        console.log("Taskreading oli tosi, joten if lauseessa")
+        Speech.stop(); // Lopeta mahdollinen puhe
+        readFeedback(points);
+      }
       incrementXp(points, "imageToNumber"); // Päivitetään XP
       setGameEnded(true);
       setShowFeedback(true);
@@ -184,6 +189,7 @@ export default function ImageToNumber({ onBack }) {
       setAnswered(false); // Nollaa vastauksen tila seuraavaa kysymystä varten
     }, 1000);
 
+
     // Päivitä pisteet ja vastattujen kysymysten määrä
     if (isCorrect) {
       setPoints((prevPoints) => prevPoints + 1);
@@ -202,12 +208,12 @@ export default function ImageToNumber({ onBack }) {
 
   // Puheen hallinta ja valmistuminen
   useEffect(() => {
-    if (gameEnded) {
+/*     if (gameEnded) {
       Speech.stop(); // Lopeta mahdollinen puhe, jos peli on ohi
       setIsSpeechFinished(false)
       return;
-    } // Ei uusia kysymyksiä, jos peli on ohi
-
+    } // Ei uusia kysymyksiä, jos peli on ohi 
+ */
     const currentQuestion = questions[questionIndex];
     setAnswered(false);
     setIsSpeechFinished(false); // Resetoi puhevalmiuden tila
@@ -223,7 +229,7 @@ export default function ImageToNumber({ onBack }) {
     }
 
 
-  }, [questionIndex, questions, gameEnded, taskReading]);
+  }, [questionIndex, questions, taskReading]);
 
   const careerIcon = {
     LÄÄKÄRI: "stethoscope",

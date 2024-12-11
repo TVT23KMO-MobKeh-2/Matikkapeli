@@ -2,7 +2,7 @@ import { createContext, useState, useEffect } from 'react';
 //import { addDoc, collection, firestore, PLAYERSTATS, where, query, getDocs, updateDoc, doc } from '../firebase/Config';
 import { savePlayerStatsToDatabase, recievePlayerStatsFromDatabase, updatePlayerStatsToDatabase } from '../firebase/Functions'
 import { Alert } from 'react-native';
-
+import * as Speech from 'expo-speech';
 
 // Luodaan konteksti, joka tarjoaa pelin tilan ja toiminnot lapsikomponenteille
 export const ScoreContext = createContext();
@@ -127,6 +127,21 @@ export const ScoreProvider = ({ children, profile = {} }) => {
                 } */
     };
 
+    //funktio palautteen lukemista varten
+    const readFeedback = (points) => {
+        console.log("readFeedbackMessage")
+        const feedbackMessages = [
+            "nolla kautta viisi! Hyvä, että yritit! Matikka on välillä tosi haastavaa. Harjoitellaan yhdessä lisää, niin ensi kerralla voi mennä paremmin!",
+            "yksi kautta viisi! Hyvä, sait yhden oikein! Tämä on hyvä alku, ja joka kerta opit vähän lisää. Kokeillaan yhdessä uudelleen!",
+            "kaksi kautta viisi! Hienoa, sait jo kaksi oikein! Olet oppimassa. Jatketaan harjoittelua, niin ensi kerralla osaat vielä enemmän!",
+            "kolme kautta viisi! Mahtavaa, sait yli puolet oikein! Olet jo tosi lähellä. Harjoitellaan vielä vähän, niin pääset vieläkin pidemmälle!",
+            "neljä kautta viisi! Tosi hienoa! Melkein kaikki meni oikein. Vielä vähän harjoittelua, niin voit saada kaikki oikein ensi kerralla!",
+            "viisi kautta viisi! VAU! ihan huippua! Sait kaikki oikein! Jatka samaan malliin, olet tosi taitava!"
+        ]
+        Speech.speak(feedbackMessages[points])
+        console.log("Message", feedbackMessages[points])
+    }
+
     return (
         <ScoreContext.Provider
             value={{
@@ -163,6 +178,7 @@ export const ScoreProvider = ({ children, profile = {} }) => {
                 setSoundToNumberXp,
                 setComparisonXp,
                 setBondsXp,
+                readFeedback
             }}
         >
             {children}
