@@ -121,17 +121,17 @@ export function TaskSyllabificationProvider({ children }) {
       spoken: "Tämän hetkiset pisteesi:"
     },
   };
-
+ 
   // Funktio palautteen hakemiseen
   const getFeedbackMessage = (points) => {
     console.log("FeedbackMessagessa")
     const entry = feedbackMessages[points] || feedbackMessages.default;
-    if(taskReading) {
+/*     if(taskReading) {
       console.log("Sammutetaan edellinen puhe")
       Speech.stop()
       console.log("Puhutaan feedbackMessage")
       Speech.speak(feedbackMessages[points].spoken)
-    }
+    } */
     return taskSyllabification ? entry.syllabified : entry.default;
   };
 

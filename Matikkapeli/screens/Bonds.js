@@ -37,7 +37,7 @@ export default function Bonds({ onBack }) {
   const [inputValue2, setInputValue2] = useState('');  // Käyttäjän syöte oikeaan laatikkoon
   const [sound, setSound] = useState();  // Äänet, joita toistetaan vastauksen perusteella
   const [doneTasks, setDoneTasks] = useState(0);  // Tavoitteena on vastata oikein 5 kysymykseen
-  const { incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, playerLevel, totalXp, email } = useContext(ScoreContext);  // Pelin pistetilanne ja XP:n käsittely
+  const { incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, playerLevel, totalXp, email, readFeedback } = useContext(ScoreContext);  // Pelin pistetilanne ja XP:n käsittely
   const [questionsAnswered, setQuestionsAnswered] = useState(0)
   const [points, setPoints] = useState(0)
   const [instructionVisibility, setInstructionVisibility] = useState(true);  // Näytetäänkö ohjeet pelin alussa
@@ -99,6 +99,11 @@ export default function Bonds({ onBack }) {
   useEffect(() => {
     if (questionsAnswered === 5) {
       Keyboard.dismiss();
+      if (taskReading) {
+        console.log("Taskreading oli tosi, joten if lauseessa")
+        Speech.stop(); // Lopeta mahdollinen puhe
+        readFeedback(points);
+      }
       setShowFeedback(true);  // Näytetään feedback-ikkuna, kun 5 kysymystä on vastattu
       // Lisätään XP-pisteet
       incrementXp(points, "bonds");

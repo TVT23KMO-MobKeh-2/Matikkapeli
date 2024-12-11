@@ -2,7 +2,7 @@ import { createContext, useState, useEffect } from 'react';
 //import { addDoc, collection, firestore, PLAYERSTATS, where, query, getDocs, updateDoc, doc } from '../firebase/Config';
 import { savePlayerStatsToDatabase, recievePlayerStatsFromDatabase, updatePlayerStatsToDatabase } from '../firebase/Functions'
 import { Alert } from 'react-native';
-
+import * as Speech from 'expo-speech';
 
 // Luodaan konteksti, joka tarjoaa pelin tilan ja toiminnot lapsikomponenteille
 export const ScoreContext = createContext();
@@ -31,7 +31,7 @@ export const ScoreProvider = ({ children, profile = {} }) => {
     const [xpMilestone, setXpMilestone] = useState(false);
     const [gameAchieved, setGameAchieved] = useState(false);
     //Taulukko tasojen nousua varten
-    const xpForLevelUp = [15, 30, 50, 70, 90, 110, 130, 150, 170];
+    const xpForLevelUp = { 1: 15, 2: 30, 3: 50, 4: 70, 5: 90, 6: 110, 7: 130, 8: 150, 9: 170 };
 
     // Koukku pelaajatietojen hakuun tietokannasta
     useEffect(() => {
@@ -50,9 +50,9 @@ export const ScoreProvider = ({ children, profile = {} }) => {
 
     // Tarkistetaan, päästäänkö seuraavalle tasolle tai onko koko peli läpi?
     useEffect(() => {
-        if (xpForLevelUp.includes(totalXp)) {
+        if (totalXp === xpForLevelUp[playerLevel]) {
             setXpMilestone(true);
-        } else if (totalXp >= 190) {
+        } else if (totalXp === 190) {
             setGameAchieved(true);
         }
     }, [totalXp])
@@ -61,9 +61,9 @@ export const ScoreProvider = ({ children, profile = {} }) => {
         console.log("Updating player stats to the database:", {
             email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career, docId
         });
-        updatePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID:newImageID, career, docId })
+        updatePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID: newImageID, career, docId })
     }
-  
+
     const handleUpdatePlayerStatsToDatabase = () => {
         console.log("Updating player stats to the database:", {
             email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career, docId
@@ -127,6 +127,21 @@ export const ScoreProvider = ({ children, profile = {} }) => {
                 } */
     };
 
+    //funktio palautteen lukemista varten
+    const readFeedback = (points) => {
+        console.log("readFeedbackMessage")
+        const feedbackMessages = [
+            "nolla kautta viisi! Hyvä, että yritit! Matikka on välillä tosi haastavaa. Harjoitellaan yhdessä lisää, niin ensi kerralla voi mennä paremmin!",
+            "yksi kautta viisi! Hyvä, sait yhden oikein! Tämä on hyvä alku, ja joka kerta opit vähän lisää. Kokeillaan yhdessä uudelleen!",
+            "kaksi kautta viisi! Hienoa, sait jo kaksi oikein! Olet oppimassa. Jatketaan harjoittelua, niin ensi kerralla osaat vielä enemmän!",
+            "kolme kautta viisi! Mahtavaa, sait yli puolet oikein! Olet jo tosi lähellä. Harjoitellaan vielä vähän, niin pääset vieläkin pidemmälle!",
+            "neljä kautta viisi! Tosi hienoa! Melkein kaikki meni oikein. Vielä vähän harjoittelua, niin voit saada kaikki oikein ensi kerralla!",
+            "viisi kautta viisi! VAU! ihan huippua! Sait kaikki oikein! Jatka samaan malliin, olet tosi taitava!"
+        ]
+        Speech.speak(feedbackMessages[points])
+        console.log("Message", feedbackMessages[points])
+    }
+
     return (
         <ScoreContext.Provider
             value={{
@@ -163,6 +178,7 @@ export const ScoreProvider = ({ children, profile = {} }) => {
                 setSoundToNumberXp,
                 setComparisonXp,
                 setBondsXp,
+                readFeedback
             }}
         >
             {children}

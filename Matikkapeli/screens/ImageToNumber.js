@@ -26,7 +26,7 @@ export default function ImageToNumber({ onBack }) {
   const navigation = useNavigation();
   const [points, setPoints] = useState(0);
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
-  const { incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, playerLevel, totalXp, career, email } = useContext(ScoreContext);
+  const { incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, playerLevel, totalXp, career, email, readFeedback } = useContext(ScoreContext);
   const { gameSounds, volume, playSound } = useSoundSettings(); // Käytetään ääniasetuksia ja kontekstin playSound-funktiota
   const { taskReading } = useTaskReading(); // Käytetään tehtävänlukukontekstia
   const { syllabify, taskSyllabification, getFeedbackMessage } = useTaskSyllabification(); // Käytetään tavutuskontekstia
@@ -47,46 +47,125 @@ export default function ImageToNumber({ onBack }) {
   // Generoi kysymyksiä pelille
   const generateQuestions = () => {
     const questions = [];
+    const minLevel = Math.max(0, playerLevel - 2);
+    let playerLevelLimit = false
+    // alustetaan iconCounts lista ja lisätään siihen kaksi kertaa playerLeveliä vastaava luku
+    let iconCounts = []
+    if (playerLevel === 1) { //tasolla 1 arvotaan kahdesta vaihtoehdosta
+      iconCounts = Math.random() < 0.5 ? [1, 0, 1, 0, 1] : [0, 1, 0, 1, 0];
+    } else { // tasolla kolme ja siitä eteenpäin arvotaan kolme satunnaislukua kahden playerLeveliä vastaavan luvun lisäksi
+      iconCounts = [playerLevel, playerLevel]
+      let lastIconCount = playerLevel
+      // arvotaan kolme satunnaislukua minLevelin ja playerLevelin väliltä
+      for (let i = 0; i < 3; i++) {
+        let iconCount = Math.min(random(minLevel, playerLevel), 10);
+        //estetään että peräkkäin ei ole samoja lukuja
+        while (iconCount === lastIconCount || (playerLevelLimit && iconCount === playerLevel)) {
+          iconCount = Math.min(random(minLevel, playerLevel), 10);
+        }
+        lastIconCount = iconCount;
+        if (iconCount === playerLevel) {
+          console.log("playerLevelLimit true")
+          playerLevelLimit = true
+          iconCounts.splice(1, 0, iconCount)
+        } else {
+          iconCounts.push(iconCount);
+        }
+      }
 
-    for (let i = 0; i < 5; i++) {
-      const minLevel = Math.max(0, playerLevel - 2)
-      const iconCount = Math.min(random(minLevel, playerLevel || 1), 10); // Satunnainen määrä vasaroita
-      const options = Array.from({ length: playerLevel - minLevel + 1 }, (_, i) => minLevel + i)
-      console.log('iconCount')
-      questions.push({
-        question: syllabify("Montako esinettä näet näytöllä?"), // Kysymyksen teksti
-        iconCount,
-        options, // Vaihtoehdot
-      });
+      if (playerLevelLimit) { // jos listalla on playerLeveliä vastaava luku kolme kertaa, asetetaan ne 1. 3. ja 5. listalla
+        [iconCounts[1], iconCounts[4]] = [iconCounts[4], iconCounts[1]]
+        playerLevelLimit = false
+      } else {
+        //sekoitetaan lista niin, että playerlevelit(x) on satunnaisilla paikoilla, ei peräkkäin ja randomNumero(o) muissa 
+        const mixValues = {
+          0: () => { //xoxoo
+            [iconCounts[1], iconCounts[2]] = [iconCounts[2], iconCounts[1]];
+            if (iconCounts[3] === iconCounts[4]) { //jos 4. ja 5. numero on samoja, vaihdetaan 2. ja 5. paikkaa
+              [iconCounts[1], iconCounts[4] = iconCounts[4], iconCounts[1]]
+            }
+          },
+          1: () => {//xooxo
+            [iconCounts[1], iconCounts[3]] = [iconCounts[3], iconCounts[1]];
+            if (iconCounts[1] === iconCounts[2]) {//jos 2. ja 3. numero on samoja, vaihdetaan 3. ja 5. paikkaa
+              [iconCounts[2], iconCounts[4] = iconCounts[4], iconCounts[2]]
+            }
+          },
+          2: () => {//xooox
+            [iconCounts[1], iconCounts[4]] = [iconCounts[4], iconCounts[1]];
+            if (iconCounts[1] === iconCounts[2]) {//jos 2. ja 3. numero on samoja, vaihdetaan 3. ja 4. paikkaa
+              [iconCounts[2], iconCounts[3] = iconCounts[3], iconCounts[2]]
+            } else if (iconCounts[2] === iconCounts[3]) {//jos 3. ja 4. numero on samoja, vaihdetaan 2. ja 3. paikkaa
+              [iconCounts[1], iconCounts[2] = iconCounts[2], iconCounts[1]]
+            }
+          },
+          3: () => {//oxoxo 
+            [iconCounts[0], iconCounts[3]] = [iconCounts[3], iconCounts[0]];
+          },
+          4: () => {//oxoox
+            [iconCounts[0], iconCounts[4]] = [iconCounts[4], iconCounts[0]];
+            if (iconCounts[2] === iconCounts[3]) {//jos 3. ja 4. numero on samoja, vaihdetaan 1. ja 3. paikkaa
+              [iconCounts[0], iconCounts[2] = iconCounts[2], iconCounts[0]]
+            }
+          },
+          5: () => {//ooxox
+            [iconCounts[0], iconCounts[2]] = [iconCounts[2], iconCounts[0]];
+            [iconCounts[1], iconCounts[4]] = [iconCounts[4], iconCounts[1]];
+            if (iconCounts[0] === iconCounts[1]) {//jos 1. ja 2. numero on samoja, vaihdetaan 1. ja 4. paikkaa
+              [iconCounts[0], iconCounts[3] = iconCounts[3], iconCounts[0]]
+            }
+          }
+        }
+        const mix = mixValues[random(0, 5)]
+        mix()
+      }
 
     }
+
+    // lisätään luvut kysymyksien kanssa listalle
+    for (let i = 0; i < 5; i++) {
+      const options = Array.from({ length: playerLevel - minLevel + 1 }, (_, i) => minLevel + i)
+      console.log('iconCount', iconCounts[i])
+      questions.push({
+        question: syllabify("Montako esinettä näet näytöllä?"), // Kysymyksen teksti
+        iconCount: iconCounts[i],
+        options, // Vaihtoehdot
+      });
+    }
     return questions;
-  };
+  }
+
+
 
   const [questions, setQuestions] = useState(() => generateQuestions());
 
   // Alustetaan kysymykset ja nollataan kysymysindeksi
-  useEffect(() => {
-    if (showFeedback || gameActive) return; // Älä alusta, jos palautetta näytetään
+  //  useEffect(() => {
+  //    if (showFeedback || gameActive) return; // Älä alusta, jos palautetta näytetään
 
-    /*if (!showFeedback && !gameEnded) {
-    console.log('wawawa')
-    setQuestions(generateQuestions());
-    setQuestionIndex(0); // Nollaa kysymysindeksi, kun peli alkaa
-    }*/
-  }, [showFeedback, gameEnded]);
+  /*if (!showFeedback && !gameEnded) {
+  console.log('wawawa')
+  setQuestions(generateQuestions());
+  setQuestionIndex(0); // Nollaa kysymysindeksi, kun peli alkaa
+  }*/
+  //  }, [showFeedback, gameEnded]);
 
 
   // Tarkistetaan, onko peli päättynyt (5 kysymystä vastattu)
   useEffect(() => {
     if (questionsAnswered === 5) {
-      Speech.stop(); // Lopeta mahdollinen puhe
+      setGameActive(false);
+      if (taskReading) {
+        console.log("Taskreading oli tosi, joten if lauseessa")
+        Speech.stop(); // Lopeta mahdollinen puhe
+        readFeedback(points);
+      }
       incrementXp(points, "imageToNumber"); // Päivitetään XP
       setGameEnded(true);
       setShowFeedback(true);
     }
   }, [questionsAnswered]);
-  
+
 
   // Käyttäjän vastauksen käsittely
   const handleAnswer = async (selectedAnswer) => {
@@ -110,6 +189,7 @@ export default function ImageToNumber({ onBack }) {
       setAnswered(false); // Nollaa vastauksen tila seuraavaa kysymystä varten
     }, 1000);
 
+
     // Päivitä pisteet ja vastattujen kysymysten määrä
     if (isCorrect) {
       setPoints((prevPoints) => prevPoints + 1);
@@ -128,12 +208,12 @@ export default function ImageToNumber({ onBack }) {
 
   // Puheen hallinta ja valmistuminen
   useEffect(() => {
-    if (gameEnded) {
+/*     if (gameEnded) {
       Speech.stop(); // Lopeta mahdollinen puhe, jos peli on ohi
       setIsSpeechFinished(false)
       return;
-    } // Ei uusia kysymyksiä, jos peli on ohi
-
+    } // Ei uusia kysymyksiä, jos peli on ohi 
+ */
     const currentQuestion = questions[questionIndex];
     setAnswered(false);
     setIsSpeechFinished(false); // Resetoi puhevalmiuden tila
@@ -149,7 +229,7 @@ export default function ImageToNumber({ onBack }) {
     }
 
 
-  }, [questionIndex, questions, gameEnded, taskReading]);
+  }, [questionIndex, questions, taskReading]);
 
   const careerIcon = {
     LÄÄKÄRI: "stethoscope",
@@ -241,19 +321,19 @@ export default function ImageToNumber({ onBack }) {
                   <LevelBar progress={bondsXp} label={syllabify("Hajonta")} playerLevel={playerLevel} gameType={"bonds"} caller={"imageToNumber"} />
                 </View>
                 <View style={styles.buttonContainer}>
-                <Pressable onPress={() => {
+                  <Pressable onPress={() => {
                     handleContinueGame();
                     setShowFeedback(false)
                   }}
                     style={[styles.startButton, styles.blueButton]}
                   >
                     <Text style={styles.buttonText}>
-                            {syllabify("Jatketaan")}
-                        </Text>
+                      {syllabify("Jatketaan")}
+                    </Text>
                     <View style={styles.nextGame}>
-                    <Ionicons name="game-controller" size={24} color={isDarkTheme ? "white" : "black"} />
-                    <MaterialIcons name="navigate-next" size={24} color={isDarkTheme ? "white" : "black"} />
-                    
+                      <Ionicons name="game-controller" size={24} color={isDarkTheme ? "white" : "black"} />
+                      <MaterialIcons name="navigate-next" size={24} color={isDarkTheme ? "white" : "black"} />
+
                     </View>
                   </Pressable>
                   <Pressable onPress={() => {
@@ -262,9 +342,9 @@ export default function ImageToNumber({ onBack }) {
                   }}
                     style={[styles.startButton, styles.redButton]}
                   >
-                    <Text style={[styles.buttonText, {color: 'white'}]}>
-                    {syllabify("Lopeta")}
-                        </Text>
+                    <Text style={[styles.buttonText, { color: 'white' }]}>
+                      {syllabify("Lopeta")}
+                    </Text>
                     <Ionicons name="exit" size={24} color="white" />
                   </Pressable>
                 </View>
