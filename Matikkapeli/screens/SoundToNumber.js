@@ -22,7 +22,7 @@ export default function SoundToNumber({ onBack }) {
   const navigation = useNavigation();
 
   const [showFeedback, setShowFeedback] = useState(false);
-  const { playerLevel, incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, totalXp, email } = useContext(ScoreContext);
+  const { playerLevel, incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, totalXp, email, readFeedback } = useContext(ScoreContext);
   const [points, setPoints] = useState(0);
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
   const { gameSounds, playSound } = useSoundSettings(); // Haetaan playSound suoraan kontekstista
@@ -115,7 +115,11 @@ export default function SoundToNumber({ onBack }) {
   console.log("Renderöidään soundToNumber")
   useEffect(() => {
     if (questionsAnswered === 5) {
-      Speech.stop();
+      if (taskReading) {
+        console.log("Taskreading oli tosi, joten if lauseessa")
+        Speech.stop(); // Lopeta mahdollinen puhe
+        readFeedback(points);
+      }
       incrementXp(points, "soundToNumber");
       setShowFeedback(true);
       setGameEnded(true);

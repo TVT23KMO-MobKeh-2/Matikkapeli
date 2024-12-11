@@ -33,7 +33,7 @@ export default function Comparison({ onBack }) {
   const { syllabify, taskSyllabification, getFeedbackMessage } = useTaskSyllabification();
   const [points, setPoints] = useState(0)
   const [questionsAnswered, setQuestionsAnswered] = useState(0)
-  const { playerLevel, incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, totalXp, email } = useContext(ScoreContext)
+  const { playerLevel, incrementXp, handleUpdatePlayerStatsToDatabase, imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, totalXp, email, readFeedback } = useContext(ScoreContext)
   const [isLevelNumberFirstComparable, setIsLevelNumberFirstComparable] = useState(true) // Määrittää, esitetäänkö tason mukainen numero vertailussa ensimmäisenä (true) vai toisena (false)
   const [isComparableEquation, setIsComparableEquation] = useState(false) // Määrittää, onko vertailtavana yhtälö vai satunnaisluku (true = yhtälö, false = satunnaisluku)
   const [randomNumber, setRandomNumber] = useState(0) // Vertailtavaksi arvottu satunnaisluku, käytetään yksittäisissä lukuvertailutehtävissä
@@ -47,6 +47,11 @@ export default function Comparison({ onBack }) {
   //Koukku jolla tarkistetaan joko kierros päättyy.
   useEffect(() => {
     if (questionsAnswered === 5) {
+      if (taskReading) {
+        console.log("Taskreading oli tosi, joten if lauseessa")
+        Speech.stop(); // Lopeta mahdollinen puhe
+        readFeedback(points);
+      }
       incrementXp(points, "comparison")
       setShowFeedback(true)
     }
