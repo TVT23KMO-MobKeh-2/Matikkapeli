@@ -50,18 +50,30 @@ export default function ImageToNumber({ onBack }) {
     const minLevel = Math.max(0, playerLevel - 2);
     // alustetaan iconCounts lista ja lisätään siihen kaksi kertaa playerLeveliä vastaava luku
     let iconCounts = [playerLevel, playerLevel]
-    if (playerLevel === 1) {
+    if (playerLevel === 1) { //tasolla 1 arvotaan kahdesta vaihtoehdosta
       iconCounts = Math.random() < 0.5 ? [1, 0, 1, 0, 1] : [0, 1, 0, 1, 0];
-    } else if (playerLevel === 2) {
-      const secondIcons = {
-        0: [2, 0, 2, 0, 2],
-        1: [2, 0, 2, 1, 2],
-        2: [2, 1, 2, 0, 2],
-        3: [2, 1, 2, 1, 2]
+    } else if (playerLevel === 2) { // tasolla kaksi arvotaan lista vaihtoehdoista
+      const secondLevelIcons = {
+        0:[2, 0, 2, 0, 1],
+        1:[2, 0, 2, 1, 0],
+        2:[2, 0, 1, 2, 0],
+        3:[2, 0, 1, 2, 1],
+        4:[2, 1, 0, 2, 0],
+        5:[2, 1, 0, 2, 1],
+        6:[2, 1, 2, 0, 1],
+        7:[2, 1, 2, 1, 0],
+        8:[0, 2, 0, 2, 1],
+        9:[0, 2, 0, 2, 1],
+        10:[0, 2, 1, 2, 0],
+        11:[0, 2, 1, 2, 1],
+        12:[1, 2, 0, 2, 0],
+        13:[1, 2, 0, 2, 1],
+        14:[1, 2, 1, 2, 0],
+        15:[1, 2, 1, 2, 1]
       };
-      iconCounts = secondIcons[random(0, 3)]
+      iconCounts = secondLevelIcons[random(0, 15)]
 
-    } else {
+    } else { // tasolla kolme ja siitä eteenpäin arvotaan kolme satunnaislukua kahden playerLeveliä vastaavan luvun lisäksi
       let lastIconCount = playerLevel
       // arvotaan kolme satunnaislukua minLevelin ja playerLevelin väliltä
       for (let i = 0; i < 3; i++) {

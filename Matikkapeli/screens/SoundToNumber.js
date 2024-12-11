@@ -27,7 +27,55 @@ export default function SoundToNumber({ onBack }) {
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
   const { gameSounds, playSound } = useSoundSettings(); // Haetaan playSound suoraan kontekstista
   const { taskReading } = useTaskReading();
-  const [number, setNumber] = useState(() => generateRandomNumber(0, playerLevel || 10));
+  const [numbers, setNumbers] = useState(() => {
+    // alustetaan lista numeroille
+    let initialNumbers = []
+    if (playerLevel === 1) {//tasolla 1 arvotaan kahdesta vaihtoehdosta
+      initialNumbers = Math.random() < 0.5 ? [1, 0, 1, 0, 1] : [0, 1, 0, 1, 0];
+    } else if (playerLevel === 2) {// tasolla kaksi arvotaan lista vaihtoehdoista
+      const secondLevelNumbers = {
+        0:[2, 0, 2, 0, 1],
+        1:[2, 0, 2, 1, 0],
+        2:[2, 0, 1, 2, 0],
+        3:[2, 0, 1, 2, 1],
+        4:[2, 1, 0, 2, 0],
+        5:[2, 1, 0, 2, 1],
+        6:[2, 1, 2, 0, 1],
+        7:[2, 1, 2, 1, 0],
+        8:[0, 2, 0, 2, 1],
+        9:[0, 2, 0, 2, 1],
+        10:[0, 2, 1, 2, 0],
+        11:[0, 2, 1, 2, 1],
+        12:[1, 2, 0, 2, 0],
+        13:[1, 2, 0, 2, 1],
+        14:[1, 2, 1, 2, 0],
+        15:[1, 2, 1, 2, 1]
+      };
+      initialNumbers = secondLevelNumbers[generateRandomNumber(0, 15)]
+    } else {// tasolla kolme ja siitä eteenpäin arvotaan kolme satunnaislukua kahden playerLeveliä vastaavan luvun lisäksi
+      initialNumbers = [playerLevel, playerLevel]
+      let lastNumber = playerLevel
+      for (let i = 0; i < 3; i++) {
+        let randomNumber = generateRandomNumber(playerLevel - 2, playerLevel);
+        while (randomNumber === lastNumber) {
+          randomNumber = generateRandomNumber(playerLevel - 2, playerLevel);
+        }
+        lastNumber = randomNumber;
+        initialNumbers.push(randomNumber)
+      }
+      //sekoitetaan lista niin, että playerlevelit on satunnaisilla paikoilla
+      for (let j = 0; j < initialNumbers.length; j++) {
+        //valitaan listalta satunnaisIndeksi
+        const randomIndex = Math.floor(Math.random() * initialNumbers.length);
+        //vaihdetaan indeksin ja randomindexin elementtien paikkoja
+        [initialNumbers[j], initialNumbers[randomIndex]] = [initialNumbers[randomIndex], initialNumbers[j]]
+      }
+    }
+    //palautetaan luvut
+    console.log("initialNumbers", initialNumbers)
+    return initialNumbers;
+  })
+  const [number, setNumber] = useState(numbers[0]);
   const [options, setOptions] = useState(generateOptions(number));
   const { syllabify, taskSyllabification, getFeedbackMessage } = useTaskSyllabification();
   const [gameEnded, setGameEnded] = useState(false);
@@ -50,7 +98,7 @@ export default function SoundToNumber({ onBack }) {
         playNumber();  // Only play the number if the game hasn't ended
       }
     }
-  }, [questionsAnswered, gameEnded]); 
+  }, [questionsAnswered, gameEnded]);
 
   const handleBack = () => {
     Speech.stop();
@@ -111,8 +159,8 @@ export default function SoundToNumber({ onBack }) {
 
     const isCorrect = selectedNumber === number;
     await playSound(isCorrect); // Käytetään kontekstin kautta haettua playSound-funktiota
-
-    const newNumber = generateRandomNumber(0, playerLevel);
+    
+    const newNumber = numbers[questionsAnswered+1];
     setNumber(newNumber);
 
     if (isCorrect) {
@@ -140,52 +188,52 @@ export default function SoundToNumber({ onBack }) {
       />
       <View style={styles.container}>
         <View style={styles.tehtcont}>
-        <Text style={styles.title}>{syllabify("Valitse oikea numero")}</Text>
-        <TouchableOpacity style={[styles.startButton, styles.orangeButton]} onPress={playNumber}>
-          <Text style={styles.buttonText}>{syllabify("Kuuntele numero 🔊")}</Text>
-        </TouchableOpacity>
-        <View style={styles.gameOptionsContainer}>
-          {options.map((option, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[styles.startButton, {backgroundColor: theme.button}]}
-              onPress={() => handleSelect(option)}
-              disabled={loading}
-            >
-              <Text style={styles.label}>{option}</Text>
-            </TouchableOpacity>
-          ))}
+          <Text style={styles.title}>{syllabify("Valitse oikea numero")}</Text>
+          <TouchableOpacity style={[styles.startButton, styles.orangeButton]} onPress={playNumber}>
+            <Text style={styles.buttonText}>{syllabify("Kuuntele numero 🔊")}</Text>
+          </TouchableOpacity>
+          <View style={styles.gameOptionsContainer}>
+            {options.map((option, index) => (
+              <TouchableOpacity
+                key={index}
+                style={[styles.startButton, { backgroundColor: theme.button }]}
+                onPress={() => handleSelect(option)}
+                disabled={loading}
+              >
+                <Text style={styles.label}>{option}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
-      </View>
 
-      {showFeedback && (
-        <TouchableWithoutFeedback>
-          <View style={styles.overlayInstruction}>
-            <View style={styles.instructionWindow}>
-              <Text>{getFeedbackMessage(points)}</Text>
-              <Text style={styles.title}>{syllabify("Pistetaulu")}</Text>
-              <Text>{syllabify("Taso")}: {playerLevel}/10</Text>
-              <Text>{syllabify("Kokonaispisteet")}: {totalXp}/190</Text>
-              <View style={styles.profileSelect}>
-                <LevelBar progress={imageToNumberXp} label={syllabify("Kuvat numeroiksi")} playerLevel={playerLevel} gameType={"imageToNumber"} caller={"soundToNumber"} />
-                <LevelBar progress={soundToNumberXp} label={syllabify("Äänestä numeroiksi")} playerLevel={playerLevel} gameType={"soundToNumber"} caller={"soundToNumber"} />
-                <LevelBar progress={comparisonXp} label={syllabify("Vertailu")} playerLevel={playerLevel} gameType={"comparison"} caller={"soundToNumber"} />
-                <LevelBar progress={bondsXp} label={syllabify("Hajonta")} playerLevel={playerLevel} gameType={"bonds"} caller={"soundToNumber"} />
-              </View>
-              <View style={styles.buttonContainer}>
-              <Pressable onPress={() => {
+        {showFeedback && (
+          <TouchableWithoutFeedback>
+            <View style={styles.overlayInstruction}>
+              <View style={styles.instructionWindow}>
+                <Text>{getFeedbackMessage(points)}</Text>
+                <Text style={styles.title}>{syllabify("Pistetaulu")}</Text>
+                <Text>{syllabify("Taso")}: {playerLevel}/10</Text>
+                <Text>{syllabify("Kokonaispisteet")}: {totalXp}/190</Text>
+                <View style={styles.profileSelect}>
+                  <LevelBar progress={imageToNumberXp} label={syllabify("Kuvat numeroiksi")} playerLevel={playerLevel} gameType={"imageToNumber"} caller={"soundToNumber"} />
+                  <LevelBar progress={soundToNumberXp} label={syllabify("Äänestä numeroiksi")} playerLevel={playerLevel} gameType={"soundToNumber"} caller={"soundToNumber"} />
+                  <LevelBar progress={comparisonXp} label={syllabify("Vertailu")} playerLevel={playerLevel} gameType={"comparison"} caller={"soundToNumber"} />
+                  <LevelBar progress={bondsXp} label={syllabify("Hajonta")} playerLevel={playerLevel} gameType={"bonds"} caller={"soundToNumber"} />
+                </View>
+                <View style={styles.buttonContainer}>
+                  <Pressable onPress={() => {
                     handleContinueGame();
                     setShowFeedback(false)
                   }}
                     style={[styles.startButton, styles.blueButton]}
                   >
                     <Text style={styles.buttonText}>
-                            {syllabify("Jatketaan")}
-                        </Text>
+                      {syllabify("Jatketaan")}
+                    </Text>
                     <View style={styles.nextGame}>
-                    <Ionicons name="game-controller" size={24} color={isDarkTheme ? "white" : "black"} />
-                    <MaterialIcons name="navigate-next" size={24} color={isDarkTheme ? "white" : "black"} />
-                    
+                      <Ionicons name="game-controller" size={24} color={isDarkTheme ? "white" : "black"} />
+                      <MaterialIcons name="navigate-next" size={24} color={isDarkTheme ? "white" : "black"} />
+
                     </View>
                   </Pressable>
                   <Pressable onPress={() => {
@@ -195,16 +243,16 @@ export default function SoundToNumber({ onBack }) {
                     style={[styles.startButton, styles.redButton]}
                   >
                     <Text style={styles.buttonText}>
-                    {syllabify("Lopeta")}
-                        </Text>
+                      {syllabify("Lopeta")}
+                    </Text>
                     <Ionicons name="exit" size={24} color="white" />
                   </Pressable>
+                </View>
               </View>
             </View>
-          </View>
-        </TouchableWithoutFeedback>
-      )}
-    </View>
+          </TouchableWithoutFeedback>
+        )}
+      </View>
     </ImageBackground>
   );
 }
