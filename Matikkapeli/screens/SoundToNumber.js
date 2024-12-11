@@ -30,45 +30,71 @@ export default function SoundToNumber({ onBack }) {
   const [numbers, setNumbers] = useState(() => {
     // alustetaan lista numeroille
     let initialNumbers = []
+    let playerLevelLimit = false
     if (playerLevel === 1) {//tasolla 1 arvotaan kahdesta vaihtoehdosta
       initialNumbers = Math.random() < 0.5 ? [1, 0, 1, 0, 1] : [0, 1, 0, 1, 0];
-    } else if (playerLevel === 2) {// tasolla kaksi arvotaan lista vaihtoehdoista
-      const secondLevelNumbers = {
-        0:[2, 0, 2, 0, 1],
-        1:[2, 0, 2, 1, 0],
-        2:[2, 0, 1, 2, 0],
-        3:[2, 0, 1, 2, 1],
-        4:[2, 1, 0, 2, 0],
-        5:[2, 1, 0, 2, 1],
-        6:[2, 1, 2, 0, 1],
-        7:[2, 1, 2, 1, 0],
-        8:[0, 2, 0, 2, 1],
-        9:[0, 2, 0, 2, 1],
-        10:[0, 2, 1, 2, 0],
-        11:[0, 2, 1, 2, 1],
-        12:[1, 2, 0, 2, 0],
-        13:[1, 2, 0, 2, 1],
-        14:[1, 2, 1, 2, 0],
-        15:[1, 2, 1, 2, 1]
-      };
-      initialNumbers = secondLevelNumbers[generateRandomNumber(0, 15)]
     } else {// tasolla kolme ja siitä eteenpäin arvotaan kolme satunnaislukua kahden playerLeveliä vastaavan luvun lisäksi
       initialNumbers = [playerLevel, playerLevel]
       let lastNumber = playerLevel
       for (let i = 0; i < 3; i++) {
         let randomNumber = generateRandomNumber(playerLevel - 2, playerLevel);
-        while (randomNumber === lastNumber) {
+        while (randomNumber === lastNumber || (playerLevelLimit && randomNumber === playerLevel)) {
           randomNumber = generateRandomNumber(playerLevel - 2, playerLevel);
         }
         lastNumber = randomNumber;
-        initialNumbers.push(randomNumber)
+        if (randomNumber === playerLevel) {
+          playerLevelLimit = true;
+          initialNumbers.splice(1, 0, randomNumber)
+        } else {
+          initialNumbers.push(randomNumber)
+        }
       }
-      //sekoitetaan lista niin, että playerlevelit on satunnaisilla paikoilla
-      for (let j = 0; j < initialNumbers.length; j++) {
-        //valitaan listalta satunnaisIndeksi
-        const randomIndex = Math.floor(Math.random() * initialNumbers.length);
-        //vaihdetaan indeksin ja randomindexin elementtien paikkoja
-        [initialNumbers[j], initialNumbers[randomIndex]] = [initialNumbers[randomIndex], initialNumbers[j]]
+      //jos listalla on playerLeveliä vastaava luku kolme kertaa, asetetaan ne paikoille 1, 3 ja 5
+      if (playerLevelLimit) {
+        [initialNumbers[1], initialNumbers[4]] = [initialNumbers[4], initialNumbers[1]]
+        playerLevelLimit = false
+      } else {
+        //sekoitetaan lista niin, että playerlevelit on satunnaisilla paikoilla, mutta ei peräkkäin
+        const mixValues = {
+          0: () => { //xoxoo
+            [initialNumbers[1], initialNumbers[2]] = [initialNumbers[2], initialNumbers[1]];
+            if (initialNumbers[3] === initialNumbers[4]) { //jos 4. ja 5. numero on samoja, vaihdetaan 2. ja 5. paikkaa
+              [initialNumbers[1], initialNumbers[4] = initialNumbers[4], initialNumbers[1]]
+            }
+          },
+          1: () => {//xooxo
+            [initialNumbers[1], initialNumbers[3]] = [initialNumbers[3], initialNumbers[1]];
+            if (initialNumbers[1] === initialNumbers[2]) {//jos 2. ja 3. numero on samoja, vaihdetaan 3. ja 5. paikkaa
+              [initialNumbers[2], initialNumbers[4] = initialNumbers[4], initialNumbers[2]]
+            }
+          },
+          2: () => {//xooox
+            [initialNumbers[1], initialNumbers[4]] = [initialNumbers[4], initialNumbers[1]];
+            if (initialNumbers[1] === initialNumbers[2]) {//jos 2. ja 3. numero on samoja, vaihdetaan 3. ja 4. paikkaa
+              [initialNumbers[2], initialNumbers[3] = initialNumbers[3], initialNumbers[2]]
+            } else if (initialNumbers[2] === initialNumbers[3]){//jos 3. ja 4. numero on samoja, vaihdetaan 2. ja 3. paikkaa
+              [initialNumbers[1], initialNumbers[2] = initialNumbers[2], initialNumbers[1]]
+            }
+          },
+          3: () => {//oxoxo 
+            [initialNumbers[0], initialNumbers[3]] = [initialNumbers[3], initialNumbers[0]]; 
+          },
+          4: () => {//oxoox
+            [initialNumbers[0], initialNumbers[4]] = [initialNumbers[4], initialNumbers[0]];
+            if (initialNumbers[2] === initialNumbers[3]) {//jos 3. ja 4. numero on samoja, vaihdetaan 1. ja 3. paikkaa
+              [initialNumbers[0], initialNumbers[2] = initialNumbers[2], initialNumbers[0]]
+            }
+          },
+          5: () => {//ooxox
+            [initialNumbers[0], initialNumbers[2]] = [initialNumbers[2], initialNumbers[0]];
+            [initialNumbers[1], initialNumbers[4]] = [initialNumbers[4], initialNumbers[1]];
+            if (initialNumbers[0] === initialNumbers[1]) {//jos 1. ja 2. numero on samoja, vaihdetaan 1. ja 4. paikkaa
+              [initialNumbers[0], initialNumbers[3] = initialNumbers[3], initialNumbers[0]]
+            }
+          }
+        }
+        const mix = mixValues[generateRandomNumber(0, 5)]
+        mix()
       }
     }
     //palautetaan luvut
@@ -159,8 +185,8 @@ export default function SoundToNumber({ onBack }) {
 
     const isCorrect = selectedNumber === number;
     await playSound(isCorrect); // Käytetään kontekstin kautta haettua playSound-funktiota
-    
-    const newNumber = numbers[questionsAnswered+1];
+
+    const newNumber = numbers[questionsAnswered + 1];
     setNumber(newNumber);
 
     if (isCorrect) {

@@ -48,51 +48,78 @@ export default function ImageToNumber({ onBack }) {
   const generateQuestions = () => {
     const questions = [];
     const minLevel = Math.max(0, playerLevel - 2);
+    let playerLevelLimit = false
     // alustetaan iconCounts lista ja lisätään siihen kaksi kertaa playerLeveliä vastaava luku
-    let iconCounts = [playerLevel, playerLevel]
+    let iconCounts = []
     if (playerLevel === 1) { //tasolla 1 arvotaan kahdesta vaihtoehdosta
       iconCounts = Math.random() < 0.5 ? [1, 0, 1, 0, 1] : [0, 1, 0, 1, 0];
-    } else if (playerLevel === 2) { // tasolla kaksi arvotaan lista vaihtoehdoista
-      const secondLevelIcons = {
-        0:[2, 0, 2, 0, 1],
-        1:[2, 0, 2, 1, 0],
-        2:[2, 0, 1, 2, 0],
-        3:[2, 0, 1, 2, 1],
-        4:[2, 1, 0, 2, 0],
-        5:[2, 1, 0, 2, 1],
-        6:[2, 1, 2, 0, 1],
-        7:[2, 1, 2, 1, 0],
-        8:[0, 2, 0, 2, 1],
-        9:[0, 2, 0, 2, 1],
-        10:[0, 2, 1, 2, 0],
-        11:[0, 2, 1, 2, 1],
-        12:[1, 2, 0, 2, 0],
-        13:[1, 2, 0, 2, 1],
-        14:[1, 2, 1, 2, 0],
-        15:[1, 2, 1, 2, 1]
-      };
-      iconCounts = secondLevelIcons[random(0, 15)]
-
     } else { // tasolla kolme ja siitä eteenpäin arvotaan kolme satunnaislukua kahden playerLeveliä vastaavan luvun lisäksi
+      iconCounts = [playerLevel, playerLevel]
       let lastIconCount = playerLevel
       // arvotaan kolme satunnaislukua minLevelin ja playerLevelin väliltä
       for (let i = 0; i < 3; i++) {
         let iconCount = Math.min(random(minLevel, playerLevel), 10);
         //estetään että peräkkäin ei ole samoja lukuja
-        while (iconCount === lastIconCount) {
+        while (iconCount === lastIconCount || (playerLevelLimit && iconCount === playerLevel)) {
           iconCount = Math.min(random(minLevel, playerLevel), 10);
         }
         lastIconCount = iconCount;
-        iconCounts.push(iconCount);
+        if (iconCount === playerLevel) {
+          console.log("playerLevelLimit true")
+          playerLevelLimit = true
+          iconCounts.splice(1, 0, iconCount)
+        } else {
+          iconCounts.push(iconCount);
+        }
       }
 
-      //sekoitetaan lista niin, että playerlevelit on satunnaisilla paikoilla
-      for (let j = 0; j < iconCounts.length; j++) {
-        //valitaan listalta satunnaisIndeksi
-        const randomIndex = Math.floor(Math.random() * iconCounts.length);
-        //vaihdetaan indeksin ja randomindexin elementtien paikkoja
-        [iconCounts[j], iconCounts[randomIndex]] = [iconCounts[randomIndex], iconCounts[j]]
+      if (playerLevelLimit) { // jos listalla on playerLeveliä vastaava luku kolme kertaa, asetetaan ne 1. 3. ja 5. listalla
+        [iconCounts[1], iconCounts[4]] = [iconCounts[4], iconCounts[1]]
+        playerLevelLimit = false
+      } else {
+        //sekoitetaan lista niin, että playerlevelit(x) on satunnaisilla paikoilla, ei peräkkäin ja randomNumero(o) muissa 
+        const mixValues = {
+          0: () => { //xoxoo
+            [iconCounts[1], iconCounts[2]] = [iconCounts[2], iconCounts[1]];
+            if (iconCounts[3] === iconCounts[4]) { //jos 4. ja 5. numero on samoja, vaihdetaan 2. ja 5. paikkaa
+              [iconCounts[1], iconCounts[4] = iconCounts[4], iconCounts[1]]
+            }
+          },
+          1: () => {//xooxo
+            [iconCounts[1], iconCounts[3]] = [iconCounts[3], iconCounts[1]];
+            if (iconCounts[1] === iconCounts[2]) {//jos 2. ja 3. numero on samoja, vaihdetaan 3. ja 5. paikkaa
+              [iconCounts[2], iconCounts[4] = iconCounts[4], iconCounts[2]]
+            }
+          },
+          2: () => {//xooox
+            [iconCounts[1], iconCounts[4]] = [iconCounts[4], iconCounts[1]];
+            if (iconCounts[1] === iconCounts[2]) {//jos 2. ja 3. numero on samoja, vaihdetaan 3. ja 4. paikkaa
+              [iconCounts[2], iconCounts[3] = iconCounts[3], iconCounts[2]]
+            } else if (iconCounts[2] === iconCounts[3]){//jos 3. ja 4. numero on samoja, vaihdetaan 2. ja 3. paikkaa
+              [iconCounts[1], iconCounts[2] = iconCounts[2], iconCounts[1]]
+            }
+          },
+          3: () => {//oxoxo 
+            [iconCounts[0], iconCounts[3]] = [iconCounts[3], iconCounts[0]]; 
+          },
+          4: () => {//oxoox
+            [iconCounts[0], iconCounts[4]] = [iconCounts[4], iconCounts[0]];
+            if (iconCounts[2] === iconCounts[3]) {//jos 3. ja 4. numero on samoja, vaihdetaan 1. ja 3. paikkaa
+              [iconCounts[0], iconCounts[2] = iconCounts[2], iconCounts[0]]
+            }
+          },
+          5: () => {//ooxox
+            [iconCounts[0], iconCounts[2]] = [iconCounts[2], iconCounts[0]];
+            [iconCounts[1], iconCounts[4]] = [iconCounts[4], iconCounts[1]];
+            if (iconCounts[0] === iconCounts[1]) {//jos 1. ja 2. numero on samoja, vaihdetaan 1. ja 4. paikkaa
+              [iconCounts[0], iconCounts[3] = iconCounts[3], iconCounts[0]]
+            }
+          }
+        }
+        const mix = mixValues[random(0, 5)]
+        mix()
       }
+
     }
 
     // lisätään luvut kysymyksien kanssa listalle
