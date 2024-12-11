@@ -226,7 +226,7 @@ export default function WelcomeScreen({ navigation }) {
                 ) : (
                     <>
                         <Pressable onPress={toggleSearchMode}// Open input field for email
-                            style={styles.startButton}>
+                            style={[styles.startButton, styles.blueButton]}>
                             <Text style={styles.buttonText}>KIRJAUDU SISÄÄN</Text>
                         </Pressable>
                         <Pressable onPress={() => setIsCreatingUser(true)}

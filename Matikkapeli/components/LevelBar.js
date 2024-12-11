@@ -73,8 +73,14 @@ export default function LevelBar({ progress, label, playerLevel, gameType, calle
 
     const updateMilestoneImage = (progress) => {
         console.log(`updateMilestoneImage: progress=${progress}, gifVisible=${gifVisible}`);
+        
+        // Tarkista, että "bonds"-tyyppisissä peleissä level on vähintään 3
+        if (gameType === "bonds" && (playerLevel < 3 || progress < 15)) {
+            setLevelImage(levelImages[0]); // Aseta kuva tyhjäksi
+            return;
+        }
     
-        // Find the correct range based on the progress
+        // Löydä oikea range perustuen edistykseen
         const range = progressRanges.find(range => progress >= range.min && progress <= range.max);
         
         if (range) {
@@ -84,38 +90,48 @@ export default function LevelBar({ progress, label, playerLevel, gameType, calle
             }
         }
     };
+    
 
-    const handleMilestoneGif = (milestone) => {
-        console.log(`handleMilestoneGif: milestone=${milestone}, progress=${progress}, caller=${caller}, gameType=${gameType}`);
-        if (lastPointRef.current[gameType] < progress && milestones.includes(milestone)) {
+
+    const handleMilestoneGif = (adjustedMilestone, adjustedProgress) => {
+        console.log(`handleMilestoneGif: adjustedMilestone=${adjustedMilestone}, adjustedProgress=${adjustedProgress}, progress=${progress}, caller=${caller}, gameType=${gameType}`);
+        
+        if (lastPointRef.current[gameType] < adjustedProgress && milestones.includes(adjustedMilestone)) {
             if (caller === gameType) {
                 setGifVisible(true);
-
+    
                 setTimeout(() => {
-                    setLevelImage(levelGifs[milestone] || levelImages[0]);
+                    setLevelImage(levelGifs[adjustedMilestone] || levelImages[0]);
                 }, 50);
-
+    
                 clearTimeout(gifTimer.current);
                 gifTimer.current = setTimeout(() => {
                     setGifVisible(false);
-                    setLevelImage(levelImages[milestone] || levelImages[0]);
+                    setLevelImage(levelImages[adjustedMilestone] || levelImages[0]);
                 }, 2000);
             }
-
-            lastPointRef.current[gameType] = progress;
+    
+            lastPointRef.current[gameType] = adjustedProgress;
         }
     };
+    
 
     useEffect(() => {
         console.log(`useEffect: progress=${progress}, playerLevel=${playerLevel}, gameType=${gameType}, caller=${caller}`);
+        
+        // Normalisoi edistyminen
         const normalizedProgress = normalizeProgress(progress, playerLevel);
         progressWidth.value = withTiming(normalizedProgress, { duration: 500 });
-
-        const milestone = progress ;
-
-        handleMilestoneGif(milestone);
-        updateMilestoneImage(milestone);
-    }, [progress, gameType, playerLevel]);
+    
+        // Laske adjustedProgress ja adjustedMilestone
+        const adjustedProgress = gameType === "bonds" ?  progress + 10 : progress;
+        const adjustedMilestone = gameType === "bonds" ? Math.floor(adjustedProgress / 5) * 5 : Math.floor(progress / 5) * 5;
+    
+        // Kutsu handleMilestoneGif ja updateMilestoneImage oikeilla arvoilla
+        handleMilestoneGif(adjustedMilestone, adjustedProgress);
+        updateMilestoneImage(adjustedMilestone);
+    }, [progress, gameType, playerLevel, caller]);
+    
 
     const progressStyle = useAnimatedStyle(() => ({
         width: `${progressWidth.value}%`,
