@@ -31,7 +31,7 @@ export const ScoreProvider = ({ children, profile = {} }) => {
     const [xpMilestone, setXpMilestone] = useState(false);
     const [gameAchieved, setGameAchieved] = useState(false);
     //Taulukko tasojen nousua varten
-    const xpForLevelUp = [15, 30, 50, 70, 90, 110, 130, 150, 170];
+    const xpForLevelUp = { 1: 15, 2: 30, 3: 50, 4: 70, 5: 90, 6: 110, 7: 130, 8: 150, 9: 170 };
 
     // Koukku pelaajatietojen hakuun tietokannasta
     useEffect(() => {
@@ -50,7 +50,7 @@ export const ScoreProvider = ({ children, profile = {} }) => {
 
     // Tarkistetaan, päästäänkö seuraavalle tasolle tai onko koko peli läpi?
     useEffect(() => {
-        if (xpForLevelUp.includes(totalXp)) {
+        if (totalXp === xpForLevelUp[playerLevel]) {
             setXpMilestone(true);
         } else if (totalXp >= 190) {
             setGameAchieved(true);
@@ -61,9 +61,9 @@ export const ScoreProvider = ({ children, profile = {} }) => {
         console.log("Updating player stats to the database:", {
             email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career, docId
         });
-        updatePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID:newImageID, career, docId })
+        updatePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID: newImageID, career, docId })
     }
-  
+
     const handleUpdatePlayerStatsToDatabase = () => {
         console.log("Updating player stats to the database:", {
             email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career, docId
