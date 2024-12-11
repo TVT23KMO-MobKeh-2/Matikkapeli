@@ -14,7 +14,7 @@ import { useTheme } from '../components/ThemeContext';
 import { light, dark } from '../assets/themeColors';
 import { getBGImage } from '../components/backgrounds';
 
-export default function Settings({ onBack }) {
+export default function Settings({ onBack, navigation }) {
   const [email, setEmail] = useState(null); //Alustetaan null-arvolla
   const [playerName, setPlayerName] = useState(null); //Alustetaan null-arvolla
   const [settingsDocId, setSettingsDocId] = useState(""); //Doc ID
@@ -89,7 +89,7 @@ export default function Settings({ onBack }) {
       Alert.alert("Virhe", "Käyttäjätietoja ei löytynyt.");
       return;
     }
-  
+
     const settings = {
       email,
       playerName,
@@ -100,7 +100,7 @@ export default function Settings({ onBack }) {
       isMusicPlaying,
       musicVolume,
     };
-  
+
     try {
       if (settingsDocId) {
         console.log("Päivitetään dokumenttia:", settingsDocId);
@@ -114,7 +114,7 @@ export default function Settings({ onBack }) {
       Alert.alert("Virhe", "Asetusten tallennus epäonnistui.");
     }
   };
-  
+
 
   //Varmistetaan, että haetaan tiedot aluksi
   useEffect(() => {
@@ -138,16 +138,16 @@ export default function Settings({ onBack }) {
   ]);
 
   return (
-    <ImageBackground 
-      source={getBGImage(isDarkTheme, bgIndex)} 
-      style={styles.background} 
+    <ImageBackground
+      source={getBGImage(isDarkTheme, bgIndex)}
+      style={styles.background}
       resizeMode="cover"
     >
       <SafeAreaView style={styles.safeContainer}>
-        <StatusBar 
-          barStyle={isDarkTheme ? 'light-content' : 'dark-content'} 
-          backgroundColor="transparent" 
-          translucent={true} 
+        <StatusBar
+          barStyle={isDarkTheme ? 'light-content' : 'dark-content'}
+          backgroundColor="transparent"
+          translucent={true}
         />
         <View style={styles.container}>
           <Text style={styles.title}>{syllabify("Asetukset")}</Text>
@@ -185,7 +185,7 @@ export default function Settings({ onBack }) {
               minimumTrackTintColor="#FF004F"
               thumbTintColor="#006400"
               value={musicVolume}
-              onValueChange={() => {}}
+              onValueChange={() => { }}
               onSlidingComplete={handleSlidingComplete}
               minimumValue={0}
               maximumValue={1}
@@ -198,8 +198,14 @@ export default function Settings({ onBack }) {
             <Text style={styles.label}>{syllabify("Peliäänet")}</Text>
             <Switch value={gameSounds} onValueChange={() => setGameSounds(!gameSounds)} />
           </View>
-        {/* Sovelluksen sammuttaminen */}
-        <View style={styles.buttonContainer}>
+          <View style={styles.buttonContainer}>
+            <Pressable onPress={() => navigation.goBack()} style={[styles.startButton, styles.blueButton]}>
+              <Text style={styles.buttonText}>{syllabify("Takaisin")}</Text>
+              <FontAwesome name="arrow-left" size={24} color={isDarkTheme ? "white" : "black"}/>
+            </Pressable>
+          </View>
+          {/* Sovelluksen sammuttaminen */}
+          <View style={styles.buttonContainer}>
             <Pressable onPress={handleCloseApp}
               style={[styles.startButton, styles.redButton]}
             >
@@ -207,7 +213,7 @@ export default function Settings({ onBack }) {
               <FontAwesome name="power-off" size={24} color="white" />
             </Pressable>
           </View>
-      </View>
+        </View>
       </SafeAreaView>
     </ImageBackground>
   );
