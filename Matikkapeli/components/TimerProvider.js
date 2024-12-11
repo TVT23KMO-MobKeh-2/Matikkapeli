@@ -18,7 +18,7 @@ export const TimerProvider = ({ children }) => {
   const [isTimerActive, setIsTimerActive] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedTime, setSelectedTime] = useState(null);
-  const { syllabify } = useTaskSyllabification() // Uusi tila modaalille
+  const { syllabify } = useTaskSyllabification() 
 
   const timeOptions = {
       2: "kaksi minuuttia",
@@ -46,8 +46,6 @@ export const TimerProvider = ({ children }) => {
       Speech.speak(`Olet pelannut ${timeOptions[selectedTime]}. Olisiko aika tauolle?`);
     }
 
-
-
     return () => clearInterval(timerInterval); // Siivous
   }, [isTimerActive, timeLeft]);
 
@@ -55,7 +53,7 @@ export const TimerProvider = ({ children }) => {
     setTimeLeft(minutes * 60);
     setSelectedTime(minutes);
     setIsTimerActive(true);
-    setIsModalVisible(false); // Piilota mahdollinen vanha modal
+    setIsModalVisible(false); 
   };
 
   const stopTimer = () => {
@@ -78,7 +76,6 @@ export const TimerProvider = ({ children }) => {
       }}
     >
       {children}
-      {/* Lisää modaalikomponentti */}
       <View>
       {isModalVisible && (
         <Modal
