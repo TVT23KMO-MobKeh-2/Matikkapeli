@@ -52,7 +52,7 @@ export const ScoreProvider = ({ children, profile = {} }) => {
     useEffect(() => {
         if (totalXp === xpForLevelUp[playerLevel]) {
             setXpMilestone(true);
-        } else if (totalXp >= 190) {
+        } else if (totalXp === 190) {
             setGameAchieved(true);
         }
     }, [totalXp])
