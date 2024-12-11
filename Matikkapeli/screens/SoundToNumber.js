@@ -122,7 +122,6 @@ export default function SoundToNumber({ onBack }) {
       }
       incrementXp(points, "soundToNumber");
       setShowFeedback(true);
-      setGameEnded(true);
     } else {
       if (!gameEnded) {
         playNumber();  // Only play the number if the game hasn't ended
