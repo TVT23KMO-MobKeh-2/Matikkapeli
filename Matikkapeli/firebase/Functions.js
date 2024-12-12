@@ -317,8 +317,14 @@ export async function recievePlayerSettingsFromDatabaseWithoutDocId({ email, pla
             setMusicVolume(data.musicVolume);
 
         } else {
-            console.log("Pelaajan tietoja ei löytynyt.");
+            console.log("Pelaajan tietoja ei löytynyt. Käytettään oletusasetuksia");
             //Alert.alert("Virhe:", "Pelaajan tietoja ei löytynyt");
+            setIsDarkTheme(false)
+            setTaskReading(true);
+            setTaskSyllabification(true);
+            setGameSounds(true);
+            setIsMusicPlaying(true);
+            setMusicVolume(0.5);
             return false; //Palautus
         }
 
