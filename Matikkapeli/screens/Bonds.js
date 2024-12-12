@@ -212,7 +212,7 @@ export default function Bonds({ onBack }) {
                       "Täydennä puuttuva luku niin, että laatikoiden luvut ovat yhteensä yhtä paljon kuin pallon luku."
                     )}
                   </Text>
-                  <View style={styles.buttonContainer}>
+                  <View>
                     <Pressable onPress={() => {
                       setInstructionReading(false);
                       setInstructionVisibility(false)
@@ -277,10 +277,10 @@ export default function Bonds({ onBack }) {
             </View>
           </Animated.View>
 
-          <View style={styles.buttonContainer}>
+          <View>
             <Pressable
               onPress={checkAnswer}
-              style={[styles.checkButton, isButtonDisabled ? styles.disabledButton : null]}
+              style={[styles.checkButton, styles.greenButton, isButtonDisabled ? styles.disabledButton : null]}
               disabled={isButtonDisabled}>
                 <Text style={styles.buttonText}>
                     {syllabify("Tarkista")}
@@ -303,7 +303,7 @@ export default function Bonds({ onBack }) {
                     <LevelBar progress={comparisonXp} label={syllabify("Vertailu")} playerLevel={playerLevel} gameType={"comparison"} caller={"bonds"} />
                     <LevelBar progress={bondsXp} label={syllabify("Hajonta")} playerLevel={playerLevel} gameType={"bonds"} caller={"bonds"} />
                   </View>
-                  <View style={styles.buttonContainer}>
+                  <View style={styles.buttonContainer2}>
                   <Pressable onPress={() => {
                     handleContinueGame();
                     setShowFeedback(false)

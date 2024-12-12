@@ -250,7 +250,7 @@ export default function SoundToNumber({ onBack }) {
                   <LevelBar progress={comparisonXp} label={syllabify("Vertailu")} playerLevel={playerLevel} gameType={"comparison"} caller={"soundToNumber"} />
                   <LevelBar progress={bondsXp} label={syllabify("Hajonta")} playerLevel={playerLevel} gameType={"bonds"} caller={"soundToNumber"} />
                 </View>
-                <View style={styles.buttonContainer}>
+                <View style={styles.buttonContainer2}>
                   <Pressable onPress={() => {
                     handleContinueGame();
                     setShowFeedback(false)

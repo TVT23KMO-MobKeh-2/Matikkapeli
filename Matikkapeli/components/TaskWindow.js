@@ -16,9 +16,16 @@ export default function TaskWindow({ taskVisible, setTaskVisible, navigation }) 
     const note = require('../assets/note1.png');
     const bond = require('../assets/bond2.png');
     const conv = require('../assets/conv1.png');
-    const { imageToNumberXp, soundToNumberXp, playerLevel, playerName } = useContext(ScoreContext);
+    const appleready = require('../assets/apple2ready.png');
+    const noteready = require('../assets/note1ready.png');
+    const bondready = require('../assets/bond2ready.png');
+    const convready = require('../assets/conv1ready.png');
+    const { imageToNumberXp, soundToNumberXp, bondsXp, comparisonXp, playerLevel, playerName } = useContext(ScoreContext);
 
     if (!taskVisible) return null;
+
+    const milestones = Array.from({ length: 10 }, (_, i) => (i + 1) * (5 * playerLevel));
+    const milestonesBonds = Array.from({ length: 10 }, (_, i) => (i + 1) * ((5 * playerLevel)-10) );
 
     const isDivisibleByFive = (imageToNumberXp % (5 * playerLevel) === 0) && (soundToNumberXp % (5 * playerLevel) === 0)
 
@@ -39,7 +46,11 @@ export default function TaskWindow({ taskVisible, setTaskVisible, navigation }) 
                             }}>
                             <View style={styles.buttonWrapper}>
                                 <View style={styles.imageWrapper}>
-                                    <Image source={apple} style={styles.taskImage} />
+                                    {milestones.includes(imageToNumberXp) ? (
+                                        <Image source={appleready} style={styles.taskImage} />
+                                    ) : (
+                                        <Image source={apple} style={styles.taskImage} />
+                                    )}
                                 </View>
                             </View>
                         </Pressable>
@@ -51,7 +62,11 @@ export default function TaskWindow({ taskVisible, setTaskVisible, navigation }) 
                             }}>
                             <View style={styles.buttonWrapper}>
                                 <View style={styles.imageWrapper}>
-                                    <Image source={note} style={styles.taskImage} />
+                                    {milestones.includes(soundToNumberXp) ? (
+                                        <Image source={noteready} style={styles.taskImage} />
+                                    ) : (
+                                        <Image source={note} style={styles.taskImage} />
+                                    )}
                                 </View>
                             </View>
                         </Pressable>
@@ -65,7 +80,11 @@ export default function TaskWindow({ taskVisible, setTaskVisible, navigation }) 
                                 }}>
                                 <View style={styles.buttonWrapper}>
                                     <View style={styles.imageWrapper}>
-                                        <Image source={conv} style={styles.taskImage} />
+                                        {milestones.includes(comparisonXp) ? (
+                                            <Image source={convready} style={styles.taskImage} />
+                                        ) : (
+                                            <Image source={conv} style={styles.taskImage} />
+                                        )}
                                     </View>
                                 </View>
                             </Pressable>
@@ -79,7 +98,11 @@ export default function TaskWindow({ taskVisible, setTaskVisible, navigation }) 
                                 }}>
                                 <View style={styles.buttonWrapper}>
                                     <View style={styles.imageWrapper}>
-                                        <Image source={bond} style={styles.taskImage} />
+                                        {milestonesBonds.includes(bondsXp) ? (
+                                            <Image source={bondready} style={styles.taskImage} />
+                                        ) : (
+                                            <Image source={bond} style={styles.taskImage} />
+                                        )}
                                     </View>
                                 </View>
                             </Pressable>

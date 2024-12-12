@@ -194,7 +194,6 @@ export default function WelcomeScreen({ navigation }) {
         resizeMode="cover"
       >
         <View style={styles.container}>
-            <Text style = {styles.title}>WelcomeScreen</Text>
             
             <View style={styles.optionsContainer}>
              <Text style={styles.question}>TERVETULOA!</Text>

@@ -37,7 +37,7 @@ export default function CreateProfile({ onCancel, onSave, email, password }) {
         bondsXp: 0,
         imageID: selectedAnimal.value,
         career: selectedCareer.label,
-        password: password || '', 
+        password
       };
 
       try {
@@ -110,14 +110,14 @@ export default function CreateProfile({ onCancel, onSave, email, password }) {
                     </Picker>
                 </View>
             </View>
-            <View style={styles.buttonContainer}>
+            <View>
                             <Pressable onPress={handleSave} disabled={isSaving || !name || !selectedCareer || !selectedAnimal}
                                 style={[styles.startButton, styles.blueButton]}>
                                 <Text style={styles.buttonText}>{isSaving ? 'TALLENNETAAN...' : 'TALLENNA'}</Text>
                             </Pressable>
                             <Pressable onPress={onCancel}
                                 style={[styles.startButton, styles.redButton]}>
-                                <Text style={styles.buttonText}>Peruuta</Text>
+                                <Text style={[styles.buttonText, { color: 'white' }]}>Peruuta</Text>
                             </Pressable>
             </View>
         </View>

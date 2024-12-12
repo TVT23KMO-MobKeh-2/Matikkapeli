@@ -320,7 +320,7 @@ export default function ImageToNumber({ onBack }) {
                   <LevelBar progress={comparisonXp} label={syllabify("Vertailu")} playerLevel={playerLevel} gameType={"comparison"} caller={"imageToNumber"} />
                   <LevelBar progress={bondsXp} label={syllabify("Hajonta")} playerLevel={playerLevel} gameType={"bonds"} caller={"imageToNumber"} />
                 </View>
-                <View style={styles.buttonContainer}>
+                <View style={styles.buttonContainer2}>
                   <Pressable onPress={() => {
                     handleContinueGame();
                     setShowFeedback(false)
