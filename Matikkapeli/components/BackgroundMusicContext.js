@@ -5,7 +5,7 @@ import { Audio } from 'expo-av';
 const BackgroundMusicContext = createContext();
 
 export const BackgroundMusicProvider = ({ children }) => {
-  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
+  const [isMusicPlaying, setIsMusicPlaying] = useState(true);
   const [musicVolume, setMusicVolume] = useState(0.5);
   const [sound, setSound] = useState(null);
 
