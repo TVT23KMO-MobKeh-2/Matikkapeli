@@ -36,6 +36,7 @@ export const ScoreProvider = ({ children, profile = {} }) => {
 
     // Koukku pelaajatietojen hakuun tietokannasta
     useEffect(() => {
+        console.log("Scorecontext useEffect playername:",playerName)
         if (email && playerName) {
             setIsFetchingStats(true)
             console.log("isFetchingStats setted true", isFetchingStats)

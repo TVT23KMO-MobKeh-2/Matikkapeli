@@ -136,7 +136,7 @@ export async function recievePlayerStatsFromDatabase({email, playerName, setImag
             const doc = querySnapshotWithFilters.docs[0]; // haetaan ensimmäinen tulos
 
             const data = doc.data(); // Haetaan datasisältö
-            console.log("Löydetyt tiedot:", data);
+            console.log("recievePlayerStatsFromDatabase, Löydetyt tiedot:", data);
             console.log("docId:", doc.id)
 
             // Päivitetään tiedot tilamuuttujiin:
@@ -176,7 +176,7 @@ export async function recieveProfileByEmail({ email, password, setProfileData, s
         if (!querySnapshot.empty) { // Jos kyselyllä löytyi tuloksia
             const doc = querySnapshot.docs[0]; // Haetaan ensimmäinen tulos
             const data = doc.data(); // Haetaan datasisältö
-            console.log("Löydetyt tiedot:", data);
+            console.log("recieveProfileByEmail, Löydetyt tiedot:", data);
             console.log("docId:", doc.id);
 
             if (hashedPassword === data.password) { 
@@ -261,7 +261,7 @@ export async function recievePlayerSettingsFromDatabase({email, playerName, setI
             const doc = querySnapshotWithFilters.docs[0]; //haetaan ensimmäinen tulos
             const data = doc.data(); //Haetaan datasisältö
         
-            console.log("Löydetyt tiedot:", data);
+            console.log("recievePlayerSettingsFromDatabase, Löydetyt tiedot:", data);
             console.log("docId:", doc.id); //Varmista, että tämä tulostuu oikein
         
             //Päivitetään tiedot tilamuuttujiin

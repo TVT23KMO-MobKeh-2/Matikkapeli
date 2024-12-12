@@ -33,7 +33,7 @@ const fetchCharactersDatabase = async (email) => {
       id: doc.id,
       ...doc.data(),
     }));
-
+    console.log("Haettu hahmot", characters)
     return characters;
   } catch (error) {
     console.error('Virhe noudaettaessa hahmotietoja', error);
@@ -92,7 +92,7 @@ export default function SelectProfile({ route, navigation }) {
       setComparisonXp(selectedCharacter.comparisonXp);
       setBondsXp(selectedCharacter.bondsXp);
     } else {
-      console.log('No characters found');
+      console.log('No character to set found');
     }
   }, [selectedCharacter]);
 
@@ -118,7 +118,7 @@ export default function SelectProfile({ route, navigation }) {
   }, []);
   
 
-  useEffect(() => {
+ /*  useEffect(() => {
     const loadStoredProfile = async () => {
       try {
         const storedPlayerName = await AsyncStorage.getItem('playerName');
@@ -135,7 +135,7 @@ export default function SelectProfile({ route, navigation }) {
     };
   
     loadStoredProfile();
-  }, []);
+  }, []); */
 
   
   // Log email to confirm it's being passed
@@ -195,7 +195,6 @@ export default function SelectProfile({ route, navigation }) {
               style={styles.chooseProfile}
               onPress={() => {
                 if (character) {
-                  setSelectedCharacter(character);
                   handleSelectCharacter(character);
                 } else {
                   setIsCreatingProfile(true);
