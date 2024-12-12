@@ -1,5 +1,5 @@
 import { View, Text, Pressable, TouchableOpacity, ImageBackground, TouchableWithoutFeedback } from 'react-native';
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, use } from 'react';
 import * as Speech from 'expo-speech';
 import { StatusBar } from 'expo-status-bar';
 import { ScoreContext } from '../components/ScoreContext';
@@ -27,7 +27,11 @@ export default function SoundToNumber({ onBack }) {
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
   const { gameSounds, playSound } = useSoundSettings(); // Haetaan playSound suoraan kontekstista
   const { taskReading } = useTaskReading();
+
+
+
   const [numbers, setNumbers] = useState(() => {
+    Speech.speak("Valitse oikea numero");
     // alustetaan lista numeroille
     let initialNumbers = []
     let playerLevelLimit = false
@@ -106,6 +110,7 @@ export default function SoundToNumber({ onBack }) {
   const { syllabify, taskSyllabification, getFeedbackMessage } = useTaskSyllabification();
   const [gameEnded, setGameEnded] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [instructions, setInstructions] = useState(false);
 
   const { isDarkTheme } = useTheme();
   const theme = isDarkTheme ? dark : light;
@@ -114,6 +119,7 @@ export default function SoundToNumber({ onBack }) {
 
   console.log("Renderöidään soundToNumber")
   useEffect(() => {
+    console.log("End ccheck")
     if (questionsAnswered === 5) {
       if (taskReading) {
         console.log("Taskreading oli tosi, joten if lauseessa")
@@ -123,6 +129,7 @@ export default function SoundToNumber({ onBack }) {
       incrementXp(points, "soundToNumber");
       setShowFeedback(true);
       setGameEnded(true)
+      setInstructions(false)
     } else {
       if (!gameEnded) {
         playNumber();  // Only play the number if the game hasn't ended
@@ -150,15 +157,25 @@ export default function SoundToNumber({ onBack }) {
 
   // Pelin logiikka
   useEffect(() => {
-    console.log('SoundToNumber useEffect');
     if (number !== null) {
       setOptions(generateOptions(number));
     }
   }, [number, playerLevel]);
 
+
   const playNumber = () => {
+    console.log('SoundToNumber playNumber');
+    if (!gameEnded && !instructions) {
+      console.log('SoundToNumber playNumber if');
+      Speech.stop();
+      Speech.speak("Valitse oikea numero");
+      setInstructions(true);
+      Speech.speak(number.toString());
+    } else {
+      console.log('SoundToNumber playNumber else');
     Speech.stop();
     Speech.speak(number.toString());
+    }
   };
 
   function generateRandomNumber(min, max) {
@@ -220,7 +237,7 @@ export default function SoundToNumber({ onBack }) {
         <View style={styles.tehtcont}>
           <Text style={styles.title}>{syllabify("Valitse oikea numero")}</Text>
           <TouchableOpacity style={[styles.startButton, styles.orangeButton]} onPress={playNumber}>
-            <Text style={styles.buttonText}>{syllabify("Kuuntele numero 🔊")}</Text>
+            <Text style={styles.buttonText}>{syllabify("Kuuntele uudestaan 🔊")}</Text>
           </TouchableOpacity>
           <View style={styles.gameOptionsContainer}>
             {options.map((option, index) => (
