@@ -14,7 +14,7 @@ export const ScoreProvider = ({ children, profile = {} }) => {
     const [playerName, setPlayerName] = useState("")
     const [docId, setDocId] = useState("")
     // Pelaajan taso
-    const [playerLevel, setPlayerLevel] = useState(0)
+    const [playerLevel, setPlayerLevel] = useState(1)
     // Eri tehtävien Xp:t
     const [imageToNumberXp, setImageToNumberXp] = useState(0);
     const [soundToNumberXp, setSoundToNumberXp] = useState(0);
