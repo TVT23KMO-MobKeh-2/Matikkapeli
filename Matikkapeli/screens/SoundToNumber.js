@@ -1,5 +1,5 @@
 import { View, Text, Pressable, TouchableOpacity, ImageBackground, TouchableWithoutFeedback } from 'react-native';
-import React, { useState, useContext, useEffect, use } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import * as Speech from 'expo-speech';
 import { StatusBar } from 'expo-status-bar';
 import { ScoreContext } from '../components/ScoreContext';
@@ -31,7 +31,6 @@ export default function SoundToNumber({ onBack }) {
 
 
   const [numbers, setNumbers] = useState(() => {
-    Speech.speak("Valitse oikea numero");
     // alustetaan lista numeroille
     let initialNumbers = []
     let playerLevelLimit = false
@@ -119,7 +118,6 @@ export default function SoundToNumber({ onBack }) {
 
   console.log("Renderöidään soundToNumber")
   useEffect(() => {
-    console.log("End ccheck")
     if (questionsAnswered === 5) {
       if (taskReading) {
         console.log("Taskreading oli tosi, joten if lauseessa")
