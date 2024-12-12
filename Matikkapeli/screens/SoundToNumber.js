@@ -59,21 +59,21 @@ export default function SoundToNumber({ onBack }) {
           0: () => { //xoxoo
             [initialNumbers[1], initialNumbers[2]] = [initialNumbers[2], initialNumbers[1]];
             if (initialNumbers[3] === initialNumbers[4]) { //jos 4. ja 5. numero on samoja, vaihdetaan 2. ja 5. paikkaa
-              [initialNumbers[1], initialNumbers[4] = initialNumbers[4], initialNumbers[1]]
+              [initialNumbers[1], initialNumbers[4]] = [initialNumbers[4], initialNumbers[1]]
             }
           },
           1: () => {//xooxo
             [initialNumbers[1], initialNumbers[3]] = [initialNumbers[3], initialNumbers[1]];
             if (initialNumbers[1] === initialNumbers[2]) {//jos 2. ja 3. numero on samoja, vaihdetaan 3. ja 5. paikkaa
-              [initialNumbers[2], initialNumbers[4] = initialNumbers[4], initialNumbers[2]]
+              [initialNumbers[2], initialNumbers[4]] = [initialNumbers[4], initialNumbers[2]]
             }
           },
           2: () => {//xooox
             [initialNumbers[1], initialNumbers[4]] = [initialNumbers[4], initialNumbers[1]];
             if (initialNumbers[1] === initialNumbers[2]) {//jos 2. ja 3. numero on samoja, vaihdetaan 3. ja 4. paikkaa
-              [initialNumbers[2], initialNumbers[3] = initialNumbers[3], initialNumbers[2]]
+              [initialNumbers[2], initialNumbers[3]] = [initialNumbers[3], initialNumbers[2]]
             } else if (initialNumbers[2] === initialNumbers[3]){//jos 3. ja 4. numero on samoja, vaihdetaan 2. ja 3. paikkaa
-              [initialNumbers[1], initialNumbers[2] = initialNumbers[2], initialNumbers[1]]
+              [initialNumbers[1], initialNumbers[2]] = [initialNumbers[2], initialNumbers[1]]
             }
           },
           3: () => {//oxoxo 
@@ -82,14 +82,14 @@ export default function SoundToNumber({ onBack }) {
           4: () => {//oxoox
             [initialNumbers[0], initialNumbers[4]] = [initialNumbers[4], initialNumbers[0]];
             if (initialNumbers[2] === initialNumbers[3]) {//jos 3. ja 4. numero on samoja, vaihdetaan 1. ja 3. paikkaa
-              [initialNumbers[0], initialNumbers[2] = initialNumbers[2], initialNumbers[0]]
+              [initialNumbers[0], initialNumbers[2]] = [initialNumbers[2], initialNumbers[0]]
             }
           },
           5: () => {//ooxox
             [initialNumbers[0], initialNumbers[2]] = [initialNumbers[2], initialNumbers[0]];
             [initialNumbers[1], initialNumbers[4]] = [initialNumbers[4], initialNumbers[1]];
             if (initialNumbers[0] === initialNumbers[1]) {//jos 1. ja 2. numero on samoja, vaihdetaan 1. ja 4. paikkaa
-              [initialNumbers[0], initialNumbers[3] = initialNumbers[3], initialNumbers[0]]
+              [initialNumbers[0], initialNumbers[3]] = [initialNumbers[3], initialNumbers[0]]
             }
           }
         }
