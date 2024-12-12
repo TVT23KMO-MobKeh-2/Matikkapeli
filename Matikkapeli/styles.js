@@ -263,6 +263,16 @@ const createStyles = (theme) => StyleSheet.create({
     zIndex: 4,
   },
 
+  buttonContainer2: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    top: 8,
+    justifyContent: 'space-between',
+    width: '90%',
+    zIndex: 4,
+  },
+
   characterImage: {
     width: 170, // Adjust size as needed
     height: 270, // Adjust size as needed

@@ -310,7 +310,7 @@ export default function Comparison({ onBack }) {
                   <LevelBar progress={comparisonXp} label={syllabify("Vertailu")} playerLevel={playerLevel} gameType={"comparison"} caller={"comparison"} />
                   <LevelBar progress={bondsXp} label={syllabify("Hajonta")} playerLevel={playerLevel} gameType={"bonds"} caller={"comparison"} />
                 </View>
-                <View style={styles.buttonContainer}>
+                <View style={styles.buttonContainer2}>
                   <Pressable onPress={() => {
                     handleContinueGame();
                     setShowFeedback(false)

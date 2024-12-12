@@ -13,6 +13,7 @@ import createStyles from "../styles";
 import { useTheme } from '../components/ThemeContext';
 import { light, dark } from '../assets/themeColors';
 import { getBGImage } from '../components/backgrounds';
+import { DarkTheme } from '@react-navigation/native';
 
 export default function Settings({ onBack, navigation }) {
   const [email, setEmail] = useState(null); //Alustetaan null-arvolla
@@ -28,6 +29,29 @@ export default function Settings({ onBack, navigation }) {
   const theme = isDarkTheme ? dark : light;
   const styles = createStyles(theme);
   const bgIndex = 0;
+
+  const trackColor = isDarkTheme
+    ? { false: '#FFF6E9', true: '#9694FF' }  // Dark theme track colors
+    : { false: '#CDC1FF', true: '#7E8EF1' };  // Light theme track colors
+
+    const getThumbColor = (value) => {
+      // Check if DarkTheme is enabled
+      if (isDarkTheme) { // Assuming `isDarkTheme` is a boolean variable indicating the current theme
+        if (value === true) {
+          return '#133E87';  // Dark theme color for "true"
+        } else {
+          return '#FF9874';  // Dark theme color for "false"
+        }
+      }
+    
+      // Default light theme color logic
+      if (value === true) {
+        return '#4E31AA';  // Light theme color for "true"
+      } else {
+        return '#0D92F4';  // Light theme color for "false"
+      }
+    };
+    
 
   //Sulkee sovelluksen Android-laitteilla
   const handleCloseApp = () => {
@@ -155,25 +179,29 @@ export default function Settings({ onBack, navigation }) {
           {/* Teeman valinta */}
           <View style={styles.settingItem}>
             <Text style={styles.label}>{syllabify("Tumman teeman valinta")}</Text>
-            <Switch value={isDarkTheme} onValueChange={setIsDarkTheme} />
+            <Switch value={isDarkTheme} onValueChange={setIsDarkTheme} trackColor={trackColor} // Dynamic track color based on theme
+              thumbColor={getThumbColor(isDarkTheme)} />
           </View>
 
           {/* Tavutuksen valinta */}
           <View style={styles.settingItem}>
             <Text style={styles.label}>{syllabify("Tavutus")}</Text>
-            <Switch value={taskSyllabification} onValueChange={() => setTaskSyllabification(!taskSyllabification)} />
+            <Switch value={taskSyllabification} onValueChange={() => setTaskSyllabification(!taskSyllabification)} trackColor={trackColor} // Dynamic track color based on theme
+              thumbColor={getThumbColor(taskSyllabification)} />
           </View>
 
           {/* Tehtävien lukeminen */}
           <View style={styles.settingItem}>
             <Text style={styles.label}>{syllabify("Tehtävien lukeminen")}</Text>
-            <Switch value={taskReading} onValueChange={() => setTaskReading(!taskReading)} />
+            <Switch value={taskReading} onValueChange={() => setTaskReading(!taskReading)} trackColor={trackColor} // Dynamic track color based on theme
+              thumbColor={getThumbColor(taskReading)} />
           </View>
 
           {/* Taustamusiikin päälle/pois */}
           <View style={styles.settingItem}>
             <Text style={styles.label}>{syllabify("Taustamusiikki")}</Text>
-            <Switch value={isMusicPlaying} onValueChange={setIsMusicPlaying} />
+            <Switch value={isMusicPlaying} onValueChange={setIsMusicPlaying} trackColor={trackColor} // Dynamic track color based on theme
+              thumbColor={getThumbColor(isMusicPlaying)} />
           </View>
 
           {/* Taustamusiikin voimakkuus */}
@@ -196,20 +224,18 @@ export default function Settings({ onBack, navigation }) {
           {/* Peliäänet */}
           <View style={styles.settingItem}>
             <Text style={styles.label}>{syllabify("Peliäänet")}</Text>
-            <Switch value={gameSounds} onValueChange={() => setGameSounds(!gameSounds)} />
+            <Switch value={gameSounds} onValueChange={() => setGameSounds(!gameSounds)} trackColor={trackColor} // Dynamic track color based on theme
+              thumbColor={getThumbColor(gameSounds)} />
           </View>
-          <View style={styles.buttonContainer}>
+          <View style={styles.buttonContainer2}>
             <Pressable onPress={() => navigation.goBack()} style={[styles.startButton, styles.blueButton]}>
               <Text style={styles.buttonText}>{syllabify("Takaisin")}</Text>
-              <FontAwesome name="arrow-left" size={24} color={isDarkTheme ? "white" : "black"}/>
+              <FontAwesome name="arrow-left" size={24} color={isDarkTheme ? "white" : "black"} />
             </Pressable>
-          </View>
-          {/* Sovelluksen sammuttaminen */}
-          <View style={styles.buttonContainer}>
             <Pressable onPress={handleCloseApp}
               style={[styles.startButton, styles.redButton]}
             >
-              <Text style={styles.buttonText}>{syllabify("Sammuta")}</Text>
+              <Text style={[styles.buttonText, { color: 'white' }]}>{syllabify("Sammuta")}</Text>
               <FontAwesome name="power-off" size={24} color="white" />
             </Pressable>
           </View>
