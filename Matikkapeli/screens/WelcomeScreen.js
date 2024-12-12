@@ -31,28 +31,28 @@ export default function WelcomeScreen({ navigation }) {
         try {
             const emailValue = await AsyncStorage.getItem('email');
             if (emailValue !== null) {
-              //  console.log('Sähköposti haettu AsyncStorage:sta:', emailValue);
+                console.log('Sähköposti haettu AsyncStorage:sta:', emailValue);
                 setEmail(emailValue);
 
             } else {
                 console.log('Ei löytynyt sähköpostia AsyncStorage:sta');
             }
-            const nameValue = await AsyncStorage.getItem('playername');
+/*             const nameValue = await AsyncStorage.getItem('playerName');
             if (nameValue !== null) {
-                console.log('Sähköposti haettu AsyncStorage:sta:', nameValue);
+                console.log('PlayerName haettu AsyncStorage:sta:', nameValue);
                 setPlayerName(nameValue);
 
             } else {
-                console.log('Ei löytynyt sähköpostia AsyncStorage:sta');
+                console.log('Ei löytynyt playerName AsyncStorage:sta');
             }
             const imageValue = await AsyncStorage.getItem('imageID');
             if (imageValue !== null) {
-                console.log('Sähköposti haettu AsyncStorage:sta:', imageValue);
+                console.log('Image haettu AsyncStorage:sta:', imageValue);
                 setImageID(imageValue);
 
             } else {
-                console.log('Ei löytynyt sähköpostia AsyncStorage:sta');
-            }
+                console.log('Ei löytynyt imagea AsyncStorage:sta');
+            } */
         } catch (e) {
             console.error('Virhe tietojen hakemisessa', e);
         }
