@@ -113,12 +113,12 @@ export default function Comparison({ onBack }) {
     if (drawRandomNumber(0, 1) === 1) {
       setLookingForBigger(true); // Haetaan isompaa
       if (taskReading) {
-        Speech.speak("Valitse yhtäsuuri tai suurempi luku."); //toistetaan tehtävänanto puheena
+        Speech.speak("Valitse yhtäsuuri merkki tai suurempi luku."); //toistetaan tehtävänanto puheena
       }
     } else {
       setLookingForBigger(false); // Haetaan pienempää
       if (taskReading) {
-        Speech.speak("Valitse yhtäsuuri tai pienempi luku."); //toistetaan tehtävänanto puheena
+        Speech.speak("Valitse yhtäsuuri merkki tai pienempi luku."); //toistetaan tehtävänanto puheena
       }
     }
   }
@@ -227,7 +227,7 @@ export default function Comparison({ onBack }) {
     // Lisätään vastattu kysymys
     setQuestionsAnswered(prevQuestionsAnswered => prevQuestionsAnswered + 1)
     // Arvotaan uudet numerot seuraavaa tehtävää varten
-    if (questionsAnswered < 5) {
+    if (questionsAnswered < 4) {
       drawNewNumbers()
     }
   }
