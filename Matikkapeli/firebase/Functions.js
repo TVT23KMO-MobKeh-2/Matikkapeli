@@ -156,7 +156,7 @@ export async function recievePlayerStatsFromDatabase({email, playerName, setImag
         console.error("Virhe noudettaessa pelaajan tietoja:", error);
         Alert.alert("Virhe", "Pelaajan tietojen hakeminen ei onnistunut. Yritä myöhemmin uudestaan.")
     } finally {
-        setIsFetchingStats(false)
+        setTimeout(() => setIsFetchingStats(false), 0);
     }
 };
 

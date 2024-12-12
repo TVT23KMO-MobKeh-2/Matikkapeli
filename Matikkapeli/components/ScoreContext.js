@@ -9,21 +9,21 @@ export const ScoreContext = createContext();
 
 export const ScoreProvider = ({ children, profile = {} }) => {
 
-    const [email, setEmail] = useState(profile.email) //Tunnisteena, jos monta samannimistä Kallea
-    const [password, setPassword] = useState(profile.password)
-    const [playerName, setPlayerName] = useState(profile.playerName)
-    const [docId, setDocId] = useState(profile.id)
+    const [email, setEmail] = useState("") //Tunnisteena, jos monta samannimistä Kallea
+    const [password, setPassword] = useState("")
+    const [playerName, setPlayerName] = useState("")
+    const [docId, setDocId] = useState("")
     // Pelaajan taso
-    const [playerLevel, setPlayerLevel] = useState(profile.playerLevel)
+    const [playerLevel, setPlayerLevel] = useState(0)
     // Eri tehtävien Xp:t
-    const [imageToNumberXp, setImageToNumberXp] = useState(profile.imageToNumberXp ?? 0);
-    const [soundToNumberXp, setSoundToNumberXp] = useState(profile.soundToNumberXp ?? 0);
-    const [comparisonXp, setComparisonXp] = useState(profile.comparisonXp ?? 0);
-    const [bondsXp, setBondsXp] = useState(profile.bondsXp ?? 0);
-    const [imageID, setImageID] = useState(profile.imageID);
-    const [career, setCareer] = useState(profile.career);
+    const [imageToNumberXp, setImageToNumberXp] = useState(0);
+    const [soundToNumberXp, setSoundToNumberXp] = useState(0);
+    const [comparisonXp, setComparisonXp] = useState(0);
+    const [bondsXp, setBondsXp] = useState(0);
+    const [imageID, setImageID] = useState("");
+    const [career, setCareer] = useState("");
     // KokonaisXp
-    const [totalXp, setTotalXp] = useState(comparisonXp + bondsXp + soundToNumberXp + imageToNumberXp);
+    const [totalXp, setTotalXp] = useState(0);
     /*     // Kulloisestakin tehtävästä saadut pisteet ja vastattujen kysymysten määrä, joiden perusteella annetaan palaute ja päätetään tehtävä
         const [points, setPoints] = useState(0);
         const [questionsAnswered, setQuestionsAnswered] = useState(0); */
@@ -37,13 +37,16 @@ export const ScoreProvider = ({ children, profile = {} }) => {
     // Koukku pelaajatietojen hakuun tietokannasta
     useEffect(() => {
         if (email && playerName) {
+            setIsFetchingStats(true)
+            console.log("isFetchingStats setted true", isFetchingStats)
             console.log("Fetching player stats with email:", email, "and player name:", playerName);
             recievePlayerStatsFromDatabase({ email, playerName, setImageToNumberXp, setSoundToNumberXp, setComparisonXp, setBondsXp, setPlayerLevel, setImageID, setCareer, setDocId, setIsFetchingStats });
         }
-    }, [email, playerName]);
+    }, [playerName]);
 
     // Koukku jolla lasketaan totalXp, kun joku XP muuttuu
     useEffect(() => {
+        console.log("totalXP:n päivitys, isFetchingStats", isFetchingStats)
         console.log(`Total XP before updated: ${totalXp}`);
         setTotalXp(comparisonXp + bondsXp + soundToNumberXp + imageToNumberXp);
         console.log("New totalXp:", comparisonXp + bondsXp + soundToNumberXp + imageToNumberXp);
@@ -51,6 +54,7 @@ export const ScoreProvider = ({ children, profile = {} }) => {
 
     // Tarkistetaan, päästäänkö seuraavalle tasolle tai onko koko peli läpi?
     useEffect(() => {
+        console.log("setXpMilestone, isFetchingStats", isFetchingStats)
         if (!isFetchingStats) {
             if (totalXp === xpForLevelUp[playerLevel]) {
                 setXpMilestone(true);
