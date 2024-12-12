@@ -318,7 +318,7 @@ export async function recievePlayerSettingsFromDatabaseWithoutDocId({ email, pla
 
         } else {
             console.log("Pelaajan tietoja ei löytynyt.");
-            Alert.alert("Virhe:", "Pelaajan tietoja ei löytynyt");
+            //Alert.alert("Virhe:", "Pelaajan tietoja ei löytynyt");
             return false; //Palautus
         }
 
