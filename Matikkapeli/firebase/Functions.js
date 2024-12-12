@@ -122,7 +122,7 @@ export async function updatePlayerStatsToDatabase({ email, playerName, playerLev
 export async function recievePlayerStatsFromDatabase({email, playerName, setImageToNumberXp, setSoundToNumberXp, setComparisonXp, setBondsXp, setPlayerLevel, setImageID, setCareer, setDocId}) {
     console.log("Haetaan tietoja sähköpostilla:", email, "ja nimellä:", playerName);
     try {
-
+        setIsFetchingStats(true) // merkitään tietojenhaku päälle
         //Annetaan tiedot hakua varten
         const q = query(
             collection(firestore, PLAYERSTATS), // Mistä haetaan
@@ -155,6 +155,8 @@ export async function recievePlayerStatsFromDatabase({email, playerName, setImag
     } catch (error) {
         console.error("Virhe noudettaessa pelaajan tietoja:", error);
         Alert.alert("Virhe", "Pelaajan tietojen hakeminen ei onnistunut. Yritä myöhemmin uudestaan.")
+    } finally {
+        setIsFetchingStats(false)
     }
 };
 

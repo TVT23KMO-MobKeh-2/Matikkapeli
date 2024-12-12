@@ -29,6 +29,7 @@ export const ScoreProvider = ({ children, profile = {} }) => {
         const [questionsAnswered, setQuestionsAnswered] = useState(0); */
     // Seurataan onko taso noustu tai peli läpäisty
     const [xpMilestone, setXpMilestone] = useState(false);
+    const [isFetchingStats, setIsFetchingStats] = useState(false)
     const [gameAchieved, setGameAchieved] = useState(false);
     //Taulukko tasojen nousua varten
     const xpForLevelUp = { 1: 15, 2: 30, 3: 50, 4: 70, 5: 90, 6: 110, 7: 130, 8: 150, 9: 170 };
@@ -37,7 +38,7 @@ export const ScoreProvider = ({ children, profile = {} }) => {
     useEffect(() => {
         if (email && playerName) {
             console.log("Fetching player stats with email:", email, "and player name:", playerName);
-            recievePlayerStatsFromDatabase({ email, playerName, setImageToNumberXp, setSoundToNumberXp, setComparisonXp, setBondsXp, setPlayerLevel, setImageID, setCareer, setDocId });
+            recievePlayerStatsFromDatabase({ email, playerName, setImageToNumberXp, setSoundToNumberXp, setComparisonXp, setBondsXp, setPlayerLevel, setImageID, setCareer, setDocId, setIsFetchingStats });
         }
     }, [email, playerName]);
 
@@ -50,10 +51,12 @@ export const ScoreProvider = ({ children, profile = {} }) => {
 
     // Tarkistetaan, päästäänkö seuraavalle tasolle tai onko koko peli läpi?
     useEffect(() => {
-        if (totalXp === xpForLevelUp[playerLevel]) {
-            setXpMilestone(true);
-        } else if (totalXp === 190) {
-            setGameAchieved(true);
+        if (!isFetchingStats) {
+            if (totalXp === xpForLevelUp[playerLevel]) {
+                setXpMilestone(true);
+            } else if (totalXp === 190) {
+                setGameAchieved(true);
+            }
         }
     }, [totalXp])
 
