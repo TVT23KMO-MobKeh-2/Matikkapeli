@@ -82,6 +82,7 @@ export default function SelectProfile({ route, navigation }) {
   
   useEffect(() => {
     if (characters && characters.length > 0) {
+      console.log("Character to set, playerName",selectedCharacter.playerName);
       setEmail(selectedCharacter.email);
       setPlayerName(selectedCharacter.playerName);
       setImageID(selectedCharacter.imageID);
@@ -92,7 +93,7 @@ export default function SelectProfile({ route, navigation }) {
       setComparisonXp(selectedCharacter.comparisonXp);
       setBondsXp(selectedCharacter.bondsXp);
     } else {
-      console.log('No character to set found');
+      console.log('Not yet character to set');
     }
   }, [selectedCharacter]);
 
@@ -185,7 +186,11 @@ export default function SelectProfile({ route, navigation }) {
     resizeMode="cover"
     >
     <View style = {[styles.container, {paddingTop: 0}]}>
-      <Text style={styles.title}>VALITSE PROFIILI</Text>
+      {characters && characters.length > 0 
+      ?<Text style={styles.title}>VALITSE PELAAJA</Text>:
+      <Text style={styles.title}>LUO PELAAJA</Text>
+      }
+      
       <View style={styles.profileSelect}>
         {[...Array(4)].map((_, index) => {
           const character = characters[index];

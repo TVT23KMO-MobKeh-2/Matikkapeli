@@ -107,16 +107,16 @@ export default function ProfileScreen() {
                     </View>
 
                     <View>
-                        <Text style={styles.label}>Nimi: {playerName}</Text>
-                        <Text style={styles.label}>Ammatti: {career}</Text>
-                        <Text style={styles.label}>Taso: {playerLevel}</Text>
+                        <Text style={styles.label}>{syllabify("Nimi")}: {playerName}</Text>
+                        <Text style={styles.label}>{syllabify("Ammatti")}: {syllabify(career)}</Text>
+                        <Text style={styles.label}>{syllabify("Taso")}: {playerLevel}</Text>
                     </View>
                 </View>
                 <View style={styles.profileSelect}>
-                    <LevelBar progress={imageToNumberXp} label={"MONTAKO"} playerLevel={playerLevel} gameType={"imageToNumber"} caller={"profile"} />
-                    <LevelBar progress={soundToNumberXp} label={"TUNNISTA"} playerLevel={playerLevel} gameType={"soundToNumber"} caller={"profile"} />
-                    <LevelBar progress={comparisonXp} label={"VERTAILU"} playerLevel={playerLevel} gameType={"comparison"} caller={"profile"} />
-                    <LevelBar progress={bondsXp} label={"HAJONTA"} playerLevel={playerLevel} gameType={"bonds"} caller={"profile"} />
+                    <LevelBar progress={imageToNumberXp} label={syllabify("Montako")} playerLevel={playerLevel} gameType={"imageToNumber"} caller={"profile"} />
+                    <LevelBar progress={soundToNumberXp} label={syllabify("Tunnista")} playerLevel={playerLevel} gameType={"soundToNumber"} caller={"profile"} />
+                    <LevelBar progress={comparisonXp} label={syllabify("Vertailu")} playerLevel={playerLevel} gameType={"comparison"} caller={"profile"} />
+                    <LevelBar progress={bondsXp} label={syllabify("Hajonta")} playerLevel={playerLevel} gameType={"bonds"} caller={"profile"} />
                 </View>
                 <View style={styles.buttonContainer1}>
                     <Pressable onPress={startGame}
