@@ -13,7 +13,7 @@ const Timer = ({ closeModal }) => {
   const { isDarkTheme } = useTheme();
   const theme = isDarkTheme ? light : dark;
   const styles = createStyles(theme);
-
+  const { syllabify } = useTaskSyllabification(); // Käytetään tavutuskontekstia
   const { startTimer, stopTimer } = useContext(TimerContext);
 
   const handleStartTimer = (minutes) => {
@@ -25,27 +25,27 @@ const Timer = ({ closeModal }) => {
     <Modal transparent={true} visible={true}>
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
-          <Text style={styles.modalText}>Valitse aika:</Text>
+          <Text style={styles.modalText}>{syllabify("Valitse aika:")}</Text>
           <TouchableOpacity onPress={() => handleStartTimer(2)}>
-            <Text style={styles.modalButton}>2 Minuuttia</Text>
+            <Text style={styles.modalButton}>{`${2} ${syllabify("Minuuttia")}`}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => handleStartTimer(5)}>
-            <Text style={styles.modalButton}>5 Minuuttia</Text>
+            <Text style={styles.modalButton}>{`${5} ${syllabify("Minuuttia")}`}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => handleStartTimer(15)}>
-            <Text style={styles.modalButton}>15 Minuuttia</Text>
+            <Text style={styles.modalButton}>{`${15} ${syllabify("Minuuttia")}`}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => handleStartTimer(30)}>
-            <Text style={styles.modalButton}>30 Minuuttia</Text>
+            <Text style={styles.modalButton}>{`${30} ${syllabify("Minuuttia")}`}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => handleStartTimer(45)}>
-            <Text style={styles.modalButton}>45 Minuuttia</Text>
+            <Text style={styles.modalButton}>{`${45} ${syllabify("Minuuttia")}`}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => handleStartTimer(60)}>
-            <Text style={styles.modalButton}>60 Minuuttia</Text>
+            <Text style={styles.modalButton}>{`${60} ${syllabify("Minuuttia")}`}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => closeModal()}>
-            <Text style={styles.modalButton}>Sulje</Text>
+            <Text style={styles.modalButton}>{syllabify("Sulje")}</Text>
           </TouchableOpacity>
         </View>
       </View>

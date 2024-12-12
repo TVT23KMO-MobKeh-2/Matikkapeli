@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { View, Text, Pressable, Switch, StatusBar, BackHandler, ImageBackground, Alert } from 'react-native';
 import SliderComponent from '@react-native-community/slider';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -13,11 +13,13 @@ import createStyles from "../styles";
 import { useTheme } from '../components/ThemeContext';
 import { light, dark } from '../assets/themeColors';
 import { getBGImage } from '../components/backgrounds';
+import { useScore } from '../components/ScoreContext';
 
 export default function Settings({ onBack, navigation }) {
-  const [email, setEmail] = useState(null); //Alustetaan null-arvolla
-  const [playerName, setPlayerName] = useState(null); //Alustetaan null-arvolla
-  const [settingsDocId, setSettingsDocId] = useState(""); //Doc ID
+//  const { playerName, email } = useContext(ScoreContext);
+  //const [settingsEmail, setSettingsEmail] = useState(null); //Alustetaan null-arvolla
+  //const [settingsPlayerName, setsettingsPlayerName] = useState(null); //Alustetaan null-arvolla
+  const {playerName, email, settingsDocId, setSettingsDocId} = useScore(); //Doc ID
 
   const { isDarkTheme, setIsDarkTheme } = useTheme();
   const { taskReading, setTaskReading } = useTaskReading();
@@ -41,17 +43,17 @@ export default function Settings({ onBack, navigation }) {
     );
   };
 
-  //Hakee käyttäjän tiedot AsyncStorage:sta
+/*   //Hakee käyttäjän tiedot AsyncStorage:sta
   const fetchUserData = async () => {
     try {
       const storedEmail = await AsyncStorage.getItem('email');
       const storedPlayerName = await AsyncStorage.getItem('playerName');
-      if (storedEmail) setEmail(storedEmail);
-      if (storedPlayerName) setPlayerName(storedPlayerName);
+      if (storedEmail) setSettingsEmail(storedEmail);
+      if (storedPlayerName) setSettingsPlayerName(storedPlayerName);
     } catch (error) {
       console.error('Virhe tietojen hakemisessa:', error);
     }
-  };
+  }; */
 
   //Hakee asetukset tietokannasta
   useEffect(() => {
@@ -103,7 +105,7 @@ export default function Settings({ onBack, navigation }) {
 
     try {
       if (settingsDocId) {
-        console.log("Päivitetään dokumenttia:", settingsDocId);
+        console.log("Päivitetään settings dokumenttia:", settingsDocId);
         await updatePlayerSettingsToDatabase({ ...settings, settingsDocId });
       } else {
         console.log("settingsDocId ei löytynyt, luodaan uusi dokumentti.");
@@ -117,9 +119,11 @@ export default function Settings({ onBack, navigation }) {
 
 
   //Varmistetaan, että haetaan tiedot aluksi
-  useEffect(() => {
-    fetchUserData();
-  }, []);
+/*   useEffect(() => {
+    console.log("Asetukset useEffect tyhjänä, kutsutaan fetchSettingsOrCreateNew")
+    fetchSettingsOrCreateNew();
+  }, [email, playerName]); */
+   
 
   //Seuraa asetusten muutoksia ja tallentaa ne automaattisesti
   useEffect(() => {
@@ -189,7 +193,7 @@ export default function Settings({ onBack, navigation }) {
               onSlidingComplete={handleSlidingComplete}
               minimumValue={0}
               maximumValue={1}
-              step={0.1}
+              step={0.01}
             />
           </View>
 

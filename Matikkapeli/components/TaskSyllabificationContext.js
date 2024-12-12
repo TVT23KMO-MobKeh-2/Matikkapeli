@@ -17,7 +17,19 @@ export function TaskSyllabificationProvider({ children }) {
       "Aloita peli" : "A-LOI-TA PE-LI",
       "Takaisin": "TA-KAI-SIN",
       "Poista": "POIS-TA",
-      
+      "Nimi":"NI-MI",
+      "Ammatti":"AM-MAT-TI",
+      "Montako":"MON-TA-KO",
+      "Tunnista":"TUN-NIS-TA",
+      "Vertailu":"VER-TAI-LU",
+      "Hajonta":"HA-JON-TA",
+      "LÄÄKÄRI":"LÄÄ-KÄ-RI",
+      "MEKAANIKKO":"ME-KAA-NIK-KO",
+      "RAKENTAJA":"RA-KEN-TA-JA",
+      "KAUPPIAS":"KAUP-PI-AS",
+      "OHJELMOIJA":"OH-JEL-MOI-JA",
+      "OPETTAJA":"O-PET-TA-JA",     
+
       // ImageToNumber.js
       "Kuva numeroiksi": "KU-VA NU-ME-ROIK-SI",
       "Montako esinettä näet näytöllä?": "MON-TA-KO E-SI-NET-TÄ NÄ-ET NÄY-TÖL-LÄ?",
@@ -52,7 +64,7 @@ export function TaskSyllabificationProvider({ children }) {
       
       // Timer.js
       "Valitse aika:":"VA-LIT-SE AI-KA",
-      "minuuttia":"MI-NUUT-TI-A",
+      "Minuuttia":"MI-NUUT-TI-A",
       "Sulje":"SUL-JE",
       "Oletko varma, että haluat pysäyttää ajastimen?":"O-LET-KO VAR-MA, ET-TÄ HA-LU-AT PY-SÄYT-TÄÄ A-JAS-TI-MEN?",
       "Kyllä, pysäytä":"",

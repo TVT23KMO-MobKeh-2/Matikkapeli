@@ -86,7 +86,7 @@ const TopBarComponent = ({ customStyle }) => {
         <View style={styles.topBarInfoContainer}>
           <Text style={styles.topBarUsername}> {playerName} </Text>
           <Text style={styles.topBarLevelAndPoints}>
-            Taso {playerLevel} | {career}
+            Taso {playerLevel} | {syllabify(career)}
           </Text>
         </View>
       ) : (
