@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect, useContext } from 'react';
 //import { addDoc, collection, firestore, PLAYERSTATS, where, query, getDocs, updateDoc, doc } from '../firebase/Config';
 import { savePlayerStatsToDatabase, recievePlayerStatsFromDatabase, updatePlayerStatsToDatabase } from '../firebase/Functions'
 import { Alert } from 'react-native';
@@ -13,6 +13,7 @@ export const ScoreProvider = ({ children, profile = {} }) => {
     const [password, setPassword] = useState("")
     const [playerName, setPlayerName] = useState("")
     const [docId, setDocId] = useState("")
+    const [settingsDocId, setSettingsDocId] = useState("");
     // Pelaajan taso
     const [playerLevel, setPlayerLevel] = useState(1)
     // Eri tehtävien Xp:t
@@ -36,26 +37,26 @@ export const ScoreProvider = ({ children, profile = {} }) => {
 
     // Koukku pelaajatietojen hakuun tietokannasta
     useEffect(() => {
-        console.log("Scorecontext useEffect playername:",playerName)
+        //console.log("Scorecontext useEffect playername:",playerName)
         if (email && playerName) {
             setIsFetchingStats(true)
-            console.log("isFetchingStats setted true", isFetchingStats)
-            console.log("Fetching player stats with email:", email, "and player name:", playerName);
+            //console.log("isFetchingStats setted true", isFetchingStats)
+            //console.log("Fetching player stats with email:", email, "and player name:", playerName);
             recievePlayerStatsFromDatabase({ email, playerName, setImageToNumberXp, setSoundToNumberXp, setComparisonXp, setBondsXp, setPlayerLevel, setImageID, setCareer, setDocId, setIsFetchingStats });
         }
     }, [playerName]);
 
     // Koukku jolla lasketaan totalXp, kun joku XP muuttuu
     useEffect(() => {
-        console.log("totalXP:n päivitys, isFetchingStats", isFetchingStats)
-        console.log(`Total XP before updated: ${totalXp}`);
+        //console.log("totalXP:n päivitys, isFetchingStats", isFetchingStats)
+        //console.log(`Total XP before updated: ${totalXp}`);
         setTotalXp(comparisonXp + bondsXp + soundToNumberXp + imageToNumberXp);
-        console.log("New totalXp:", comparisonXp + bondsXp + soundToNumberXp + imageToNumberXp);
+        //console.log("New totalXp:", comparisonXp + bondsXp + soundToNumberXp + imageToNumberXp);
     }, [comparisonXp, bondsXp, soundToNumberXp, imageToNumberXp]);
 
     // Tarkistetaan, päästäänkö seuraavalle tasolle tai onko koko peli läpi?
     useEffect(() => {
-        console.log("setXpMilestone, isFetchingStats", isFetchingStats)
+        console.log("setXpMilestone, isFetchingStats", isFetchingStats, "totalXp", totalXp)
         if (!isFetchingStats) {
             if (totalXp === xpForLevelUp[playerLevel]) {
                 setXpMilestone(true);
@@ -66,7 +67,7 @@ export const ScoreProvider = ({ children, profile = {} }) => {
     }, [totalXp])
 
     const handleUpdatePlayerImageToDatabase = (newImageID) => {
-        console.log("Updating player stats to the database:", {
+        console.log("Updating player image to the database:", {
             email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career, docId
         });
         updatePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID: newImageID, career, docId })
@@ -186,7 +187,9 @@ export const ScoreProvider = ({ children, profile = {} }) => {
                 setSoundToNumberXp,
                 setComparisonXp,
                 setBondsXp,
-                readFeedback
+                readFeedback,
+                settingsDocId,
+                setSettingsDocId
             }}
         >
             {children}

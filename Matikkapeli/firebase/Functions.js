@@ -9,7 +9,7 @@ export async function isEmailUsed(email) {
             collection(firestore, PLAYERSTATS),
             where("email", "==", email)
         );
-        
+
         const emailQuerySnapshot = await getDocs(emailQuery);
 
         if (!emailQuerySnapshot.empty) {
@@ -27,7 +27,7 @@ export async function isEmailUsed(email) {
     }
 }
 
-export async function saveEmailToDatabase({email}) {
+export async function saveEmailToDatabase({ email }) {
     try {
         const emailQuery = query(
             collection(firestore, PLAYERSTATS),
@@ -54,10 +54,10 @@ export async function saveEmailToDatabase({email}) {
 
 
 // Funktio pelaajatietojen tallennukseen tietokantaan pelin alussa
-export async function savePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career, password }){
+export async function savePlayerStatsToDatabase({ email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career, password }) {
     console.log("Saving player stats to database with:", { email, playerName, playerLevel, imageToNumberXp, soundToNumberXp, comparisonXp, bondsXp, imageID, career, password })
     try {
-        
+
         //await saveEmailToDatabase({email, password})
         const hashedPassword = await Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, password)
         const q = query(
@@ -67,7 +67,7 @@ export async function savePlayerStatsToDatabase({ email, playerName, playerLevel
         )
 
         const querySnapshotWithFilters = await getDocs(q)
-        if(!querySnapshotWithFilters.empty) {
+        if (!querySnapshotWithFilters.empty) {
             console.log("Profiili on jo olemassa.")
             Alert.alert("Virhe", "Samalla sähköpostilla ja nimellä on jo profiili")
             return
@@ -119,7 +119,7 @@ export async function updatePlayerStatsToDatabase({ email, playerName, playerLev
 }
 
 // Funktio pelaajatietojen hakuun tietokannasta
-export async function recievePlayerStatsFromDatabase({email, playerName, setImageToNumberXp, setSoundToNumberXp, setComparisonXp, setBondsXp, setPlayerLevel, setImageID, setCareer, setDocId, setIsFetchingStats}) {
+export async function recievePlayerStatsFromDatabase({ email, playerName, setImageToNumberXp, setSoundToNumberXp, setComparisonXp, setBondsXp, setPlayerLevel, setImageID, setCareer, setDocId, setIsFetchingStats }) {
     console.log("Haetaan tietoja sähköpostilla:", email, "ja nimellä:", playerName);
     try {
         setIsFetchingStats(true) // merkitään tietojenhaku päälle
@@ -179,9 +179,9 @@ export async function recieveProfileByEmail({ email, password, setProfileData, s
             console.log("recieveProfileByEmail, Löydetyt tiedot:", data);
             console.log("docId:", doc.id);
 
-            if (hashedPassword === data.password) { 
+            if (hashedPassword === data.password) {
                 setProfileData(data);
-                setDocId(doc.id); 
+                setDocId(doc.id);
                 console.log("Pelaajan profiili löytyi.");
                 return true;
             } else {
@@ -201,7 +201,7 @@ export async function recieveProfileByEmail({ email, password, setProfileData, s
 
 
 // funktio, jolla päivitetään asetukset tietokantaan
-export async function updatePlayerSettingsToDatabase({email, playerName, isDarkTheme, taskReading, taskSyllabification, gamesounds, isMusicPlaying, musicVolume, settingsDocId}) {
+export async function updatePlayerSettingsToDatabase({ email, playerName, isDarkTheme, taskReading, taskSyllabification, gamesounds, isMusicPlaying, musicVolume, settingsDocId }) {
     try {
         console.log("Päivitetään asetuksia tietokantaan, settingsDocId:", settingsDocId)
         const docRef = doc(firestore, PLAYERSETTINGS, settingsDocId)
@@ -210,44 +210,44 @@ export async function updatePlayerSettingsToDatabase({email, playerName, isDarkT
             email: email,
             playerName: playerName,
             isDarkTheme: isDarkTheme,
-            taskReading: taskReading, 
-            taskSyllabification: taskSyllabification, 
-            gamesounds: gamesounds, 
-            isMusicPlaying: isMusicPlaying, 
+            taskReading: taskReading,
+            taskSyllabification: taskSyllabification,
+            gamesounds: gamesounds,
+            isMusicPlaying: isMusicPlaying,
             musicVolume: musicVolume
         })
         console.log("Pelaajan asetukset päivitetty tietokantaan");
-    }catch (error) {
+    } catch (error) {
         console.log("Virhe asetuksien päivityksessä", error)
         Alert.alert("Virhe", "Asetuksien tallentaminen tietokantaan ei onnistunut. Yritä myöhemmin uudestaan")
     }
 }
 
 // funktio, jolla tallennetaan asetukset tietokantaan
-export async function savePlayerSettingsToDatabase({ email, playerName, isDarkTheme, taskReading, taskSyllabification, gamesounds, isMusicPlaying, musicVolume}) {
+export async function savePlayerSettingsToDatabase({ email, playerName, isDarkTheme, taskReading, taskSyllabification, gamesounds, isMusicPlaying, musicVolume }) {
     try {
-        const docRef = await addDoc(collection(firestore, PLAYERSETTINGS),{
+        const docRef = await addDoc(collection(firestore, PLAYERSETTINGS), {
             email: email,
             playerName: playerName,
             isDarkTheme: isDarkTheme,
-            taskReading: taskReading, 
-            taskSyllabification: taskSyllabification, 
-            gamesounds: gamesounds, 
-            isMusicPlaying: isMusicPlaying, 
+            taskReading: taskReading,
+            taskSyllabification: taskSyllabification,
+            gamesounds: gamesounds,
+            isMusicPlaying: isMusicPlaying,
             musicVolume: musicVolume
         })
         console.log("Pelaajan asetukset tallennettu tietokantaan");
-    }catch (error) {
+    } catch (error) {
         console.log("Virhe asetuksien tallentamisessa", error)
         Alert.alert("Virhe", "Asetuksien tallentaminen tietokantaan ei onnistunut. Yritä myöhemmin uudestaan")
     }
 }
 
 // funktio, jolla haetaan asetukset tietokannasta
-export async function recievePlayerSettingsFromDatabase({email, playerName, setIsDarkTheme, setTaskReading, setTaskSyllabification, setGameSounds, setIsMusicPlaying, setMusicVolume, setSettingsDocId}) {
+export async function recievePlayerSettingsFromDatabase({ email, playerName, setIsDarkTheme, setTaskReading, setTaskSyllabification, setGameSounds, setIsMusicPlaying, setMusicVolume, setSettingsDocId }) {
     console.log("Haetaan asetuksia sähköpostilla:", email, "ja nimellä:", playerName);
     try {
-        
+
         //Annetaan tiedot hakua varten
         const q = query(
             collection(firestore, PLAYERSETTINGS), //Mistä haetaan
@@ -260,10 +260,10 @@ export async function recievePlayerSettingsFromDatabase({email, playerName, setI
         if (!querySnapshotWithFilters.empty) { //jos kyselyllä löytyi tuloksia
             const doc = querySnapshotWithFilters.docs[0]; //haetaan ensimmäinen tulos
             const data = doc.data(); //Haetaan datasisältö
-        
+
             console.log("recievePlayerSettingsFromDatabase, Löydetyt tiedot:", data);
             console.log("docId:", doc.id); //Varmista, että tämä tulostuu oikein
-        
+
             //Päivitetään tiedot tilamuuttujiin
             setIsDarkTheme(data.isDarkTheme)
             setTaskReading(data.taskReading);
@@ -271,17 +271,59 @@ export async function recievePlayerSettingsFromDatabase({email, playerName, setI
             setGameSounds(data.gamesounds);
             setIsMusicPlaying(data.isMusicPlaying);
             setMusicVolume(data.musicVolume);
-        
+
             //Asetetaan settingsDocId
             setSettingsDocId(doc.id);
+
         } else {
             console.log("Pelaajan tietoja ei löytynyt.");
             Alert.alert("Virhe:", "Pelaajan tietoja ei löytynyt");
             return false; //Palautus
         }
-        
+
     } catch (error) {
-        console.log("Virhe asetuksien hakemisessa", error)
+        console.log("Virhe1 asetuksien hakemisessa", error)
+        Alert.alert("Virhe", "Asetuksien hakeminen tietokannasta ei onnistunut. Yritä myöhemmin uudestaan")
+    }
+    return true; //Palautus siirretty
+}
+
+export async function recievePlayerSettingsFromDatabaseWithoutDocId({ email, playerName, setIsDarkTheme, setTaskReading, setTaskSyllabification, setGameSounds, setIsMusicPlaying, setMusicVolume }) {
+    console.log("Haetaan 1asetuksia sähköpostilla:", email, "ja nimellä:", playerName);
+    try {
+
+        //Annetaan tiedot hakua varten
+        const q = query(
+            collection(firestore, PLAYERSETTINGS), //Mistä haetaan
+            where("email", "==", email), //Ehtona sähköpostiosoite
+            where("playerName", "==", playerName) //sekä pelaajan nimi
+        );
+
+        const querySnapshotWithFilters = await getDocs(q); //Suoritetaan kysely
+
+        if (!querySnapshotWithFilters.empty) { //jos kyselyllä löytyi tuloksia
+            const doc = querySnapshotWithFilters.docs[0]; //haetaan ensimmäinen tulos
+            const data = doc.data(); //Haetaan datasisältö
+
+            console.log("recievePlayerSettingsFromDatabase, Löydetyt tiedot:", data);
+            console.log("docId:", doc.id); //Varmista, että tämä tulostuu oikein
+
+            //Päivitetään tiedot tilamuuttujiin
+            setIsDarkTheme(data.isDarkTheme)
+            setTaskReading(data.taskReading);
+            setTaskSyllabification(data.taskSyllabification);
+            setGameSounds(data.gamesounds);
+            setIsMusicPlaying(data.isMusicPlaying);
+            setMusicVolume(data.musicVolume);
+
+        } else {
+            console.log("Pelaajan tietoja ei löytynyt.");
+            Alert.alert("Virhe:", "Pelaajan tietoja ei löytynyt");
+            return false; //Palautus
+        }
+
+    } catch (error) {
+        console.log("Virhe2 asetuksien hakemisessa", error)
         Alert.alert("Virhe", "Asetuksien hakeminen tietokannasta ei onnistunut. Yritä myöhemmin uudestaan")
     }
     return true; //Palautus siirretty
@@ -293,7 +335,7 @@ export async function deletePlayerDataFromDatabase({ email, playerName }) {
         const emailQueryStats = query(
             collection(firestore, PLAYERSTATS),
             where("email", "==", email),
-            where("playerName", "==", playerName )
+            where("playerName", "==", playerName)
         );
         // Haetaan kyselyn tulokset
         const querySnapshot = await getDocs(emailQueryStats);
@@ -308,7 +350,7 @@ export async function deletePlayerDataFromDatabase({ email, playerName }) {
         const emailQuerySettings = query(
             collection(firestore, "playersettings"),
             where("email", "==", email),
-            where("playerName", "==", playerName )
+            where("playerName", "==", playerName)
         );
         // Haetaan kyselyn tulokset
         const querySnapshotSettings = await getDocs(emailQuerySettings);

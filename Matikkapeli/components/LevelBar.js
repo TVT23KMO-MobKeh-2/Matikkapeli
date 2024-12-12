@@ -63,7 +63,7 @@ export default function LevelBar({ progress, label, playerLevel, gameType, calle
     };
 
     const normalizeProgress = (progress, playerLevel) => {
-        console.log(`normalizeProgress: progress=${progress}, playerLevel=${playerLevel}, gameType=${gameType}`);
+        //console.log(`normalizeProgress: progress=${progress}, playerLevel=${playerLevel}, gameType=${gameType}`);
         return gameType === "bonds"
             ? playerLevel < 3
                 ? 0
@@ -72,7 +72,7 @@ export default function LevelBar({ progress, label, playerLevel, gameType, calle
     };
 
     const updateMilestoneImage = (progress) => {
-        console.log(`updateMilestoneImage: progress=${progress}, gifVisible=${gifVisible}`);
+        //console.log(`updateMilestoneImage: progress=${progress}, gifVisible=${gifVisible}`);
         
         // Tarkista, että "bonds"-tyyppisissä peleissä level on vähintään 3
         if (gameType === "bonds" && (playerLevel < 3 || progress < 15)) {
@@ -94,7 +94,7 @@ export default function LevelBar({ progress, label, playerLevel, gameType, calle
 
 
     const handleMilestoneGif = (adjustedMilestone, adjustedProgress) => {
-        console.log(`handleMilestoneGif: adjustedMilestone=${adjustedMilestone}, adjustedProgress=${adjustedProgress}, progress=${progress}, caller=${caller}, gameType=${gameType}`);
+        //console.log(`handleMilestoneGif: adjustedMilestone=${adjustedMilestone}, adjustedProgress=${adjustedProgress}, progress=${progress}, caller=${caller}, gameType=${gameType}`);
         
         if (lastPointRef.current[gameType] < adjustedProgress && milestones.includes(adjustedMilestone)) {
             if (caller === gameType) {
@@ -117,7 +117,7 @@ export default function LevelBar({ progress, label, playerLevel, gameType, calle
     
 
     useEffect(() => {
-        console.log(`useEffect: progress=${progress}, playerLevel=${playerLevel}, gameType=${gameType}, caller=${caller}`);
+        //console.log(`useEffect: progress=${progress}, playerLevel=${playerLevel}, gameType=${gameType}, caller=${caller}`);
         
         // Normalisoi edistyminen
         const normalizedProgress = normalizeProgress(progress, playerLevel);

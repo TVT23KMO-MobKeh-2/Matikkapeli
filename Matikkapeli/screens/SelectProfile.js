@@ -8,17 +8,21 @@ import { collection, query, where, getDocs } from 'firebase/firestore';
 import { firestore } from '../firebase/Config';
 import { ScoreContext } from '../components/ScoreContext';
 import { TimerContext } from '../components/TimerProvider';
-import { recievePlayerStatsFromDatabase, savePlayerStatsToDatabase } from '../firebase/Functions';
+import { recievePlayerStatsFromDatabase, savePlayerStatsToDatabase, savePlayerSettingsToDatabase, updatePlayerSettingsToDatabase, recievePlayerSettingsFromDatabaseWithoutDocId } from '../firebase/Functions';
+import { useSoundSettings } from '../components/SoundSettingsContext'; //Peliäänet on/off
+import { useTaskReading } from '../components/TaskReadingContext'; //Tehtävien lukeminen
+import { useTaskSyllabification } from '../components/TaskSyllabificationContext'; //Tavutus
+import { useBackgroundMusic } from '../components/BackgroundMusicContext'; //Taustamusiikki
 
 import createStyles from "../styles";
 import { useTheme } from '../components/ThemeContext';
-import { light, dark } from '../assets/themeColors'; 
+import { light, dark } from '../assets/themeColors';
 import { getBGImage } from '../components/backgrounds';
 
 
 const fetchCharactersDatabase = async (email) => {
   try {
-    console.log('Fetching characters for email:', email);
+    //console.log('Fetching characters for email:', email);
 
     // Luo kyselyn, joka rajoittaa tulokset annettuun sähköpostiin
     const q = query(
@@ -33,14 +37,13 @@ const fetchCharactersDatabase = async (email) => {
       id: doc.id,
       ...doc.data(),
     }));
-    console.log("Haettu hahmot", characters)
+    //console.log("Haettu hahmot", characters)
     return characters;
   } catch (error) {
-    console.error('Virhe noudaettaessa hahmotietoja', error);
+    //console.error('Virhe noudaettaessa hahmotietoja', error);
     return [];
   }
 };
-
 
 const animalImages = {
   fox: require('../assets/proffox.png'),
@@ -50,21 +53,43 @@ const animalImages = {
 };
 
 export default function SelectProfile({ route, navigation }) {
-  const { showCreate} = route.params;
+  const { showCreate } = route.params;
   const [characters, setCharacters] = useState([]);
   const [selectedCharacter, setSelectedCharacter] = useState(null);
   const [isCreatingProfile, setIsCreatingProfile] = useState(false);
   const { email, setEmail, playerName, setPlayerName, setImageID, setCareer, setPlayerLevel, savePlayerStatsToDatabase, updatePlayerStatsToDatabase, handleUpdatePlayerStatsToDatabase, setImageToNumberXp, setSoundToNumberXp, setComparisonXp, setBondsXp } = useContext(ScoreContext)
   const [password, setPassword] = useState(''); // Corrected initialization
-  
-  const { isDarkTheme } = useTheme();
-  const theme = isDarkTheme ? dark : light; 
-  const styles = createStyles(theme);  
-  const bgIndex = 0; 
+
+  const { taskReading, setTaskReading } = useTaskReading();
+  const { syllabify, taskSyllabification, setTaskSyllabification } = useTaskSyllabification(); //Käytä tavutuksen kontekstia
+  const { gameSounds, setGameSounds } = useSoundSettings();
+  const { isMusicPlaying, setIsMusicPlaying, setMusicVolume, musicVolume, handleSlidingComplete } = useBackgroundMusic(); //Taustamusiikki
+
+  const { isDarkTheme, setIsDarkTheme } = useTheme();
+  const theme = isDarkTheme ? dark : light;
+  const styles = createStyles(theme);
+  const bgIndex = 0;
 
   const { stopTimer, setTimeLeft } = useContext(TimerContext);
 
-
+  const fetchSettings = async () => {
+    console.log("fetchSettings, email ja playername",email, playerName)
+    try {
+      const fetchedSettings = await recievePlayerSettingsFromDatabaseWithoutDocId({
+        email, 
+        playerName, 
+        setIsDarkTheme, 
+        setTaskReading, 
+        setTaskSyllabification, 
+        setGameSounds, 
+        setIsMusicPlaying, 
+        setMusicVolume
+      });
+    } catch (error) {
+      console.error("selectProfile, Virhe asetuksia haettaessa:", error);
+      Alert.alert("Virhe", "Asetusten haku epäonnistui.");
+    }
+  };
 
   useEffect(() => {
     if (email) {
@@ -79,10 +104,11 @@ export default function SelectProfile({ route, navigation }) {
   useEffect(() => {
     stopTimer(); // Pysäyttää ajastimen
   }, []);
-  
+
   useEffect(() => {
     if (characters && characters.length > 0) {
-      console.log("Character to set, playerName",selectedCharacter.playerName);
+      console.log("Character to set, email", selectedCharacter.email);
+      console.log("Character to set, playerName", selectedCharacter.playerName);
       setEmail(selectedCharacter.email);
       setPlayerName(selectedCharacter.playerName);
       setImageID(selectedCharacter.imageID);
@@ -92,10 +118,18 @@ export default function SelectProfile({ route, navigation }) {
       setSoundToNumberXp(selectedCharacter.soundToNumberXp);
       setComparisonXp(selectedCharacter.comparisonXp);
       setBondsXp(selectedCharacter.bondsXp);
+      console.log("email ja playername",selectedCharacter.email, selectedCharacter.playerName)
     } else {
       console.log('Not yet character to set');
     }
   }, [selectedCharacter]);
+
+  useEffect(() => {
+    if (playerName && email) {
+      console.log("email ja playername:", email, playerName);
+      fetchSettings();
+    }
+  }, [playerName, email]);
 
   useEffect(() => {
     const loadEmail = async () => {
@@ -105,9 +139,9 @@ export default function SelectProfile({ route, navigation }) {
         if (storedEmail) {
           setEmail(storedEmail); // Set the email in the state
         }
-          if (storedPassword) {
+        if (storedPassword) {
           setPassword(storedPassword); // Set the password in the state
-          console.log(storedPassword, 'aaaaaaaaaa')
+          //console.log(storedPassword, 'aaaaaaaaaa')
         } else {
           console.log('No email found in AsyncStorage');
         }
@@ -117,32 +151,32 @@ export default function SelectProfile({ route, navigation }) {
     };
     loadEmail();
   }, []);
-  
 
- /*  useEffect(() => {
-    const loadStoredProfile = async () => {
-      try {
-        const storedPlayerName = await AsyncStorage.getItem('playerName');
-        const storedImageID = await AsyncStorage.getItem('imageID');
-  
-        if (storedPlayerName && storedImageID) {
-          // Pre-select or load profile from AsyncStorage if available
-          setPlayerName(storedPlayerName);
-          setImageID(storedImageID);
-        }
-      } catch (error) {
-        console.error('Error loading stored profile:', error);
-      }
-    };
-  
-    loadStoredProfile();
-  }, []); */
 
-  
+  /*  useEffect(() => {
+     const loadStoredProfile = async () => {
+       try {
+         const storedPlayerName = await AsyncStorage.getItem('playerName');
+         const storedImageID = await AsyncStorage.getItem('imageID');
+   
+         if (storedPlayerName && storedImageID) {
+           // Pre-select or load profile from AsyncStorage if available
+           setPlayerName(storedPlayerName);
+           setImageID(storedImageID);
+         }
+       } catch (error) {
+         console.error('Error loading stored profile:', error);
+       }
+     };
+   
+     loadStoredProfile();
+   }, []); */
+
+
   // Log email to confirm it's being passed
   useEffect(() => {
   }, [email]);
-  
+
 
   // Trigger navigation after setting selected character
   const handleSelectCharacter = (character) => {
@@ -153,12 +187,12 @@ export default function SelectProfile({ route, navigation }) {
       setIsCreatingProfile(true); // If no character, go to create profile
     }
   };
-  
+
   const handleNewProfile = async (newProfile) => {
     try {
-      await savePlayerStatsToDatabase(newProfile); 
+      await savePlayerStatsToDatabase(newProfile);
       await AsyncStorage.setItem('playerName', newProfile.playerName);
-    await AsyncStorage.setItem('imageID', newProfile.imageID.toString());
+      await AsyncStorage.setItem('imageID', newProfile.imageID.toString());
     } catch (error) {
       console.error('Virhe profiilin luomisessa:', error);
       alert('Profiilin luominen epäonnistui');
@@ -173,54 +207,54 @@ export default function SelectProfile({ route, navigation }) {
       <CreateProfile
         onCancel={() => setIsCreatingProfile(false)}
         onSave={handleNewProfile}
-        email={email} 
+        email={email}
         password={password}
       />
     );
   }
 
   return (
-    <ImageBackground 
-    source={getBGImage(isDarkTheme, bgIndex)} 
-    style={styles.background} 
-    resizeMode="cover"
+    <ImageBackground
+      source={getBGImage(isDarkTheme, bgIndex)}
+      style={styles.background}
+      resizeMode="cover"
     >
-    <View style = {[styles.container, {paddingTop: 0}]}>
-      {characters && characters.length > 0 
-      ?<Text style={styles.title}>VALITSE PELAAJA</Text>:
-      <Text style={styles.title}>LUO PELAAJA</Text>
-      }
-      
-      <View style={styles.profileSelect}>
-        {[...Array(4)].map((_, index) => {
-          const character = characters[index];
-          return (
-            <Pressable
-              key={index}
-              style={styles.chooseProfile}
-              onPress={() => {
-                if (character) {
-                  handleSelectCharacter(character);
-                } else {
-                  setIsCreatingProfile(true);
-                }
-              }}
-            >
-              {character ? (
-                <>
-                <Image source={animalImages[character.imageID]} style={styles.picProfile} />
-                <Text style={styles.label}>{character.playerName}</Text>
-                </>
-              ) : (
-                <View style={styles.addIcon}>
-                  <FontAwesome5 name="plus" size={40} color="black" />
-                </View>
-              )}
-            </Pressable>
-          );
-        })}
+      <View style={[styles.container, { paddingTop: 0 }]}>
+        {characters && characters.length > 0
+          ? <Text style={styles.title}>VALITSE PELAAJA</Text> :
+          <Text style={styles.title}>LUO PELAAJA</Text>
+        }
+
+        <View style={styles.profileSelect}>
+          {[...Array(4)].map((_, index) => {
+            const character = characters[index];
+            return (
+              <Pressable
+                key={index}
+                style={styles.chooseProfile}
+                onPress={() => {
+                  if (character) {
+                    handleSelectCharacter(character);
+                  } else {
+                    setIsCreatingProfile(true);
+                  }
+                }}
+              >
+                {character ? (
+                  <>
+                    <Image source={animalImages[character.imageID]} style={styles.picProfile} />
+                    <Text style={styles.label}>{character.playerName}</Text>
+                  </>
+                ) : (
+                  <View style={styles.addIcon}>
+                    <FontAwesome5 name="plus" size={40} color="black" />
+                  </View>
+                )}
+              </Pressable>
+            );
+          })}
+        </View>
       </View>
-    </View>
     </ImageBackground>
   );
 }

@@ -37,17 +37,17 @@ export default function ProfileScreen() {
     const bgIndex = 0;
 
     const handleImageSelect = (image) => {
-        console.log('Selected Image:', image); 
+        //console.log('Selected Image:', image); 
         const newImageID = Object.keys(animalImages).find(key => animalImages[key] === image);
-        console.log('New image ID:', newImageID); // Debugging
+        //console.log('New image ID:', newImageID); // Debugging
         handleUpdatePlayerImageToDatabase(newImageID);
         setImageID(newImageID);
-        console.log('Closing the modal');
+        //console.log('Closing the modal');
         setShowImageSelection(false);
     };
 
     const startGame = () => {
-        console.log('Navigating to Animation with profile:', playerName);
+        //console.log('Navigating to Animation with profile:', playerName);
         navigation.navigate('Animation');  // Now works with the hook
     };
 
@@ -70,20 +70,20 @@ export default function ProfileScreen() {
     const handleDeleteProfile = async () => {
         setIsDeleting(true); // Set loading state
         try {
-            console.log('Deleting profile...');
+            //console.log('Deleting profile...');
             await deletePlayerDataFromDatabase({ email, playerName });
             clearProfile()
             Alert.alert('Poisto onnistui', 'Profiili poistettu onnistuneesti');
-            console.log('Profile deleted, navigating to SelectProfile');
+            //console.log('Profile deleted, navigating to SelectProfile');
 
             // Debugging Navigation
-            console.log('Navigating to SelectProfile with email:', email);
+            //console.log('Navigating to SelectProfile with email:', email);
             navigation.navigate('SelectProfile', { email: email });
         } catch (error) {
-            console.error('Error deleting profile:', error);
+            //console.error('Error deleting profile:', error);
             Alert.alert('Error', 'Failed to delete profile');
         } finally {
-            console.log('Resetting deleting state');
+            //console.log('Resetting deleting state');
             setIsDeleting(false); // Reset loading state
         }
     };
