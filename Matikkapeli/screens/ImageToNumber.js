@@ -112,7 +112,7 @@ export default function ImageToNumber({ onBack }) {
             [iconCounts[0], iconCounts[2]] = [iconCounts[2], iconCounts[0]];
             [iconCounts[1], iconCounts[4]] = [iconCounts[4], iconCounts[1]];
             if (iconCounts[0] === iconCounts[1]) {//jos 1. ja 2. numero on samoja, vaihdetaan 1. ja 4. paikkaa
-              [iconCounts[0], iconCounts[3] = iconCounts[3], iconCounts[0]]
+              [iconCounts[0], iconCounts[3]] = [iconCounts[3], iconCounts[0]]
             }
           }
         }
