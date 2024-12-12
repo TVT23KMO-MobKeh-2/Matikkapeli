@@ -7,7 +7,6 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { ScoreContext } from '../components/ScoreContext';
 import { useTaskSyllabification } from '../components/TaskSyllabificationContext';
-
 import createStyles from "../styles";
 import { useTheme } from '../components/ThemeContext';
 import { light, dark } from '../assets/themeColors';

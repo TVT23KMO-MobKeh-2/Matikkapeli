@@ -202,7 +202,7 @@ export default function Bonds({ onBack }) {
             <TouchableWithoutFeedback
               onPress={() => {
                 setInstructionVisibility(false);
-                handleInstructionSpeak();
+                //handleInstructionSpeak();
               }}>
               <View style={styles.overlayInstruction}>
                 <View style={styles.instructionWindow}>

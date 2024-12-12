@@ -26,6 +26,7 @@ import UserCreation from './components/UserCreation';
 import ProfileScreen from './screens/ProfileScreen';
 import CreateProfile from './screens/CreateProfile';
 import { useFonts, ComicNeue_400Regular, ComicNeue_700Bold } from '@expo-google-fonts/comic-neue';
+import { TimerProvider } from './components/TimerProvider';
 
 
 const Stack = createStackNavigator();
@@ -46,10 +47,12 @@ export default function App() {
 
 
   return (
+    
     <BackgroundMusicProvider>
       <TaskReadingProvider>
         <TaskSyllabificationProvider>
           <ThemeProvider>
+            <TimerProvider>
             <ScoreProvider>
               <SoundSettingsProvider>
                 <NavigationContainer>
@@ -63,20 +66,20 @@ export default function App() {
                         } // Replaces default header with TopBarComponent
                       }}
                     >
-                      <Stack.Screen name="StartScreen" component={StartScreen} />
+                      <Stack.Screen name="StartScreen" component={StartScreen} options={{ headerShown: false }}/>
                       <Stack.Screen
                       name="Settings"
                       component={Settings}
                       options={{ headerShown: false }}
                     />
-                      <Stack.Screen name="Welcome" component={WelcomeScreen} />
-                      <Stack.Screen name="UserCreation" component={UserCreation} />
+                      <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }}/>
+                      <Stack.Screen name="UserCreation" component={UserCreation} options={{ headerShown: false }}/>
                       <Stack.Screen
                       name="SelectProfile"
                       component={SelectProfile}
                       options={{ headerShown: false }}
                     />
-                      <Stack.Screen name="CreateProfile" component={CreateProfile} />
+                      <Stack.Screen name="CreateProfile" component={CreateProfile} options={{ headerShown: false }}/>
                       <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
                       <Stack.Screen name="Animation" component={Animation} options={{ headerShown: false }}/>
                       <Stack.Screen name="ImageToNumbers" component={ImageToNumber} />
@@ -87,10 +90,12 @@ export default function App() {
                   </View>
                 </NavigationContainer>
               </SoundSettingsProvider>
-            </ScoreProvider>
+            </ScoreProvider> 
+            </TimerProvider>
           </ThemeProvider>
         </TaskSyllabificationProvider>
       </TaskReadingProvider>
     </BackgroundMusicProvider>
+   
   );
 }

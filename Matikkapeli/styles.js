@@ -123,6 +123,7 @@ const createStyles = (theme) => StyleSheet.create({
     flex: 1,
   },
   topBarUsername: {
+    paddingRight: 16,
     fontSize: 20,
     fontFamily: 'ComicNeue_700Bold',
     color: theme.text,

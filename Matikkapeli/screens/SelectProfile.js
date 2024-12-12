@@ -7,6 +7,7 @@ import CreateProfile from './CreateProfile';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { firestore } from '../firebase/Config';
 import { ScoreContext } from '../components/ScoreContext';
+import { TimerContext } from '../components/TimerProvider';
 import { recievePlayerStatsFromDatabase, savePlayerStatsToDatabase } from '../firebase/Functions';
 
 import createStyles from "../styles";
@@ -61,6 +62,10 @@ export default function SelectProfile({ route, navigation }) {
   const styles = createStyles(theme);  
   const bgIndex = 0; 
 
+  const { stopTimer, setTimeLeft } = useContext(TimerContext);
+
+
+
   useEffect(() => {
     if (email) {
       const loadCharacters = async () => {
@@ -70,8 +75,11 @@ export default function SelectProfile({ route, navigation }) {
       loadCharacters();
     }
   }, [email]);
-  
 
+  useEffect(() => {
+    stopTimer(); // Pysäyttää ajastimen
+  }, []);
+  
   useEffect(() => {
     if (characters && characters.length > 0) {
       setEmail(selectedCharacter.email);
@@ -129,7 +137,7 @@ export default function SelectProfile({ route, navigation }) {
     loadStoredProfile();
   }, []);
 
-
+  
   // Log email to confirm it's being passed
   useEffect(() => {
   }, [email]);

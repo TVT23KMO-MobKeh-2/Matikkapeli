@@ -82,21 +82,21 @@ export default function ImageToNumber({ onBack }) {
           0: () => { //xoxoo
             [iconCounts[1], iconCounts[2]] = [iconCounts[2], iconCounts[1]];
             if (iconCounts[3] === iconCounts[4]) { //jos 4. ja 5. numero on samoja, vaihdetaan 2. ja 5. paikkaa
-              [iconCounts[1], iconCounts[4] = iconCounts[4], iconCounts[1]]
+              [iconCounts[1], iconCounts[4]] = [iconCounts[4], iconCounts[1]]
             }
           },
           1: () => {//xooxo
             [iconCounts[1], iconCounts[3]] = [iconCounts[3], iconCounts[1]];
             if (iconCounts[1] === iconCounts[2]) {//jos 2. ja 3. numero on samoja, vaihdetaan 3. ja 5. paikkaa
-              [iconCounts[2], iconCounts[4] = iconCounts[4], iconCounts[2]]
+              [iconCounts[2], iconCounts[4]]= [iconCounts[4], iconCounts[2]]
             }
           },
           2: () => {//xooox
             [iconCounts[1], iconCounts[4]] = [iconCounts[4], iconCounts[1]];
             if (iconCounts[1] === iconCounts[2]) {//jos 2. ja 3. numero on samoja, vaihdetaan 3. ja 4. paikkaa
-              [iconCounts[2], iconCounts[3] = iconCounts[3], iconCounts[2]]
+              [iconCounts[2], iconCounts[3]] = [iconCounts[3], iconCounts[2]]
             } else if (iconCounts[2] === iconCounts[3]) {//jos 3. ja 4. numero on samoja, vaihdetaan 2. ja 3. paikkaa
-              [iconCounts[1], iconCounts[2] = iconCounts[2], iconCounts[1]]
+              [iconCounts[1], iconCounts[2]] = [iconCounts[2], iconCounts[1]]
             }
           },
           3: () => {//oxoxo 
@@ -105,14 +105,14 @@ export default function ImageToNumber({ onBack }) {
           4: () => {//oxoox
             [iconCounts[0], iconCounts[4]] = [iconCounts[4], iconCounts[0]];
             if (iconCounts[2] === iconCounts[3]) {//jos 3. ja 4. numero on samoja, vaihdetaan 1. ja 3. paikkaa
-              [iconCounts[0], iconCounts[2] = iconCounts[2], iconCounts[0]]
+              [iconCounts[0], iconCounts[2]] = [iconCounts[2], iconCounts[0]]
             }
           },
           5: () => {//ooxox
             [iconCounts[0], iconCounts[2]] = [iconCounts[2], iconCounts[0]];
             [iconCounts[1], iconCounts[4]] = [iconCounts[4], iconCounts[1]];
             if (iconCounts[0] === iconCounts[1]) {//jos 1. ja 2. numero on samoja, vaihdetaan 1. ja 4. paikkaa
-              [iconCounts[0], iconCounts[3] = iconCounts[3], iconCounts[0]]
+              [iconCounts[0], iconCounts[3]] = [iconCounts[3], iconCounts[0]]
             }
           }
         }
