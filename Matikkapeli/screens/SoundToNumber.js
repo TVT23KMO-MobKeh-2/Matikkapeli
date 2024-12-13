@@ -160,16 +160,17 @@ export default function SoundToNumber({ onBack }) {
 
   const playNumber = () => {
     console.log('SoundToNumber playNumber');
-    if (!gameEnded && !instructions) {
+    if (!gameEnded && !instructions && taskReading) {
       console.log('SoundToNumber playNumber if');
       Speech.stop();
       Speech.speak("Valitse oikea numero");
-      setInstructions(true);
       Speech.speak(number.toString());
+      setInstructions(true);
     } else {
       console.log('SoundToNumber playNumber else');
     Speech.stop();
     Speech.speak(number.toString());
+    setInstructions(true);
     }
   };
 

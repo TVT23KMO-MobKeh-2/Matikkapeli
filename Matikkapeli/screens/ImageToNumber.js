@@ -236,13 +236,13 @@ export default function ImageToNumber({ onBack }) {
 
  useEffect(() => {
   console.log("playQuestion")
-  if (!gameEnded && !isSpeechFinished) {
+  if (!gameEnded && !isSpeechFinished && taskReading) {
     console.log("playQuestion if")
     Speech.stop();
     Speech.speak("Montako esinettä näet näytöllä?")
-    setIsSpeechFinished(true);
   }
-}, [isSpeechFinished, gameEnded])
+  setIsSpeechFinished(true);
+}, [isSpeechFinished, gameEnded, taskReading])
 
   const careerIcon = {
     LÄÄKÄRI: "stethoscope",
@@ -252,8 +252,6 @@ export default function ImageToNumber({ onBack }) {
     OHJELMOIJA: "laptop",
     OPETTAJA: "lead-pencil",
   }
-
-
 
   // Renderöi nykyisen kysymyksen ikonit
   const renderIcons = () => {
