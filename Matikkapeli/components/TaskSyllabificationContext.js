@@ -42,7 +42,7 @@ export function TaskSyllabificationProvider({ children }) {
       // SoundToNumber.js
       "Valitse oikea numero": "VA-LIT-SE OI-KE-A NU-ME-RO",
       "Ääni numeroiksi": "ÄÄ-NI NU-ME-ROIK-SI",
-      "Kuuntele numero 🔊": "KUUN-TE-LE NU-ME-RO 🔊",
+      "Kuuntele uudestaan 🔊": "KUUN-TE-LE UU-DES-TAAN 🔊",
 
       // Bonds.js
       "Hajonta": "HA-JON-TA",

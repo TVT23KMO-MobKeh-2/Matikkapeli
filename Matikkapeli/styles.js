@@ -584,12 +584,13 @@ const createStyles = (theme) => StyleSheet.create({
     margin: 5,
   },
   iconBackground: {
-    margin: 40,
+    //flex: 1,
+    margin: 20,
     padding: 10, // Tila vasaroiden ympärillä
     flexDirection: 'row', // Ikonit samalle riville
     flexWrap: 'wrap', // Siirry seuraavalle riville, jos tila ei riitä
     justifyContent: 'center', // Keskitetään ikonit vaakasuunnassa
-    alignItems: 'center', // Keskitetään ikonit pystysuunnassa
+    alignContent: 'center', // Keskitetään ikonit pystysuunnassa
   },
   //!!!!!!!! COMPARISON  !!!!!!!!!!
   comparisonGuideBigger: {
