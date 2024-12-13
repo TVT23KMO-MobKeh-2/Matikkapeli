@@ -27,9 +27,6 @@ export default function SoundToNumber({ onBack }) {
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
   const { gameSounds, playSound } = useSoundSettings(); // Haetaan playSound suoraan kontekstista
   const { taskReading } = useTaskReading();
-
-
-
   const [numbers, setNumbers] = useState(() => {
     // alustetaan lista numeroille
     let initialNumbers = []

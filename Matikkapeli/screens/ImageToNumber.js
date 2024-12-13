@@ -163,6 +163,7 @@ export default function ImageToNumber({ onBack }) {
       incrementXp(points, "imageToNumber"); // Päivitetään XP
       setGameEnded(true);
       setShowFeedback(true);
+      setIsSpeechFinished(false);
     }
   }, [questionsAnswered]);
 
@@ -207,18 +208,18 @@ export default function ImageToNumber({ onBack }) {
   };
 
   // Puheen hallinta ja valmistuminen
-  useEffect(() => {
+  /*useEffect(() => {
 /*     if (gameEnded) {
       Speech.stop(); // Lopeta mahdollinen puhe, jos peli on ohi
       setIsSpeechFinished(false)
       return;
     } // Ei uusia kysymyksiä, jos peli on ohi 
- */
+ 
     const currentQuestion = questions[questionIndex];
     setAnswered(false);
     setIsSpeechFinished(false); // Resetoi puhevalmiuden tila
 
-    if (taskReading && gameActive) {
+   /* if (taskReading && gameActive) {
       Speech.stop(); // Lopeta mahdollinen edellinen puhe
       Speech.speak("Montako esinettä näet näytöllä?", {
         onDone: () => setIsSpeechFinished(true),
@@ -229,7 +230,19 @@ export default function ImageToNumber({ onBack }) {
     }
 
 
+
   }, [questionIndex, questions, taskReading]);
+*/
+
+ useEffect(() => {
+  console.log("playQuestion")
+  if (!gameEnded && !isSpeechFinished) {
+    console.log("playQuestion if")
+    Speech.stop();
+    Speech.speak("Montako esinettä näet näytöllä?")
+    setIsSpeechFinished(true);
+  }
+}, [isSpeechFinished, gameEnded])
 
   const careerIcon = {
     LÄÄKÄRI: "stethoscope",
