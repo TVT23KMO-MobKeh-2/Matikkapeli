@@ -1,17 +1,17 @@
 const BGs = {
     light: [
-        require('../assets/backgrounds/background2.png'),
-        require('../assets/backgrounds/springDay.png'),
-        require('../assets/backgrounds/summerDay.png'),
-        require('../assets/backgrounds/autumnDay.png'),
-        require('../assets/backgrounds/winterDay.png'),
+        require('../assets/backgrounds/background2.jpg'),
+        require('../assets/backgrounds/springDay.jpg'),
+        require('../assets/backgrounds/summerDay.jpg'),
+        require('../assets/backgrounds/autumnDay.jpg'),
+        require('../assets/backgrounds/winterDay.jpg'),
     ],
     dark: [
-        require('../assets/backgrounds/backgroundDark.png'),
-        require('../assets/backgrounds/springNight.png'),
-        require('../assets/backgrounds/summerNight.png'),
-        require('../assets/backgrounds/autumnNight.png'),
-        require('../assets/backgrounds/winterNight.png'),
+        require('../assets/backgrounds/backgroundDark.jpg'),
+        require('../assets/backgrounds/springNight.jpg'),
+        require('../assets/backgrounds/summerNight.jpg'),
+        require('../assets/backgrounds/autumnNight.jpg'),
+        require('../assets/backgrounds/winterNight.jpg'),
     ],
 };
 
