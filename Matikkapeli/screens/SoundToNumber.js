@@ -31,8 +31,10 @@ export default function SoundToNumber({ onBack }) {
     // alustetaan lista numeroille
     let initialNumbers = []
     let playerLevelLimit = false
+    
     if (playerLevel === 1) {//tasolla 1 arvotaan kahdesta vaihtoehdosta
       initialNumbers = Math.random() < 0.5 ? [1, 0, 1, 0, 1] : [0, 1, 0, 1, 0];
+
     } else {// tasolla kolme ja siitä eteenpäin arvotaan kolme satunnaislukua kahden playerLeveliä vastaavan luvun lisäksi
       initialNumbers = [playerLevel, playerLevel]
       let lastNumber = playerLevel
@@ -175,21 +177,7 @@ export default function SoundToNumber({ onBack }) {
   function generateRandomNumber(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
-/*
-  // Valitsee oikean numeron ja 3 muuta 0 - playerlevelin väliltä
-  function generateOptions(correctNumber) {
-    const max = typeof playerLevel === 'number' && playerLevel > 0 ? playerLevel : 10;
-    //console.log('playerLevel:', playerLevel);
-    const options = [correctNumber];
-    const possibleNumbers = Array.from({ length: max }, (_, i) => i);
-    const remainingNumbers = possibleNumbers.filter(num => num !== correctNumber)
-    //console.log('SoundToNumber remainingNumbers:', remainingNumbers);
-    const randomOptions = remainingNumbers.sort(() => Math.random() - 0.5).slice(0, 3);
-    options.push(...randomOptions);
-    //console.log('Generated options:', options);
 
-    return options.sort((a, b) => a - b);
-  }*/
     function generateOptions(playerLevel) {
       let options = []; // Declare the options array
     
@@ -199,11 +187,10 @@ export default function SoundToNumber({ onBack }) {
         options = [0, 1, 2]
       } else if (playerLevel === 3) {
         // For playerLevel 3, return numbers from playerLevel - 2 to playerLevel
-        options = [ 0, 1, 2, 3];
+        options = [1, 2, 3];
       } else if (playerLevel >= 4) {
         // For playerLevel 4 or 5, return playerLevel - 3 to playerLevel
         options = [
-          playerLevel - 3,
           playerLevel - 2,
           playerLevel - 1,
           playerLevel,
