@@ -146,12 +146,13 @@ export default function Comparison({ onBack }) {
     if (drawRandomNumber(0, 1) === 1) {
       // Jos arvottu luku on 1, asetetaan yhteenlasku, arvotut luvut ja true
       setIsAddition(true)
+      setOperand1(first)
+      setOperand2(second)
       while (first + second > playerLevel) {
         first = drawRandomNumber(0, playerLevel)
         second = drawNewNumbers(0, playerLevel)
       }
-      setOperand1(first)
-      setOperand2(second)
+
     } else {
       // Muussa tapauksessa asetetaan vähennyslasku (false)
       // ja varmistetaan, että Operand1 on suurempi, jolloin lopputulos ei ole negatiivinen
