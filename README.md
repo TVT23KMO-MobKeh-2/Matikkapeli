@@ -6,7 +6,18 @@ Tässä projektissa luotiin mobiilisovellus, jolla tuetaan 5-8 vuotiaiden lasten
 **Projektin esittelyvideo [linkki](https://youtube.com/)**
 
 ---
-### Sovelluksen käyttöönotto
+### Sovelluksen käyttöönotto pelkkää käyttöä varten Androidilla:
+1. Lataa .apk tiedosto [tästä](https://www.apknOsoite.fi)
+2. Asenna sovellus laitteelle (joudut antamaan lupia, kun lähde ei ole luotettu jne..).
+3. Samsungin laitteilla käy puhelimen asetuksissa:
+>>  Asetukset->
+>>> Helppokäyttöisyys ->
+>>>> TalkBack ->
+>>>>> Asetukset ->
+>>>>>> Ensisijainen moduuli, vaihda googleen ja kieli Suomeksi
+4. Aloita pelaaminen
+
+### Sovelluksen käyttöönotto kehitysympäristössä:
 1. Lataa puhelimelle Expo Go-sovellus [Google Play](https://play.google.com/store/apps/details?id=host.exp.exponent)
 2. Kloonaa repository 
 3. Aja Npm install komento Matikkapeli\Matikkapeli kansiossa
