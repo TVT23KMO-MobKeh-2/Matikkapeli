@@ -9,7 +9,7 @@ Tässä projektissa luotiin mobiilisovellus, jolla tuetaan 5-8 vuotiaiden lasten
 ### Sovelluksen käyttöönotto pelkkää käyttöä varten Androidilla:
 1. Lataa .apk tiedosto [tästä](https://www.apknOsoite.fi)
 2. Asenna sovellus laitteelle (joudut antamaan lupia, kun lähde ei ole luotettu jne..).
-3. Samsungin laitteilla käy puhelimen asetuksissa:
+3. **Samsungin** laitteilla käy puhelimen asetuksissa:
 >>  Asetukset->
 >>> Helppokäyttöisyys ->
 >>>> TalkBack ->
