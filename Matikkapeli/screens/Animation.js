@@ -129,14 +129,6 @@ export default function Animation({ onBack, navigation }) {
                 navigation={navigation}
             />}
 
-            <View style={styles.buttonContainer1}>
-                <View style={{ marginHorizontal: 10 }}>
-                    <Button onPress={handlePress} title="Move" />
-                </View>
-                <View style={{ marginHorizontal: 10 }}>
-                    <Button onPress={handleReset} title="Reset" />
-                </View>
-            </View>
         </View>
     )
 }

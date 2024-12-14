@@ -15,7 +15,6 @@ import createStyles from "../styles";
 import { useTheme } from '../components/ThemeContext';
 import { light, dark } from '../assets/themeColors';
 import { getBGImage } from '../components/backgrounds';
-import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from 'react-native-reanimated';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Entypo from '@expo/vector-icons/Entypo';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -52,7 +51,7 @@ export default function Bonds({ onBack }) {
   const levelData = playerLevel;
   const [lastLeftBox, setLastLeftBox] = useState(null);
   const [lastRightBox, setLastRightBox] = useState(null);
-  const opacity = useSharedValue(0);
+
 
   console.log("Renderöidään bonds")
 
@@ -66,7 +65,7 @@ export default function Bonds({ onBack }) {
   const generateNewLevel = () => {
     setIsTaskChanging(true);
 
-    let newLeftBox, newRightBox, newWitchBox;
+    let newLeftBox, newRightBox;
 
     // Ensure the new values are different from the last ones
     do {
@@ -178,18 +177,6 @@ export default function Bonds({ onBack }) {
     }
   }, [taskReading, instructionReading]); // Runs when either taskReading or instructionReading changes
 
-  useEffect(() => {
-    opacity.value = withTiming(1, { duration: 500, easing: Easing.ease });
-  }, []);
-
-  // Animated style to be applied to elements
-  const animatedStyles = useAnimatedStyle(() => {
-    return {
-      opacity: opacity.value,
-    };
-  });
-
-
   return (
     <ImageBackground
       source={getBGImage(isDarkTheme, bgIndex)}
@@ -246,7 +233,7 @@ export default function Bonds({ onBack }) {
           <View style={styles.circle}>
             <Text style={[styles.numbertext, { color: 'white' }]}>{levelData}</Text>
           </View>
-          <Animated.View style={[animatedStyles, styles.numbers]}>
+          <View style={styles.numbers}>
             <View style={styles.number1}>
               {witchBox === 0 ? (
                 <TextInput
@@ -275,7 +262,7 @@ export default function Bonds({ onBack }) {
                 <Text style={styles.numbertext}>{rightBox}</Text>
               )}
             </View>
-          </Animated.View>
+          </View>
 
           <View>
             <Pressable
@@ -298,8 +285,8 @@ export default function Bonds({ onBack }) {
                   <Text>{syllabify("Taso")}: {playerLevel}/10</Text>
                   <Text>{syllabify("Kokonaispisteet")}: {totalXp}/190</Text>
                   <View style={styles.profileSelect}>
-                    <LevelBar progress={imageToNumberXp} label={syllabify("Kuvat numeroiksi")} playerLevel={playerLevel} gameType={"imageToNumber"} caller={"bonds"} />
-                    <LevelBar progress={soundToNumberXp} label={syllabify("Äänestä numeroiksi")} playerLevel={playerLevel} gameType={"soundToNumber"} caller={"bonds"} />
+                    <LevelBar progress={imageToNumberXp} label={syllabify("Montako")} playerLevel={playerLevel} gameType={"imageToNumber"} caller={"bonds"} />
+                    <LevelBar progress={soundToNumberXp} label={syllabify("Tunnista")} playerLevel={playerLevel} gameType={"soundToNumber"} caller={"bonds"} />
                     <LevelBar progress={comparisonXp} label={syllabify("Vertailu")} playerLevel={playerLevel} gameType={"comparison"} caller={"bonds"} />
                     <LevelBar progress={bondsXp} label={syllabify("Hajonta")} playerLevel={playerLevel} gameType={"bonds"} caller={"bonds"} />
                   </View>

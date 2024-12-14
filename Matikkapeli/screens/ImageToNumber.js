@@ -313,7 +313,7 @@ export default function ImageToNumber({ onBack }) {
       <View style={styles.container}>
         <View style={styles.tehtcont}>
           <Text style={styles.title}>{syllabify("Kuva numeroiksi")}</Text>
-          <Text style={styles.question}>{questions[questionIndex]?.question}</Text>
+          <Text style={[styles.question, styles.questionBackground]}>{questions[questionIndex]?.question}</Text>
           <View style={styles.iconContainer}>{renderIcons()}</View>
           {renderOptions()}
         </View>
@@ -326,8 +326,8 @@ export default function ImageToNumber({ onBack }) {
                 <Text>{syllabify("Taso")}: {playerLevel}/10</Text>
                 <Text>{syllabify("Kokonaispisteet")}: {totalXp}/190</Text>
                 <View style={styles.profileSelect}>
-                  <LevelBar progress={imageToNumberXp} label={syllabify("Kuvat numeroiksi")} playerLevel={playerLevel} gameType={"imageToNumber"} caller={"imageToNumber"} />
-                  <LevelBar progress={soundToNumberXp} label={syllabify("Äänestä numeroiksi")} playerLevel={playerLevel} gameType={"soundToNumber"} caller={"imageToNumber"} />
+                  <LevelBar progress={imageToNumberXp} label={syllabify("Montako")} playerLevel={playerLevel} gameType={"imageToNumber"} caller={"imageToNumber"} />
+                  <LevelBar progress={soundToNumberXp} label={syllabify("Tunnista")} playerLevel={playerLevel} gameType={"soundToNumber"} caller={"imageToNumber"} />
                   <LevelBar progress={comparisonXp} label={syllabify("Vertailu")} playerLevel={playerLevel} gameType={"comparison"} caller={"imageToNumber"} />
                   <LevelBar progress={bondsXp} label={syllabify("Hajonta")} playerLevel={playerLevel} gameType={"bonds"} caller={"imageToNumber"} />
                 </View>

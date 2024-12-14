@@ -258,8 +258,8 @@ export default function SoundToNumber({ onBack }) {
                 <Text>{syllabify("Taso")}: {playerLevel}/10</Text>
                 <Text>{syllabify("Kokonaispisteet")}: {totalXp}/190</Text>
                 <View style={styles.profileSelect}>
-                  <LevelBar progress={imageToNumberXp} label={syllabify("Kuvat numeroiksi")} playerLevel={playerLevel} gameType={"imageToNumber"} caller={"soundToNumber"} />
-                  <LevelBar progress={soundToNumberXp} label={syllabify("Äänestä numeroiksi")} playerLevel={playerLevel} gameType={"soundToNumber"} caller={"soundToNumber"} />
+                  <LevelBar progress={imageToNumberXp} label={syllabify("Montako")} playerLevel={playerLevel} gameType={"imageToNumber"} caller={"soundToNumber"} />
+                  <LevelBar progress={soundToNumberXp} label={syllabify("Tunnista")} playerLevel={playerLevel} gameType={"soundToNumber"} caller={"soundToNumber"} />
                   <LevelBar progress={comparisonXp} label={syllabify("Vertailu")} playerLevel={playerLevel} gameType={"comparison"} caller={"soundToNumber"} />
                   <LevelBar progress={bondsXp} label={syllabify("Hajonta")} playerLevel={playerLevel} gameType={"bonds"} caller={"soundToNumber"} />
                 </View>
@@ -285,7 +285,7 @@ export default function SoundToNumber({ onBack }) {
                   }}
                     style={[styles.startButton, styles.redButton]}
                   >
-                    <Text style={styles.buttonText}>
+                    <Text style={[styles.buttonText, { color: 'white' }]}>
                       {syllabify("Lopeta")}
                     </Text>
                     <Ionicons name="exit" size={24} color="white" />
