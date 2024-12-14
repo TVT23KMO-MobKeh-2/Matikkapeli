@@ -139,6 +139,7 @@ Tässä pelissä pelaaja pääsee hajottamaan käsiteltävää numeroa, hänell�
 [<img src="https://www.svgrepo.com/show/303500/react-1-logo.svg" height="80px;"/>](https://react.dev)
 [<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Wireframe_logo.png/320px-Wireframe_logo.png" height="80px">](https://wireframe.cc/)
 [<img height="80px" alt="logo-wordmark" src="https://github.com/user-attachments/assets/2a3103cf-fb54-46c7-855d-59fcfefd9c0e" />](https://expo.dev/)
+[<img height="80px" src="https://github.com/user-attachments/assets/c4260a96-175f-4a84-bb21-fecfae9c06cc" />](https://www.gimp.org/)
 
 
 
