@@ -102,7 +102,7 @@ export default function SoundToNumber({ onBack }) {
     return initialNumbers;
   })
   const [number, setNumber] = useState(numbers[0]);
-  const [options, setOptions] = useState(generateOptions(number));
+  const [options, setOptions] = useState(generateOptions(playerLevel));
   const { syllabify, taskSyllabification, getFeedbackMessage } = useTaskSyllabification();
   const [gameEnded, setGameEnded] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -152,11 +152,9 @@ export default function SoundToNumber({ onBack }) {
 
   // Pelin logiikka
   useEffect(() => {
-    if (number !== null) {
-      setOptions(generateOptions(number));
-    }
-  }, [number, playerLevel]);
 
+  }, [playerLevel]);
+  
 
   const playNumber = () => {
     console.log('SoundToNumber playNumber');
@@ -177,46 +175,68 @@ export default function SoundToNumber({ onBack }) {
   function generateRandomNumber(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
-
+/*
   // Valitsee oikean numeron ja 3 muuta 0 - playerlevelin väliltä
   function generateOptions(correctNumber) {
     const max = typeof playerLevel === 'number' && playerLevel > 0 ? playerLevel : 10;
     //console.log('playerLevel:', playerLevel);
     const options = [correctNumber];
-    const possibleNumbers = Array.from({ length: max + 1 }, (_, i) => i);
-    const remainingNumbers = possibleNumbers.filter(num => num !== correctNumber);
+    const possibleNumbers = Array.from({ length: max }, (_, i) => i);
+    const remainingNumbers = possibleNumbers.filter(num => num !== correctNumber)
     //console.log('SoundToNumber remainingNumbers:', remainingNumbers);
     const randomOptions = remainingNumbers.sort(() => Math.random() - 0.5).slice(0, 3);
     options.push(...randomOptions);
     //console.log('Generated options:', options);
 
     return options.sort((a, b) => a - b);
-  }
-
+  }*/
+    function generateOptions(playerLevel) {
+      let options = []; // Declare the options array
+    
+      if (playerLevel === 1) {
+        options = [0, 1]
+      } else if (playerLevel === 2) {
+        options = [0, 1, 2]
+      } else if (playerLevel === 3) {
+        // For playerLevel 3, return numbers from playerLevel - 2 to playerLevel
+        options = [ 0, 1, 2, 3];
+      } else if (playerLevel >= 4) {
+        // For playerLevel 4 or 5, return playerLevel - 3 to playerLevel
+        options = [
+          playerLevel - 3,
+          playerLevel - 2,
+          playerLevel - 1,
+          playerLevel,
+        ];
+      }
+      return options;
+    }
   //console.log('SoundToNumber options:WÄÄWÄÄ', options);
 
   const handleSelect = async (selectedNumber) => {
     if (gameEnded) return;
     Speech.stop();
     setLoading(true);
-
+  
     const isCorrect = selectedNumber === number;
     await playSound(isCorrect); // Käytetään kontekstin kautta haettua playSound-funktiota
-
+  
     const newNumber = numbers[questionsAnswered + 1];
     setNumber(newNumber);
-
+  
     if (isCorrect) {
       setPoints((prevPoints) => prevPoints + 1);
     }
     setQuestionsAnswered((prevQuestionsAnswered) => prevQuestionsAnswered + 1);
-
+  
     const response = isCorrect ? "Oikein!" : "Yritetään uudelleen!";
     if (taskReading) {
       Speech.speak(response);
     }
     setLoading(false);
   };
+  
+  
   //console.log('TÄÄLLÄKI')
   return (
     <ImageBackground
