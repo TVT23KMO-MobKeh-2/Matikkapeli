@@ -63,20 +63,6 @@ export default function Animation({ onBack, navigation }) {
         return () => clearTimeout(timer); // Cleanup on unmount
     }, []);
 
-
-    const handlePress = () => {
-        setIsMoving(true); 
-        setIsGifVisible(true); 
-    };
-
-    const handleReset = () => {
-        translateX.value = 750; 
-        setIsMoving(false); 
-        setIsGifVisible(false); 
-        setTaskVisible(false);
-    };
-
-
     useEffect(() => {
         if (isMoving) {
             translateX.value = withTiming(-800, { duration: 7000 }, () => {
