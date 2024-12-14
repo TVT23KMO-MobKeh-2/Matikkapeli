@@ -33,7 +33,7 @@ Tässä projektissa luotiin mobiilisovellus, jolla tuetaan 5-8 vuotiaiden lasten
 ---
 
 ### Sovelluksen ominaisuudet
-Sovelluksessa on neljä erillaista peliä matematiikan oppimisen tukemiseen. Mikäli laitteella ei ole aiemmin pelattu kyseisellä sovelluksella, pyydetään aloitussivulla käyttäjää joko kirjautumaan sisään tai luomaan uusi tunnus. Uuteen tunnukseen annetaan vapaavalintainen käyttäjätunnus ja salasana, joka on vähintään 6 merkkiä pitkä. Tämän jälkeen tunnukselle voi luoda maksimissaan neljä pelaajaa. Pelaajalle annetaan nimi, valitaan hahmo ja haaveammatti.
+Sovelluksessa on neljä erillaista peliä matematiikan oppimisen tukemiseen. Mikäli laitteella ei ole aiemmin pelattu kyseisellä sovelluksella, pyydetään aloitussivulla käyttäjää joko kirjautumaan sisään tai luomaan uusi tunnus. Uuteen tunnukseen annetaan vapaavalintainen käyttäjätunnus ja salasana. Tämän jälkeen tunnukselle voi luoda maksimissaan neljä pelaajaa. Pelaajalle annetaan nimi, valitaan hahmo ja haaveammatti.
 ![Aloitussivu](./documents/Readme/tiedostonimi)
 <sup><sub>*Kuva numero Nimi*</sup></sub>
 ![Kirjautumissivu](./documents/Readme/tiedostonimi)
