@@ -135,8 +135,8 @@ export default function Comparison({ onBack }) {
   //Funktio yhtälön muodostamiseen
   const generateEquation = (setIsAddition, setOperand1, setOperand2) => {
     // Arvotaan kaksi lukua väliltä 0 - PlayerLevel
-    const first = drawUniqueRandomNumber(0, playerLevel, equationOperand1)
-    const second = drawUniqueRandomNumber(0, playerLevel, equationOperand2)
+    let first = drawUniqueRandomNumber(0, playerLevel, equationOperand1)
+    let second = drawUniqueRandomNumber(0, playerLevel, equationOperand2)
     console.log("Arvottiin numerot", first, second)
     // Alustetaan arvot
     setIsAddition(null);
@@ -146,6 +146,10 @@ export default function Comparison({ onBack }) {
     if (drawRandomNumber(0, 1) === 1) {
       // Jos arvottu luku on 1, asetetaan yhteenlasku, arvotut luvut ja true
       setIsAddition(true)
+      while (first + second > playerLevel) {
+        first = drawRandomNumber(0, playerLevel)
+        second = drawNewNumbers(0, playerLevel)
+      }
       setOperand1(first)
       setOperand2(second)
     } else {

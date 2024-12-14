@@ -50,16 +50,16 @@ export default function LevelBar({ progress, label, playerLevel, gameType, calle
     ];
     
     const levelGifs = {
-        5: require('../assets/purkki1.gif'),
-        10: require('../assets/purkki2.gif'),
-        15: require('../assets/purkki3.gif'),
-        20: require('../assets/purkki4.gif'),
-        25: require('../assets/purkki5.gif'),
-        30: require('../assets/purkki6.gif'),
-        35: require('../assets/purkki7.gif'),
-        40: require('../assets/purkki8.gif'),
-        45: require('../assets/purkki9.gif'),
-        50: require('../assets/purkki10.gif'),
+        5: require('../assets/purkkig1.gif'),
+        10: require('../assets/purkkig2.gif'),
+        15: require('../assets/purkkig3.gif'),
+        20: require('../assets/purkkig4.gif'),
+        25: require('../assets/purkkig5.gif'),
+        30: require('../assets/purkkig6.gif'),
+        35: require('../assets/purkkig7.gif'),
+        40: require('../assets/purkkig8.gif'),
+        45: require('../assets/purkkig9.gif'),
+        50: require('../assets/purkkig10.gif'),
     };
 
     const normalizeProgress = (progress, playerLevel) => {

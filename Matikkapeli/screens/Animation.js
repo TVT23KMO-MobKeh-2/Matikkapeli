@@ -18,15 +18,15 @@ const animalImage = {
 };
 
 const animalGif = {
-    fox: require('../assets/fox.gif'),
-    bear: require('../assets/bear.gif'),
-    rabbit: require('../assets/rabbit.gif'),
-    wolf: require('../assets/wolf.gif'),
+    fox: require('../assets/foxg.gif'),
+    bear: require('../assets/bearg.gif'),
+    rabbit: require('../assets/rabbitg.gif'),
+    wolf: require('../assets/wolfg.gif'),
 };
 
 export default function Animation({ onBack, navigation }) {
-    const backgroundImageBack = require('../assets/Pixel-art-back_full.png')
-    const backgroundImageFront = require('../assets/Pixel-art-front-sign_full.png')
+    const backgroundImageBack = require('../assets/pixel-art-back_full.png')
+    const backgroundImageFront = require('../assets/pixel-art-front-sign_full.png')
     const translateX = useSharedValue(750)
     const imageWidth = 2250
     const [isMoving, setIsMoving] = useState(true)
