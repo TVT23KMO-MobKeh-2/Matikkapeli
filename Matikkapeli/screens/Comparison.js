@@ -150,7 +150,7 @@ export default function Comparison({ onBack }) {
       setOperand2(second)
       while (first + second > playerLevel) {
         first = drawRandomNumber(0, playerLevel)
-        second = drawNewNumbers(0, playerLevel)
+        second = drawRandomNumber(0, playerLevel)
       }
 
     } else {
