@@ -42,28 +42,24 @@ Tässä projektissa luotiin mobiilisovellus, jolla tuetaan 5-8 vuotiaiden lasten
 ---
 
 ### Sovelluksen ominaisuudet
-Sovelluksessa on neljä erillaista peliä matematiikan oppimisen tukemiseen. Mikäli laitteella ei ole aiemmin pelattu kyseisellä sovelluksella, pyydetään aloitussivulla käyttäjää joko kirjautumaan sisään tai luomaan uusi tunnus. Uuteen tunnukseen annetaan vapaavalintainen käyttäjätunnus ja salasana. Tämän jälkeen tunnukselle voi luoda maksimissaan neljä pelaajaa. Pelaajalle annetaan nimi, valitaan hahmo ja haaveammatti.
-![Pelaajanluonti](./readme/readme1.png)
-<sup><sub>Aloitussivu, kirjautumissivu, käyttäjänluonti & pelaajanluonti</sup></sub>
-Kun käyttäjätunnus on luotu, tallennetaan tiedot tietokantaan ja osa laitteen muistiin. Tämän jälkeen sovelluksen seuraavilla käynnistyskerroilla se hakee laitteen muistista automaattisesti käyttäjänimen ja sen sisältämät profiilit, joilla pääsee pelaamaan.
-![Kirjautuneena](./documents/Readme/tiedostonimi)
-<sup><sub>Aloitussivu, kirjautumissivu, käyttäjänluonti & pelaajanluonti</sup></sub>
+Sovelluksessa on neljä erillaista peliä matematiikan oppimisen tukemiseen. Mikäli laitteella ei ole aiemmin pelattu kyseisellä sovelluksella, pyydetään aloitussivulla käyttäjää joko kirjautumaan sisään tai luomaan uusi tunnus. Uuteen tunnukseen annetaan vapaavalintainen käyttäjätunnus ja salasana. Tämän jälkeen tunnukselle voi luoda maksimissaan neljä pelaajaa.
+![Pelin aloitus](./readme/readme1.png)
+<sup><sub>Aloitussivu, kirjautumissivu, käyttäjänluonti & profiilin valita</sup></sub>
+
+Pelaajalle annetaan nimi, valitaan hahmo ja haaveammatti. Kun käyttäjätunnus on luotu, tallennetaan tiedot tietokantaan ja osa laitteen muistiin. Tämän jälkeen sovelluksen seuraavilla käynnistyskerroilla se hakee laitteen muistista automaattisesti käyttäjänimen ja sen sisältämät profiilit, joilla pääsee pelaamaan.
 Käyttäjällä on mahdollista kirjautua ulos sovelluksesta(poistetaan tiedot puhelimen muistista, jos haluaa vaihtaa laitetta) ja poistaa tiedot tietokannasta.
 Kun käyttäjä valitsee tai luo pelaajan, avautuu hänelle profiilisivu, missä näkee omat pisteet ja tason. Tällä sivulla pelaaja voi vaihtaa pelihahmoa, palata pelaajan valintaan, poistaa pelaajan, siirtyä asetuksiin, asettaa ajastimen tai aloittaa pelin pelaamisen.
-![Profiilisivu](./documents/Readme/tiedostonimi)
-<sup><sub>*Kuva numero Nimi*</sup></sub>
 Kun pelaaja aloittaa pelin näytetään hänelle animaatio, missä hänen valitsema hahmo kävelee metsässä kohti seuraavaa pelitaulua. 
-![Animaatio](./documents/Readme/tiedostonimi)
-<sup><sub>*Kuva numero Nimi*</sup></sub>
+![Hahmon luonti ja näkyminen](./readme/readme2.png)
+<sup><sub>Hahmon luonti, hahmon valinta, hahmosivu, animaatio</sup></sub>
+
+
 Sovelluksessa käsitellään numerot väliltä 0-9, taso 1: 0 ja 1 taso 2: 2 jne. Jokaisella tasolla näytetään ensiksi kaksi valittavaa peliä Montako ja Tunnista, kun pelaaja on saanut molemmista peleistä 5 pistettä oikein, lisätään mukaan Vertailu ja Hajonta(tasosta 3 alkaen). Jokaisessa pelissä esitetään viisi kysymystä ja tämän jälkeen pelaajalle annetaan palaute siitä, miten meni. Sitten on aika siirtyä jälleen animaatioon, kohti seuraavaa pelitaulua. Kun tasolla on saatu kaikista peleistä 5 pistettä oikein, on aika siirtyä seuraavalle tasolle.
 
 #### Asetukset
-![Asetukset](./documents/Readme/tiedostonimi)
-<sup><sub>*Kuva numero Nimi*</sup></sub>
-![Asetukset ilman tavutusta](./documents/Readme/tiedostonimi)
-<sup><sub>*Kuva numero Nimi*</sup></sub>
-![Asetukset tummalla teemalla](./documents/Readme/tiedostonimi)
-<sup><sub>*Kuva numero Nimi*</sup></sub>
+
+![Asetukset](./readme/readme3.png)
+<sup><sub>Asetukset tummalla ja vaalealla teemalla ja tavutuksella sekä ilman</sup></sub>
 Asetuksissa käyttäjä pääsee tekemään valintoja:
 
 Tumman teeman valinta
@@ -80,39 +76,23 @@ Peliäänet
 
 #### Ajastin
 Pelaaja voi valita ajastimesta 2, 5, 15, 30, 45 tai 60 minuuttia, jonka jälkeen on hyvä pitää taukoa tai vaihtaa pelaajaa.
-![Ajastimen asetus](./documents/Readme/tiedostonimi)
-<sup><sub>*Kuva numero Nimi*</sup></sub>
-![Ajastin hälyyttää](./documents/Readme/tiedostonimi)
-<sup><sub>*Kuva numero Nimi*</sup></sub>
+![Ajastin näkymät](./readme/readme4.png)
+<sup><sub>Ajastimen näkyminen sovelluksessa</sup></sub>
 
 ### Pelit
 #### Montako - ImageToNumber
-![ImageToNumber vaalea](./documents/Readme/tiedostonimi)
-<sup><sub>*Kuva numero Nimi*</sup></sub>
-![ImageToNumber tumma](./documents/Readme/tiedostonimi)
-<sup><sub>*Kuva numero Nimi*</sup></sub>
 Tässä pelissä pelaaja tunnistaa haaveammattiinsa kuuluvien esineiden määrää. Esineiden määrä kasvaa pelin edetessä.
 #### Tunnista - SoundToNumber
-
-![SoundToNumber vaalea](./documents/Readme/tiedostonimi)
-<sup><sub>*Kuva numero Nimi*</sup></sub>
-![SoundToNumber tumma](./documents/Readme/tiedostonimi)
-<sup><sub>*Kuva numero Nimi*</sup></sub>
 Tässä pelissä pelaajalle puhutaan numero, joka hänen täytyy tunnistaa. Numerot kasvaa pelin edetessä.
-#### Vertailu - Comparison
+![Montako ja Tunnista pelinäkymä](./readme/readme5.png)
+<sup><sub>Tummalla ja vaalealla teemalla Montako ja Tunnista pelit</sup></sub>
 
-![Comparison vaalea](./documents/Readme/tiedostonimi)
-<sup><sub>*Kuva numero Nimi*</sup></sub>
-![comparison tumma](./documents/Readme/tiedostonimi)
-<sup><sub>*Kuva numero Nimi*</sup></sub>
+#### Vertailu - Comparison
 Tässä pelissä pelaajalle annetaan kaksi numeroa ja hänen täytyy tunnistaa kumpi numeroista on pienempi tai suurempi vai ovatko ne yhtäsuuria. Numerot kasvaa pelin edetessä ja tasosta kolme lähtien mukaan tulee yksinkertaisia yhteen- tai vähennyslaskuyhtälöitä.
 #### Hajonta - Bonds
-
-![Bonds vaalea](./documents/Readme/tiedostonimi)
-<sup><sub>*Kuva numero Nimi*</sup></sub>
-![Bonds tumma](./documents/Readme/tiedostonimi)
-<sup><sub>*Kuva numero Nimi*</sup></sub>
 Tässä pelissä pelaaja pääsee hajottamaan käsiteltävää numeroa, hänellä pitää täydentää aina puuttuva osapuoli numerosta. Numero kasvaa pelin edetessä.
+![Vertailu ja Hajonta pelinäkymä](./readme/readme6.png)
+<sup><sub>Tummalla ja vaalealla teemalla Vertailu ja Hajonta pelit</sup></sub>
 
 
 ![KuvanNimi](./documents/Readme/tiedostonimi)
