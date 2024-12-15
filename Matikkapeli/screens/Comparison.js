@@ -152,11 +152,6 @@ export default function Comparison({ onBack }) {
       }
       setOperand1(first)
       setOperand2(second)
-      while (first + second > playerLevel) {
-        first = drawRandomNumber(0, playerLevel)
-        second = drawRandomNumber(0, playerLevel)
-      }
-
     } else {
       // Muussa tapauksessa asetetaan vähennyslasku (false)
       // ja varmistetaan, että Operand1 on suurempi, jolloin lopputulos ei ole negatiivinen
