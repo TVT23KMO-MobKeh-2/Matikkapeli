@@ -1,4 +1,4 @@
-![Matikkapolku](./readme/README1.gif)
+![Matikkapolku](./readme/README.gif)
 
 ## Esittely
 Tässä projektissa luotiin mobiilisovellus, jolla tuetaan 5-8 vuotiaiden lasten (eskarista ekaluokkalaisiin) matematiikan oppimista. Tämän sovelluksen toteutti Oulun ammattikorkeakoulun tieto- ja viestintätekniikan toisen vuosikurssin opiskelijat Mobiiliohjelmoinnin sovellusprojektin tuotoksena marras-joulukuussa 2024. 
