@@ -7,7 +7,7 @@ Tässä projektissa luotiin mobiilisovellus, jolla tuetaan 5-8 vuotiaiden lasten
 
 ---
 ### Sovelluksen käyttöönotto pelkkää käyttöä varten Androidilla:
-1. Lataa .apk tiedosto [tästä](https://drive.google.com/file/d/1T7cDE15q4OnKqAv2Zdp3ENVUFNzbCBry/view?usp=drive_link))
+1. Lataa .apk tiedosto [tästä](https://drive.google.com/file/d/1T7cDE15q4OnKqAv2Zdp3ENVUFNzbCBry/view?usp=drive_link)
 2. Asenna sovellus laitteelle (joudut antamaan lupia, kun lähde ei ole luotettu jne..).
 3. **Samsungin** laitteilla käy puhelimen asetuksissa:
 >>  Asetukset->
