@@ -110,7 +110,7 @@ Tässä pelissä pelaaja pääsee hajottamaan käsiteltävää numeroa, hänell�
 | :---------------: | --- |
 | [<img src="https://github.com/cheezyx.png" width="150px;"/><br /><sub><a href="https://github.com/cheezyx"></a></sub>](https://github.com/cheezyx) | Julianna Seppä -Tekemiset tähän. |
 | [<img src="https://github.com/TaruPe.png" width="150px;"/><br /><sub><a href="https://github.com/TaruPe"></a></sub>](https://github.com/TaruPe) | Taru Peltonen – Tekemiset tähän. |
-| [<img src="https://github.com/AvaRaGane.png" width="150px;"/><br /><sub><a href="https://github.com/AvaRaGane"></a></sub>](https://github.com/AvaRaGane) | Juha-Matti Huhta – Tekemiset tähän. |
+| [<img src="https://github.com/AvaRaGane.png" width="150px;"/><br /><sub><a href="https://github.com/AvaRaGane"></a></sub>](https://github.com/AvaRaGane) | Juha-Matti Huhta – Vastasin Vertailu-pelin toteutuksesta sekä Firebase NoSQL-tietokannan luomisesta, mukaan lukien muutamista siihen liittyvistä toiminnoista. Kehitin ScoreContextin, jonka avulla hallitaan pelaajan pisteitä, tason nousuja ja pelin läpäisyä. Lisäksi toteutin pelaajalle suullisen ja kirjallisen palautteen antamisen tehtävien jälkeen. Panostin myös yleiseen ongelmanratkaisuun ja osaltani myös eri osien yhteenliittämiseen projektissa. |
 | [<img src="https://github.com/Ereride.png" width="150px;"/><br /><sub><a href="https://github.com/Ereride"></a></sub>](https://github.com/Ereride) | Minna Leppänen - Hajonta peli on minun rakentama. Lisäksi pelin aloitusnäkymän ensimmäinen versio ja hahmonäkymät. Tyylittelyä ja yläpalkkia olin myös säätämässä. Tasopalkki komponentti ja animaatiot ovat minun käsialaa, liikkuvat eläinhahmot olen suunnitellut itse.|
 </br>
 
