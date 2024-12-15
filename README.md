@@ -95,8 +95,6 @@ Tässä pelissä pelaaja pääsee hajottamaan käsiteltävää numeroa, hänell�
 <sup><sub>Tummalla ja vaalealla teemalla Vertailu ja Hajonta pelit</sup></sub>
 
 
-![KuvanNimi](./documents/Readme/tiedostonimi)
-<sup><sub>*Kuva numero Nimi*</sup></sub>
 ---
 
 ### Projektin toteutus 
@@ -113,7 +111,7 @@ Tässä pelissä pelaaja pääsee hajottamaan käsiteltävää numeroa, hänell�
 | [<img src="https://github.com/cheezyx.png" width="150px;"/><br /><sub><a href="https://github.com/cheezyx"></a></sub>](https://github.com/cheezyx) | Julianna Seppä -Tekemiset tähän. |
 | [<img src="https://github.com/TaruPe.png" width="150px;"/><br /><sub><a href="https://github.com/TaruPe"></a></sub>](https://github.com/TaruPe) | Taru Peltonen – Tekemiset tähän. |
 | [<img src="https://github.com/AvaRaGane.png" width="150px;"/><br /><sub><a href="https://github.com/AvaRaGane"></a></sub>](https://github.com/AvaRaGane) | Juha-Matti Huhta – Tekemiset tähän. |
-| [<img src="https://github.com/Ereride.png" width="150px;"/><br /><sub><a href="https://github.com/Ereride"></a></sub>](https://github.com/Ereride) | Minna Leppänen - Tekemiset tähän.|
+| [<img src="https://github.com/Ereride.png" width="150px;"/><br /><sub><a href="https://github.com/Ereride"></a></sub>](https://github.com/Ereride) | Minna Leppänen - Hajonta peli on minun rakentama. Lisäksi pelin aloitus- ja hahmonäkymät.|
 </br>
 
 
