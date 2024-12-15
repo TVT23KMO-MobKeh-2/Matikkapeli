@@ -47,14 +47,14 @@ Sovelluksessa on neljä erillaista peliä matematiikan oppimisen tukemiseen. Mik
 <sup><sub>Aloitussivu, kirjautumissivu, käyttäjänluonti & profiilin valita</sup></sub>
 
 Pelaajalle annetaan nimi, valitaan hahmo ja haaveammatti. Kun käyttäjätunnus on luotu, tallennetaan tiedot tietokantaan ja osa laitteen muistiin. Tämän jälkeen sovelluksen seuraavilla käynnistyskerroilla se hakee laitteen muistista automaattisesti käyttäjänimen ja sen sisältämät profiilit, joilla pääsee pelaamaan.
-Käyttäjällä on mahdollista kirjautua ulos sovelluksesta(poistetaan tiedot puhelimen muistista, jos haluaa vaihtaa laitetta) ja poistaa tiedot tietokannasta.
+Käyttäjällä on mahdollista kirjautua ulos sovelluksesta (poistetaan tiedot puhelimen muistista, jos haluaa vaihtaa laitetta) ja poistaa tiedot tietokannasta.
 Kun käyttäjä valitsee tai luo pelaajan, avautuu hänelle profiilisivu, missä näkee omat pisteet ja tason. Tällä sivulla pelaaja voi vaihtaa pelihahmoa, palata pelaajan valintaan, poistaa pelaajan, siirtyä asetuksiin, asettaa ajastimen tai aloittaa pelin pelaamisen.
 Kun pelaaja aloittaa pelin näytetään hänelle animaatio, missä hänen valitsema hahmo kävelee metsässä kohti seuraavaa pelitaulua. 
 ![Hahmon luonti ja näkyminen](./readme/readme2.png)
 <sup><sub>Hahmon luonti, hahmon valinta, hahmosivu, animaatio</sup></sub>
 
 
-Sovelluksessa käsitellään numerot väliltä 0-9, taso 1: 0 ja 1 taso 2: 2 jne. Jokaisella tasolla näytetään ensiksi kaksi valittavaa peliä Montako ja Tunnista, kun pelaaja on saanut molemmista peleistä 5 pistettä oikein, lisätään mukaan Vertailu ja Hajonta(tasosta 3 alkaen). Jokaisessa pelissä esitetään viisi kysymystä ja tämän jälkeen pelaajalle annetaan palaute siitä, miten meni. Sitten on aika siirtyä jälleen animaatioon, kohti seuraavaa pelitaulua. Kun tasolla on saatu kaikista peleistä 5 pistettä oikein, on aika siirtyä seuraavalle tasolle.
+Sovelluksessa käsitellään numerot väliltä 0-9, taso 1: 0 ja 1 taso 2: 2 jne. Jokaisella tasolla näytetään ensiksi kaksi valittavaa peliä Montako ja Tunnista, kun pelaaja on saanut molemmista peleistä 5 pistettä oikein, lisätään mukaan Vertailu ja Hajonta (tasosta 3 alkaen). Jokaisessa pelissä esitetään viisi kysymystä ja tämän jälkeen pelaajalle annetaan palaute siitä, miten meni. Sitten on aika siirtyä jälleen animaatioon, kohti seuraavaa pelitaulua. Kun tasolla on saatu kaikista peleistä 5 pistettä oikein, on aika siirtyä seuraavalle tasolle.
 
 #### Asetukset
 
@@ -109,7 +109,8 @@ Tässä pelissä pelaaja pääsee hajottamaan käsiteltävää numeroa, hänell�
 | Kehittäjät | |
 | :---------------: | --- |
 | [<img src="https://github.com/cheezyx.png" width="150px;"/><br /><sub><a href="https://github.com/cheezyx"></a></sub>](https://github.com/cheezyx) | Julianna Seppä -Vastasin Tunnista -pelin rakentamisesta, sekä yläpalkin ja siinä olevan ajastimen pohjustuksesta. Suunnittelin sovelluksen käyttöliittymän pohjaa, sekä rakensin tyylittelyä koko sovellukselle. Lisäksi toteutin salasana -pohjaisen kirjautumisen sovellukseen. Pyrin panostamaan ongelmanratkaisuun ja toteuttamaan osani mahdollisimman selkeästi. |
-| [<img src="https://github.com/TaruPe.png" width="150px;"/><br /><sub><a href="https://github.com/TaruPe"></a></sub>](https://github.com/TaruPe) | Taru Peltonen – Tekemiset tähän. |
+| [<img src="https://github.com/TaruPe.png" width="150px;"/><br /><sub><a href="https://github.com/TaruPe"></a></sub>](https://github.com/TaruPe) | Taru Peltonen – Vastasin Montako -pelin toteutuksesta, asetuksista sekä hahmottelin alustavaa pisteidenlaskentaa ja 
+profiilikuvan toimintaa. Asetusten ominaisuuksien lisäksi toteutin asetusten tallentumisen tietokantaan. Loin asetuksille usean contextin, joissa hallitaan taustamusiikkia, pelin oikein-väärin -ääniä, tumma- ja vaalea -teema sekä tavutukset ja puhe. |
 | [<img src="https://github.com/AvaRaGane.png" width="150px;"/><br /><sub><a href="https://github.com/AvaRaGane"></a></sub>](https://github.com/AvaRaGane) | Juha-Matti Huhta – Vastasin Vertailu-pelin toteutuksesta sekä Firebase NoSQL-tietokannan luomisesta, mukaan lukien muutamista siihen liittyvistä toiminnoista. Kehitin ScoreContextin, jonka avulla hallitaan pelaajan pisteitä, tason nousuja ja pelin läpäisyä. Lisäksi toteutin pelaajalle suullisen ja kirjallisen palautteen antamisen tehtävien jälkeen. Panostin myös yleiseen ongelmanratkaisuun ja osaltani myös eri osien yhteenliittämiseen projektissa. |
 | [<img src="https://github.com/Ereride.png" width="150px;"/><br /><sub><a href="https://github.com/Ereride"></a></sub>](https://github.com/Ereride) | Minna Leppänen - Vastasin Hajonta -pelin toteutuksesta. Lisäksi pelin aloitusnäkymän ensimmäisen version ja hahmonäkymät. Tyylittelyä ja yläpalkkia olin hieno säätämässä. Tasopalkki komponentti ja animaatiot ovat minun käsialaa, liikkuvat eläinhahmot olen suunnitellut itse.|
 </br>
