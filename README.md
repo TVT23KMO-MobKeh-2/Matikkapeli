@@ -111,7 +111,7 @@ Tässä pelissä pelaaja pääsee hajottamaan käsiteltävää numeroa, hänell�
 | [<img src="https://github.com/cheezyx.png" width="150px;"/><br /><sub><a href="https://github.com/cheezyx"></a></sub>](https://github.com/cheezyx) | Julianna Seppä -Vastasin Tunnista -pelin rakentamisesta, sekä yläpalkin ja siinä olevan ajastimen pohjustuksesta. Suunnittelin sovelluksen käyttöliittymän pohjaa, sekä rakensin tyylittelyä koko sovellukselle. Lisäksi toteutin salasana -pohjaisen kirjautumisen sovellukseen. Pyrin panostamaan ongelmanratkaisuun ja toteuttamaan osani mahdollisimman selkeästi. |
 | [<img src="https://github.com/TaruPe.png" width="150px;"/><br /><sub><a href="https://github.com/TaruPe"></a></sub>](https://github.com/TaruPe) | Taru Peltonen – Tekemiset tähän. |
 | [<img src="https://github.com/AvaRaGane.png" width="150px;"/><br /><sub><a href="https://github.com/AvaRaGane"></a></sub>](https://github.com/AvaRaGane) | Juha-Matti Huhta – Vastasin Vertailu-pelin toteutuksesta sekä Firebase NoSQL-tietokannan luomisesta, mukaan lukien muutamista siihen liittyvistä toiminnoista. Kehitin ScoreContextin, jonka avulla hallitaan pelaajan pisteitä, tason nousuja ja pelin läpäisyä. Lisäksi toteutin pelaajalle suullisen ja kirjallisen palautteen antamisen tehtävien jälkeen. Panostin myös yleiseen ongelmanratkaisuun ja osaltani myös eri osien yhteenliittämiseen projektissa. |
-| [<img src="https://github.com/Ereride.png" width="150px;"/><br /><sub><a href="https://github.com/Ereride"></a></sub>](https://github.com/Ereride) | Minna Leppänen - Hajonta peli on minun rakentama. Lisäksi pelin aloitusnäkymän ensimmäinen versio ja hahmonäkymät. Tyylittelyä ja yläpalkkia olin myös säätämässä. Tasopalkki komponentti ja animaatiot ovat minun käsialaa, liikkuvat eläinhahmot olen suunnitellut itse.|
+| [<img src="https://github.com/Ereride.png" width="150px;"/><br /><sub><a href="https://github.com/Ereride"></a></sub>](https://github.com/Ereride) | Minna Leppänen - Vastasin Hajonta -pelin toteutuksesta. Lisäksi pelin aloitusnäkymän ensimmäinen versio ja hahmonäkymät. Tyylittelyä ja yläpalkkia olin myös säätämässä. Tasopalkki komponentti ja animaatiot ovat minun käsialaa, liikkuvat eläinhahmot olen suunnitellut itse.|
 </br>
 
 
@@ -121,6 +121,8 @@ Tässä pelissä pelaaja pääsee hajottamaan käsiteltävää numeroa, hänell�
 [<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Wireframe_logo.png/320px-Wireframe_logo.png" height="80px">](https://wireframe.cc/)
 [<img height="80px" alt="logo-wordmark" src="https://github.com/user-attachments/assets/2a3103cf-fb54-46c7-855d-59fcfefd9c0e" />](https://expo.dev/)
 [<img height="80px" src="https://www.gimp.org/images/frontpage/wilber-big.png" />](https://www.gimp.org/)
+[<img height="80px" src="https://www.gstatic.com/devrel-devsite/prod/v37f55fe835aa1d3f6236af95c23fa834466468c2920b868f810fdf5b149e5d9f/firebase/images/lockup.svg" />](https://firebase.google.com)
+
 
 
 
