@@ -135,8 +135,8 @@ export default function Comparison({ onBack }) {
   //Funktio yhtälön muodostamiseen
   const generateEquation = (setIsAddition, setOperand1, setOperand2) => {
     // Arvotaan kaksi lukua väliltä 0 - PlayerLevel
-    const first = drawUniqueRandomNumber(0, playerLevel, equationOperand1)
-    const second = drawUniqueRandomNumber(0, playerLevel, equationOperand2)
+    let first = drawUniqueRandomNumber(0, playerLevel, equationOperand1)
+    let second = drawUniqueRandomNumber(0, playerLevel, equationOperand2)
     console.log("Arvottiin numerot", first, second)
     // Alustetaan arvot
     setIsAddition(null);
@@ -146,8 +146,14 @@ export default function Comparison({ onBack }) {
     if (drawRandomNumber(0, 1) === 1) {
       // Jos arvottu luku on 1, asetetaan yhteenlasku, arvotut luvut ja true
       setIsAddition(true)
+      while (first + second > playerLevel) {
+        first = drawRandomNumber(0, playerLevel)
+        second = drawRandomNumber(0, playerLevel)
+      }
       setOperand1(first)
       setOperand2(second)
+
+
     } else {
       // Muussa tapauksessa asetetaan vähennyslasku (false)
       // ja varmistetaan, että Operand1 on suurempi, jolloin lopputulos ei ole negatiivinen
@@ -305,8 +311,8 @@ export default function Comparison({ onBack }) {
                 <Text>{syllabify("Taso")}: {playerLevel}/10</Text>
                 <Text>{syllabify("Kokonaispisteet")}: {totalXp}/190</Text>
                 <View style={styles.profileSelect}>
-                  <LevelBar progress={imageToNumberXp} label={syllabify("Kuvat numeroiksi")} playerLevel={playerLevel} gameType={"imageToNumber"} caller={"comparison"} />
-                  <LevelBar progress={soundToNumberXp} label={syllabify("Äänestä numeroiksi")} playerLevel={playerLevel} gameType={"soundToNumber"} caller={"comparison"} />
+                  <LevelBar progress={imageToNumberXp} label={syllabify("Montako")} playerLevel={playerLevel} gameType={"imageToNumber"} caller={"comparison"} />
+                  <LevelBar progress={soundToNumberXp} label={syllabify("Tunnista")} playerLevel={playerLevel} gameType={"soundToNumber"} caller={"comparison"} />
                   <LevelBar progress={comparisonXp} label={syllabify("Vertailu")} playerLevel={playerLevel} gameType={"comparison"} caller={"comparison"} />
                   <LevelBar progress={bondsXp} label={syllabify("Hajonta")} playerLevel={playerLevel} gameType={"bonds"} caller={"comparison"} />
                 </View>

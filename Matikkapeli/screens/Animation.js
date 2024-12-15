@@ -63,20 +63,6 @@ export default function Animation({ onBack, navigation }) {
         return () => clearTimeout(timer); // Cleanup on unmount
     }, []);
 
-
-    const handlePress = () => {
-        setIsMoving(true); 
-        setIsGifVisible(true); 
-    };
-
-    const handleReset = () => {
-        translateX.value = 750; 
-        setIsMoving(false); 
-        setIsGifVisible(false); 
-        setTaskVisible(false);
-    };
-
-
     useEffect(() => {
         if (isMoving) {
             translateX.value = withTiming(-800, { duration: 7000 }, () => {
@@ -129,14 +115,6 @@ export default function Animation({ onBack, navigation }) {
                 navigation={navigation}
             />}
 
-            <View style={styles.buttonContainer1}>
-                <View style={{ marginHorizontal: 10 }}>
-                    <Button onPress={handlePress} title="Move" />
-                </View>
-                <View style={{ marginHorizontal: 10 }}>
-                    <Button onPress={handleReset} title="Reset" />
-                </View>
-            </View>
         </View>
     )
 }

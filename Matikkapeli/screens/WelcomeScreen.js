@@ -78,8 +78,7 @@ export default function WelcomeScreen({ navigation }) {
         setIsDeleting(true); // Set loading state
         try {
             await deleteUserDataFromDatabase({ email });
-            Alert.alert('Success', 'Profile deleted successfully');
-            navigation.goBack(); // Optionally, navigate back after deletion
+            Alert.alert('Poistettu!', 'Tunnus poistettu onnistuneesti');
             clearemail()
         } catch (error) {
             Alert.alert('Error', 'Failed to delete profile');
