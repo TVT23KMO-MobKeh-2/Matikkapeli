@@ -148,7 +148,7 @@ export default function Comparison({ onBack }) {
       setIsAddition(true)
       while (first + second > playerLevel) {
         first = drawRandomNumber(0, playerLevel)
-        second = drawNewNumbers(0, playerLevel)
+        second = drawRandomNumber(0, playerLevel)
       }
       setOperand1(first)
       setOperand2(second)
