@@ -43,17 +43,11 @@ Tässä projektissa luotiin mobiilisovellus, jolla tuetaan 5-8 vuotiaiden lasten
 
 ### Sovelluksen ominaisuudet
 Sovelluksessa on neljä erillaista peliä matematiikan oppimisen tukemiseen. Mikäli laitteella ei ole aiemmin pelattu kyseisellä sovelluksella, pyydetään aloitussivulla käyttäjää joko kirjautumaan sisään tai luomaan uusi tunnus. Uuteen tunnukseen annetaan vapaavalintainen käyttäjätunnus ja salasana. Tämän jälkeen tunnukselle voi luoda maksimissaan neljä pelaajaa. Pelaajalle annetaan nimi, valitaan hahmo ja haaveammatti.
-![Aloitussivu](./documents/Readme/tiedostonimi)
-<sup><sub>*Kuva numero Nimi*</sup></sub>
-![Kirjautumissivu](./documents/Readme/tiedostonimi)
-<sup><sub>*Kuva numero Nimi*</sup></sub>
-![Käyttäjänluonti](./documents/Readme/tiedostonimi)
-<sup><sub>*Kuva numero Nimi*</sup></sub>
-![Pelaajanluonti](./readme/readme1)
-<sup><sub>*Kuva numero Nimi*</sup></sub>
+![Pelaajanluonti](./readme/readme1.png)
+<sup><sub>Aloitussivu, kirjautumissivu, käyttäjänluonti & pelaajanluonti</sup></sub>
 Kun käyttäjätunnus on luotu, tallennetaan tiedot tietokantaan ja osa laitteen muistiin. Tämän jälkeen sovelluksen seuraavilla käynnistyskerroilla se hakee laitteen muistista automaattisesti käyttäjänimen ja sen sisältämät profiilit, joilla pääsee pelaamaan.
 ![Kirjautuneena](./documents/Readme/tiedostonimi)
-<sup><sub>*Kuva numero Nimi*</sup></sub>
+<sup><sub>Aloitussivu, kirjautumissivu, käyttäjänluonti & pelaajanluonti</sup></sub>
 Käyttäjällä on mahdollista kirjautua ulos sovelluksesta(poistetaan tiedot puhelimen muistista, jos haluaa vaihtaa laitetta) ja poistaa tiedot tietokannasta.
 Kun käyttäjä valitsee tai luo pelaajan, avautuu hänelle profiilisivu, missä näkee omat pisteet ja tason. Tällä sivulla pelaaja voi vaihtaa pelihahmoa, palata pelaajan valintaan, poistaa pelaajan, siirtyä asetuksiin, asettaa ajastimen tai aloittaa pelin pelaamisen.
 ![Profiilisivu](./documents/Readme/tiedostonimi)
