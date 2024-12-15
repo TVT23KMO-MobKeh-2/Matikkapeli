@@ -49,7 +49,7 @@ Sovelluksessa on neljä erillaista peliä matematiikan oppimisen tukemiseen. Mik
 <sup><sub>*Kuva numero Nimi*</sup></sub>
 ![Käyttäjänluonti](./documents/Readme/tiedostonimi)
 <sup><sub>*Kuva numero Nimi*</sup></sub>
-![Pelaajanluonti]([https://drive.google.com/file/d/1QIOGRTrz5_tImKj3gyJf9s8iYf2wM-AN/view&id=readme1](https://photos.app.goo.gl/F3p8e3X2LdPSzzSD6))
+![Pelaajanluonti](https://photos.app.goo.gl/F3p8e3X2LdPSzzSD6)
 <sup><sub>*Kuva numero Nimi*</sup></sub>
 Kun käyttäjätunnus on luotu, tallennetaan tiedot tietokantaan ja osa laitteen muistiin. Tämän jälkeen sovelluksen seuraavilla käynnistyskerroilla se hakee laitteen muistista automaattisesti käyttäjänimen ja sen sisältämät profiilit, joilla pääsee pelaamaan.
 ![Kirjautuneena](./documents/Readme/tiedostonimi)
