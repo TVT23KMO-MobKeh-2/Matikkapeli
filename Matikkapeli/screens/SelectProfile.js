@@ -18,6 +18,7 @@ import createStyles from "../styles";
 import { useTheme } from '../components/ThemeContext';
 import { light, dark } from '../assets/themeColors';
 import { getBGImage } from '../components/backgrounds';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 
 const fetchCharactersDatabase = async (email) => {
@@ -177,6 +178,9 @@ export default function SelectProfile({ route, navigation }) {
   useEffect(() => {
   }, [email]);
 
+  const goBack = () => {
+    navigation.navigate('Welcome', { email: email });  // Goes back to the previous screen
+};
 
   // Trigger navigation after setting selected character
   const handleSelectCharacter = (character) => {
@@ -254,6 +258,13 @@ export default function SelectProfile({ route, navigation }) {
             );
           })}
         </View>
+        <View style={styles.buttonContainer1}>
+                    <Pressable onPress={goBack}
+                        style={[styles.startButton, styles.blueButton]}>
+                        <Text style={styles.buttonText}>Takaisin</Text>
+                        <Ionicons name="arrow-back-circle-outline" size={24} padding={4} color={isDarkTheme ? "white" : "black"} />
+                    </Pressable>
+                </View>
       </View>
     </ImageBackground>
   );

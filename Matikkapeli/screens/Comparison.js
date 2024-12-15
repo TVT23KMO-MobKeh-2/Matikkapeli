@@ -152,6 +152,11 @@ export default function Comparison({ onBack }) {
       }
       setOperand1(first)
       setOperand2(second)
+      while (first + second > playerLevel) {
+        first = drawRandomNumber(0, playerLevel)
+        second = drawRandomNumber(0, playerLevel)
+      }
+
     } else {
       // Muussa tapauksessa asetetaan vähennyslasku (false)
       // ja varmistetaan, että Operand1 on suurempi, jolloin lopputulos ei ole negatiivinen
@@ -309,8 +314,8 @@ export default function Comparison({ onBack }) {
                 <Text>{syllabify("Taso")}: {playerLevel}/10</Text>
                 <Text>{syllabify("Kokonaispisteet")}: {totalXp}/190</Text>
                 <View style={styles.profileSelect}>
-                  <LevelBar progress={imageToNumberXp} label={syllabify("Kuvat numeroiksi")} playerLevel={playerLevel} gameType={"imageToNumber"} caller={"comparison"} />
-                  <LevelBar progress={soundToNumberXp} label={syllabify("Äänestä numeroiksi")} playerLevel={playerLevel} gameType={"soundToNumber"} caller={"comparison"} />
+                  <LevelBar progress={imageToNumberXp} label={syllabify("Montako")} playerLevel={playerLevel} gameType={"imageToNumber"} caller={"comparison"} />
+                  <LevelBar progress={soundToNumberXp} label={syllabify("Tunnista")} playerLevel={playerLevel} gameType={"soundToNumber"} caller={"comparison"} />
                   <LevelBar progress={comparisonXp} label={syllabify("Vertailu")} playerLevel={playerLevel} gameType={"comparison"} caller={"comparison"} />
                   <LevelBar progress={bondsXp} label={syllabify("Hajonta")} playerLevel={playerLevel} gameType={"bonds"} caller={"comparison"} />
                 </View>

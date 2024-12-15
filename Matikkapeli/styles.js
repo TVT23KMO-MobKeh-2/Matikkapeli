@@ -61,6 +61,11 @@ const createStyles = (theme) => StyleSheet.create({
     fontFamily: 'ComicNeue_700Bold',
     color: theme.text,
   },
+  questionBackground: {
+    backgroundColor: theme.iconbg,
+    padding: 8,
+    borderRadius: 8,
+  },
   label2: {
     fontSize: 30,
     marginBottom: 10,
@@ -310,7 +315,8 @@ const createStyles = (theme) => StyleSheet.create({
     justifyContent: 'center', // Center items
     alignItems: 'center', // Center items vertically
     width: '100%', // You can adjust the width as needed
-    marginTop: 30
+    marginTop: 30,
+    marginBottom: 30,
   },
   taskContainer: {
     width: '45%',
@@ -319,6 +325,7 @@ const createStyles = (theme) => StyleSheet.create({
   },
   buttonWrapper: {
     margin: 5,
+    marginBottom: 12,
     backgroundColor: '#f0f0f0',
     borderRadius: 50,
     padding: 2,
@@ -532,6 +539,7 @@ const createStyles = (theme) => StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
+    alignItems: 'center',
     marginVertical: 10,
     backgroundColor: theme.settingbg,
     borderRadius: 8,
@@ -592,6 +600,14 @@ const createStyles = (theme) => StyleSheet.create({
     justifyContent: 'center', // Keskitetään ikonit vaakasuunnassa
     alignContent: 'center', // Keskitetään ikonit pystysuunnassa
   },
+
+  //!!!!!!!! SOUND TO NUMBER !!!!!!
+  numberCenter: {
+    justifyContent: 'center', // Keskittää pystysuunnassa
+    alignItems: 'center',    // Keskittää vaakasuunnassa
+    flex: 1,   
+  },
+
   //!!!!!!!! COMPARISON  !!!!!!!!!!
   comparisonGuideBigger: {
     fontSize: 24,
