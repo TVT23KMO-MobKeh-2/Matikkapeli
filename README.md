@@ -3,8 +3,6 @@
 ## Esittely
 Tässä projektissa luotiin mobiilisovellus, jolla tuetaan 5-8 vuotiaiden lasten (eskarista ekaluokkalaisiin) matematiikan oppimista. Tämän sovelluksen toteutti Oulun ammattikorkeakoulun tieto- ja viestintätekniikan toisen vuosikurssin opiskelijat Mobiiliohjelmoinnin sovellusprojektin tuotoksena marras-joulukuussa 2024. 
 
-**Projektin esittelyvideo [linkki](https://youtube.com/)**
-
 ---
 ### Sovelluksen käyttöönotto pelkkää käyttöä varten Androidilla:
 1. Lataa .apk tiedosto [tästä](https://drive.google.com/file/d/1T7cDE15q4OnKqAv2Zdp3ENVUFNzbCBry/view?usp=drive_link)
