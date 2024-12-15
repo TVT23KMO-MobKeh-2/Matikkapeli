@@ -3,12 +3,9 @@
 ## Esittely
 Tässä projektissa luotiin mobiilisovellus, jolla tuetaan 5-8 vuotiaiden lasten (eskarista ekaluokkalaisiin) matematiikan oppimista. Tämän sovelluksen toteutti Oulun ammattikorkeakoulun tieto- ja viestintätekniikan toisen vuosikurssin opiskelijat Mobiiliohjelmoinnin sovellusprojektin tuotoksena marras-joulukuussa 2024. 
 
-<table style="border: none; padding: 10px;">
-  <tr>
-    <td><img src="./readme/kettu22.gif" alt="Kettu" width="200"></td>
-    <td style="padding-left: 10px;">Tässä projektissa luotiin mobiilisovellus...</td>
-  </tr>
-</table>
+| <img src="./readme/kettu22.gif" alt="Kettu" width="200"> | Tässä projektissa luotiin mobiilisovellus, jolla tuetaan 5-8 vuotiaiden lasten (eskarista ekaluokkalaisiin) matematiikan oppimista. Tämän sovelluksen toteutti Oulun ammattikorkeakoulun tieto- ja viestintätekniikan toisen vuosikurssin opiskelijat Mobiiliohjelmoinnin sovellusprojektin tuotoksena marras-joulukuussa 2024. |
+|--------------------------------------------|-------------------------------------|
+
 
 
 
